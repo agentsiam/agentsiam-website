@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "./logo";
 
 const links = [
   { href: "/how-it-works", label: "How it works" },
@@ -9,11 +10,8 @@ export function Nav() {
   return (
     <header className="border-b border-border">
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4">
-        <Link
-          href="/"
-          className="font-[family-name:var(--font-unbounded)] text-lg font-extrabold tracking-tight text-text"
-        >
-          Agent<span className="text-primary">Siam</span>
+        <Link href="/" className="text-text" aria-label="AgentSiam home">
+          <Logo className="h-5 w-auto" />
         </Link>
         <ul className="hidden items-center gap-8 text-sm font-medium text-text sm:flex">
           <li>
