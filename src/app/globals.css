@@ -1,26 +1,67 @@
 @import "tailwindcss";
 
+/*
+  Tokens ported from as-context/06-design-system/design-system.html (agentsiam-consulting repo).
+  Keep these in sync manually -- the two repos don't share a build step. If design-system.html's
+  tokens change, this file goes stale until someone re-ports it.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --color-bg: #ffffff;
+  --color-surface: #f6f6fb;
+  --color-surface-2: #eff0f8;
+  --color-text: #181818;
+  --color-muted: #5b5b6b;
+  --color-border: #e4e4ee;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: #0100dd;
+  --color-secondary: #fb5932;
+  --color-tertiary: #181818;
+  --color-sand: #d9b16b;
+  --color-pink: #f7acc6;
+  --color-teal: #00b4b1;
+  --color-ink: #14141c;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-bg: #13131a;
+    --color-surface: #1c1d27;
+    --color-surface-2: #23242f;
+    --color-text: #f1f2fa;
+    --color-muted: #a8a9be;
+    --color-border: #2c2d3a;
   }
 }
 
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-text: var(--color-text);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-tertiary: var(--color-tertiary);
+  --color-sand: var(--color-sand);
+  --color-pink: var(--color-pink);
+  --color-teal: var(--color-teal);
+  --color-ink: var(--color-ink);
+
+  --font-display: var(--font-poppins), "Segoe UI", sans-serif;
+  --font-body: var(--font-plex-sans), "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, Menlo, monospace;
+  --font-headline: var(--font-unbounded), var(--font-poppins), sans-serif;
+  --font-thai: var(--font-noto-thai), "Segoe UI", sans-serif;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
 }

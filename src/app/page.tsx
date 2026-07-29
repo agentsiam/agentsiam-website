@@ -1,65 +1,108 @@
-import Image from "next/image";
+import Link from "next/link";
+
+const steps = [
+  {
+    n: "01",
+    title: "Feasibility & ROI study",
+    body: "One site visit, a written analysis, a one-hour online presentation, and a Go / No-Go recommendation — not an open-ended set of numbers.",
+  },
+  {
+    n: "02",
+    title: "Vacation rental permission",
+    body: "We assess eligibility, prepare the documents, and file with the District Office on your behalf. Landed property has a real route through the non-hotel exemption.",
+  },
+  {
+    n: "03",
+    title: "Vacation rental management",
+    body: "OTA and direct-booking management, guest care, and local vendor coordination — run properly, whether or not you're in Chiang Mai.",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex flex-col">
+      {/* Hero */}
+      <section className="mx-auto w-full max-w-6xl px-6 pb-16 pt-20 sm:pt-28">
+        <p className="font-mono text-xs font-medium uppercase tracking-widest text-muted">
+          Chiang Mai &middot; Short-term rental management, landed property only
+        </p>
+        <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-tight tracking-tight text-text sm:text-5xl">
+          Know if it&rsquo;s worth it before you commit to it.
+        </h1>
+        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+          AgentSiam runs the feasibility study, the permission, and the
+          management for short-term rentals in Chiang Mai &mdash; houses,
+          townhomes and small buildings, priced and scoped as three separate
+          steps, so you only pay for the next one once the last one says go.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          <Link
+            href="/contact"
+            className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Start with a feasibility study
+          </Link>
+          <Link
+            href="/how-it-works"
+            className="rounded-full px-6 py-3 text-sm font-semibold text-text underline decoration-border underline-offset-4 transition-colors hover:text-primary"
           >
-            Documentation
-          </a>
+            See how it works
+          </Link>
         </div>
-      </main>
+      </section>
+
+      {/* The staircase */}
+      <section className="border-t border-border bg-surface">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+          <h2 className="text-2xl font-bold text-text">
+            Three steps, each one earning the next.
+          </h2>
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {steps.map((step) => (
+              <div
+                key={step.n}
+                className="rounded-2xl border border-border bg-bg p-6"
+              >
+                <span className="font-mono text-xs text-primary">
+                  {step.n}
+                </span>
+                <h3 className="mt-3 text-lg font-semibold text-text">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  {step.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured property */}
+      <section className="mx-auto w-full max-w-6xl px-6 py-16">
+        <h2 className="text-2xl font-bold text-text">Live in Chiang Mai now</h2>
+        <div className="mt-8 flex flex-col gap-6 rounded-2xl border border-border p-8 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              Chang Khlan, near the Night Bazaar
+            </p>
+            <h3 className="mt-2 text-xl font-semibold text-text">
+              Lotus House
+            </h3>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
+              A three-story townhouse with a rooftop terrace, 2 bedrooms and
+              space for 4 guests &mdash; the property this whole approach was
+              built around.
+            </p>
+          </div>
+          <Link
+            href="/lotushouse"
+            className="whitespace-nowrap rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary"
+          >
+            View property
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
