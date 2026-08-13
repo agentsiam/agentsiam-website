@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 const services = [
   "Feasibility study / STR management",
@@ -11,27 +12,68 @@ const services = [
   "Not sure / general inquiry",
 ];
 
-export function ContactForm() {
-  const [submitted, setSubmitted] = useState(false);
+const field =
+  "rounded-lg border border-border bg-bg px-3 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-primary";
 
-  if (submitted) {
+export function ContactForm() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setStatus("sending");
+
+    const data = Object.fromEntries(new FormData(event.currentTarget));
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setError(
+          result.error ?? `Something went wrong. Please email ${CONTACT_EMAIL}.`,
+        );
+        setStatus("idle");
+        return;
+      }
+      setStatus("sent");
+    } catch {
+      setError(`Could not reach the server. Please email ${CONTACT_EMAIL}.`);
+      setStatus("idle");
+    }
+  }
+
+  if (status === "sent") {
     return (
       <div className="rounded-2xl border border-border p-8 text-center">
-        <p className="text-text">
-          Form UI only &mdash; nothing was actually sent. Real submission
-          handling (an API route + email delivery, or a form backend) isn&rsquo;t
-          wired up yet.
+        <p className="font-semibold text-text">
+          Thank you, your message is on its way.
+        </p>
+        <p className="mt-2 text-sm text-muted">
+          We read every enquiry ourselves and normally reply within one working
+          day. If it is urgent, write to{" "}
+          <a
+            className="text-primary hover:underline"
+            href={`mailto:${CONTACT_EMAIL}`}
+          >
+            {CONTACT_EMAIL}
+          </a>
+          .
         </p>
       </div>
     );
   }
 
+  const sending = status === "sending";
+
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        setSubmitted(true);
-      }}
+      onSubmit={handleSubmit}
       className="grid gap-5 rounded-2xl border border-border p-8"
     >
       <div className="grid gap-5 sm:grid-cols-2">
@@ -39,7 +81,9 @@ export function ContactForm() {
           First name
           <input
             required
-            className="rounded-lg border border-border bg-bg px-3 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            name="firstName"
+            autoComplete="given-name"
+            className={field}
             placeholder="Nils"
           />
         </label>
@@ -47,7 +91,9 @@ export function ContactForm() {
           Last name
           <input
             required
-            className="rounded-lg border border-border bg-bg px-3 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            name="lastName"
+            autoComplete="family-name"
+            className={field}
             placeholder="Meinhardt"
           />
         </label>
@@ -57,20 +103,25 @@ export function ContactForm() {
         <input
           required
           type="email"
-          className="rounded-lg border border-border bg-bg px-3 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          name="email"
+          autoComplete="email"
+          className={field}
           placeholder="you@company.com"
         />
       </label>
       <label className="grid gap-1.5 text-sm text-text">
         Phone
         <input
-          className="rounded-lg border border-border bg-bg px-3 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          name="phone"
+          type="tel"
+          autoComplete="tel"
+          className={field}
           placeholder="+66"
         />
       </label>
       <label className="grid gap-1.5 text-sm text-text">
         Which service?
-        <select className="rounded-lg border border-border bg-bg px-3 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-primary">
+        <select name="service" className={field}>
           {services.map((s) => (
             <option key={s}>{s}</option>
           ))}
@@ -80,16 +131,45 @@ export function ContactForm() {
         Message
         <textarea
           required
+          name="message"
           rows={4}
-          className="rounded-lg border border-border bg-bg px-3 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className={field}
           placeholder="Tell us about your property or business."
         />
       </label>
+
+      {/* Honeypot. Hidden from people and from screen readers, irresistible to bots. */}
+      <div className="hidden" aria-hidden="true">
+        <label>
+          Company
+          <input name="company" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
+
+      {error ? (
+        <p role="alert" className="text-sm text-primary">
+          {error}
+        </p>
+      ) : null}
+
+      <p className="text-xs text-muted">
+        By sending this form you agree to us contacting you about your enquiry.
+        See our{" "}
+        <a
+          className="hover:text-primary hover:underline"
+          href="/privacy-policy"
+        >
+          privacy policy
+        </a>
+        .
+      </p>
+
       <button
         type="submit"
-        className="justify-self-start rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary"
+        disabled={sending}
+        className="justify-self-start rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Send
+        {sending ? "Sending..." : "Send"}
       </button>
     </form>
   );

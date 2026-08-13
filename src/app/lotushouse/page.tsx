@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
+import { BookingWidget } from "@/components/booking-widget";
 
-export const metadata: Metadata = {
-  title: "Lotus House Chiang Mai | Private Townhouse near Night Bazaar",
-};
+export const metadata: Metadata = pageMeta({
+  title: "Lotus House, a private townhouse near the Night Bazaar",
+  description:
+    "A three-story townhouse with a rooftop terrace in Chang Khlan, Chiang Mai. Two king bedrooms, two bathrooms, a full kitchen and space for four guests.",
+  path: "/lotushouse",
+});
 
 const facts = [
   ["4 Guests+", "2 Bedrooms"],
@@ -13,22 +18,7 @@ const facts = [
 export default function LotusHousePage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-16">
-      <p className="rounded-lg border border-secondary/40 bg-secondary/10 p-4 text-sm text-text">
-        <strong>No photography yet.</strong> The property library was found
-        to contain generic international stock (not Lotus House) and was
-        removed &mdash; see the <code>photography.json</code> manifest in the
-        agentsiam-consulting repo. This page ships text-only until real,
-        ownership-verified photos exist, per the design system&rsquo;s own
-        &ldquo;no stock, no fake mockups&rdquo; rule.
-      </p>
-      <p className="mt-3 rounded-lg border border-secondary/40 bg-secondary/10 p-4 text-sm text-text">
-        <strong>Booking widget not wired yet.</strong> The live site embeds a
-        real Beds24 iframe here. This prototype doesn&rsquo;t have that embed
-        URL yet &mdash; get it from the Beds24 dashboard&rsquo;s Booking
-        Widget &rarr; Iframe Generator and drop it in.
-      </p>
-
-      <h1 className="mt-8 text-3xl font-bold text-text">Lotus House</h1>
+      <h1 className="text-3xl font-bold text-text">Lotus House</h1>
       <p className="mt-2 text-muted">
         Your base for adventure and local living in Chiang Mai
       </p>
@@ -56,6 +46,12 @@ export default function LotusHousePage() {
           away.
         </p>
       </div>
+
+      <BookingWidget
+        className="mt-10"
+        title="Check dates and book"
+        propertyName="Lotus House"
+      />
 
       <div className="mt-10 rounded-2xl border border-border p-6">
         <p className="text-sm italic leading-relaxed text-muted">

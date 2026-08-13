@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
 import { ContactForm } from "./contact-form";
 
-export const metadata: Metadata = {
-  title: "Contact | AgentSiam",
-};
+export const metadata: Metadata = pageMeta({
+  title: "Contact",
+  description:
+    "Tell us about your property or business in Chiang Mai and we will come back to you about a feasibility study, a permission filing or full management.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

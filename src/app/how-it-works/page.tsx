@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "How it works | AgentSiam",
-};
+export const metadata: Metadata = pageMeta({
+  title: "How it works",
+  description:
+    "Three services sold as a staircase, not a menu: a paid feasibility and ROI study, the non-hotel exemption filing, then OTA and direct booking management.",
+  path: "/how-it-works",
+});
 
 export default function HowItWorksPage() {
   return (

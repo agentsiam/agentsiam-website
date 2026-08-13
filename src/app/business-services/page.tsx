@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { pageMeta } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Business Services | AgentSiam",
-};
+export const metadata: Metadata = pageMeta({
+  title: "Business services",
+  description:
+    "For businesses entering Thailand: company setup and compliance, OEM and supply chain, ecommerce launch on LINE, TikTok, Shopee and Lazada, and growth.",
+  path: "/business-services",
+});
 
 const pillars = [
   {
@@ -43,9 +48,9 @@ export default function BusinessServicesPage() {
       <p className="mt-4 max-w-2xl text-muted">
         AgentSiam&rsquo;s primary focus right now is short-term rental
         management &mdash; see{" "}
-        <a href="/" className="underline hover:text-primary">
+        <Link href="/" className="underline hover:text-primary">
           the homepage
-        </a>{" "}
+        </Link>{" "}
         for that. These four services are still available for businesses
         entering Thailand more broadly.
       </p>
@@ -73,12 +78,12 @@ export default function BusinessServicesPage() {
       </div>
 
       <div className="mt-12">
-        <a
+        <Link
           href="/contact"
           className="inline-block rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary"
         >
           Get in touch
-        </a>
+        </Link>
       </div>
     </div>
   );

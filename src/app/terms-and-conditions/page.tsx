@@ -1,23 +1,19 @@
 import type { Metadata } from "next";
+import { POLICY_UPDATED, pageMeta } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Terms & Conditions | AgentSiam",
-};
+export const metadata: Metadata = pageMeta({
+  title: "Terms and conditions",
+  description:
+    "The terms covering AgentSiam's feasibility study, vacation rental permission and short-term rental management services, and use of this website.",
+  path: "/terms-and-conditions",
+});
 
 export default function TermsPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-16">
       <h1 className="text-3xl font-bold text-text">Terms &amp; Conditions</h1>
 
-      <p className="mt-4 rounded-lg border border-secondary/40 bg-secondary/10 p-4 text-sm text-text">
-        <strong>Draft, not legal-ready.</strong> The base text below is
-        carried over from the live site&rsquo;s existing Terms &amp;
-        Conditions. The short-term-rental clauses (non-hotel exemption,
-        booking terms) are new additions for this prototype and have not
-        been reviewed by counsel &mdash; see{" "}
-        <code>terms-and-conditions-DRAFT.md</code> in the agentsiam-consulting
-        repo for the full reasoning.
-      </p>
+      <p className="mt-2 text-sm text-muted">Last updated {POLICY_UPDATED}</p>
 
       <div className="prose mt-8 max-w-none text-sm leading-relaxed text-muted [&_h2]:mt-8 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-text">
         <h2>Ownership of Intellectual Property, Copyrights, and Logos</h2>
