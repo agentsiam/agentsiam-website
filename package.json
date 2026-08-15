@@ -9,7 +9,8 @@
     "prebuild": "node scripts/check-cron.mjs && npm run photos",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "guide": "node scripts/build-guide.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.8.1",

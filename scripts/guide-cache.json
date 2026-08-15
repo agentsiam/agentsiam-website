@@ -1,0 +1,550 @@
+{
+  "coords": {
+    "https://maps.app.goo.gl/i6C2A7XxXMqekdua9": {
+      "lat": 18.772162,
+      "lng": 98.994226,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/xhe7stWRMtLmtG6u9": {
+      "lat": 18.7726255,
+      "lng": 98.9934502,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/T7Y3ZXeBZj1VytKs9": {
+      "lat": 18.7729808,
+      "lng": 98.9937865,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/j4T42Su8jNCGZ4GL9": {
+      "lat": 18.7727769,
+      "lng": 98.9937642,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/Asb1MdckN9zA7dY99": {
+      "lat": 18.7724122,
+      "lng": 98.9936321,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/35WbaUcmsZbNQbBH6": {
+      "lat": 18.7726169,
+      "lng": 98.9934544,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/CUYYd8aFTY9nnGQo8": {
+      "lat": 18.7723946,
+      "lng": 98.993054,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/fbF14Mdc7LhNJLNbA": {
+      "lat": 18.773552,
+      "lng": 98.9936373,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/ZmqCA1CDjdPb6bD39": {
+      "lat": 18.773378,
+      "lng": 98.9942154,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/tykATnrwWsuJwU8w7": {
+      "lat": 18.7769427,
+      "lng": 98.9954725,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/zyhwRECUqFaHaNbq9": {
+      "lat": 18.7716994,
+      "lng": 98.9922614,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/rNRugAEmqctdVzj49": {
+      "lat": 18.7710736,
+      "lng": 98.9966065,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/CftsRJZxFdTgajNW7": {
+      "lat": 18.7718866,
+      "lng": 98.9988859,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/VpBA84wAEx7c4eTV9": {
+      "lat": 18.7710217,
+      "lng": 98.9904075,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/D6YgAU8wWRjuAmGA6": {
+      "lat": 18.7765833,
+      "lng": 98.9962672,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/NkAeF4xbqU5soRjG9": {
+      "lat": 18.7728042,
+      "lng": 98.9989403,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/qYedcdy7Kr4c94kX7": {
+      "lat": 18.772949,
+      "lng": 98.9971885,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/JCZJ8ETeox545dre6": {
+      "lat": 18.7756086,
+      "lng": 98.9973042,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/A7SbpHn62jAGGqHCA": {
+      "lat": 18.7740506,
+      "lng": 98.9988453,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/AiBTpoW8mvZhTLTy5": {
+      "lat": 18.7786217,
+      "lng": 98.9944057,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/pDnsjywFUfnsSGvi7": {
+      "lat": 18.7777245,
+      "lng": 98.995605,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/bXu3gUVKH7ouywKt5": {
+      "lat": 18.7744309,
+      "lng": 98.9985039,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/9fRmJcMtSBR3r6Sc9": {
+      "lat": 18.777998,
+      "lng": 98.9950224,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/CWvQM5bgEFLk9RQ16": {
+      "lat": 18.7747557,
+      "lng": 98.9979419,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/gHK8yzBgeKzYKLme8": {
+      "lat": 18.7780599,
+      "lng": 98.9961981,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/7pVczkYfb2fKJVsP9": {
+      "lat": 18.7782524,
+      "lng": 98.996086,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/WGYxAqk3JgmUfJRn8": {
+      "lat": 18.7765554,
+      "lng": 98.9940129,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/VwXzwb28SzPzXjjs7": {
+      "lat": 18.7749874,
+      "lng": 98.9900194,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/FEd6LuphSPLZ6H9M9": {
+      "lat": 18.7744964,
+      "lng": 98.9896954,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/gMTsPV85r9YoGXQJ7": {
+      "lat": 18.7792144,
+      "lng": 98.9957033,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/JqwS7A6Kj2tYDLPg6": {
+      "lat": 18.7759981,
+      "lng": 98.9923419,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/233dgLhkZ8s6n4ra8": {
+      "lat": 18.7796592,
+      "lng": 98.9940414,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/GvfqE4ANFCsQa8q9A": {
+      "lat": 18.7764278,
+      "lng": 98.9883132,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/nRddMzuL2ve1UCuw6": {
+      "lat": 18.7693892,
+      "lng": 99.001484,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/JgejB1NWJ7iyjtmi9": {
+      "lat": 18.7783217,
+      "lng": 99.0002224,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/cs5t7CohntrPULMr8": {
+      "lat": 18.7798622,
+      "lng": 98.991773,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/fWeidGHtRTosiNdB6": {
+      "lat": 18.7829069,
+      "lng": 98.9919029,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/JDjgfaQKuP5p4nk16": {
+      "lat": 18.7787227,
+      "lng": 98.9836524,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/ZDjSQ2NtH7TCDLgx5": {
+      "lat": 18.7808949,
+      "lng": 98.9877676,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/eQFhjQBN5W3SJHi38": {
+      "lat": 18.7832743,
+      "lng": 98.9914724,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/WXj4Up2PvtPCtoah9": {
+      "lat": 18.7815271,
+      "lng": 99.0042074,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/rmNBiUYiWnvti65D7": {
+      "lat": 18.7853992,
+      "lng": 98.9997548,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/LBKeEaWGQnbGDiff6": {
+      "lat": 18.7795721,
+      "lng": 98.9897928,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/QsppNwRjZoLqoQx1A": {
+      "lat": 18.7690454,
+      "lng": 98.9739801,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/9J24Vopb1ZY38a5q9": {
+      "lat": 18.7686203,
+      "lng": 98.9679955,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/3EKyoFVRDh54fBwp9": {
+      "lat": 18.6843631,
+      "lng": 98.9512905,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/LRD2K7cCt5hmGqzV7": {
+      "lat": 18.7763886,
+      "lng": 98.9861036,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/heLscSo7yAsyDBvD7": {
+      "lat": 18.7902932,
+      "lng": 98.9948088,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/gX2qYGJWPKWjnVsx9": {
+      "lat": 18.7853061,
+      "lng": 99.0477042,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/2upmHTdu18Xz96F97": {
+      "lat": 18.790239,
+      "lng": 98.9869175,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/WstqhhEEf4hgvZ5f7": {
+      "lat": 18.7898668,
+      "lng": 98.9885823,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/fbUZWU9qraT5766f6": {
+      "lat": 18.785274,
+      "lng": 99.0002766,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/Qp35PXTQg5eo2Tcr8": {
+      "lat": 18.7913451,
+      "lng": 98.9632831,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/soUitFdaodVFrw9F7": {
+      "lat": 18.7895603,
+      "lng": 99.0041275,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/i6LJEgvmBPUtfcNy9": {
+      "lat": 18.5356262,
+      "lng": 98.5221239,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/Ec1NG9PAfcGAJLdy5": {
+      "lat": 18.7833422,
+      "lng": 99.0030458,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/tqvb6qAfC1zQaM178": {
+      "lat": 18.788962,
+      "lng": 98.9547512,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/wY3YcaMf4oDDGR8aA": {
+      "lat": 18.7829273,
+      "lng": 98.988821,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/o81MdxeJzGrZDY9Y7": {
+      "lat": 18.7998672,
+      "lng": 98.975548,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/togkdQ5T9kWxMx5a7": {
+      "lat": 18.782343,
+      "lng": 98.9887121,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/C2P9WMk5nqLWEaEKA": {
+      "lat": 18.7833627,
+      "lng": 98.9864667,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/KoZ4f8Vq6b6EmKCd9": {
+      "lat": 18.7927257,
+      "lng": 99.0020671,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/yoRxEAZZxNB2vkLt7": {
+      "lat": 18.781468,
+      "lng": 99.0031338,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/h76GnGq4jFCK9BNo6": {
+      "lat": 18.7933645,
+      "lng": 99.0012544,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/tPGcgF24fmxbpB4d7": {
+      "lat": 18.7902571,
+      "lng": 98.988356,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/f7HUxGfeGWtfoSTt5": {
+      "lat": 18.8049783,
+      "lng": 98.9501184,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/97ojbue4QbtniaFg8": {
+      "lat": 18.7877966,
+      "lng": 98.9941669,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/MrMTGuV5iQJpyD3AA": {
+      "lat": 18.7572447,
+      "lng": 99.0936917,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/SMjvR9ivUq6RKSMS8": {
+      "lat": 18.8213925,
+      "lng": 98.9702246,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/FWmLLH3HA8zH2zco9": {
+      "lat": 18.783216,
+      "lng": 98.98183,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/yHf1358Jr4g4UE5d6": {
+      "lat": 18.7721947,
+      "lng": 98.9801076,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/BRaqrwUiYhYyWC1q9": {
+      "lat": 18.7848399,
+      "lng": 99.0028671,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/LsyPJjre6bHYExwZ6": {
+      "lat": 18.7865999,
+      "lng": 99.0040516,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/cLsZjP79HrhWh75M7": {
+      "lat": 18.7837242,
+      "lng": 99.0065456,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/CBmMnUhrCQT1grTB8": {
+      "lat": 18.7815674,
+      "lng": 98.9854665,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/D8Ptf12jMBTbutiz7": {
+      "lat": 18.78818,
+      "lng": 98.9881002,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/zbrv2bN4sd1fCRn88": {
+      "lat": 18.7611311,
+      "lng": 98.9980178,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/LC61Y87YZ4GMQiHk8": {
+      "lat": 18.7951874,
+      "lng": 98.9870152,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/TLVYqgXp6w8eZkHFA": {
+      "lat": 18.7885599,
+      "lng": 98.988648,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/ZVP3m96HZmf2kvpt9": {
+      "lat": 18.7944214,
+      "lng": 98.987067,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/TxUMqdFWr9AKZDnb8": {
+      "lat": 18.764255,
+      "lng": 99.082217,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/NbTAeodxgZZ4gYqo7": {
+      "lat": 18.7951708,
+      "lng": 98.9654008,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/gwGCXX2oT9ayhLpk8": {
+      "lat": 18.7869693,
+      "lng": 98.9865804,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/jn7sAPRrkbmxX9VP7": {
+      "lat": 18.7938126,
+      "lng": 98.9892703,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/LL75pK4Dq6KjG81u5": {
+      "lat": 18.792178,
+      "lng": 99.0027626,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/m4NoB94oq5wLnyxh8": {
+      "lat": 18.7960243,
+      "lng": 98.9825675,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/CknNaS2ESfdzmwuR6": {
+      "lat": 18.7993968,
+      "lng": 98.9341468,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/z2wbdJeHBU3eKE3V9": {
+      "lat": 18.7885265,
+      "lng": 98.9819946,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/EtSNUcnd7jReuJSy8": {
+      "lat": 18.8049889,
+      "lng": 98.9216337,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/4kGm3ck59mRaJxYT6": {
+      "lat": 18.7833134,
+      "lng": 98.9511902,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/mK7ZgbVGuZqf4F189": {
+      "lat": 18.7446684,
+      "lng": 98.9943528,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/8s8gT4fDrZR6yVk57": {
+      "lat": 18.7446684,
+      "lng": 98.9943528,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/3T4qKYW4XCVTS8tg8": {
+      "lat": 18.7908903,
+      "lng": 98.9904873,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/zWCaqRcT9ZEVKwch7": {
+      "lat": 18.774236,
+      "lng": 98.990337,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/xRm3MXm5xmo6y4f17": {
+      "lat": 18.768958,
+      "lng": 98.975981,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/HNNWzhxfGK2NpDWr7": {
+      "lat": 18.771507,
+      "lng": 98.976865,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/xSAawNuXqRNkDUUv6": {
+      "lat": 18.769097,
+      "lng": 98.97476,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/LdKw9VRiRfgHthaD7": {
+      "lat": 18.781974,
+      "lng": 98.99739,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/H9kEFsxjQMxvn3pS8": {
+      "lat": 18.774909,
+      "lng": 98.991523,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/UVoN3aRDmCfJswp88": {
+      "lat": 18.778168,
+      "lng": 98.995354,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/4aTWdxwdH6mx8XZFA": {
+      "lat": 18.779753,
+      "lng": 98.997538,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/vTBHfSTAf5NmFfV19": {
+      "lat": 18.770443,
+      "lng": 98.985109,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/LVtsfaY9Uv9yU2LZ8": {
+      "lat": 18.781592,
+      "lng": 98.985881,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/EonAu9mmRSNANvJz5": {
+      "lat": 18.778348,
+      "lng": 99.000307,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/vfj5DTioHSdSuhJF6": {
+      "lat": 18.784313,
+      "lng": 98.999712,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/3Mqgi93eB61UnPsq9": {
+      "lat": 18.768438,
+      "lng": 98.991383,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/dMViqT2CaRhxq7TE7": {
+      "lat": 18.762324,
+      "lng": 99.001783,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/Z552ZzFgkR6nkern7": {
+      "lat": 18.782091,
+      "lng": 98.979317,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/8G6Z3UvEBaaeS93g9": {
+      "lat": 18.771007,
+      "lng": 98.991311,
+      "via": "apple-link"
+    }
+  },
+  "routes": {}
+}
