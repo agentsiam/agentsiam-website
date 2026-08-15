@@ -32,16 +32,6 @@ const nextConfig: NextConfig = {
       { source: "/oem", destination: "/business-services", permanent: true },
       { source: "/ecommerce", destination: "/business-services", permanent: true },
       { source: "/growth", destination: "/business-services", permanent: true },
-
-      // A guest-facing list of places the host had personally visited near Lotus House.
-      // The nearest honest equivalent is the neighbourhood the property is actually in,
-      // not the property page and not a generic index, so it goes to Chang Khlan. If
-      // that area slug ever changes in src/lib/areas.ts, change it here too.
-      {
-        source: "/lotushouse/local-guide",
-        destination: "/destinations/chang-khlan",
-        permanent: true,
-      },
     ];
   },
 };

@@ -45,6 +45,9 @@ export const ROUTES: RouteMeta[] = [
   { path: "/how-it-works", changeFrequency: "monthly", priority: 0.9 },
   { path: "/properties", changeFrequency: "weekly", priority: 0.9 },
   { path: "/lotushouse", changeFrequency: "weekly", priority: 0.8 },
+  // The guest guide. Carried over from the Wix site at the same URL, so published links
+  // and anything already indexed keep working without a redirect.
+  { path: "/lotushouse/local-guide", changeFrequency: "monthly", priority: 0.6 },
   { path: "/destinations", changeFrequency: "monthly", priority: 0.7 },
   // One entry per neighbourhood. These are the pages organic search is meant to land on
   // -- "where to stay in Nimman" is a question people actually type -- so they are listed

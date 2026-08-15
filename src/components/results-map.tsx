@@ -57,10 +57,8 @@ export function ResultsMap({ pins, t }: { pins: Pin[]; t: Dictionary }) {
         scrollWheelZoom: false,
       });
 
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(instance);
+      const tiles = basemap();
+      L.tileLayer(tiles.url, { maxZoom: tiles.maxZoom, attribution: tiles.attribution }).addTo(instance);
 
       const markers = new Map<string, L.Marker>();
 
@@ -171,4 +169,44 @@ export function ResultsMap({ pins, t }: { pins: Pin[]; t: Dictionary }) {
       />
     </div>
   );
+}
+
+/**
+ * Where map tiles come from.
+ *
+ * OpenStreetMap's public tile servers are run on donated capacity for development and
+ * low volume, and their usage policy is explicit that it is not a service anyone should
+ * build a product on. It is the right default for a repository that has to work the
+ * moment it is cloned, and the wrong thing to serve to paying guests.
+ *
+ * So the key decides. Set NEXT_PUBLIC_MAPTILER_KEY and every map on the site moves to
+ * MapTiler; leave it unset and everything still renders, on OSM, with a warning in the
+ * browser console rather than a broken page. The key is publishable by design, which is
+ * why it is NEXT_PUBLIC_ and why restricting it to the site's own domains in the MapTiler
+ * dashboard is what actually protects the quota.
+ *
+ * Attribution is not optional on either provider and is not a detail: it is the licence
+ * condition under which the data may be shown at all.
+ */
+function basemap() {
+  const key = process.env.NEXT_PUBLIC_MAPTILER_KEY;
+  if (key) {
+    return {
+      url: `https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,
+      maxZoom: 20,
+      attribution:
+        '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    };
+  }
+  if (process.env.NODE_ENV === "production") {
+    console.warn(
+      "[map] NEXT_PUBLIC_MAPTILER_KEY is not set, falling back to OpenStreetMap's public tiles. " +
+        "Those are not intended for production traffic and may be throttled or blocked.",
+    );
+  }
+  return {
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  };
 }
