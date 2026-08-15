@@ -54,6 +54,12 @@ export type Property = {
   /** Occupancy and stay rules, mirroring the Beds24 room so the UI can validate early. */
   maxGuests: number;
   minStay: number;
+  /**
+   * Longest stay bookable online. Not a limit on what we will accept: longer stays are
+   * priced by hand and go through enquiry, and this is what stops one request from
+   * holding a year of nights.
+   */
+  maxStay: number;
   /** Tailwind background class for the tile fill. Solid brand colour, not a photo. */
   fill: string;
   /** Text colour that meets contrast on `fill`. */
@@ -90,6 +96,7 @@ export const LOTUS_HOUSE: Property = {
   // Beds24 still has the final say on every quote and every request.
   maxGuests: 4,
   minStay: 2,
+  maxStay: 90,
   fill: "bg-primary",
   onFill: "text-white",
   facts: [

@@ -5,6 +5,7 @@ import {
   getQuote,
   isValidDate,
   nightsBetween,
+  stayWindowError,
   REQUEST_STATUS,
   today,
 } from "@/lib/beds24";
@@ -96,6 +97,14 @@ export async function POST(request: Request) {
       { error: `The minimum stay is ${LOTUS_HOUSE.minStay} nights.` },
       { status: 400 },
     );
+  }
+
+  // Bounds how much calendar one request can take. Everything above checks the stay is
+  // valid; this checks it is not enormous or years away, because the hold it creates is
+  // real on every channel either way.
+  const outsideWindow = stayWindowError(arrival, departure, LOTUS_HOUSE.maxStay);
+  if (outsideWindow) {
+    return NextResponse.json({ error: outsideWindow }, { status: 400 });
   }
   if (
     !Number.isInteger(adults) ||

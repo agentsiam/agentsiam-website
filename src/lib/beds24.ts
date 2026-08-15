@@ -199,6 +199,8 @@ async function apiGet<T>(path: string, query: Query, revalidate: number): Promis
 }
 
 async function apiPost<T>(path: string, body: unknown): Promise<T> {
+  assertWritesAllowed(path);
+
   const response = await fetch(`${API_BASE}${path}`, {
     method: "POST",
     headers: {
@@ -253,6 +255,62 @@ type CalendarResponse = {
  * verified against a live quote. `price1` is a separate base figure that does not
  * correspond to what a guest pays, so it is deliberately dropped.
  */
+/**
+ * How far ahead a stay can start. Beds24 will happily hold nights in 2031; a guest
+ * booking three years out is not a real guest, and the hold is real either way.
+ */
+export const MAX_MONTHS_AHEAD = 18;
+
+/**
+ * Shared by every route that writes a booking, so the two cannot drift apart.
+ *
+ * The point is blast radius. Date validity, minimum stay and guest count were already
+ * checked, but nothing bounded how *much* calendar a single request could take. One POST
+ * asking for 2030-01-01 to 2030-12-31 was a 365 night hold, and holds block the nights on
+ * all six channels the property sells on until something releases them.
+ *
+ * Returns null when the stay is fine, or the message to show when it is not.
+ */
+export function stayWindowError(arrival: string, departure: string, maxNights: number): string | null {
+  const nights = nightsBetween(arrival, departure);
+  if (nights > maxNights) {
+    return `Stays longer than ${maxNights} nights are arranged by email rather than booked online.`;
+  }
+
+  const horizon = new Date(parseDate(today()));
+  horizon.setMonth(horizon.getMonth() + MAX_MONTHS_AHEAD);
+  if (parseDate(arrival) > horizon) {
+    return `We take bookings up to ${MAX_MONTHS_AHEAD} months ahead. Please email us for anything further out.`;
+  }
+
+  return null;
+}
+
+/**
+ * Refuses to write to Beds24 from anywhere that is not production.
+ *
+ * There is one Beds24 account and it is the live one: no sandbox, no test mode. So a
+ * preview deployment, a local dev server and a colleague clicking around a shared link
+ * all write real holds into the real calendar, which really does block real nights on
+ * six channels. Reads are left alone, so a preview still shows a live calendar and real
+ * prices, which is the part anyone reviewing the site actually needs.
+ *
+ * Set BEDS24_ALLOW_WRITES=1 to do the end-to-end test booking against a preview, then
+ * unset it. Production needs no flag: VERCEL_ENV is "production" there and nowhere else.
+ *
+ * Guarding apiPost rather than each route is deliberate. Every write goes through this
+ * one function, so a route added later is covered without anyone remembering to.
+ */
+function assertWritesAllowed(path: string): void {
+  if (process.env.VERCEL_ENV === "production") return;
+  if (process.env.BEDS24_ALLOW_WRITES === "1") return;
+  throw new Beds24Error(
+    `Refusing to write to Beds24 from ${process.env.VERCEL_ENV ?? "a local environment"} ` +
+      `(POST ${path}). There is only the live account, so this would block real nights. ` +
+      `Set BEDS24_ALLOW_WRITES=1 if that is genuinely what you want.`,
+  );
+}
+
 export async function getCalendar(startDate: string, endDate: string): Promise<Night[]> {
   const payload = await apiGet<CalendarResponse>(
     "/inventory/rooms/calendar",
