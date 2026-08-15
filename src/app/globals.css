@@ -202,3 +202,68 @@ button {
   font-size: 13px;
   line-height: 1;
 }
+
+/* -- Guide map pins ---------------------------------------------------------
+   The results map labels a pin with a price, because price is what you compare
+   properties on. The guide labels nothing: identity lives in the card beside the map,
+   and 109 names rendered at once is the list printed twice, illegibly. The emoji does
+   the work a word would, and the name arrives on hover. */
+.as-pin-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  border: 1.5px solid var(--color-ink);
+  background: var(--color-bg);
+  font-size: 15px;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.22);
+}
+
+/* A host pick reads as one at pin size too, not only in the list. */
+.as-pin-dot.is-pick {
+  border: 2px solid var(--color-secondary);
+  box-shadow: 0 0 0 3px rgb(251 89 50 / 0.18), 0 1px 4px rgb(0 0 0 / 0.22);
+}
+
+.as-pin-active .as-pin-dot,
+.as-pin-dot:hover {
+  background: var(--color-ink);
+  transform: translate(-50%, -50%) scale(1.15);
+  z-index: 500;
+}
+
+/* The property itself. Labelled, because it is the one point every time on the page is
+   measured from, and inverted so it never reads as just another place. */
+.as-pin-home {
+  display: inline-block;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  border-radius: 999px;
+  background: var(--color-ink);
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 0.3);
+}
+
+/* Clusters, restyled from the plugin's default green/yellow blobs to the design system. */
+.as-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  border: 1.5px solid var(--color-ink);
+  background: var(--color-bg);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  box-shadow: 0 1px 5px rgb(0 0 0 / 0.22);
+}

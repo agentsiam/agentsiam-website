@@ -32,6 +32,8 @@ export type Pin = {
   currency: string;
   /** Emoji shown on the pin. Guide places use one; properties show a price instead. */
   icon?: string;
+  /** A host pick. Ringed on the map so it reads as one at pin size too. */
+  highlight?: boolean;
 };
 
 /**
@@ -71,11 +73,29 @@ export function ResultsMap({
    * phone with nothing anywhere to turn it back on.
    */
   collapsible = true,
+  /**
+   * Group overlapping pins at low zoom. Mandatory past a few dozen: without it the Old
+   * City is one unreadable mass however small the pins are.
+   */
+  cluster = false,
+  /** The property, drawn as the one labelled marker. Every time on the page is from here. */
+  home = null,
+  /**
+   * What to frame on, when that is not simply every pin.
+   *
+   * The guide spans 86km because it includes Doi Inthanon, so fitting all of it opens at
+   * provincial scale and crushes the fifty-odd places around the house into a smudge.
+   * Framing on the walkable ones opens at the scale a guest is actually standing in.
+   */
+  frameOn = null,
 }: {
   pins: Pin[];
   t: Dictionary;
   panOnCardClick?: boolean;
   collapsible?: boolean;
+  cluster?: boolean;
+  home?: { lat: number; lng: number; label: string } | null;
+  frameOn?: { lat: number; lng: number }[] | null;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<import("leaflet").Map | null>(null);
@@ -105,24 +125,49 @@ export function ResultsMap({
 
       const markers = new Map<string, L.Marker>();
 
+      let layer: import("leaflet").MarkerClusterGroup | null = null;
+      if (cluster) {
+        await import("leaflet.markercluster");
+        await import("leaflet.markercluster/dist/MarkerCluster.css");
+        layer = L.markerClusterGroup({
+          showCoverageOnHover: false,
+          maxClusterRadius: 45,
+          // The plugin's own icons are green and yellow blobs. This is the same shape as a
+          // pin so a cluster reads as "several of these" rather than a different species.
+          iconCreateFunction: (group) =>
+            L.divIcon({
+              className: "",
+              html: `<span class="as-cluster">${group.getChildCount()}</span>`,
+              iconSize: [0, 0],
+            }),
+        });
+        instance.addLayer(layer);
+      }
+
       for (const pin of pins) {
         // A div icon rather than an image marker: it carries the price, which is what
         // makes a map worth using over a list, and it sidesteps Leaflet's default icon
         // paths breaking under a bundler.
-        const label = pin.icon
-          ? `<span class="as-pin-icon" aria-hidden="true">${pin.icon}</span>${escapeHtml(pin.title)}`
-          : pin.price !== null
-            ? `${pin.currency} ${pin.price.toLocaleString("en-US")}`
-            : escapeHtml(pin.title);
+        const html = pin.icon
+          ? `<span class="as-pin-dot${pin.highlight ? " is-pick" : ""}" aria-hidden="true">${pin.icon}</span>`
+          : `<span class="as-pin">${
+              pin.price !== null
+                ? `${pin.currency} ${pin.price.toLocaleString("en-US")}`
+                : escapeHtml(pin.title)
+            }</span>`;
 
         const marker = L.marker([pin.lat, pin.lng], {
+          // Leaflet renders this as a native title attribute, which is also the accessible
+          // name, so the pin is never an unlabelled dot to a screen reader.
           title: pin.title,
-          icon: L.divIcon({
-            className: "",
-            html: `<span class="as-pin">${label}</span>`,
-            iconSize: [0, 0],
-          }),
-        }).addTo(instance);
+          icon: L.divIcon({ className: "", html, iconSize: [0, 0] }),
+        });
+
+        // The name arrives on hover rather than being printed 109 times.
+        if (pin.icon) marker.bindTooltip(pin.title, { direction: "top", offset: [0, -18] });
+
+        if (layer) layer.addLayer(marker);
+        else marker.addTo(instance);
 
         marker.on("click", () => {
           const tile = document.querySelector<HTMLElement>(
@@ -136,12 +181,25 @@ export function ResultsMap({
         markers.set(pin.slug, marker);
       }
 
+      if (home) {
+        L.marker([home.lat, home.lng], {
+          title: home.label,
+          zIndexOffset: 1000,
+          icon: L.divIcon({
+            className: "",
+            html: `<span class="as-pin-home">${escapeHtml(home.label)}</span>`,
+            iconSize: [0, 0],
+          }),
+        }).addTo(instance);
+      }
+
       // Only narrow the frame when the results are genuinely somewhere specific. One pin
       // would otherwise zoom the map to a street, which tells a guest less than the city.
-      if (pins.length > 1) {
+      const frame = frameOn && frameOn.length > 0 ? frameOn : pins;
+      if (frame.length > 1) {
         instance.fitBounds(
-          L.latLngBounds(pins.map((pin) => [pin.lat, pin.lng] as [number, number])),
-          { padding: [40, 40], maxZoom: 15 },
+          L.latLngBounds(frame.map((point) => [point.lat, point.lng] as [number, number])),
+          { padding: [40, 40], maxZoom: 16 },
         );
       }
 
@@ -161,10 +219,18 @@ export function ResultsMap({
             // Anything genuinely clickable inside the card keeps its own behaviour: the
             // directions links are the whole point of the card and must not be swallowed.
             if ((event.target as HTMLElement).closest("a,button")) return;
-            instance.flyTo(marker.getLatLng(), Math.max(instance.getZoom(), 16), {
-              duration: 0.6,
-            });
-            marker.getElement()?.classList.add("as-pin-active");
+            // zoomToShowLayer expands the cluster the marker is hiding in. Without it a
+            // clustered pin is flown to and still not visible.
+            if (layer) {
+              layer.zoomToShowLayer(marker, () => {
+                marker.getElement()?.classList.add("as-pin-active");
+              });
+            } else {
+              instance.flyTo(marker.getLatLng(), Math.max(instance.getZoom(), 16), {
+                duration: 0.6,
+              });
+              marker.getElement()?.classList.add("as-pin-active");
+            }
           };
           tile.addEventListener("click", fly);
           listeners.push(() => tile.removeEventListener("click", fly));
@@ -213,7 +279,7 @@ export function ResultsMap({
       cleanup();
     };
     // Re-drawn whenever the result set changes, which on this page means a new URL.
-  }, [pins, panOnCardClick]);
+  }, [pins, panOnCardClick, cluster, home, frameOn]);
 
   if (pins.length === 0) return null;
 

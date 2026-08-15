@@ -102,7 +102,17 @@ export default async function LocalGuidePage({
     price: null,
     currency: "",
     icon: categoryIcon(place.category),
+    highlight: place.highlight,
   }));
+
+  // Opens at the scale a guest is standing in. Framing on all 109 would include Doi
+  // Inthanon 86km away and crush the fifty-odd places around the house into a smudge.
+  const home = { lat: LOTUS_HOUSE.lat, lng: LOTUS_HOUSE.lng, label: LOTUS_HOUSE.title };
+  const walkable = places.filter((place) => {
+    const walk = distances[place.name]?.walk;
+    return walk != null && walk <= NEARBY_MINUTES;
+  });
+  const frameOn = [home, ...(walkable.length ? walkable : places).map((p) => ({ lat: p.lat, lng: p.lng }))];
 
   const filterHref = (patch: Record<string, string | null>) => {
     const next = new URLSearchParams();
@@ -153,7 +163,15 @@ export default async function LocalGuidePage({
       </div>
 
       <div className="mt-7 flex flex-wrap gap-2">
-        <Link href={filterHref({ picks: picks ? null : "1" })} className={chip(picks)}>
+        <Link
+          href={filterHref({ picks: picks ? null : "1" })}
+          className={
+            picks
+              ? "inline-flex items-center gap-1.5 rounded-full border border-secondary bg-secondary px-3 py-1.5 text-[13px] font-semibold text-white"
+              : "inline-flex items-center gap-1.5 rounded-full border border-secondary px-3 py-1.5 text-[13px] font-semibold text-secondary transition-colors hover:bg-wash-red"
+          }
+        >
+          <span aria-hidden="true">★</span>
           {t.guidePicks}
         </Link>
         <Link href={filterHref({ near: nearby ? null : "1" })} className={chip(nearby)}>
@@ -221,7 +239,8 @@ export default async function LocalGuidePage({
                       {place.name}
                     </h2>
                     {place.highlight ? (
-                      <span className="rounded-full bg-wash-gold px-2 py-0.5 text-[11px] font-semibold text-sand">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.04em] text-white">
+                        <span aria-hidden="true">★</span>
                         {t.guidePicks}
                       </span>
                     ) : null}
@@ -255,7 +274,15 @@ export default async function LocalGuidePage({
             })}
           </ul>
 
-          <ResultsMap pins={pins} t={t} panOnCardClick collapsible={false} />
+          <ResultsMap
+            pins={pins}
+            t={t}
+            panOnCardClick
+            collapsible={false}
+            cluster
+            home={home}
+            frameOn={frameOn}
+          />
         </div>
       )}
 
