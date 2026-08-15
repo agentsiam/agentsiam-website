@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/booking/release-holds",
+      "schedule": "*/10 * * * *"
+    }
+  ]
+}
