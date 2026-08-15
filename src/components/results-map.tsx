@@ -88,6 +88,14 @@ export function ResultsMap({
    * Framing on the walkable ones opens at the scale a guest is actually standing in.
    */
   frameOn = null,
+  /**
+   * Off when something outside is already sticky. Nesting a sticky element inside another
+   * one gives the inner element a scroll container that never scrolls, so it silently
+   * stops working and looks like a layout bug rather than a positioning one.
+   */
+  sticky = true,
+  /** Desktop height. Shortened when a card shares the column. */
+  mapHeightClass = "min-[900px]:h-[calc(100vh-190px)]",
 }: {
   pins: Pin[];
   t: Dictionary;
@@ -96,6 +104,8 @@ export function ResultsMap({
   cluster?: boolean;
   home?: { lat: number; lng: number; label: string } | null;
   frameOn?: { lat: number; lng: number }[] | null;
+  sticky?: boolean;
+  mapHeightClass?: string;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<import("leaflet").Map | null>(null);
@@ -285,13 +295,15 @@ export function ResultsMap({
 
   return (
     <div
-      className={`${collapsible ? "as-map-pane" : ""} min-[900px]:sticky min-[900px]:top-[150px]`}
+      className={`${collapsible ? "as-map-pane" : ""} ${
+        sticky ? "min-[900px]:sticky min-[900px]:top-[150px]" : ""
+      }`}
     >
       <div
         ref={container}
         role="application"
         aria-label={t.mapLabel}
-        className="h-[360px] w-full overflow-hidden rounded-panel border border-hairline min-[900px]:h-[calc(100vh-190px)]"
+        className={`h-[360px] w-full overflow-hidden rounded-panel border border-hairline ${mapHeightClass}`}
       />
     </div>
   );

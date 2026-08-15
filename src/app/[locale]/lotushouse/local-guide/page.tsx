@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DirectionsLinks } from "@/components/directions-links";
@@ -8,6 +9,7 @@ import { getDictionary } from "@/i18n";
 import { isLocale, localePath, LOCALES, type Locale } from "@/i18n/config";
 import { areaBySlug } from "@/lib/areas";
 import { categoryIcon } from "@/lib/guide-icons";
+import { PHOTOS } from "@/lib/photos.generated";
 import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
 import { LOTUS_HOUSE } from "@/lib/property";
 import { pageMeta, WHATSAPP_NUMBER } from "@/lib/site";
@@ -108,6 +110,7 @@ export default async function LocalGuidePage({
   // Opens at the scale a guest is standing in. Framing on all 109 would include Doi
   // Inthanon 86km away and crush the fifty-odd places around the house into a smudge.
   const home = { lat: LOTUS_HOUSE.lat, lng: LOTUS_HOUSE.lng, label: LOTUS_HOUSE.title };
+  const propertyPhoto = (PHOTOS[LOTUS_HOUSE.slug] ?? [])[0];
   const walkable = places.filter((place) => {
     const walk = distances[place.name]?.walk;
     return walk != null && walk <= NEARBY_MINUTES;
@@ -145,22 +148,7 @@ export default async function LocalGuidePage({
         {t.guideTitle}
       </h1>
       <p className="mt-3 max-w-2xl text-body">{t.guideIntro}</p>
-      <p className="mt-1 text-[13px] text-muted">
-        {t.guideFrom.replace("{property}", LOTUS_HOUSE.title)}
-      </p>
 
-      {/* The guide is shared with people who have not booked, so the way to book is on the
-          page rather than assumed. It points at the property page, where the calendar and
-          the booking panel already live: this is a signpost, not a second booking flow. */}
-      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <Link
-          href={href("/lotushouse")}
-          className="rounded-full bg-ink px-5 py-2.5 text-[14px] font-semibold text-bg transition-opacity hover:opacity-85"
-        >
-          {t.guideBookDirect}
-        </Link>
-        <span className="text-[13px] text-muted">{t.guideBookDirectSub}</span>
-      </div>
 
       <div className="mt-7 flex flex-wrap gap-2">
         <Link
@@ -274,15 +262,53 @@ export default async function LocalGuidePage({
             })}
           </ul>
 
-          <ResultsMap
-            pins={pins}
-            t={t}
-            panOnCardClick
-            collapsible={false}
-            cluster
-            home={home}
-            frameOn={frameOn}
-          />
+          {/* The property, as context rather than as an interruption.
+              It sat above the title before, where it competed with the filters, which are
+              the actual control on a browsing page. Here it stays beside the guide the
+              whole way down, carries the note explaining what the times are measured from,
+              and gives the map column a reason to start with something human. */}
+          <div className="grid gap-3 min-[900px]:sticky min-[900px]:top-[150px]">
+            <Link
+              href={href("/lotushouse")}
+              className="grid grid-cols-[76px_1fr] items-center gap-3 rounded-panel border border-hairline p-3 transition-colors hover:border-ink"
+            >
+              {propertyPhoto ? (
+                <div className="relative aspect-square overflow-hidden rounded-box">
+                  <Image
+                    src={propertyPhoto.src}
+                    alt={propertyPhoto.alt || LOTUS_HOUSE.title}
+                    placeholder="blur"
+                    fill
+                    sizes="76px"
+                    className="object-cover"
+                  />
+                </div>
+              ) : null}
+              <div>
+                <p className="font-display text-[15px] font-bold tracking-[-0.015em]">
+                  {LOTUS_HOUSE.title}
+                </p>
+                <p className="mt-0.5 text-[12px] text-muted">
+                  {t.guideFrom.replace("{property}", LOTUS_HOUSE.title)}
+                </p>
+                <span className="mt-2 inline-block rounded-full bg-ink px-3 py-1.5 text-[12px] font-semibold text-bg">
+                  {t.guideBookDirect}
+                </span>
+              </div>
+            </Link>
+
+            <ResultsMap
+              pins={pins}
+              t={t}
+              panOnCardClick
+              collapsible={false}
+              cluster
+              home={home}
+              frameOn={frameOn}
+              sticky={false}
+              mapHeightClass="min-[900px]:h-[calc(100vh-320px)]"
+            />
+          </div>
         </div>
       )}
 
