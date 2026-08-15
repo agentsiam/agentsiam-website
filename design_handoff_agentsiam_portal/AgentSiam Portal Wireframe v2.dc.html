@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;family=Noto+Sans+Thai:wght@400;600&amp;display=swap">
+<style>
+  body{margin:0;background:#EFF0F8;font-family:'IBM Plex Sans','Noto Sans Thai',system-ui,sans-serif;color:#181818;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:#0100DD;}
+  a:hover{color:#FB5932;}
+</style>
+<template id="__bundler_thumbnail" data-bg-color="#00B4B1">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect x="150" y="170" width="420" height="460" rx="16" fill="#ffffff" opacity="0.95"></rect>
+    <rect x="600" y="170" width="450" height="460" rx="16" fill="#14141C" opacity="0.85"></rect>
+    <rect x="178" y="200" width="364" height="44" rx="22" fill="#EFF0F8"></rect>
+    <rect x="196" y="214" width="90" height="16" rx="8" fill="#0100DD"></rect>
+    <rect x="178" y="268" width="364" height="100" rx="10" fill="#00B4B1" opacity="0.35"></rect>
+    <rect x="178" y="384" width="364" height="100" rx="10" fill="#D9B16B" opacity="0.4"></rect>
+    <rect x="178" y="500" width="364" height="100" rx="10" fill="#0100DD" opacity="0.2"></rect>
+    <circle cx="720" cy="300" r="26" fill="#FB5932"></circle>
+    <circle cx="850" cy="420" r="34" fill="#FB5932" opacity="0.85"></circle>
+    <circle cx="950" cy="270" r="20" fill="#FB5932" opacity="0.7"></circle>
+    <circle cx="790" cy="520" r="24" fill="#FB5932" opacity="0.6"></circle>
+  </svg>
+</template>
+</helmet>
+
+<div style="min-width:4200px;padding:40px 48px 80px;display:flex;flex-direction:column;gap:28px;">
+
+  <div style="max-width:1000px;display:flex;flex-direction:column;gap:6px;">
+    <div class="mono" style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#5B5B6B;">AgentSiam — booking portal wireframe · v2</div>
+    <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:26px;">One homepage, two personas, guest search leading</div>
+    <div style="font-size:13px;color:#5B5B6B;line-height:1.5;">Single source of truth for the AgentSiam site. Home carries both audiences: guests lead on position (search sits in the hero), owners get equal weight further down (fork panel plus a full staircase section). Built for target state — hundreds of Chiang Mai units — so nothing here is tagged deferred. Structure and hierarchy only, not final copy or visual polish.</div>
+  </div>
+
+  <div style="background:#14141C;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:14px;max-width:2400px;">
+    <div class="mono" style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#F0CB86;">Architecture — decided</div>
+    <div style="display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;">
+      <div style="width:200px;border:1.5px solid rgba(255,255,255,0.35);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#F0CB86;">source of truth</span>
+        <span style="font-size:12px;font-weight:600;color:#fff;">Beds24</span>
+        <span style="font-size:10.5px;color:rgba(255,255,255,0.7);">Channel manager. Owns availability, rates, bookings, payment.</span>
+      </div>
+      <div style="align-self:center;display:flex;flex-direction:column;align-items:center;gap:2px;">
+        <span style="font-size:20px;color:#F0CB86;">→</span>
+        <span class="mono" style="font-size:8.5px;color:rgba(255,255,255,0.6);">push</span>
+      </div>
+      <div style="width:230px;border:1.5px solid #00B4B1;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;background:rgba(0,180,177,0.12);">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#5FE3E0;">new layer</span>
+        <span style="font-size:12px;font-weight:600;color:#fff;">Middleware</span>
+        <span style="font-size:10.5px;color:rgba(255,255,255,0.75);">Receives Beds24 webhooks, normalises into the property schema, serves the frontend. Periodic full reconcile catches missed events.</span>
+      </div>
+      <div style="align-self:center;display:flex;flex-direction:column;align-items:center;gap:2px;">
+        <span style="font-size:20px;color:#F0CB86;">→</span>
+        <span class="mono" style="font-size:8.5px;color:rgba(255,255,255,0.6);">read</span>
+      </div>
+      <div style="width:210px;border:1.5px solid rgba(255,255,255,0.35);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#F0CB86;">what we design</span>
+        <span style="font-size:12px;font-weight:600;color:#fff;">React frontend</span>
+        <span style="font-size:10.5px;color:rgba(255,255,255,0.7);">Search, filters, map, property pages, trip summary. Never calls Beds24 directly on page load.</span>
+      </div>
+      <div style="align-self:center;display:flex;flex-direction:column;align-items:center;gap:2px;">
+        <span style="font-size:20px;color:#F0CB86;">→</span>
+        <span class="mono" style="font-size:8.5px;color:rgba(255,255,255,0.6);">handoff</span>
+      </div>
+      <div style="width:200px;border:1.5px solid #FB5932;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;background:rgba(251,89,50,0.14);">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#FFAD95;">money moves here</span>
+        <span style="font-size:12px;font-weight:600;color:#fff;">Beds24 payment iframe</span>
+        <span style="font-size:10.5px;color:rgba(255,255,255,0.75);">Re-validates availability and price at the moment of payment. Final authority.</span>
+      </div>
+    </div>
+    <div style="font-size:11.5px;line-height:1.55;color:rgba(255,255,255,0.8);max-width:1400px;">Consequence to design for: our availability and prices are a <em>cache</em>, so they can be briefly stale. That is acceptable only because Beds24 re-validates at handoff — which means the flow needs an honest failure state for "these dates looked free, Beds24 disagrees at checkout." It is wireframed at Level 3. Two things this buys: rates and availability become crawlable page text rather than iframe content, and the brief's [001]–[026] field IDs become the middleware's normalised model instead of hand-entered fields.</div>
+  </div>
+
+  <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid rgba(24,24,24,0.12);border-radius:16px;padding:14px 18px;max-width:2400px;">
+    <div class="mono" style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#5B5B6B;">Legend</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#00B4B1;color:#fff;padding:2px 9px;border-radius:999px;font-size:9px;text-transform:uppercase;">guest</span>guest-facing</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#0100DD;color:#fff;padding:2px 9px;border-radius:999px;font-size:9px;text-transform:uppercase;">owner</span>owner-facing</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#D9B16B;color:#181818;padding:2px 9px;border-radius:999px;font-size:9px;text-transform:uppercase;">shared</span>both audiences</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#14141C;color:#fff;padding:2px 9px;border-radius:999px;font-size:9px;text-transform:uppercase;">primary cta</span>one per page</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:transparent;color:#181818;padding:2px 9px;border-radius:999px;font-size:9px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px rgba(24,24,24,0.3);">secondary</span>same-audience, lower commitment</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="border-radius:999px;font-size:9px;text-transform:uppercase;padding:2px 9px;background:transparent;color:#5B5B6B;box-shadow:inset 0 0 0 1px rgba(24,24,24,0.2);border-left:3px solid #00B4B1;">cross-link</span>cross-audience, plain text</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#FB5932;color:#fff;padding:2px 9px;border-radius:999px;font-size:9px;text-transform:uppercase;">baseline</span>category table-stakes</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#E7F7F7;color:#00745F;padding:2px 9px;border-radius:4px;font-size:9px;text-transform:uppercase;border:1px solid rgba(0,180,177,0.5);">beds24 [nnn]</span>field from the channel manager</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#F3EEFF;color:#4B21B5;padding:2px 9px;border-radius:4px;font-size:9px;text-transform:uppercase;border:1px solid rgba(75,33,181,0.35);">authored</span>AgentSiam-written, needs a CMS home</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#FFF3EF;color:#B93B18;padding:2px 9px;border-radius:4px;font-size:9px;text-transform:uppercase;border:1px dashed #FB5932;">open question</span>unresolved, needs a decision</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#fff;color:#0100DD;padding:2px 9px;border-radius:999px;font-size:9px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px #0100DD;">brand rule</span>named rule from the guardrails</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span class="mono" style="background:#EFF0F8;color:#5B5B6B;padding:2px 9px;font-size:9px;text-transform:uppercase;border-left:3px solid #8A8A99;">note</span>editorial — inline chip, or a bar-left callout box</div>
+  </div>
+  <div style="font-size:11px;line-height:1.55;color:#5B5B6B;max-width:1180px;margin-top:-14px;">Three shapes, three kinds of information. <strong>Round pills</strong> describe the site — who a block serves, what tier a CTA is, which rule applies. <strong>Square tags</strong> classify where a field's data comes from. <strong>Flat left-barred tags</strong> are editorial notes about this document. References to "v1" mean the earlier owner-led structure this document replaced; that file is gone, and the references are kept only to explain why something changed.</div>
+
+  <div style="display:flex;gap:20px;align-items:flex-start;">
+
+
+    <div style="width:400px;flex:none;display:flex;flex-direction:column;gap:10px;background:#fff;border:2px solid #00B4B1;border-radius:16px;padding:16px;">
+      <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:10px;border-bottom:1px dashed rgba(24,24,24,0.25);margin-bottom:2px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#8a6a2f;">Level 0 — shared entry, both personas</span>
+        <span style="font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;">Home</span>
+        <span class="mono" style="font-size:10px;color:#0100DD;">/</span>
+      </div>
+      <div style="font-size:10.5px;line-height:1.5;color:#8a6a2f;background:#FDF8EE;border-radius:8px;padding:8px 10px;"><strong>Corrected:</strong> Home carries both personas, as in v1 — but the guest path now opens with a search bar rather than a property card. Guest leads on <em>position</em> (search sits in the hero, it is the volume traffic); owner gets equal <em>weight</em> further down (a real staircase section, not a one-line footnote). Neither is a footnote to the other.</div>
+
+      <div style="border:1px dashed rgba(217,177,107,0.6);border-radius:8px;padding:10px 12px;background:#FDF8EE;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#8a6a2f;">NAV BAR — sticky</span>
+        <span style="font-size:11.5px;line-height:1.4;">Wordmark · <strong>Guests</strong> · <strong>Destinations</strong> · <strong>Property Owners</strong> &nbsp;|&nbsp; <strong>EN / ไทย / 中文</strong> · List your property (outlined pill) · Contact (solid pill)</span>
+        <div style="border-left:3px solid #8A8A99;background:#EFF0F8;padding:7px 9px;display:flex;flex-direction:column;gap:3px;">
+          <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:#5B5B6B;">note — nav renamed by audience</span>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Items are labelled by <em>who they are for</em>, not by what they contain: Guests → the search results, Destinations → the neighbourhood pages, Property Owners → /how-it-works. A visitor sorts themselves in the nav before they read anything.</span>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Consequence to resolve: "Property Owners" and "List your property" now point at the same page. One of them should probably go — flagged, not decided.</span>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">The footer keeps the descriptive wording ("All properties", "How it works") because audience labels read wrong under a "Stay" heading.</span>
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#D9B16B;color:#181818;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">shared</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">"List your property" is outlined, not solid, so it reads as a distinct destination rather than competing with the guest search. It points at /how-it-works — as does the Property Owners nav item beside it, which is the duplication flagged above; resolve that before counting owner entry points on this page. The fork band and the staircase panel below are the other two. Business Services stays footer-only.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(217,177,107,0.6);border-radius:8px;padding:10px 12px;background:#FDF8EE;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#8a6a2f;">LANGUAGE — EN / ไทย / 中文, segmented control in the nav</span>
+        <span style="font-size:11.5px;line-height:1.4;">Three languages. English is the source; every string falls back to English per key, so a missing translation degrades to readable rather than blank.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#D9B16B;color:#181818;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">shared</span>
+          <span class="mono" style="background:#EFF0F8;color:#5B5B6B;padding:2px 8px;font-size:8.5px;text-transform:uppercase;border-left:3px solid #8A8A99;">note — added from review</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;"><strong>Translated:</strong> all chrome, nav, search, filters, CTAs, section headings, forms and footer, plus place names (清迈 / เชียงใหม่ and the eight neighbourhoods) and property types. English stays the internal key, so filtering and routing are language-independent.</span>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;"><strong>Deliberately not machine-translated:</strong> property descriptions, FAQ answers and host bios. Those carry the honesty argument, and tone-of-voice treats owner and guest register as different in each language. A banner names what is pending rather than serving English silently.</span>
+        <div style="border:1px dashed rgba(251,89,50,0.6);border-radius:6px;padding:7px 9px;background:#FFF3EF;">
+          <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:#B93B18;">open question</span>
+          <span style="display:block;font-size:10px;line-height:1.45;color:#5B5B6B;margin-top:3px;">Language is component state, not in the URL. For search each language needs its own indexable path (/th/…, /zh/…) plus hreflang. Decide before launch — retrofitting routing later is expensive.</span>
+        </div>
+      </div>
+
+      <div style="border:2px solid #00B4B1;border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">HERO — headline + SEARCH BAR (the page's primary action)</span>
+        <span style="font-size:11.5px;line-height:1.4;">Short headline over an abstract full-bleed field. Search bar sits <em>in</em> the hero, horizontally: <strong>Where</strong> (city dropdown) · <strong>Check-in</strong> · <strong>Check-out</strong> · <strong>Guests</strong> (+/−) · <strong>Search</strong> (oversized solid pill — the page's primary CTA, deliberately larger than a field-sized control).</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#14141C;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">primary cta → /properties</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;"><strong>Where</strong> = three cities: <strong>Chiang Mai</strong> (live), <strong>Bangkok</strong> and <strong>Phuket</strong> (both selectable, both returning a "launching soon" state rather than results). All four fields optional — an empty search returns everything in Chiang Mai.</span>
+        <div style="border-left:3px solid #8A8A99;background:#EFF0F8;padding:7px 9px;display:flex;flex-direction:column;gap:3px;">
+          <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:#5B5B6B;">note — city-level Where, per review</span>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Listing cities we cannot yet fulfil is a deliberate signal of intent, so the coming-soon page has to earn it: name the city, say what is coming, and offer one action (notify me, or browse Chiang Mai). An empty result page with no explanation would read as a broken site.</span>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Consequence: <strong>area</strong> is no longer a top-level search field, so neighbourhood filtering moves into the Filters panel on L1 — otherwise the axis guests actually choose on inside Chiang Mai disappears.</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">No CTA pair in the hero: the search bar <em>is</em> the primary action, so a button beside it would be a second primary. The owner entry is the fork band immediately below, where it can be stated properly rather than crammed into the hero.</span>
+      </div>
+
+      <div style="border:1.5px solid rgba(217,177,107,0.9);border-radius:8px;padding:10px 12px;background:#FDF8EE;display:flex;flex-direction:column;gap:8px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#8a6a2f;">FORK BAND — the two-persona split, stated once and explicitly</span>
+        <span style="font-size:11.5px;line-height:1.4;">Two side-by-side panels directly under the hero. Equal size, equal type scale, visually distinct by colour role. This is where a visitor self-identifies.</span>
+        <div style="display:flex;gap:8px;">
+          <div style="flex:1;border:1px solid rgba(0,180,177,0.55);border-radius:6px;padding:8px 9px;background:#EAFBFA;display:flex;flex-direction:column;gap:4px;">
+            <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:#00745F;">guest panel</span>
+            <span style="font-size:10.5px;line-height:1.4;"><strong>I want to stay here.</strong> One line on what booking direct gets you. Link: browse all properties.</span>
+            <span class="mono" style="background:transparent;color:#181818;padding:2px 7px;border-radius:999px;font-size:8px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px rgba(24,24,24,0.3);width:fit-content;">secondary → /properties</span>
+          </div>
+          <div style="flex:1;border:1px solid rgba(1,0,221,0.45);border-radius:6px;padding:8px 9px;background:#EEF0FF;display:flex;flex-direction:column;gap:4px;">
+            <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:#0100DD;">owner panel</span>
+            <span style="font-size:10.5px;line-height:1.4;"><strong>I own a property here.</strong> One line on the feasibility-first approach. Link: see how management works.</span>
+            <span class="mono" style="background:transparent;color:#181818;padding:2px 7px;border-radius:999px;font-size:8px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px rgba(24,24,24,0.3);width:fit-content;">secondary → /how-it-works</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#D9B16B;color:#181818;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">shared</span>
+          <span class="mono" style="background:#EFF0F8;color:#5B5B6B;padding:2px 8px;font-size:8.5px;text-transform:uppercase;border-left:3px solid #8A8A99;">note — added for dual persona</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Both are <em>secondary</em> tier and that is deliberate: the hero's search already holds primary. Two solid pills here would recreate exactly the competing-primaries problem §4 forbids. The fork sorts people; it doesn't ask them to convert.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">FEATURED PROPERTIES — 3–6 tiles</span>
+        <span style="font-size:11.5px;line-height:1.4;">Same tile component as the results list, so there is one card design in the system. Curated, not algorithmic, at this stage.</span>
+        <span style="font-size:11.5px;line-height:1.4;">Tile badge shows <strong>distance to the centre in km</strong>, computed from the pin against Tha Phae Gate — not a photo count. It answers the question a guest actually has.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;"><span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span></div>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">WHY BOOK DIRECT — 3 short items</span>
+        <span style="font-size:11.5px;line-height:1.4;">Three items that deliberately read to both personas at once: best rate / no OTA markup · a local team on the ground in Chiang Mai · 24/7 contact. Plain text, no cards.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#D9B16B;color:#181818;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">shared</span>
+          <span class="mono" style="background:#FB5932;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">baseline: 24/7 support</span>
+          <span class="mono" style="background:#FB5932;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">baseline: local team</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">The one section that genuinely serves both: a guest reads "someone will answer when the aircon fails," an owner reads "my guests are covered without me." Same three facts, no duplication — which is the argument for one homepage instead of two.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">SOCIAL PROOF — rating + horizontal review rail</span>
+        <span style="font-size:11.5px;line-height:1.4;">Portfolio-wide rating with the count and source named, on the left of the section header. On the right, ‹ › arrows that page the rail by roughly a screenful.</span>
+        <span style="font-size:11.5px;line-height:1.4;">Rail of 8 fixed-width cards, snap scrolling, swipeable on touch. <strong>Each card is a link to its property</strong> and carries the <strong>host portrait and first name</strong> plus the property and neighbourhood — so a review is attached to a person and a place, not floating.</span>
+        <div style="border-left:3px solid #8A8A99;background:#EFF0F8;padding:7px 9px;display:flex;flex-direction:column;gap:3px;">
+          <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:#5B5B6B;">note — review rail, from review</span>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Attaching reviews to a host and a property does two jobs at once: it is social proof, and it is a second route into the listing for someone browsing rather than searching.</span>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Host data comes from one shared source with the property page's "Your host" block, so the two cannot drift apart.</span>
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#FB5932;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">baseline: real testimonials</span>
+        </div>
+      </div>
+
+      <div style="border:1.5px solid rgba(1,0,221,0.55);border-radius:8px;padding:10px 12px;background:#EEF0FF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#0100DD;">OWNER SECTION — the 3-step staircase, carried over from v1</span>
+        <span style="font-size:11.5px;line-height:1.4;">Full-width section, same type scale as "Featured properties" above it. Three cards: <strong>Feasibility</strong> → <strong>Permission</strong> → <strong>Management</strong>, each with the step number, the mechanism in one line, and an arrow-circle into /how-it-works.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#0100DD;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">owner</span>
+          <span class="mono" style="background:#FB5932;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">baseline: numbered onboarding</span>
+          <span class="mono" style="background:#EFF0F8;color:#5B5B6B;padding:2px 8px;font-size:8.5px;text-transform:uppercase;border-left:3px solid #8A8A99;">note — restored from the owner-led structure</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">This is what makes Home genuinely dual-persona rather than a guest page with an owner link stapled on. The staircase is AgentSiam's actual differentiator — feasibility <em>before</em> a contract — and it cannot carry that argument as a single sentence. Full detail still lives on /how-it-works; this is the summary.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(217,177,107,0.6);border-radius:8px;padding:10px 12px;background:#FDF8EE;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#8a6a2f;">CLOSING BAND — one row, both paths, mirrors the fork</span>
+        <span style="font-size:11.5px;line-height:1.4;">Left: "Still looking for somewhere to stay?" → back to search. Right: "Thinking about renting yours out?" → /contact. Closes both journeys without either page-end being dead for half the audience.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#D9B16B;color:#181818;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">shared</span>
+          <span class="mono" style="background:#14141C;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">primary → /contact (owner side only)</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Only the owner half gets a solid pill. The guest half returns to search — an action already primary in the hero, so restating it as a button would double it. One solid CTA on the page's closing row, not two.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(24,24,24,0.35);border-radius:8px;padding:8px 12px;background:#F6F6FB;">
+        <span style="font-size:10.5px;color:#5B5B6B;">Footer (shared) — see far-right column.</span>
+      </div>
+    </div>
+
+    <div style="width:430px;flex:none;display:flex;flex-direction:column;gap:10px;background:#fff;border:2px solid #00B4B1;border-radius:16px;padding:16px;">
+      <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:10px;border-bottom:1px dashed rgba(24,24,24,0.25);margin-bottom:2px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#00745F;">Level 1 — results</span>
+        <span style="font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;">Properties — split view</span>
+        <span class="mono" style="font-size:10px;color:#0100DD;">/properties?area=&amp;from=&amp;to=&amp;guests=</span>
+      </div>
+      <div style="font-size:10.5px;line-height:1.5;color:#00745F;background:#EAFBFA;border-radius:8px;padding:8px 10px;">List left (scrolls), map right (sticky, full height). Every search state is a URL — shareable, bookmarkable, indexable.</div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">FILTER BAR — sticky under the nav, full width</span>
+        <span style="font-size:11.5px;line-height:1.4;">Carries the hero's four fields (editable in place) plus a <strong>Filters</strong> button opening a panel: <strong>neighbourhood</strong> multi-select · property type (Apartment/Condo · Townhouse · House · Villa) · bedrooms ± · bathrooms ± · features multi-select · <strong>Clear</strong> · <strong>Close</strong> (discards) · <strong>Apply</strong> (commits).</span>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Neighbourhood sits first in the panel — it is the strongest signal a Chiang Mai guest has, and it moved here when Where became city-level. Selecting one also re-fits the map.</span>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">The per-area landing pages still exist and still carry their own local copy. With the homepage card row gone, they are reached three ways: the nav's "Destinations", the footer's "Areas we manage", and organic search — which was always their main job.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#E7F7F7;color:#00745F;padding:2px 8px;border-radius:4px;font-size:8.5px;text-transform:uppercase;border:1px solid rgba(0,180,177,0.5);">beds24 [014] type</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Close-discards vs. Apply-commits is from your brief and is the right call — but it needs active filters shown as removable chips below the bar, or users lose track of what's on. Add a result count that updates live.</span>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:stretch;">
+        <div style="flex:1;border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+          <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">LEFT — result list</span>
+          <span style="font-size:11px;line-height:1.4;">Result count + sort. Then tiles.</span>
+          <div style="border-left:3px solid #8A8A99;background:#EFF0F8;padding:7px 9px;display:flex;flex-direction:column;gap:3px;">
+            <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:#5B5B6B;">note — default ordering, per review</span>
+            <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Default sort is <strong>location, then rating</strong>: group by area, and within each area show the <strong>3 highest-rated</strong> first. Reads as "the best of each neighbourhood" rather than one area monopolising the fold.</span>
+            <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Each area group gets a header with its count and a "show all in {area}" link. Sort control still offers price and rating as flat lists, overriding the grouping.</span>
+          </div>
+          <div style="border:1px solid rgba(0,180,177,0.4);border-radius:6px;padding:8px;background:#fff;display:flex;flex-direction:column;gap:4px;">
+            <div style="height:46px;border-radius:4px;background:linear-gradient(135deg,#00B4B1 0%,#D9B16B 100%);opacity:0.45;display:flex;align-items:center;justify-content:space-between;padding:0 6px;">
+              <span style="font-size:11px;color:#fff;">‹</span><span style="font-size:11px;color:#fff;">›</span>
+            </div>
+            <span style="font-size:10px;line-height:1.4;"><strong>Title</strong> [011] · area [013]</span>
+            <span style="font-size:10px;line-height:1.4;color:#5B5B6B;">Type [014] · max guests [001] · beds [002] · baths [003] · m² [004]</span>
+            <span style="font-size:10px;line-height:1.4;"><strong>From ฿0,000</strong> [005] / night</span>
+          </div>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Carousel arrows per tile are in your brief — worth challenging: they slow scanning and add little at list level. One image plus a count badge is the stronger pattern.</span>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Hundreds of units means pagination or infinite scroll. Infinite scroll fights the sticky map; prefer paged results.</span>
+        </div>
+        <div style="flex:1;border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#14141C;display:flex;flex-direction:column;gap:6px;">
+          <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#5FE3E0;">RIGHT — sticky map</span>
+          <div style="height:120px;border-radius:6px;background:#1F1F2B;position:relative;overflow:hidden;">
+            <div style="position:absolute;left:26%;top:30%;width:30px;height:30px;border-radius:999px;background:#FB5932;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;">24</div>
+            <div style="position:absolute;left:58%;top:52%;width:38px;height:38px;border-radius:999px;background:#FB5932;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">61</div>
+            <div style="position:absolute;left:38%;top:70%;width:22px;height:22px;border-radius:999px;background:#00B4B1;"></div>
+            <div style="position:absolute;left:75%;top:22%;width:22px;height:22px;border-radius:999px;background:#00B4B1;"></div>
+          </div>
+          <span style="font-size:10.5px;line-height:1.45;color:rgba(255,255,255,0.85);"><strong>Clustering is mandatory</strong> at this scale — numbered bubbles that split on zoom, or the Old City becomes one unreadable mass.</span>
+          <span style="font-size:10.5px;line-height:1.45;color:rgba(255,255,255,0.85);">Two-way linkage: hover a tile → its pin lifts and colours; click a pin → list scrolls to that tile and highlights it. Map re-fits bounds whenever filters change.</span>
+          <span style="font-size:10.5px;line-height:1.45;color:rgba(255,255,255,0.6);">Pin labels show nightly price once zoomed past cluster level — that is what makes a map worth using over a list.</span>
+          <div style="border-left:3px solid #8A8A99;background:rgba(255,255,255,0.1);padding:7px 9px;display:flex;flex-direction:column;gap:3px;">
+            <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:rgba(255,255,255,0.65);">note — fixed viewport, per review</span>
+            <span style="font-size:10px;line-height:1.45;color:rgba(255,255,255,0.8);">This phase the map always opens on <strong>Chiang Mai</strong>, framed to the city and its immediate districts. It does not auto-fit to the result set on load, so the frame never jumps between searches.</span>
+            <span style="font-size:10px;line-height:1.45;color:rgba(255,255,255,0.8);">Filters re-fit bounds only <em>within</em> Chiang Mai. Selecting Bangkok or Phuket does not move the map — those cities return the launching-soon state instead of a results page.</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">EMPTY / NO-RESULTS STATE</span>
+        <span style="font-size:11.5px;line-height:1.4;">Names which filter is too tight and offers to relax it ("no 4-bedroom villas in Nimman for these dates — 12 in Hang Dong, or 6 in Nimman if you drop to 3 bedrooms"). Never a bare "no results."</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;"><span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span></div>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">MOBILE — one breakpoint at 900px</span>
+        <span style="font-size:11.5px;line-height:1.4;">Split view can't hold under ~900px. List by default, a "Show map" toggle in the filter bar opens the map above the results.</span>
+        <span style="font-size:11.5px;line-height:1.4;">Site-wide: search bar stacks into labelled rows with a full-width button, hero stripes drop out, headline scales with the viewport, property and checkout panes stack, checkout puts the trip summary above the form, and sticky positioning is disabled wherever it would trap content on a short screen.</span>
+        <div style="border-left:3px solid #8A8A99;background:#EFF0F8;padding:7px 9px;display:flex;flex-direction:column;gap:3px;">
+          <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:#5B5B6B;">note — responsive approach</span>
+          <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Card grids use <code>repeat(auto-fit, minmax(…, 1fr))</code> rather than fixed column counts, so they reflow continuously instead of snapping at one width. Only genuinely two-pane layouts need the breakpoint.</span>
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;"><span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span></div>
+      </div>
+
+      <div style="border:1px dashed rgba(24,24,24,0.35);border-radius:8px;padding:8px 12px;background:#F6F6FB;">
+        <span style="font-size:10.5px;color:#5B5B6B;">Footer (shared) — see far-right column.</span>
+      </div>
+    </div>
+
+    <div style="width:420px;flex:none;display:flex;flex-direction:column;gap:10px;background:#fff;border:2px solid #00B4B1;border-radius:16px;padding:16px;">
+      <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:10px;border-bottom:1px dashed rgba(24,24,24,0.25);margin-bottom:2px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#00745F;">Level 2 — property</span>
+        <span style="font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;">Property page</span>
+        <span class="mono" style="font-size:10px;color:#0100DD;">/property/&lt;slug&gt;</span>
+      </div>
+      <div style="font-size:10.5px;line-height:1.5;color:#00745F;background:#EAFBFA;border-radius:8px;padding:8px 10px;">Search context carries in: dates and guests arrive pre-filled from Level 1. Also a valid standalone entry point (OTA link, QR at the property) — then the fields start empty.</div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">1 · GALLERY — 1 hero + 4 thumbs + "see more"</span>
+        <span style="font-size:11.5px;line-height:1.4;">Any image or the button opens a full-screen lightbox with keyboard nav and an X. Abstract colour-block fallback in every slot until real photography exists.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#FFF3EF;color:#B93B18;padding:2px 8px;border-radius:4px;font-size:8.5px;text-transform:uppercase;border:1px dashed #FB5932;">open question</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;"><strong>The critical-path blocker.</strong> This whole layout is photography-driven. A five-slot gallery of abstract blocks is worse than no gallery — it reads as broken, not as a considered placeholder. Either photography lands before launch, or Level 1 and Level 2 need a genuinely text-led alternative layout. Not solvable inside the wireframe.</span>
+      </div>
+
+      <div style="border:2px solid #14141C;border-radius:8px;padding:10px 12px;background:#14141C;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#F0CB86;">2 · BOOKING PANEL — sticky, right column on desktop</span>
+        <span style="font-size:11px;line-height:1.45;color:#fff;">Arrival · Departure — calendar with unavailable dates struck out and unselectable [006]. On picking an arrival, show the minimum-nights rule [007]. Guests ± capped at max occupancy [001].</span>
+        <span style="font-size:11px;line-height:1.45;color:#fff;">Once all three are set, the price breakdown appears: ฿/night average [008] · number of nights · discount [009−008] · additional fees [010] · <strong>total</strong>.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#fff;color:#14141C;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">primary cta — Book now → L3</span>
+          <span class="mono" style="background:transparent;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.5);">secondary — Send inquiry → L3</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:rgba(255,255,255,0.7);">Your brief has these as equals. Under the tier rule they aren't: Book now is solid, Send inquiry is outlined beneath it. Same page, same audience, different commitment — which is exactly what the secondary tier is for.</span>
+        <span style="font-size:10px;line-height:1.45;color:rgba(255,255,255,0.7);">All figures come from the middleware cache and are labelled as such internally — Beds24 re-confirms at payment.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">3 · PROPERTY DETAIL</span>
+        <span style="font-size:11.5px;line-height:1.4;">Title [011] · city [012] + area [013] · key facts row: type [014], m² [004], beds [002], baths [003], max guests [001] · share button.</span>
+        <span style="font-size:11.5px;line-height:1.4;">Description [015] truncated at a character limit with "Show more" opening the full text. Hero amenities, max 6, with "Show all" [017].</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#E7F7F7;color:#00745F;padding:2px 8px;border-radius:4px;font-size:8.5px;text-transform:uppercase;border:1px solid rgba(0,180,177,0.5);">beds24 [001–017]</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Truncating the description hides text from crawlers if done with JS alone — render it in full in the DOM and clip visually.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">4 · MAP — single pin [019]</span>
+        <span style="font-size:11.5px;line-height:1.4;">Pin plus surroundings, +/− zoom. Walkability and distances to Old City / Nimman / airport as text beneath, and a link to that area's landing page.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;"><span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span></div>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">5 · GOOD TO KNOW</span>
+        <span style="font-size:11.5px;line-height:1.4;">House rules: check-in [020] · check-out [021] · smoking [022] · pets [023] · children [024] · additional [025]. Then cancellation policy [026].</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#FB5932;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">baseline: policy transparency</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Cancellation policy must also appear inside the booking panel before payment, not only here — burying it below the fold is the fee-surprise pattern the competitor research flags.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">6 · SAFETY / LIMITS · REVIEWS · FAQ</span>
+        <span style="font-size:11.5px;line-height:1.4;">Named hazards in warm language, not legalese. Reviews with aggregate rating and source. Guest FAQ (check-in, parking, cancellation, pets) — separate set from the owner FAQ.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#fff;color:#0100DD;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px #0100DD;">brand rule: HR-02</span>
+          <span class="mono" style="background:#FB5932;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">baseline: FAQ</span>
+        </div>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">7 · YOUR HOST</span>
+        <span style="font-size:11.5px;line-height:1.4;">Named host, a real portrait, and three or four lines in their own voice: who they are, why this house, one specific thing they will do for you. Response time and languages spoken sit underneath as facts.</span>
+        <span style="font-size:11.5px;line-height:1.4;">"Managed with AgentSiam" as a quiet line beneath the host, not above them — the host is the relationship, we are the operator behind it.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#F3EEFF;color:#4B21B5;padding:2px 8px;border-radius:4px;font-size:8.5px;text-transform:uppercase;border:1px solid rgba(75,33,181,0.35);">authored</span>
+          <span class="mono" style="background:#EFF0F8;color:#5B5B6B;padding:2px 8px;font-size:8.5px;text-transform:uppercase;border-left:3px solid #8A8A99;">note — added from review</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Carries the human-touch argument the rest of the page cannot: everything above it is facts and a booking widget. Sits directly above the reviews so a named person is followed immediately by other people vouching for them.</span>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">The one image slot on the site that genuinely needs a real photograph — an abstract block where a face should be actively undermines the section. Do not ship it with a fallback.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(24,24,24,0.3);border-radius:8px;padding:10px 12px;background:#F6F6FB;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#5B5B6B;">NO SIMILAR PROPERTIES · NO OWNER CROSS-LINK — deliberate omissions</span>
+        <span style="font-size:11.5px;line-height:1.4;">Both were here and both are removed. Once a guest is on a listing, this page's only job is that booking.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#EFF0F8;color:#5B5B6B;padding:2px 8px;font-size:8.5px;text-transform:uppercase;border-left:3px solid #8A8A99;">note — changed from review</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">The owner's view, and it wins: an owner does not want their listing page offering the reader four alternatives, and does not want a "list your property" pitch sitting under their own house. The owner path is reachable from the nav and the footer on this page already.</span>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">One thing this costs us: similar properties was the recovery path when the chosen dates are unavailable. That job moves into the booking panel itself — when dates come back blocked, offer the nearest open dates for <em>this</em> property first, and only surface alternatives inside that empty state rather than as a standing section.</span>
+      </div>
+    </div>
+
+    <div style="width:420px;flex:none;display:flex;flex-direction:column;gap:10px;background:#fff;border:2px solid #14141C;border-radius:16px;padding:16px;">
+      <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:10px;border-bottom:1px dashed rgba(24,24,24,0.25);margin-bottom:2px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#00745F;">Level 3 — booking</span>
+        <span style="font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;">Checkout &amp; inquiry</span>
+        <span class="mono" style="font-size:10px;color:#0100DD;">/book/&lt;slug&gt; · /inquire/&lt;slug&gt;</span>
+      </div>
+      <div style="font-size:10.5px;line-height:1.5;color:#181818;background:#F6F6FB;border-radius:8px;padding:8px 10px;">Two entries from L2, one page shell, different form below the same trip summary. No nav distractions — checkout strips the nav to logo plus a back link.</div>
+
+      <div style="border:1px dashed rgba(24,24,24,0.35);border-radius:8px;padding:10px 12px;background:#F6F6FB;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#5B5B6B;">1 · BOOKING SUMMARY — persistent, top or right rail</span>
+        <span style="font-size:11.5px;line-height:1.4;">Small hero image · title [011], clickable, opens L2 in a new tab · arrival + departure with Edit · nights · guests · ฿/night [008] × nights = subtotal · discount [009−008] · fees [010] · <strong>total</strong> · cancellation policy [026].</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#E7F7F7;color:#00745F;padding:2px 8px;border-radius:4px;font-size:8.5px;text-transform:uppercase;border:1px solid rgba(0,180,177,0.5);">beds24 via middleware</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Edit must re-run availability, not just change a label. Cheapest correct behaviour: send them back to L2 with state intact.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(24,24,24,0.35);border-radius:8px;padding:10px 12px;background:#F6F6FB;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#5B5B6B;">2a · INQUIRY FORM — from "Send inquiry"</span>
+        <span style="font-size:11.5px;line-height:1.4;">First name · last name · email · phone · comments. All mandatory per brief. Sends an email carrying the trip summary.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#14141C;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">primary — Send inquiry</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Mandatory "comments" is worth reconsidering — forcing a message on someone who just wants to ask about availability adds friction to the lowest-commitment action on the site.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(24,24,24,0.35);border-radius:8px;padding:10px 12px;background:#F6F6FB;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#5B5B6B;">2b · BOOKING FORM — from "Book now"</span>
+        <span style="font-size:11.5px;line-height:1.4;">First name · last name · email · street (opt) · city · postal code · country · phone (opt) · arrival time (opt) · comments (opt).</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#14141C;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">primary — Continue to payment</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Group as Guest details / Billing address / Arrival, and mark optional fields rather than mandatory ones — most are optional here. Explicit consent checkbox for terms and data handling sits above the button, unticked.</span>
+      </div>
+
+      <div style="border:2px solid #FB5932;border-radius:8px;padding:10px 12px;background:#FFF3EF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#B93B18;">3 · REVALIDATION GATE — before the iframe opens</span>
+        <span style="font-size:11.5px;line-height:1.4;">On Continue, the middleware re-checks Beds24 live. Two outcomes:</span>
+        <span style="font-size:11px;line-height:1.5;"><strong>Still available</strong> → Beds24 payment iframe opens inline, trip summary stays visible alongside it.<br><strong>Gone or repriced</strong> → honest interruption: what changed, the new price or the conflict, and the recovery — nearest available dates, or similar properties in the same area. Never a silent failure at the payment step.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:#fff;color:#0100DD;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px #0100DD;">brand rule: say it first</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">This block exists only because we serve a cache. It is the price of the middleware architecture and must be designed, not treated as an edge case.</span>
+      </div>
+
+      <div style="border:2px solid #14141C;border-radius:8px;padding:10px 12px;background:#14141C;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#F0CB86;">4 · BEDS24 PAYMENT IFRAME</span>
+        <span style="font-size:11.5px;line-height:1.4;color:#fff;">Card capture, hosted by Beds24. AgentSiam never touches card data — keeps PCI scope out of this build. Visually framed but not restyled; don't imply we own it.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;"><span class="mono" style="background:#fff;color:#14141C;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">money moves here</span></div>
+      </div>
+
+      <div style="border:1px dashed rgba(0,180,177,0.5);border-radius:8px;padding:10px 12px;background:#EAFBFA;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#00745F;">5 · CONFIRMATION — AgentSiam-branded, wraps the Beds24 result</span>
+        <span style="font-size:11.5px;line-height:1.4;">Booking reference · full trip summary · what happens next (check-in details by email/LINE, who to contact) · add to calendar · directions. Secondary link back to the property or to browse.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#00B4B1;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">guest</span>
+          <span class="mono" style="background:transparent;color:#181818;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px rgba(24,24,24,0.3);">secondary → property / browse</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">No new primary CTA after booking. Needs a matching state for inquiry ("we'll reply within X") and a failed-payment return path.</span>
+      </div>
+    </div>
+
+    <div style="width:360px;flex:none;display:flex;flex-direction:column;gap:10px;background:#fff;border:2px solid #0100DD;border-radius:16px;padding:16px;">
+      <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:10px;border-bottom:1px dashed rgba(24,24,24,0.25);margin-bottom:2px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#0100DD;">Owner path — the whole funnel, two pages</span>
+        <span style="font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;">How it works · Contact</span>
+        <span class="mono" style="font-size:10px;color:#0100DD;">/how-it-works · /contact</span>
+      </div>
+      <div style="font-size:10.5px;line-height:1.5;color:#0100DD;background:#EEF0FF;border-radius:8px;padding:8px 10px;"><strong>/about is gone.</strong> It was a second owner page competing with the first, and its content — story, principles, local team — is trust material that belongs <em>inside</em> the conversion page rather than one click away from it. Owners arrive already self-identified via the nav item, the homepage fork band or the homepage staircase panel, so the job here is to convert, not to introduce.</div>
+      <div style="border-left:3px solid #8A8A99;background:#EFF0F8;padding:7px 9px;display:flex;flex-direction:column;gap:3px;">
+        <span class="mono" style="font-size:8.5px;text-transform:uppercase;color:#5B5B6B;">note — rebuilt from service-model.md</span>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Scope, exclusions and the two-gate qualification below are taken from the service model. <strong>No prices anywhere</strong> — that file is explicit that numbers live only in the price book, and a page that restates them goes stale silently.</span>
+      </div>
+
+      <div style="border:1.5px solid rgba(1,0,221,0.55);border-radius:8px;padding:10px 12px;background:#EEF0FF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#0100DD;">/how-it-works — the owner conversion page</span>
+        <span style="font-size:11.5px;line-height:1.4;">Full block sequence, in order:</span>
+        <span style="font-size:11px;line-height:1.55;">1 · <strong>Hero</strong> — eyebrow, headline on the honest promise ("we tell you whether to do this before we ask to run it"), subhead, primary CTA + a jump link to the qualifier.<br>2 · <strong>The staircase</strong> — three steps, each with what you get <em>and</em> what is not included.<br>3 · <strong>The two gates</strong> — dark panel, side by side.<br>4 · <strong>Self-qualifier</strong> — the conversion device.<br>5 · <strong>Included / not included</strong> — the arrangement-vs-cost boundary.<br>6 · <strong>TM30</strong> — the compliance differentiator.<br>7 · <strong>FAQ</strong> — opens on fees.<br>8 · <strong>Closing CTA</strong>, then a guest cross-link.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#0100DD;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">owner</span>
+          <span class="mono" style="background:#14141C;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">primary → /contact</span>
+          <span class="mono" style="background:transparent;color:#181818;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px rgba(24,24,24,0.3);">secondary → the qualifier, same page</span>
+          <span class="mono" style="background:#FB5932;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">baseline: FAQ · onboarding · liability</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Secondary is now an in-page jump rather than a link to /about — same audience, lower commitment, and it keeps the reader on the page that converts.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(1,0,221,0.4);border-radius:8px;padding:10px 12px;background:#EEF0FF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#0100DD;">EACH STEP — what you get, then what you do not</span>
+        <span style="font-size:11.5px;line-height:1.4;">Every step card pairs its inclusions with an exclusions callout in a contrasting box. Not a footnote — the same visual weight as the sell.</span>
+        <span style="font-size:11px;line-height:1.5;"><strong>1 Feasibility</strong> — site visit, written analysis, one-hour call, Go/No-Go. Limit: a projection is not a promise; judged on the conservative case.<br><strong>2 Permission</strong> — Hotel Act assessment, safety review, documents, filing under power of attorney. Limit: government fees and fire remediation excluded, and the government's decision cannot be guaranteed.<br><strong>3 Management</strong> — listings, direct booking site, Beds24, guest comms, reviews, compliance. Limit: supplier costs sit with the owner.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#0100DD;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">owner</span>
+          <span class="mono" style="background:#fff;color:#0100DD;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px #0100DD;">brand rule: name the limit</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">The service model requires the permission exclusions to appear in every proposal. Putting them on the public page is the stronger version of that: an owner who discovers a remediation bill later is a lost client.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(1,0,221,0.4);border-radius:8px;padding:10px 12px;background:#EEF0FF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#0100DD;">VALUE PROPS — "What the fee actually buys", 4 columns + CTA</span>
+        <span style="font-size:11.5px;line-height:1.4;">Coloured icon tile, title, short body, then one CTA beneath the row. Sits directly above the gates and sets them up.</span>
+        <span style="font-size:11px;line-height:1.5;"><strong>Legal, not just listed</strong> — the permission step, and that most managers skip it.<br><strong>A team in Chiang Mai</strong> — we visit, we know which buildings permit short stays.<br><strong>Numbers before contracts</strong> — the study is paid and can end in a No-Go.<br><strong>Channels, plus your own</strong> — Beds24 across the OTAs, a direct booking site, TM30 included.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#0100DD;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">owner</span>
+          <span class="mono" style="background:#fff;color:#0100DD;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px #0100DD;">brand rule: evidence over assertion</span>
+          <span class="mono" style="background:#EFF0F8;color:#5B5B6B;padding:2px 8px;font-size:8.5px;text-transform:uppercase;border-left:3px solid #8A8A99;">note — added from review</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Modelled on a competitor block, but every claim is rewritten to be checkable. No "state-of-the-art technology", no "exceptional service" — an unfalsifiable claim in this position is exactly what the rest of the page is arguing against.</span>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Icon tiles use typographic glyphs in system colours. Real icons need an icon set chosen — open.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(1,0,221,0.4);border-radius:8px;padding:10px 12px;background:#EEF0FF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#0100DD;">THE TWO GATES — dark panel, side by side</span>
+        <span style="font-size:11.5px;line-height:1.4;"><strong>Gate one, the owner's:</strong> at conservative occupancy, short-let has to beat the long-term let, benchmarked against a real local comparable pulled at study time.<br><strong>Gate two, ours:</strong> the property has to be worth managing properly. Stated as a principle, never as a number.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#0100DD;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">owner</span>
+          <span class="mono" style="background:#fff;color:#0100DD;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;box-shadow:inset 0 0 0 1.5px #0100DD;">brand rule: say it first</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Publishing our own gate is the credibility move — it says the study can end in "yes, but not with us", which is the version of honesty an owner can actually verify. The threshold itself stays internal and unagreed.</span>
+      </div>
+
+      <div style="border:2px solid #0100DD;border-radius:8px;padding:10px 12px;background:#fff;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#0100DD;">SELF-QUALIFIER — replaces the income estimate as the page's conversion device</span>
+        <span style="font-size:11.5px;line-height:1.4;">Four questions — property type, bedrooms, area, private pool — against a verdict panel that updates live. Mirrors the intake, so the owner gets the honest answer now rather than after a site visit.</span>
+        <span style="font-size:11px;line-height:1.5;">Verdicts follow the ICP: condo → <strong>no</strong>, and it short-circuits before bedrooms. 1 bed → <strong>probably no</strong>. 2 bed → <strong>core fit</strong>. 3 bed → <strong>depends on the pool</strong>. 4+ → <strong>conditional</strong>. Every negative verdict still offers a route ("tell us why yours is different") rather than a dead end.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#0100DD;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">owner</span>
+          <span class="mono" style="background:#14141C;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">primary → /contact</span>
+          <span class="mono" style="background:#EFF0F8;color:#5B5B6B;padding:2px 8px;font-size:8.5px;text-transform:uppercase;border-left:3px solid #8A8A99;">note — added from review</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Why this and not the income calculator: a range needs real occupancy data the portfolio does not have yet, so it would overclaim. A qualifier needs only the ICP, which is already decided — and telling someone no is a more distinctive thing to do on a website than showing them a number.</span>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Also writes the ICP into intake, which the service model lists as an open action: a property failing both gates is filtered before a site visit is spent on it.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(1,0,221,0.4);border-radius:8px;padding:10px 12px;background:#EEF0FF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#0100DD;">INCLUDED / NOT INCLUDED — two columns, equal weight</span>
+        <span style="font-size:11.5px;line-height:1.4;">Nine inclusions against eight exclusions. The boundary line — "we arrange and supervise, you pay the supplier" — sits in the section intro, not in small print.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#0100DD;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">owner</span>
+          <span class="mono" style="background:#FB5932;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">baseline: fee transparency</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Closes the service model's "exclusions exist nowhere an owner will see them" gap. Arrangement-not-cost is the difference between the product sold and the product imagined, and the argument starts in month two if it is only in the contract.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(1,0,221,0.4);border-radius:8px;padding:10px 12px;background:#EEF0FF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#0100DD;">TM30 BAND — the differentiator, stated alone</span>
+        <span style="font-size:11.5px;line-height:1.4;">Foreign guest reporting to Immigration, included. A legal obligation most competitors hand back to the owner, so it gets its own band rather than a bullet.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#0100DD;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">owner</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">The rate is defended on compliance, not on the word "management" — which is the service model's own conclusion about the scope-versus-price gap.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(1,0,221,0.4);border-radius:8px;padding:10px 12px;background:#EEF0FF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#0100DD;">TRUST MATERIAL — absorbed from the old /about</span>
+        <span style="font-size:11.5px;line-height:1.4;">Local-team proof, the principles and the honest-scale note now live as supporting copy inside this page and the FAQ, rather than as a separate destination.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#0100DD;color:#fff;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">owner</span>
+          <span class="mono" style="background:#FFF3EF;color:#B93B18;padding:2px 8px;border-radius:4px;font-size:8.5px;text-transform:uppercase;border:1px dashed #FB5932;">open question</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">Open: the licensing position is still a summary from secondary sources, not a written legal opinion. Owner-facing copy must hedge it until counsel issues one — the exposure is asymmetric because we wrote it.</span>
+      </div>
+
+      <div style="border:2px solid #14141C;border-radius:8px;padding:10px 12px;background:#14141C;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#F0CB86;">/contact — owner conversion endpoint</span>
+        <span style="font-size:11.5px;line-height:1.4;color:#fff;">Owner-only, no intent selector. Name · contact (email or LINE) · property type (the condo answer triggers the HR-01 permission conversation) · area. Optional message. Then "what happens next," numbered, with a real response time.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span class="mono" style="background:#fff;color:#14141C;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">primary — submit</span>
+        </div>
+        <span style="font-size:10px;line-height:1.45;color:rgba(255,255,255,0.7);">Guest enquiries never land here — they go through L3's inquiry form, which carries the trip context. Keeps this a clean owner-lead pipe.</span>
+      </div>
+    </div>
+
+    <div style="width:360px;flex:none;display:flex;flex-direction:column;gap:10px;background:#fff;border:1px solid rgba(24,24,24,0.12);border-radius:16px;padding:16px;">
+      <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:10px;border-bottom:1px dashed rgba(24,24,24,0.25);margin-bottom:2px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;color:#5B5B6B;">Every page</span>
+        <span style="font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;">Footer &amp; open questions</span>
+      </div>
+
+      <div style="border:1px dashed rgba(24,24,24,0.35);border-radius:8px;padding:10px 12px;background:#F6F6FB;display:flex;flex-direction:column;gap:5px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#5B5B6B;">FOOTER — six groups</span>
+        <span style="font-size:11px;line-height:1.5;"><strong>Stay</strong> — Properties · Areas · guest FAQ<br><strong>Owners</strong> — List your property · How it works · Business Services<br><strong>Company</strong> — About · Contact<br><strong>Areas we manage</strong> — 6–8 real links<br><strong>Legal</strong> — Terms · Privacy · booking T&amp;Cs<br><strong>Contact (NAP)</strong> — entity name · Chiang Mai address · phone · email · LINE</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;"><span class="mono" style="background:#D9B16B;color:#181818;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">shared</span></div>
+        <span style="font-size:10px;line-height:1.45;color:#5B5B6B;">NAP must match Google Business Profile exactly. Legal pages carry real content or explicit TODO markers — never invented boilerplate. Business Services stays footer-only.</span>
+      </div>
+
+      <div style="border:1px dashed rgba(217,177,107,0.6);border-radius:8px;padding:10px 12px;background:#FDF8EE;display:flex;flex-direction:column;gap:5px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#8a6a2f;">SEARCH &amp; AI READINESS — helped by the middleware</span>
+        <span style="font-size:11px;line-height:1.5;">Rates and availability are now real page text, not iframe content — the single biggest fix versus v1. Plus: LocalBusiness on the site, LodgingBusiness + aggregate rating per property, FAQPage on both FAQ sets; every search state a crawlable URL; area pages as genuine landing targets; question-shaped headings answered in the first sentence.</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;"><span class="mono" style="background:#D9B16B;color:#181818;padding:2px 8px;border-radius:999px;font-size:8.5px;text-transform:uppercase;">shared</span></div>
+      </div>
+
+      <div style="border:2px dashed #FB5932;border-radius:8px;padding:10px 12px;background:#FFF3EF;display:flex;flex-direction:column;gap:6px;">
+        <span class="mono" style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#B93B18;">OPEN — blocking or near-blocking</span>
+        <span style="font-size:11px;line-height:1.55;"><strong>1 · Photography.</strong> Critical path. The entire L1/L2 pattern is photo-driven; abstract fallbacks cannot carry a five-slot gallery or a results grid. Either shoot before launch or design a text-led alternative.<br><strong>2 · Mid-term stays.</strong> Your brief's title says "vacation and mid-term," but nothing in it handles monthly pricing, and neither did v1 — despite long-stay being a live AgentSiam service. Needs monthly rate display, min-nights, long-stay discount logic.<br><strong>3 · CMS boundary.</strong> Does the middleware also store AgentSiam-authored content, or does that sit separately? The editor above assumes the former.<br><strong>4 · Money and law.</strong> Who is merchant of record, what is the refund path, and what does PDPA require at the point of booking? Untouched by both documents.<br><strong>5 · Thai/English.</strong> Tone of voice is bilingual; neither document specifies a language toggle.<br><strong>6 · Owner dashboard.</strong> Backend is staff-only as specced. Owners of managed units will expect to see their own performance — in scope or explicitly not?</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
