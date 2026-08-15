@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "guide": "node scripts/build-guide.mjs"
+    "guide": "node scripts/build-guide.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.8.1",

@@ -57,8 +57,10 @@ export function ResultsMap({ pins, t }: { pins: Pin[]; t: Dictionary }) {
         scrollWheelZoom: false,
       });
 
-      const tiles = basemap();
-      L.tileLayer(tiles.url, { maxZoom: tiles.maxZoom, attribution: tiles.attribution }).addTo(instance);
+      // Named for the basemap specifically: `tiles` further down means the property tiles
+      // in the results list, which are a different thing entirely.
+      const base = basemap();
+      L.tileLayer(base.url, { maxZoom: base.maxZoom, attribution: base.attribution }).addTo(instance);
 
       const markers = new Map<string, L.Marker>();
 
