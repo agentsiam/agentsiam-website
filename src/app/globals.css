@@ -193,3 +193,12 @@ button {
     margin-bottom: 4px;
   }
 }
+
+/* Emoji on a guide pin. Sized up a touch because it is doing the work a word would
+   otherwise do, and given a fixed line box so pins of different categories line up. */
+.as-pin-icon {
+  display: inline-block;
+  margin-right: 4px;
+  font-size: 13px;
+  line-height: 1;
+}

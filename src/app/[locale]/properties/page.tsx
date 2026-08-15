@@ -91,7 +91,6 @@ export default async function PropertiesPage({
     lng: property.lng,
     price: property.fromPrice,
     currency: property.currency,
-    href: href(`/${property.slug}`),
   }));
   const chips = activeFilters(state);
   const relaxable = results.length === 0 ? loosestFilter(state) : null;

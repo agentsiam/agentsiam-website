@@ -42,7 +42,7 @@ export function PropertyTile({
       href={href}
       // The hook the results map binds hover and click behaviour to. The list stays
       // server-rendered HTML; see src/components/results-map.tsx for why.
-      data-property-slug={property.slug}
+      data-map-key={property.slug}
       className={`group grid gap-5 rounded-panel border border-hairline p-4 transition-shadow hover:border-ink ${
         wide ? "sm:grid-cols-[minmax(0,320px)_1fr] sm:items-center" : ""
       }`}

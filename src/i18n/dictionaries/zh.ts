@@ -299,4 +299,32 @@ export const zh: Dictionary = {
   allProperties: "全部房源", // NEW
   footAreas: "我们管理的区域", // NEW
 
+
+  // -- local guide --------------------------------------------------------
+  guideTitle: "周边指南", // NEW
+  guideIntro: "我们亲自去过的地方，并标注从住处出发所需的时间。", // NEW
+  guideCount: "{n} 个地点", // NEW
+  guideCountOne: "1 个地点", // NEW
+  guideFilterCategory: "类别", // NEW
+  guideFilterArea: "街区", // NEW
+  guideAll: "全部", // NEW
+  guideNearby: "步行可达", // NEW
+  guidePicks: "我们的推荐", // NEW
+  guideWalk: "分钟步行", // NEW
+  guideDrive: "分钟车程", // NEW
+  guideNoWalk: "步行过远", // NEW
+  guideDirections: "路线", // NEW
+  guideDirectionsApple: "Apple 地图", // NEW
+  guideDirectionsGoogle: "Google 地图", // NEW
+  guideOutsideAreas: "更远区域", // NEW
+  guideEmpty: "没有符合条件的地点。", // NEW
+  guideClear: "清除筛选", // NEW
+  guideFrom: "时间自 {property} 起算。", // NEW
+  guideBookDirect: "直接向我们预订", // NEW
+  guideBookDirectSub: "撰写本指南的正是我们。", // NEW
+  guideAskTitle: "咨询 AgentSiam 当地向导", // NEW
+  guideAskBody: "关于清迈或入住的任何问题，都可以问我们。", // NEW
+  guideAskCta: "通过 WhatsApp 联系我们", // NEW
+  guideAskPrefill: "你好 AgentSiam，我正在看 Lotus House 的周边指南，有一些问题想咨询。", // NEW
+  guideAskDismiss: "稍后再说", // NEW
 };

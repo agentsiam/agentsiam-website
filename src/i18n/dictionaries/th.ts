@@ -304,4 +304,32 @@ export const th: Dictionary = {
   allProperties: "ที่พักทั้งหมด", // NEW
   footAreas: "ย่านที่เราดูแล", // NEW
 
+
+  // -- local guide --------------------------------------------------------
+  guideTitle: "คู่มือย่านนี้", // NEW
+  guideIntro: "สถานที่ที่เราไปมาเอง พร้อมเวลาเดินทางจากบ้าน", // NEW
+  guideCount: "{n} แห่ง", // NEW
+  guideCountOne: "1 แห่ง", // NEW
+  guideFilterCategory: "ประเภท", // NEW
+  guideFilterArea: "ย่าน", // NEW
+  guideAll: "ทั้งหมด", // NEW
+  guideNearby: "เดินไปได้", // NEW
+  guidePicks: "ที่เราชอบ", // NEW
+  guideWalk: "นาที (เดิน)", // NEW
+  guideDrive: "นาที (รถ)", // NEW
+  guideNoWalk: "ไกลเกินกว่าจะเดิน", // NEW
+  guideDirections: "เส้นทาง", // NEW
+  guideDirectionsApple: "Apple Maps", // NEW
+  guideDirectionsGoogle: "Google Maps", // NEW
+  guideOutsideAreas: "ไกลออกไป", // NEW
+  guideEmpty: "ไม่พบสถานที่ตามที่เลือก", // NEW
+  guideClear: "ล้างตัวกรอง", // NEW
+  guideFrom: "เวลาคำนวณจาก {property}", // NEW
+  guideBookDirect: "จองตรงกับเรา", // NEW
+  guideBookDirectSub: "เจ้าของบ้านคนเดียวกับที่เขียนคู่มือนี้", // NEW
+  guideAskTitle: "คุยกับ AgentSiam Local Guide", // NEW
+  guideAskBody: "ถามเราได้ทุกเรื่องเกี่ยวกับเชียงใหม่ หรือการเข้าพัก", // NEW
+  guideAskCta: "ทักเราทาง WhatsApp", // NEW
+  guideAskPrefill: "สวัสดีค่ะ/ครับ AgentSiam ผมกำลังดูคู่มือย่านของ Lotus House และมีคำถามครับ", // NEW
+  guideAskDismiss: "ไว้ก่อน", // NEW
 };

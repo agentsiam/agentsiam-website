@@ -20,6 +20,15 @@ export const SITE_DESCRIPTION =
 // contact form notifications, so it is written down once.
 export const CONTACT_EMAIL = "hi@agentsiam.com";
 
+/**
+ * WhatsApp number that guest enquiries reach, digits only with country code and no plus,
+ * e.g. 66812345678. Unset hides every WhatsApp call to action rather than rendering a link
+ * that opens WhatsApp to nobody, which is worse than no button at all.
+ *
+ * Public by nature: it ends up in a wa.me link either way, which is why it is NEXT_PUBLIC_.
+ */
+export const WHATSAPP_NUMBER = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").replace(/[^\d]/g, "");
+
 // Shown as "Last updated" on the privacy policy and the terms. Bump by hand when the
 // text of either page materially changes, not on every deploy.
 export const POLICY_UPDATED = "14 August 2026";

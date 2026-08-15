@@ -319,6 +319,35 @@ export const en = {
   allProperties: "All properties", // NEW
   footAreas: "Areas we manage", // NEW
 
+
+  // -- local guide --------------------------------------------------------
+  // Strings written for this site: the handoff has no guide. Thai and Chinese unreviewed.
+  guideTitle: "Local guide", // NEW
+  guideIntro: "Places we have been to ourselves, with how long they take to reach from the house.", // NEW
+  guideCount: "{n} places", // NEW
+  guideCountOne: "1 place", // NEW
+  guideFilterCategory: "What for", // NEW
+  guideFilterArea: "Neighbourhood", // NEW
+  guideAll: "Everything", // NEW
+  guideNearby: "Walkable", // NEW
+  guidePicks: "Our favourites", // NEW
+  guideWalk: "min walk", // NEW
+  guideDrive: "min drive", // NEW
+  guideNoWalk: "Too far to walk", // NEW
+  guideDirections: "Directions", // NEW
+  guideDirectionsApple: "Apple Maps", // NEW
+  guideDirectionsGoogle: "Google Maps", // NEW
+  guideOutsideAreas: "Further out", // NEW
+  guideEmpty: "Nothing matches that combination.", // NEW
+  guideClear: "Clear filters", // NEW
+  guideFrom: "Times are from {property}.", // NEW
+  guideBookDirect: "Book direct with us", // NEW
+  guideBookDirectSub: "Same hosts who wrote this guide.", // NEW
+  guideAskTitle: "Talk to the AgentSiam local guide", // NEW
+  guideAskBody: "Ask us anything about Chiang Mai, or about staying here.", // NEW
+  guideAskCta: "Message us on WhatsApp", // NEW
+  guideAskPrefill: "Hello AgentSiam, I am reading the Lotus House local guide and have a question.", // NEW
+  guideAskDismiss: "Not now", // NEW
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

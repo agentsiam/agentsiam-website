@@ -10,7 +10,7 @@ import type { Dictionary } from "@/i18n";
  * list is server-rendered on purpose -- that is what makes a filtered search crawlable
  * rather than a client-side illusion. Lifting it into React to get hover linkage would
  * throw that away for a hover effect. So the list stays server HTML, each tile carries a
- * `data-property-slug`, and this component finds them and wires the two-way behaviour.
+ * `data-map-key`, and this component finds them and wires the two-way behaviour.
  * The map is an enhancement layered onto a page that already works without it.
  *
  * Leaflet is imported inside an effect rather than at module scope. It touches `window`
@@ -22,6 +22,7 @@ import type { Dictionary } from "@/i18n";
  */
 
 export type Pin = {
+  /** Matches the card's data-map-key. A property slug, or a place name in the guide. */
   slug: string;
   title: string;
   lat: number;
@@ -29,13 +30,53 @@ export type Pin = {
   /** Shown on the pin past cluster zoom. Null when the property has no rate loaded. */
   price: number | null;
   currency: string;
-  href: string;
+  /** Emoji shown on the pin. Guide places use one; properties show a price instead. */
+  icon?: string;
 };
+
+/**
+ * Pin labels go into a divIcon's innerHTML, so anything from the data has to be escaped.
+ * Place names come from a Google Sheet that several people edit, which is exactly the kind
+ * of source that eventually contains an ampersand or an angle bracket.
+ */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 /** Chiang Mai, framed to the city and its immediate districts. */
 const CITY = { lat: 18.7883, lng: 98.9853, zoom: 12 };
 
-export function ResultsMap({ pins, t }: { pins: Pin[]; t: Dictionary }) {
+export function ResultsMap({
+  pins,
+  t,
+  /**
+   * Clicking a card flies the map to its pin.
+   *
+   * Off by default because on the results page a card *is* a link to the property, and
+   * hijacking that click would take a guest somewhere they did not ask to go. In the guide
+   * the card is not a link, so the click is free and panning is the obvious thing to do
+   * with it.
+   */
+  panOnCardClick = false,
+  /**
+   * On the results page the map hides below 900px behind a toggle in the filter bar,
+   * because a map under fifty property tiles is a map nobody finds.
+   *
+   * The guide has no such toggle and the map is half the point of the page, so it opts
+   * out and stays visible at every width. Without this it inherited `display: none` on a
+   * phone with nothing anywhere to turn it back on.
+   */
+  collapsible = true,
+}: {
+  pins: Pin[];
+  t: Dictionary;
+  panOnCardClick?: boolean;
+  collapsible?: boolean;
+}) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<import("leaflet").Map | null>(null);
 
@@ -68,10 +109,11 @@ export function ResultsMap({ pins, t }: { pins: Pin[]; t: Dictionary }) {
         // A div icon rather than an image marker: it carries the price, which is what
         // makes a map worth using over a list, and it sidesteps Leaflet's default icon
         // paths breaking under a bundler.
-        const label =
-          pin.price !== null
+        const label = pin.icon
+          ? `<span class="as-pin-icon" aria-hidden="true">${pin.icon}</span>${escapeHtml(pin.title)}`
+          : pin.price !== null
             ? `${pin.currency} ${pin.price.toLocaleString("en-US")}`
-            : pin.title;
+            : escapeHtml(pin.title);
 
         const marker = L.marker([pin.lat, pin.lng], {
           title: pin.title,
@@ -84,7 +126,7 @@ export function ResultsMap({ pins, t }: { pins: Pin[]; t: Dictionary }) {
 
         marker.on("click", () => {
           const tile = document.querySelector<HTMLElement>(
-            `[data-property-slug="${pin.slug}"]`,
+            `[data-map-key="${pin.slug}"]`,
           );
           tile?.scrollIntoView({ behavior: "smooth", block: "center" });
           tile?.classList.add("ring-2", "ring-ink");
@@ -105,14 +147,28 @@ export function ResultsMap({ pins, t }: { pins: Pin[]; t: Dictionary }) {
 
       // Hover a tile, lift its pin. The listeners go on the server-rendered tiles.
       const tiles = Array.from(
-        document.querySelectorAll<HTMLElement>("[data-property-slug]"),
+        document.querySelectorAll<HTMLElement>("[data-map-key]"),
       );
       const listeners: (() => void)[] = [];
 
       for (const tile of tiles) {
-        const slug = tile.dataset.propertySlug ?? "";
+        const slug = tile.dataset.mapKey ?? "";
         const marker = markers.get(slug);
         if (!marker) continue;
+
+        if (panOnCardClick) {
+          const fly = (event: Event) => {
+            // Anything genuinely clickable inside the card keeps its own behaviour: the
+            // directions links are the whole point of the card and must not be swallowed.
+            if ((event.target as HTMLElement).closest("a,button")) return;
+            instance.flyTo(marker.getLatLng(), Math.max(instance.getZoom(), 16), {
+              duration: 0.6,
+            });
+            marker.getElement()?.classList.add("as-pin-active");
+          };
+          tile.addEventListener("click", fly);
+          listeners.push(() => tile.removeEventListener("click", fly));
+        }
 
         const enter = () => marker.getElement()?.classList.add("as-pin-active");
         const leave = () => marker.getElement()?.classList.remove("as-pin-active");
@@ -157,12 +213,14 @@ export function ResultsMap({ pins, t }: { pins: Pin[]; t: Dictionary }) {
       cleanup();
     };
     // Re-drawn whenever the result set changes, which on this page means a new URL.
-  }, [pins]);
+  }, [pins, panOnCardClick]);
 
   if (pins.length === 0) return null;
 
   return (
-    <div className="as-map-pane min-[900px]:sticky min-[900px]:top-[150px]">
+    <div
+      className={`${collapsible ? "as-map-pane" : ""} min-[900px]:sticky min-[900px]:top-[150px]`}
+    >
       <div
         ref={container}
         role="application"
