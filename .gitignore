@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Camera originals. The working copies beside them are capped at 2560px, which is still
+# double what the largest slot on the site renders; these are the untouched 4000px files,
+# kept for print or a future redesign. ~366MB and growing, so they stay out of git --
+# the folder still syncs to Google Drive, which is where the backup actually lives.
+src/photos/**/raw/
+
+# The example is documentation of every variable the app reads, not a secret.
+# Real values live in .env.local and in the Vercel project. Keep it tracked.
+!.env.example
