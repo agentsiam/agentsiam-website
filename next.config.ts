@@ -7,6 +7,16 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
+  async redirects() {
+    return [
+      // The design folds the company story into /how-it-works and drops /about. The old
+      // page was a noindex stub, but the URL was linkable, so it keeps a permanent
+      // redirect rather than turning into a 404. Same for the Thai and Chinese paths,
+      // which never shipped but would otherwise 404 asymmetrically.
+      { source: "/about", destination: "/how-it-works", permanent: true },
+      { source: "/:locale(th|zh)/about", destination: "/:locale/how-it-works", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

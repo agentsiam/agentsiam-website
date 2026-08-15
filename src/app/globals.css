@@ -1,36 +1,47 @@
 @import "tailwindcss";
 
 /*
-  Tokens ported from as-context/06-design-system/design-system.html (agentsiam-consulting repo).
-  Keep these in sync manually -- the two repos don't share a build step. If design-system.html's
-  tokens change, this file goes stale until someone re-ports it.
+  Design tokens from design_handoff_agentsiam_portal (Claude Design, 13/08/2026), which
+  supersedes the earlier port from agentsiam-consulting's design-system.html. The handoff's
+  "Design tokens" table is the source of truth; keep this file and that table in sync.
+
+  Light only, on purpose. The handoff defines no dark palette -- the design is built on
+  white ground with solid ink/blue/gold panels, and a dark scheme would have to invent
+  values for every wash and every "on-ink" pairing. The previous prefers-color-scheme block
+  was removed rather than left to guess. To bring dark mode back, a dark set of these same
+  tokens has to be designed first.
 */
 :root {
+  /* ground */
   --color-bg: #ffffff;
-  --color-surface: #f6f6fb;
+  --color-surface: #f6f6fb; /* off-white panel fill */
   --color-surface-2: #eff0f8;
+
+  /* text */
   --color-text: #181818;
-  --color-muted: #5b5b6b;
+  --color-body: #2a2a33; /* paragraphs */
+  --color-muted: #5b5b6b; /* secondary copy */
   --color-border: #e4e4ee;
 
-  --color-primary: #0100dd;
-  --color-secondary: #fb5932;
-  --color-tertiary: #181818;
-  --color-sand: #d9b16b;
+  /* brand */
+  --color-ink: #14141c; /* dark panels, primary buttons */
+  --color-primary: #0100dd; /* blue */
+  --color-sand: #d9b16b; /* gold */
+  --color-teal: #00b4b1; /* inclusion ticks, positive verdict */
+  --color-secondary: #fb5932; /* orange-red: exclusions, negative verdict */
   --color-pink: #f7acc6;
-  --color-teal: #00b4b1;
-  --color-ink: #14141c;
-}
+  --color-tertiary: #181818;
+  --color-gold-on-ink: #f0cb86; /* gold that stays legible on the ink panels */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #13131a;
-    --color-surface: #1c1d27;
-    --color-surface-2: #23242f;
-    --color-text: #f1f2fa;
-    --color-muted: #a8a9be;
-    --color-border: #2c2d3a;
-  }
+  /* verdict and callout washes, with the label colours that sit on them */
+  --color-wash-green: #eafbfa;
+  --color-wash-red: #fff3ef;
+  --color-wash-gold: #fdf8ee;
+  --color-deep-green: #00745f;
+  --color-deep-red: #b93b18;
+
+  /* one hairline value, used for every border and divider in the design */
+  --color-hairline: rgba(24, 24, 24, 0.12);
 }
 
 @theme inline {
@@ -38,22 +49,44 @@
   --color-surface: var(--color-surface);
   --color-surface-2: var(--color-surface-2);
   --color-text: var(--color-text);
+  --color-body: var(--color-body);
   --color-muted: var(--color-muted);
   --color-border: var(--color-border);
+  --color-hairline: var(--color-hairline);
 
+  --color-ink: var(--color-ink);
   --color-primary: var(--color-primary);
   --color-secondary: var(--color-secondary);
   --color-tertiary: var(--color-tertiary);
   --color-sand: var(--color-sand);
   --color-pink: var(--color-pink);
   --color-teal: var(--color-teal);
-  --color-ink: var(--color-ink);
+  --color-gold-on-ink: var(--color-gold-on-ink);
 
-  --font-display: var(--font-poppins), "Segoe UI", sans-serif;
-  --font-body: var(--font-plex-sans), "Segoe UI", sans-serif;
+  --color-wash-green: var(--color-wash-green);
+  --color-wash-red: var(--color-wash-red);
+  --color-wash-gold: var(--color-wash-gold);
+  --color-deep-green: var(--color-deep-green);
+  --color-deep-red: var(--color-deep-red);
+
+  /* Unbounded 800 for hero headlines, Poppins 700 for section headings, Plex Sans for
+     body, Plex Mono for eyebrows and labels. Noto Thai and Noto SC are stacked behind
+     the Latin faces so Thai and Chinese pages do not fall back to a system default. */
+  --font-body: var(--font-plex-sans), var(--font-noto-thai), var(--font-noto-sc),
+    system-ui, sans-serif;
+  --font-display: var(--font-poppins), var(--font-noto-thai), var(--font-noto-sc),
+    system-ui, sans-serif;
+  --font-headline: var(--font-unbounded), var(--font-poppins), var(--font-noto-thai),
+    var(--font-noto-sc), sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, Menlo, monospace;
-  --font-headline: var(--font-unbounded), var(--font-poppins), sans-serif;
-  --font-thai: var(--font-noto-thai), "Segoe UI", sans-serif;
+
+  /* 16px cards and panels, 12px inner boxes, 999px pills. */
+  --radius-panel: 16px;
+  --radius-box: 12px;
+
+  /* Content max-widths: 1440px for chrome and full-bleed sections, 1080px for prose. */
+  --container-chrome: 1440px;
+  --container-prose: 1080px;
 }
 
 body {
@@ -62,6 +95,101 @@ body {
   font-family: var(--font-body);
 }
 
-h1, h2, h3 {
-  font-family: var(--font-display);
+/* Transitions on colour and background only. The handoff rules out decorative motion. */
+a,
+button {
+  transition:
+    background-color 0.18s,
+    border-color 0.18s,
+    color 0.18s;
+}
+
+/*
+  Component classes for the three patterns that repeat on every page. Everything else is
+  written with utilities at the call site; these three earn a name because their exact
+  values (letter-spacing on the eyebrow, the pill's padding) are design decisions rather
+  than layout, and drifting them by a pixel per page is how a design system dies.
+*/
+@layer components {
+  /* IBM Plex Mono, uppercase, 10.5-12px, letter-spacing 0.07-0.08em. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-muted);
+  }
+
+  /* The solid ink pill: every page's single primary CTA. */
+  .pill-primary {
+    display: inline-block;
+    border-radius: 999px;
+    background: var(--color-ink);
+    padding: 0.875rem 1.625rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .pill-primary:hover {
+    background: var(--color-primary);
+  }
+
+  /* The outlined pill: same-audience secondary, never a cross-audience link. */
+  .pill-outline {
+    display: inline-block;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-hairline);
+    padding: 0.8125rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .pill-outline:hover {
+    border-color: var(--color-ink);
+    background: var(--color-ink);
+    color: #fff;
+  }
+}
+
+/* -- Map pins ---------------------------------------------------------------
+   Leaflet div-icon markers on the results map. The pin carries the nightly rate,
+   which is the thing that makes a map worth using over a list. Styled here rather
+   than inline because Leaflet injects the element itself, outside React's tree. */
+.as-pin {
+  display: inline-block;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-ink);
+  background: var(--color-bg);
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.18);
+}
+
+/* Applied when the matching tile is hovered or focused, so the two panes stay linked. */
+.as-pin-active .as-pin,
+.as-pin:hover {
+  background: var(--color-ink);
+  color: #fff;
+  z-index: 500;
+}
+
+/* -- Results map pane -------------------------------------------------------
+   Below the 900px split-view breakpoint the map is opt-in, toggled from the filter
+   bar. When it opens it sits *above* the results rather than under them, which is
+   what the handoff asks for and the only placement that makes sense on a phone --
+   a map below fifty tiles is a map nobody finds. */
+@media (max-width: 899px) {
+  .as-map-pane {
+    display: none;
+  }
+  body[data-map-open="true"] .as-map-pane {
+    display: block;
+    order: -1;
+    margin-bottom: 4px;
+  }
 }
