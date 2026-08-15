@@ -40,8 +40,29 @@ const OUT_PATH = join(ROOT, "src", "lib", "guide.generated.ts");
 const SHEET_CSV =
   "https://docs.google.com/spreadsheets/d/1WmFb9ZdmDt_ku4cF49-KoYoaabeTaDwJYImmlI-BXbU/export?format=csv";
 
-/** Router. OSRM's demo server is for demo volumes, which is what a cached one-off is. */
-const OSRM = process.env.OSRM_URL || "https://router.project-osrm.org";
+/**
+ * Routers, one per travel mode, and they must be different servers.
+ *
+ * This is not configuration taste. router.project-osrm.org is built with the car profile
+ * only: ask it for /route/v1/foot/ and it does not refuse, it quietly returns a driving
+ * route. The first run of this script produced a walking time identical to the driving
+ * time for all 109 places, including an 11 minute "walk" to somewhere 6.4km away, which
+ * is 35km/h. Nothing errored. It would have shipped.
+ *
+ * FOSSGIS runs separate OSRM instances per profile, which is what makes the distinction
+ * real rather than nominal. Their service is community funded, so this stays a cached
+ * one-off rather than anything a visitor triggers.
+ */
+const ROUTERS = {
+  walking: process.env.OSRM_FOOT_URL || "https://routing.openstreetmap.de/routed-foot",
+  driving: process.env.OSRM_CAR_URL || "https://routing.openstreetmap.de/routed-car",
+};
+
+/** Fastest a person plausibly walks, km/h. Anything above this is a driving route lying. */
+const MAX_WALK_KMH = 8;
+
+/** Beyond this, a walking route is technically valid and practically nonsense. */
+const MAX_WALK_MINUTES = 90;
 
 /**
  * Furthest a place can be from a neighbourhood's centre and still be called part of it.
@@ -141,13 +162,32 @@ async function resolveLink(url) {
   return coordsFromGoogleUrl(loc || res.url);
 }
 
-async function route(from, to, profile) {
-  const url = `${OSRM}/route/v1/${profile}/${from.lng},${from.lat};${to.lng},${to.lat}?overview=false`;
-  const res = await fetch(url);
+async function route(from, to, mode) {
+  const profile = mode === "walking" ? "foot" : "driving";
+  const url = `${ROUTERS[mode]}/route/v1/${profile}/${from.lng},${from.lat};${to.lng},${to.lat}?overview=false`;
+  const res = await fetch(url, { headers: { "user-agent": "agentsiam-website guide build (hi@agentsiam.com)" } });
   if (!res.ok) return null;
   const json = await res.json();
   const r = json?.routes?.[0];
-  return r ? { minutes: Math.max(1, Math.round(r.duration / 60)), metres: Math.round(r.distance) } : null;
+  if (!r) return null;
+
+  const minutes = Math.max(1, Math.round(r.duration / 60));
+  const metres = Math.round(r.distance);
+
+  if (mode === "walking") {
+    const kmh = metres / 1000 / (r.duration / 3600);
+    // Catches a car profile answering a walking question, which is silent otherwise.
+    if (kmh > MAX_WALK_KMH) {
+      throw new Error(
+        `Walking route came back at ${kmh.toFixed(1)}km/h, above ${MAX_WALK_KMH}. ` +
+          `That is a driving route wearing a walking label. Check OSRM_FOOT_URL points at a foot-profile server.`,
+      );
+    }
+    // Honest rather than absurd: nobody walks to Doi Inthanon.
+    if (minutes > MAX_WALK_MINUTES) return null;
+  }
+
+  return { minutes, metres };
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -270,7 +310,7 @@ for (const prop of PROPERTIES) {
   for (const p of places) {
     const key = `${prop.slug}|${p.google}`;
     if (cache.routes[key]) continue;
-    const foot = await route(prop, p, "foot").catch(() => null);
+    const foot = await route(prop, p, "walking");
     const car = await route(prop, p, "driving").catch(() => null);
     cache.routes[key] = {
       walk: foot?.minutes ?? null,
@@ -278,11 +318,37 @@ for (const prop of PROPERTIES) {
       metres: foot?.metres ?? car?.metres ?? Math.round(metres(prop, p)),
     };
     routed++;
+    // Persist as we go. Routing is the slow part and it runs against community servers
+    // that can rate-limit or stall; losing 200 completed requests because request 201
+    // timed out would make every retry start from nothing. Written every 10 so a
+    // Ctrl-C or a dropped connection costs seconds of work, not minutes.
+    if (routed % 10 === 0) {
+      writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2) + "\n");
+      console.log(`  routed ${routed}, cached`);
+    }
     await sleep(250);
-    if (routed % 20 === 0) console.log(`  routed ${routed}…`);
   }
 }
 console.log(`routes: ${routed} newly computed`);
+
+/**
+ * Second guard, on the whole set rather than one route.
+ *
+ * The per-route speed check catches an obviously wrong answer. This catches a subtly
+ * wrong configuration: if walking and driving agree everywhere, one server is answering
+ * both questions, whatever the URLs say.
+ */
+{
+  const both = Object.values(cache.routes).filter((r) => r.walk !== null && r.drive !== null);
+  const identical = both.filter((r) => r.walk === r.drive).length;
+  if (both.length > 10 && identical / both.length > 0.5) {
+    throw new Error(
+      `${identical} of ${both.length} places have walking and driving times that are identical. ` +
+        `One router is answering both. Refusing to write a guide that tells guests to walk a driving route.`,
+    );
+  }
+  console.log(`sanity: ${identical}/${both.length} identical walk/drive times`);
+}
 
 mkdirSync(dirname(CACHE_PATH), { recursive: true });
 writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2) + "\n");
