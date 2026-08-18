@@ -361,4 +361,5 @@ export const zh: Dictionary = {
   metaPrivacyTitle: "隐私政策", // NEW
   metaPrivacyDesc:
     "AgentSiam 如何收集、使用和存储您通过本站提交的信息，以及您在泰国 PDPA 下享有的权利。", // NEW
+  addressAfterBooking: "确认预订后，我们会将详细地址发送给您。", // NEW
 };

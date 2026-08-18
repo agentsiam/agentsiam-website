@@ -156,10 +156,17 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
             </div>
             <div>
               <h2 className="eyebrow">{t.whereYoullBe}</h2>
-              <address className="mt-2 text-sm not-italic leading-relaxed text-body">
-                {property.address}
-              </address>
+              {/* Neighbourhood, not the street address. The exact address and pin are
+                  booking-confirmation material: a listing anyone can find should not
+                  publish where the house is, which is what Airbnb and Booking both do.
+                  A booked guest still gets it, through the one-way-alley-arrival
+                  disclosure on the property profile, which carries the Google Maps and
+                  the Grab address because the two differ. */}
+              <p className="mt-2 text-sm leading-relaxed text-body">
+                {[area?.name, "Chiang Mai"].filter(Boolean).join(", ")}
+              </p>
               <p className="mt-1.5 text-[13px] text-muted">{area?.vibe}</p>
+              <p className="mt-1.5 text-[13px] text-muted">{t.addressAfterBooking}</p>
             </div>
           </section>
 

@@ -100,7 +100,7 @@ export const LOTUS_HOUSE: Property = {
   fill: "bg-primary",
   onFill: "text-white",
   facts: [
-    { label: "Guests", value: "4+" },
+    { label: "Guests", value: "4" },
     { label: "Bedrooms", value: "2" },
     { label: "Beds", value: "2 king" },
     { label: "Bathrooms", value: "2" },
@@ -111,6 +111,11 @@ export const LOTUS_HOUSE: Property = {
     "Lotus House is your base for adventure and local living in Chiang Mai. Tucked on a quiet street among friendly neighbours, this three-storey home blends comfort with character, offering spacious rooms and a rooftop terrace to relax after exploring the city's vibrant markets, temples, and nightlife.",
     "Lotus House features two king bedrooms, a back bedroom with patio, three dining spaces (indoor table, kitchen island, and rooftop terrace), a fully equipped kitchen, and a rooftop soaking tub. Fast Wi-Fi, smart TV, and a safety box are included. Garage parking and motorbike rental are available, with a 7/11 just a 5-minute walk away.",
   ],
+  /**
+   * The exact street address. NOT for the listing: it is released at
+   * booking-confirmation, like Airbnb's and Booking's. The property page shows the
+   * neighbourhood only. Kept here because the post-booking path needs it.
+   */
   address:
     "42 Soi 1, Tambon Chang Khlan, Amphoe Mueang Chiang Mai, Chang Wat Chiang Mai 50100, Thailand",
   checkIn: "15:00",
@@ -130,6 +135,38 @@ export const LOTUS_HOUSE: Property = {
 };
 
 export const PROPERTIES: Property[] = [LOTUS_HOUSE];
+
+/**
+ * An approximate point for a property, for any public map.
+ *
+ * Exact coordinates are `booking-confirmation` material under the visibility rule in
+ * as-context/03-systems/property-profile-schema.md, the same as the street address. A pin
+ * on a public results map is the address in another form: zoom in far enough and it names
+ * the building.
+ *
+ * So public maps get a point offset by roughly 250 to 400 metres in a direction derived
+ * from the slug. Deterministic on purpose -- the same property lands in the same wrong
+ * place on every render, so the pin does not shimmer between page loads, and the offset
+ * cannot be averaged away by reloading. Close enough to answer "is this the right part of
+ * town", far enough that it does not answer "which house".
+ *
+ * Not a substitute for zooming out. It is one of two defences, the other being that the
+ * exact address is not published either.
+ */
+export function approxLocation(property: Property): { lat: number; lng: number } {
+  let hash = 0;
+  for (const character of property.slug) {
+    hash = (hash * 31 + character.charCodeAt(0)) >>> 0;
+  }
+  // ~0.0027 degrees latitude is about 300m; longitude is scaled by the cosine of the
+  // latitude so the offset is round in metres rather than in degrees.
+  const angle = (hash % 360) * (Math.PI / 180);
+  const metres = 250 + (hash % 150);
+  const dLat = (metres * Math.cos(angle)) / 111_320;
+  const dLng =
+    (metres * Math.sin(angle)) / (111_320 * Math.cos((property.lat * Math.PI) / 180));
+  return { lat: property.lat + dLat, lng: property.lng + dLng };
+}
 
 /**
  * The area a property sits in.

@@ -366,4 +366,5 @@ export const th: Dictionary = {
   metaPrivacyTitle: "นโยบายความเป็นส่วนตัว", // NEW
   metaPrivacyDesc:
     "AgentSiam เก็บ ใช้ และรักษาข้อมูลที่คุณส่งผ่านเว็บไซต์นี้อย่างไร และสิทธิของคุณภายใต้ PDPA ของไทย", // NEW
+  addressAfterBooking: "เราจะส่งที่อยู่แบบละเอียดให้เมื่อการจองได้รับการยืนยันแล้ว", // NEW
 };

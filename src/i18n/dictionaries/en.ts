@@ -391,6 +391,7 @@ export const en = {
   metaPrivacyTitle: "Privacy policy",
   metaPrivacyDesc:
     "How AgentSiam collects, uses and stores the information you send through this site, and the rights you have over it under Thailand's PDPA.",
+  addressAfterBooking: "We send the exact address when your booking is confirmed.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

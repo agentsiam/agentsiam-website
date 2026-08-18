@@ -11,7 +11,7 @@ import { areaBySlug } from "@/lib/areas";
 import { categoryIcon } from "@/lib/guide-icons";
 import { PHOTOS } from "@/lib/photos.generated";
 import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
-import { LOTUS_HOUSE } from "@/lib/property";
+import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
 import { pageMeta, WHATSAPP_NUMBER } from "@/lib/site";
 
 /**
@@ -73,6 +73,7 @@ export default async function LocalGuidePage({
   const picks = one(query.picks) === "1";
 
   const distances = GUIDE_DISTANCES[LOTUS_HOUSE.slug] ?? {};
+  const guideArea = propertyArea(LOTUS_HOUSE);
 
   const places = GUIDE_PLACES.filter((place) => {
     const d = distances[place.name];
@@ -110,7 +111,20 @@ export default async function LocalGuidePage({
 
   // Opens at the scale a guest is standing in. Framing on all 109 would include Doi
   // Inthanon 86km away and crush the fifty-odd places around the house into a smudge.
-  const home = { lat: LOTUS_HOUSE.lat, lng: LOTUS_HOUSE.lng, label: LOTUS_HOUSE.title };
+  // The neighbourhood centre, NOT the house.
+  //
+  // This page is public, indexed, and never shared with a booked guest, so nobody who
+  // needs door-to-door routing ever sees it. Marking the house here published where it is
+  // to everyone and served no one. The walk and drive times are still measured from the
+  // house, which is the useful part and gives away nothing: how far a place is does not
+  // say where you started. Same position Airbnb takes.
+  //
+  // Exact address and coordinates are booking-confirmation material. See the `visibility`
+  // rule in as-context/03-systems/property-profile-schema.md.
+  const origin = guideArea
+    ? { lat: guideArea.lat, lng: guideArea.lng, label: guideArea.name }
+    : { lat: LOTUS_HOUSE.lat, lng: LOTUS_HOUSE.lng, label: LOTUS_HOUSE.title };
+  const home = origin;
   const propertyPhoto = (PHOTOS[LOTUS_HOUSE.slug] ?? [])[0];
   const walkable = places.filter((place) => {
     const walk = distances[place.name]?.walk;
@@ -252,7 +266,7 @@ export default async function LocalGuidePage({
                       {d?.drive != null ? ` · ${d.drive} ${t.guideDrive}` : ""}
                     </span>
                     <DirectionsLinks
-                      from={{ lat: LOTUS_HOUSE.lat, lng: LOTUS_HOUSE.lng }}
+                      from={{ lat: origin.lat, lng: origin.lng }}
                       to={{ lat: place.lat, lng: place.lng }}
                       mode={d?.walk != null ? "walking" : "driving"}
                       t={t}
