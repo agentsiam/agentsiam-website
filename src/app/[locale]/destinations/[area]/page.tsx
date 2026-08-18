@@ -32,12 +32,13 @@ export async function generateMetadata({
 }: PageProps<"/[locale]/destinations/[area]">): Promise<Metadata> {
   const { locale, area: slug } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
   const area = areaBySlug(slug);
   if (!area) notFound();
 
   return pageMeta({
-    title: `Staying in ${area.name}, Chiang Mai`,
-    description: `${area.name}: ${area.vibe}. What the neighbourhood is like, and the places we manage there.`,
+    title: t.metaAreaTitle.replace("{area}", area.name),
+    description: t.metaAreaDesc.replace("{area}", area.name).replace("{vibe}", area.vibe),
     path: `/destinations/${area.slug}`,
     locale,
   });

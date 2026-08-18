@@ -3,10 +3,13 @@
 Website for AgentSiam. Next.js 16 (App Router) + TypeScript + Tailwind v4, scaffolded
 28/07/2026. Rebuilt against the Claude Design handoff on 14/08/2026.
 
-**Status: built, not deployed.** Seven routes in three languages, the design system from
-`design_handoff_agentsiam_portal/`, a working contact form, and full metadata with hreflang.
-Pushed to `github.com/agentsiam/agentsiam-website` (`main`). Not connected to Vercel, and
-**not ready to go live** — see "Before this can be deployed" below.
+**Status: built, not deployed.** Ten routes plus eight neighbourhood pages, all in three
+languages, the design system from `design_handoff_agentsiam_portal/`, a contact form
+delivering over Zoho SMTP, direct booking with Stripe payment against Beds24, and full
+metadata with hreflang. Not connected to Vercel, and **not ready to go live**: see "Before
+this can be deployed" below.
+
+Verified green on 18/08/2026: `next build`, `tsc --noEmit` and `eslint .` all clean.
 
 ## Routes
 
@@ -322,14 +325,17 @@ The pipeline, so nobody has to think about image formats:
 
 ## Known gaps
 
-- **No photography yet.** The old property library was generic international stock and was
-  removed, per the design system's "no stock, no fake mockups" rule. The pipeline above is
-  built and tested; it is waiting on a shoot.
+- ~~No photography yet.~~ Resolved. Real Lotus House photography landed 15/08/2026, 52
+  frames across seven rooms, plus five team portraits. The old generic stock library stays
+  removed, per the design system's "no stock, no fake mockups" rule.
 - No icon set. Value-prop icons are typographic glyphs, as in the handoff.
 - No phone number or LINE ID published. The footer carries name, address and email only; all
   three have to match the Google Business Profile character for character.
-- The footer has no "Areas we manage" column. It exists in the design to link eight
-  neighbourhood pages, and there are none yet.
+- ~~The footer has no "Areas we manage" column.~~ Resolved. The footer links all eight
+  neighbourhood pages.
+- ~~Page titles and meta descriptions are English in all three locales.~~ Found and fixed
+  18/08/2026. All eleven route files now read `metaXxxTitle` / `metaXxxDesc` from the
+  dictionary. The 22 new Thai and Chinese strings are marked `// NEW` and are unreviewed.
 
 ## Getting started
 
@@ -356,14 +362,24 @@ Hard blockers, in order:
    presents them as binding.
 2. **The Thai and Chinese strings marked `// NEW` have not been reviewed by a native speaker.**
    Everything else in those files is the handoff's own translation.
-3. **No photography.** Slots render brand panels until files land in `src/photos/`.
-4. **Contact form delivery is unverified end to end.** `RESEND_API_KEY`, `CONTACT_TO_EMAIL` and
-   `CONTACT_FROM_EMAIL` have to be set in Vercel and a real send tested.
+3. **Four listing disclosures are missing from `/lotushouse`, one of them `safety`.** The
+   property profile requires them in the listing, and the booking panel hardcodes
+   `children: 0` so the safety trigger cannot fire. This is the blocker with a real victim:
+   see `as-work/2026-08-18-website-launch-blockers/findings.md` in the consulting repo.
+4. **The exact street address and coordinates are public before booking**, including a
+   house pin and door-to-door directions on the indexed local-guide page. Same source.
+5. **Contact form delivery is unverified end to end.** The transport is Zoho SMTP, not
+   Resend: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` and `CONTACT_TO_EMAIL`
+   have to be set in Vercel and a real send tested. `.env.example` documents all seventeen
+   variables.
 
 Then, the deploy itself: connect the GitHub repo to Vercel, set `NEXT_PUBLIC_SITE_URL` on
 preview deployments so previews don't advertise the production canonical, ship to a preview URL
 first, and only repoint DNS once the list above is clear.
 
-**Committing from this checkout fails.** The repo lives in Google Drive, and git cannot write
-`.git/index.lock` through the Drive sync layer ("Operation not permitted"). Commit and push from
-a normal Finder/terminal session, or move the checkout out of Drive.
+**A note on git locks.** This checkout moved out of Google Drive on 15/08/2026, which fixed
+the old "Operation not permitted" failure on `.git/index.lock`. Two zero-byte lock files
+survived the move and silently failed every write until they were cleared on 18/08/2026. If
+git reports "Another git process seems to be running" with no git running, check for
+`.git/*.lock` and delete them. A failed write can report success: a branch checkout blocked
+this way still printed "Already up to date".

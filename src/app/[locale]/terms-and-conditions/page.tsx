@@ -22,10 +22,10 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
   return pageMeta({
-    title: "Terms and conditions",
-    description:
-      "The terms covering AgentSiam's feasibility study, vacation rental permission and short-term rental management services, and use of this website.",
+    title: t.metaTermsTitle,
+    description: t.metaTermsDesc,
     path: "/terms-and-conditions",
     locale,
   });

@@ -35,10 +35,10 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
   return pageMeta({
-    title: "How it works",
-    description:
-      "Three services sold as a staircase, not a menu: a paid feasibility and ROI study that can end in a No-Go, the non-hotel exemption filing, then OTA and direct booking management.",
+    title: t.metaHowTitle,
+    description: t.metaHowDesc,
     path: "/how-it-works",
     locale,
   });

@@ -26,10 +26,10 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
   return pageMeta({
-    title: "Chiang Mai neighbourhoods",
-    description:
-      "The eight Chiang Mai neighbourhoods we cover — Nimman, the Old City, Santitham, Chang Khlan, Riverside, Hang Dong, Mae Rim and San Sai — and what each is actually like.",
+    title: t.metaDestinationsTitle,
+    description: t.metaDestinationsDesc,
     path: "/destinations",
     locale,
   });

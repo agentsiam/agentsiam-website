@@ -17,10 +17,10 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
   return pageMeta({
-    title: "Business services",
-    description:
-      "For businesses entering Thailand: company setup and compliance, OEM and supply chain, ecommerce launch on LINE, TikTok, Shopee and Lazada, and growth.",
+    title: t.metaBusinessTitle,
+    description: t.metaBusinessDesc,
     path: "/business-services",
     locale,
   });

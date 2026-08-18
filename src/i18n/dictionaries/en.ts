@@ -348,6 +348,49 @@ export const en = {
   guideAskCta: "Message us on WhatsApp", // NEW
   guideAskPrefill: "Hello AgentSiam, I am reading the Lotus House local guide and have a question.", // NEW
   guideAskDismiss: "Not now", // NEW
+  // -- page metadata ------------------------------------------------------
+  //
+  // Titles and descriptions were English in every locale until 18/08/2026: each
+  // generateMetadata hardcoded a literal while the body copy was fully translated, so
+  // hreflang pointed three URLs at each other and two of them showed an English snippet
+  // in search results. These keys are what the pages read now.
+  //
+  // Area names are deliberately not translated. They render as English on the page
+  // itself (they come from AREAS, which has no locale axis), so a translated name in the
+  // snippet would not match what the visitor lands on.
+  metaHomeTitle: "AgentSiam | Short-term rental management in Chiang Mai",
+  metaHomeDesc:
+    "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Three separate steps, each one earning the next.",
+  metaHowTitle: "How it works",
+  metaHowDesc:
+    "Three services sold as a staircase, not a menu: a paid feasibility and ROI study that can end in a No-Go, the non-hotel exemption filing, then OTA and direct booking management.",
+  metaPropertiesTitle: "Places to stay in Chiang Mai",
+  metaPropertiesDesc:
+    "Homes, villas and townhouses in Chiang Mai, managed on the ground. Filter by neighbourhood, type and size, and book direct.",
+  metaLotusTitle: "Lotus House, a private townhouse near the Night Bazaar",
+  metaLotusDesc:
+    "A three-storey townhouse with a rooftop terrace in Chang Khlan, Chiang Mai. Two king bedrooms, two bathrooms, a full kitchen and space for four guests.",
+  metaGuideTitle: "{property} local guide",
+  metaGuideDesc:
+    "{n} places around {property} in Chiang Mai, chosen by the hosts, with walking and driving times from the door.",
+  metaDestinationsTitle: "Chiang Mai neighbourhoods",
+  metaDestinationsDesc:
+    "The eight Chiang Mai neighbourhoods we cover, Nimman, Old City, Santitham, Chang Khlan, Riverside, Hang Dong, Mae Rim and San Sai, and what each is actually like.",
+  metaAreaTitle: "Staying in {area}, Chiang Mai",
+  metaAreaDesc:
+    "{area}: {vibe}. What the neighbourhood is like, and the places we manage there.",
+  metaContactTitle: "Contact",
+  metaContactDesc:
+    "Tell us about your property in Chiang Mai and we will come back to you about a feasibility study, a permission filing or full management.",
+  metaBusinessTitle: "Business services",
+  metaBusinessDesc:
+    "For businesses entering Thailand: company setup and compliance, OEM and supply chain, ecommerce launch on LINE, TikTok, Shopee and Lazada, and growth.",
+  metaTermsTitle: "Terms and conditions",
+  metaTermsDesc:
+    "The terms covering AgentSiam's feasibility study, vacation rental permission and short-term rental management services, and use of this website.",
+  metaPrivacyTitle: "Privacy policy",
+  metaPrivacyDesc:
+    "How AgentSiam collects, uses and stores the information you send through this site, and the rights you have over it under Thailand's PDPA.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

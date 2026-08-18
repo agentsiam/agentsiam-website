@@ -20,10 +20,10 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
   return pageMeta({
-    title: "Privacy policy",
-    description:
-      "How AgentSiam collects, uses and stores the information you send through this site, and the rights you have over it under Thailand's PDPA.",
+    title: t.metaPrivacyTitle,
+    description: t.metaPrivacyDesc,
     path: "/privacy-policy",
     locale,
   });

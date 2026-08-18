@@ -29,10 +29,10 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
   return pageMeta({
-    title: "Places to stay in Chiang Mai",
-    description:
-      "Homes, villas and townhouses in Chiang Mai, managed on the ground. Filter by neighbourhood, type and size, and book direct.",
+    title: t.metaPropertiesTitle,
+    description: t.metaPropertiesDesc,
     path: "/properties",
     locale,
   });

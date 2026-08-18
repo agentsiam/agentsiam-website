@@ -9,7 +9,6 @@ import { HeroSearch } from "@/components/hero-search";
 import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
 import {
   OG_IMAGE,
-  SITE_DESCRIPTION,
   SITE_NAME,
   absoluteUrl,
   languageAlternates,
@@ -22,11 +21,12 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const title = `${SITE_NAME} | Short-term rental management in Chiang Mai`;
+  const t = getDictionary(locale);
+  const title = t.metaHomeTitle;
 
   return {
     title: { absolute: title },
-    description: SITE_DESCRIPTION,
+    description: t.metaHomeDesc,
     alternates: {
       canonical: absoluteUrl(locale, "/"),
       languages: languageAlternates("/"),
@@ -36,13 +36,13 @@ export async function generateMetadata({
       siteName: SITE_NAME,
       url: absoluteUrl(locale, "/"),
       title,
-      description: SITE_DESCRIPTION,
+      description: t.metaHomeDesc,
       images: [OG_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description: SITE_DESCRIPTION,
+      description: t.metaHomeDesc,
       images: [OG_IMAGE],
     },
   };

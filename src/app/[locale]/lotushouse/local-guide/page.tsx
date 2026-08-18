@@ -42,12 +42,13 @@ export async function generateMetadata({
 }: PageProps<"/[locale]/lotushouse/local-guide">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
 
   return pageMeta({
-    title: `${LOTUS_HOUSE.title} local guide`,
-    description:
-      `${GUIDE_PLACES.length} places around ${LOTUS_HOUSE.title} in Chiang Mai, chosen by the hosts, ` +
-      `with walking and driving times from the door.`,
+    title: t.metaGuideTitle.replace("{property}", LOTUS_HOUSE.title),
+    description: t.metaGuideDesc
+      .replace("{n}", String(GUIDE_PLACES.length))
+      .replace("{property}", LOTUS_HOUSE.title),
     path: "/lotushouse/local-guide",
     locale,
   });

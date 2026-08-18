@@ -327,4 +327,38 @@ export const zh: Dictionary = {
   guideAskCta: "通过 WhatsApp 联系我们", // NEW
   guideAskPrefill: "你好 AgentSiam，我正在看 Lotus House 的周边指南，有一些问题想咨询。", // NEW
   guideAskDismiss: "稍后再说", // NEW
+  // -- page metadata ------------------------------------------------------
+  metaHomeTitle: "AgentSiam | 清迈短租房托管", // NEW
+  metaHomeDesc:
+    "清迈短租房的可行性评估、出租许可申请与日常托管。三个独立步骤，每一步都要先证明自己，才有下一步。", // NEW
+  metaHowTitle: "我们如何运作", // NEW
+  metaHowDesc:
+    "三项服务是阶梯，不是菜单：先做付费的可行性与回报评估，结论可能是不建议出租；再办理非酒店类住宿豁免；最后接手 OTA 与官网直订的日常托管。", // NEW
+  metaPropertiesTitle: "清迈房源", // NEW
+  metaPropertiesDesc:
+    "清迈的住宅、别墅与联排别墅，由本地团队亲自打理。按区域、类型和面积筛选，直接预订。", // NEW
+  metaLotusTitle: "Lotus House，夜市附近的私人联排别墅", // NEW
+  metaLotusDesc:
+    "清迈昌康区的三层联排别墅，带屋顶露台。两间特大床卧室、两间浴室、设备齐全的厨房，可住四人。", // NEW
+  metaGuideTitle: "{property} 周边指南", // NEW
+  metaGuideDesc:
+    "{property} 周边 {n} 个地方，由房东亲自挑选，附从家门口出发的步行与驾车时间。", // NEW
+  metaDestinationsTitle: "清迈区域指南", // NEW
+  metaDestinationsDesc:
+    "我们覆盖的清迈八个区域：Nimman、Old City、Santitham、Chang Khlan、Riverside、Hang Dong、Mae Rim 与 San Sai，以及每个区域真实的样子。", // NEW
+  metaAreaTitle: "住在清迈 {area}", // NEW
+  metaAreaDesc:
+    "清迈 {area}：这个区域是什么样子，以及我们在那里管理的房源。", // NEW
+  metaContactTitle: "联系我们", // NEW
+  metaContactDesc:
+    "告诉我们您在清迈的房产，我们会就可行性评估、出租许可申请或全面托管与您联系。", // NEW
+  metaBusinessTitle: "企业服务", // NEW
+  metaBusinessDesc:
+    "为进入泰国市场的企业提供：公司设立与合规、OEM 与供应链，在 LINE、TikTok、Shopee 和 Lazada 上启动电商，以及增长。", // NEW
+  metaTermsTitle: "条款与条件", // NEW
+  metaTermsDesc:
+    "适用于 AgentSiam 可行性评估、度假出租许可与短租托管服务，以及本网站使用的条款。", // NEW
+  metaPrivacyTitle: "隐私政策", // NEW
+  metaPrivacyDesc:
+    "AgentSiam 如何收集、使用和存储您通过本站提交的信息，以及您在泰国 PDPA 下享有的权利。", // NEW
 };

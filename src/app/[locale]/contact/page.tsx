@@ -14,10 +14,10 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
   return pageMeta({
-    title: "Contact",
-    description:
-      "Tell us about your property in Chiang Mai and we will come back to you about a feasibility study, a permission filing or full management.",
+    title: t.metaContactTitle,
+    description: t.metaContactDesc,
     path: "/contact",
     locale,
   });
