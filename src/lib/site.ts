@@ -121,10 +121,33 @@ export function languageAlternates(path: string): Record<string, string> {
 }
 
 /**
+ * The share card for one specific route, replacing the site-wide OG_IMAGE.
+ *
+ * Next only attaches a file-based opengraph-image automatically to a segment that does not
+ * declare its own `openGraph` object, and every page here declares one. So a per-route card
+ * has to be named explicitly, exactly as OG_IMAGE is. The URL is the segment's own path
+ * with `/opengraph-image` appended, locale prefix included, which is where Next serves the
+ * generated file from.
+ */
+export function routeOgImage(locale: Locale, path: string, alt: string) {
+  const localised = localePath(locale, path);
+  return {
+    url: `${localised === "/" ? "" : localised}/opengraph-image`,
+    width: 1200,
+    height: 630,
+    alt,
+  } as const;
+}
+
+/**
  * Builds a page's Metadata from one title/description pair, so every route gets a
  * canonical URL, hreflang alternates, an Open Graph block and a Twitter card without
  * repeating them eight times over three languages.
  * The title is passed bare ("How it works"); the root layout's template appends the brand.
+ *
+ * `image` defaults to the site-wide card. Pass a route's own card where the site-wide one
+ * would be actively wrong -- a property listing shared into a guest group should not carry
+ * an owner-acquisition pitch.
  */
 export function pageMeta({
   title,
@@ -132,6 +155,7 @@ export function pageMeta({
   path,
   locale,
   placeholder = false,
+  image = OG_IMAGE,
 }: {
   title: string;
   description: string;
@@ -139,6 +163,7 @@ export function pageMeta({
   path: string;
   locale: Locale;
   placeholder?: boolean;
+  image?: { url: string; width: number; height: number; alt: string };
 }): Metadata {
   return {
     title,
@@ -155,13 +180,13 @@ export function pageMeta({
       url: absoluteUrl(locale, path),
       title: `${title} | ${SITE_NAME}`,
       description,
-      images: [OG_IMAGE],
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | ${SITE_NAME}`,
       description,
-      images: [OG_IMAGE],
+      images: [image],
     },
   };
 }

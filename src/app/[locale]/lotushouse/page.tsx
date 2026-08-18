@@ -7,8 +7,9 @@ import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { PHOTOS } from "@/lib/photos.generated";
+import { alt as ogAlt } from "./opengraph-image";
 import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
-import { pageMeta } from "@/lib/site";
+import { pageMeta, routeOgImage } from "@/lib/site";
 
 /**
  * Property detail, in the handoff's block order: title and area → gallery → highlights →
@@ -32,12 +33,15 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
   return pageMeta({
-    title: "Lotus House, a private townhouse near the Night Bazaar",
-    description:
-      "A three-story townhouse with a rooftop terrace in Chang Khlan, Chiang Mai. Two king bedrooms, two bathrooms, a full kitchen and space for four guests.",
+    title: t.metaLotusTitle,
+    description: t.metaLotusDesc,
     path: "/lotushouse",
     locale,
+    // The property's own card, not the site-wide owner pitch. See
+    // src/app/[locale]/lotushouse/opengraph-image.tsx for why.
+    image: routeOgImage(locale, "/lotushouse", ogAlt),
   });
 }
 
