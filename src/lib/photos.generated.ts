@@ -52,9 +52,8 @@ import lotushouse_41 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-
 import lotushouse_42 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-3.jpg";
 import lotushouse_43 from "@/photos/lotushouse/Kitchen/kitchen_with_people.jpg";
 import lotushouse_44 from "@/photos/lotushouse/Terrace/asian_couple_terrace_sunset_3900px.jpg";
-import lotushouse_45 from "@/photos/lotushouse/Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg";
-import lotushouse_46 from "@/photos/lotushouse/Terrace/terrace_people.jpg";
-import lotushouse_47 from "@/photos/lotushouse/Terrace/two_men_terrace_sunset_1280.jpg";
+import lotushouse_45 from "@/photos/lotushouse/Terrace/terrace_people.jpg";
+import lotushouse_46 from "@/photos/lotushouse/Terrace/two_men_terrace_sunset_1280.jpg";
 import team_0 from "@/photos/team/Nils_m_portrait_as_Co-founder.jpeg";
 import team_1 from "@/photos/team/Paul_b__portrait_as_Co-founder.jpg";
 import team_2 from "@/photos/team/Patthanapong_p_portrait_Appraisal_&_RealEstate_Specialist_as.jpg";
@@ -120,9 +119,8 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: lotushouse_42, file: "Floor Plan/Lotus House Layout Fl-3.jpg", alt: "Third floor plan: the front and back roof patios", room: "Floor Plan" },
     { src: lotushouse_43, file: "Kitchen/kitchen_with_people.jpg", alt: "Four people around the kitchen island, with the arched door and the staircase behind", room: "Kitchen" },
     { src: lotushouse_44, file: "Terrace/asian_couple_terrace_sunset_3900px.jpg", alt: "Two people on loungers beside the tub on the roof terrace at sunset", room: "Terrace" },
-    { src: lotushouse_45, file: "Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg", alt: "The soaking tub and loungers on the roof terrace at sunset", room: "Terrace" },
-    { src: lotushouse_46, file: "Terrace/terrace_people.jpg", alt: "Four people on the roof terrace at sunset, one of them in the tub", room: "Terrace" },
-    { src: lotushouse_47, file: "Terrace/two_men_terrace_sunset_1280.jpg", alt: "Two men on the roof terrace at sunset, one on a lounger beside the tub", room: "Terrace" },
+    { src: lotushouse_45, file: "Terrace/terrace_people.jpg", alt: "Four people on the roof terrace at sunset, one of them in the tub", room: "Terrace" },
+    { src: lotushouse_46, file: "Terrace/two_men_terrace_sunset_1280.jpg", alt: "Two men on the roof terrace at sunset, one on a lounger beside the tub", room: "Terrace" },
   ],
   "team": [
     { src: team_0, file: "Nils_m_portrait_as_Co-founder.jpeg", alt: "Nils, co-founder of AgentSiam" },

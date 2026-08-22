@@ -134,8 +134,20 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
                  what it is. This is the block that makes the rest of the page credible;
                  it does not get shrunk or moved below the fold. */}
           <section className="mt-8 rounded-panel bg-wash-red px-6 py-5.5">
-            <h2 className="eyebrow text-deep-red">What this place is not</h2>
-            <ul className="mt-3 flex flex-col gap-2">
+            <h2 className="eyebrow text-deep-red">{t.whatThisPlaceIsNot}</h2>
+
+            {/* The `three-storey-child-safety` disclosure from the property profile,
+                severity `safety`, surfaced to `listing`. It leads this section rather
+                than joining the list below because it is the only entry here that is a
+                hazard rather than a limitation, and because the profile's own rule is
+                that a `safety` disclosure missing from the listing is a mis-sold
+                booking. The booking panel asks the guest to acknowledge it. */}
+            <p className="mt-3 text-sm font-semibold leading-normal text-deep-red">
+              {t.childSafetyHeading}
+            </p>
+            <p className="mt-1.5 text-sm leading-relaxed text-body">{t.childSafetyNote}</p>
+
+            <ul className="mt-4 flex flex-col gap-2 border-t border-deep-red/15 pt-4">
               {property.houseRules.map((rule) => (
                 <li key={rule} className="flex gap-2.5 text-sm leading-normal text-body">
                   <span aria-hidden="true" className="font-bold text-deep-red">

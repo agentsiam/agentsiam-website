@@ -109,7 +109,18 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
   const [calendarError, setCalendarError] = useState(false);
   const [arrival, setArrival] = useState<string | null>(null);
   const [departure, setDeparture] = useState<string | null>(null);
-  const [guests, setGuests] = useState(2);
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(0);
+  /**
+   * Declared, not inferred. Beds24 has no infant concept and Airbnb hides under-2s
+   * entirely, so the guest most at risk in a three-storey house with an open rooftop tub
+   * is the one the booking data is structurally least likely to know about. Asking is the
+   * only thing that reaches them. Feeds the disclosure and nothing else: never priced,
+   * never synced, never a capacity constraint.
+   * See as-work/2026-08-18-website-launch-blockers/child-policy-research.md.
+   */
+  const [underFive, setUnderFive] = useState(false);
+  const [childSafetyAck, setChildSafetyAck] = useState(false);
   // The quote is stored with the stay it was fetched for. Keying it that way means a
   // quote can never be shown against dates it does not belong to: change the dates or the
   // guest count and the old number stops matching, rather than lingering until the new
@@ -184,16 +195,22 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
   }, []);
 
   // -- price the stay whenever it is complete ------------------------------------
-  const quoteKey = arrival && departure ? `${arrival}|${departure}|${guests}` : null;
+  const quoteKey =
+    arrival && departure ? `${arrival}|${departure}|${adults}|${children}` : null;
 
   useEffect(() => {
     if (!quoteKey) return;
-    const [from, to, adults] = quoteKey.split("|");
+    const [from, to, quoteAdults, quoteChildren] = quoteKey.split("|");
     let cancelled = false;
 
     async function price() {
       try {
-        const params = new URLSearchParams({ arrival: from, departure: to, adults });
+        const params = new URLSearchParams({
+          arrival: from,
+          departure: to,
+          adults: quoteAdults,
+          children: quoteChildren,
+        });
         const response = await fetch(`/api/booking/quote?${params}`);
         const payload = await response.json();
         if (cancelled) return;
@@ -254,7 +271,18 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
 
   const stayNights = arrival && departure ? nightsBetween(arrival, departure) : 0;
   const belowMinimum = stayNights > 0 && stayNights < LOTUS_HOUSE.minStay;
-  const bookable = Boolean(currentQuote?.available && currentQuote.total !== null && !belowMinimum);
+  /**
+   * The acknowledgement is a gate, not a note. A `safety` disclosure that the guest can
+   * pay past is the same failure as one that is not on the page at all, so nothing opens
+   * the request or the payment path until it is ticked.
+   */
+  const childSafetyBlocking = children > 0 && underFive && !childSafetyAck;
+  const bookable = Boolean(
+    currentQuote?.available &&
+      currentQuote.total !== null &&
+      !belowMinimum &&
+      !childSafetyBlocking,
+  );
 
   async function submitRequest(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -270,8 +298,10 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
           ...Object.fromEntries(form),
           arrival,
           departure,
-          adults: guests,
-          children: 0,
+          adults,
+          children,
+          underFive: children > 0 && underFive,
+          childSafetyAck: children > 0 && underFive ? childSafetyAck : false,
           locale,
         }),
       });
@@ -308,8 +338,10 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
           ...Object.fromEntries(form),
           arrival,
           departure,
-          adults: guests,
-          children: 0,
+          adults,
+          children,
+          underFive: children > 0 && underFive,
+          childSafetyAck: children > 0 && underFive ? childSafetyAck : false,
           locale,
         }),
       });
@@ -418,21 +450,103 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
           <p className="mt-5 text-sm text-muted">{t.loadingAvailability}</p>
         )}
 
-        {/* -- guests ---------------------------------------------------------- */}
-        <label className="mt-5 flex items-center justify-between gap-3 text-sm">
-          <span className="eyebrow">{t.guests}</span>
-          <select
-            value={guests}
-            onChange={(event) => setGuests(Number(event.target.value))}
-            className={`${field} w-28 cursor-pointer`}
-          >
-            {Array.from({ length: LOTUS_HOUSE.maxGuests }, (_, index) => index + 1).map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
-        </label>
+        {/* -- guests ------------------------------------------------------------
+            Two counts rather than one, because Beds24 takes numAdult and numChild as
+            separate integers and filing every direct booking as all-adults is false
+            data. Both count toward maxGuests: Beds24 has no infant concept and validates
+            the request against that number, so a rule more generous than Beds24's would
+            produce bookings this panel accepts and Beds24 then refuses. Airbnb exempting
+            under-2s is Airbnb's own pricing convention and stops there. */}
+        <div className="mt-5 flex flex-col gap-2.5">
+          <label className="flex items-center justify-between gap-3 text-sm">
+            <span className="eyebrow">{t.adults}</span>
+            <select
+              value={adults}
+              onChange={(event) => {
+                const next = Number(event.target.value);
+                setAdults(next);
+                // Keep the pair legal rather than letting the server reject it: dropping
+                // the adult count squeezes the children down with it.
+                setChildren((current) => Math.min(current, LOTUS_HOUSE.maxGuests - next));
+              }}
+              className={`${field} w-28 cursor-pointer`}
+            >
+              {Array.from({ length: LOTUS_HOUSE.maxGuests }, (_, index) => index + 1).map(
+                (n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+
+          <label className="flex items-center justify-between gap-3 text-sm">
+            <span className="eyebrow">{t.children}</span>
+            <select
+              value={children}
+              onChange={(event) => {
+                const next = Number(event.target.value);
+                setChildren(next);
+                if (next === 0) {
+                  setUnderFive(false);
+                  setChildSafetyAck(false);
+                }
+              }}
+              className={`${field} w-28 cursor-pointer`}
+            >
+              {Array.from({ length: LOTUS_HOUSE.maxGuests - adults + 1 }, (_, index) => index).map(
+                (n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+
+          <p className="text-xs leading-relaxed text-muted">{t.childrenNote}</p>
+
+          {/* Only asked when it can matter. A party of adults is not interrogated about
+              toddlers it does not have. */}
+          {children > 0 ? (
+            <label className="flex items-center justify-between gap-3 text-sm">
+              <span className="eyebrow">{t.underFive}</span>
+              <select
+                value={underFive ? "yes" : "no"}
+                onChange={(event) => {
+                  const next = event.target.value === "yes";
+                  setUnderFive(next);
+                  if (!next) setChildSafetyAck(false);
+                }}
+                className={`${field} w-28 cursor-pointer`}
+              >
+                <option value="no">{t.no}</option>
+                <option value="yes">{t.yes}</option>
+              </select>
+            </label>
+          ) : null}
+        </div>
+
+        {/* -- the safety disclosure, before any money moves --------------------
+            Mirrors the `three-storey-child-safety` disclosure in the property profile,
+            which surfaces to `listing`. The same words are on the page above for every
+            visitor; this is the version the guest has to answer for. */}
+        {children > 0 && underFive ? (
+          <div className="mt-4 rounded-panel bg-wash-red px-4 py-4">
+            <h3 className="eyebrow text-deep-red">{t.childSafetyHeading}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-body">{t.childSafetyNote}</p>
+            <label className="mt-3 flex cursor-pointer items-start gap-2.5 text-sm text-body">
+              <input
+                type="checkbox"
+                checked={childSafetyAck}
+                onChange={(event) => setChildSafetyAck(event.target.checked)}
+                className="mt-0.5 size-4 shrink-0 cursor-pointer accent-deep-red"
+              />
+              <span>{t.childSafetyAck}</span>
+            </label>
+          </div>
+        ) : null}
 
         {/* -- the number ------------------------------------------------------ */}
         <div className="mt-5 border-t border-hairline pt-4">

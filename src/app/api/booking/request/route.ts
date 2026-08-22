@@ -79,11 +79,29 @@ export async function POST(request: Request) {
   const departure = typeof body.departure === "string" ? body.departure : "";
   const adults = Number(body.adults);
   const children = Number(body.children ?? 0);
+  // Declared by the guest, never inferred. `underFive` drives the safety disclosure and
+  // nothing else: it is not priced, not sent to Beds24 as a guest count, and not a
+  // capacity constraint. See the property profile's `three-storey-child-safety`.
+  const underFive = body.underFive === true;
+  const childSafetyAck = body.childSafetyAck === true;
   const firstName = clean(body.firstName, "firstName");
   const lastName = clean(body.lastName, "lastName");
   const email = clean(body.email, "email");
   const phone = clean(body.phone, "phone");
   const message = clean(body.message, "message");
+
+  /**
+   * The evidence, stored where it will actually be found. The property profile's
+   * `internal_action` requires a written acknowledgement kept on the booking, so it is
+   * folded into the message that reaches both the Beds24 booking record and the
+   * notification email, rather than living in a field somebody has to know to look up.
+   * Prefixed so it survives a guest who wrote nothing.
+   */
+  const messageWithNotices = underFive
+    ? `[Child safety] Guest declared a guest under 5 and acknowledged the stairs, ` +
+      `terrace and bathtub notice. Call rather than message if anyone is under 3.` +
+      (message ? `\n\n${message}` : "")
+    : message;
   const locale = clean(body.locale, "locale") || "en";
 
   if (!isValidDate(arrival) || !isValidDate(departure) || departure <= arrival) {
@@ -115,6 +133,16 @@ export async function POST(request: Request) {
   ) {
     return NextResponse.json(
       { error: `Lotus House sleeps up to ${LOTUS_HOUSE.maxGuests} guests.` },
+      { status: 400 },
+    );
+  }
+
+  // The acknowledgement is enforced here as well as in the panel. A tick-box that only
+  // exists in the browser is not a disclosure, it is a decoration: anything posting
+  // straight to this route would sail past it.
+  if (underFive && !childSafetyAck) {
+    return NextResponse.json(
+      { error: "Please confirm you have read the note about young children." },
       { status: 400 },
     );
   }
@@ -158,7 +186,7 @@ export async function POST(request: Request) {
       lastName,
       email,
       phone,
-      message,
+      message: messageWithNotices,
       locale,
       total,
     });
@@ -186,7 +214,7 @@ export async function POST(request: Request) {
     lastName,
     email,
     phone,
-    message,
+    message: messageWithNotices,
     locale,
     total,
   });

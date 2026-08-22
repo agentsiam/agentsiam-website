@@ -362,4 +362,13 @@ export const zh: Dictionary = {
   metaPrivacyDesc:
     "AgentSiam 如何收集、使用和存储您通过本站提交的信息，以及您在泰国 PDPA 下享有的权利。", // NEW
   addressAfterBooking: "确认预订后，我们会将详细地址发送给您。", // NEW
+  adults: "成人", // NEW
+  children: "儿童", // NEW
+  childrenNote: "无论年龄大小，每位入住者都计入最大人数。", // NEW
+  underFive: "同行人中是否有5岁以下儿童？", // NEW
+  whatThisPlaceIsNot: "这里不适合什么", // NEW
+  childSafetyHeading: "携幼儿同行", // NEW
+  childSafetyNote:
+    "Lotus House 是一栋三层联排别墅，每层之间有楼梯且没有安全门，屋顶露台设有开放式独立浴缸。我们不安装楼梯安全门。如需婴儿床请告知我们。这里非常适合大一些的孩子，但我们不建议幼儿或上下楼梯尚不稳的人入住。", // NEW
+  childSafetyAck: "我已阅读以上内容，并愿意继续预订。", // NEW
 };
