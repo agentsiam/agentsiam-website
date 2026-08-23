@@ -395,12 +395,8 @@ export const en = {
   adults: "Adults", // NEW
   children: "Children", // NEW
   childrenNote: "Everyone counts toward the maximum, whatever their age.", // NEW
-  underFive: "Is anyone in your party under 5?", // NEW
   whatThisPlaceIsNot: "What this place is not", // NEW
-  childSafetyHeading: "Travelling with young children", // NEW
-  childSafetyNote:
-    "Lotus House is a three-storey townhouse with stairs between every level and no gates, and the rooftop terrace has an open freestanding bathtub. We do not fit stair gates. There is a cot if you need one, just ask. It is a wonderful house for older children, but we would not recommend it for toddlers or anyone not yet steady on stairs.", // NEW
-  childSafetyAck: "I have read this and I am happy to go ahead.", // NEW
+  childSupervision: "Toddlers need supervision on the stairs and the roof terrace.", // NEW
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
