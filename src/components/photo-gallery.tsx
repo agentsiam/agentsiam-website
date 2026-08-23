@@ -131,7 +131,7 @@ function Lightbox({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`${labels.photosOf} ${labels.propertyName}`}
+      aria-label={labels.photosOf.replace("{property}", labels.propertyName)}
       className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-[#0e0e14]/95 p-6 sm:p-10"
       onClick={onClose}
     >

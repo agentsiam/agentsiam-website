@@ -5,7 +5,9 @@
 // design_handoff_agentsiam_portal/i18n.js, so a string can be traced back to the design.
 // Values marked NEW below were written for this site rather than taken from the handoff --
 // the handoff's portal has a search bar and 50 listings, this site has one property -- and
-// their Thai and Chinese are unreviewed. Everything else is the handoff's own translation.
+// their Thai and Chinese were reviewed on 23/08/2026. Everything else is the handoff's
+// own translation. Findings and the reasoning behind each change are in
+// agentsiam-consulting/as-work/2026-08-18-website-launch-blockers/copy-review-findings.md.
 
 export const en = {
   langName: "English",
@@ -56,7 +58,7 @@ export const en = {
   featuredTitle: "The property",
   featuredSub: "One house, live now. We would rather run one well than list ten.", // NEW
 
-  whyA: "Best rate, booked direct",
+  whyA: "Direct rate, no platform markup",
   whyABody:
     "No platform markup between you and the people who run the house.",
   whyB: "A team actually in Chiang Mai",
@@ -68,10 +70,8 @@ export const en = {
   guestReviewSource: "Airbnb guest review", // NEW
 
   ownerBandTitle: "Thinking of renting yours out?",
-  ownerBandSub:
-    "Three steps, in order. The first is a paid study that ends in a straight Go or No-Go — and you can stop after any of them.",
-  ownerBandFoot:
-    "Landed property in Chiang Mai — houses, townhouses, small buildings.",
+  ownerBandSub: "Three steps, in order. The first is a paid study that ends in a clear Go / No-Go decision. You can stop after any step.",
+  ownerBandFoot: "Landed property in Chiang Mai, including houses, townhouses and small buildings.",
   checkQualify: "Check if yours qualifies",
   bookStudy: "Book a feasibility study",
   step: "Step",
@@ -91,8 +91,7 @@ export const en = {
   // -- /how-it-works ------------------------------------------------------
   ownerHeroEyebrow: "For property owners · Chiang Mai",
   ownerHeroTitle: "We tell you whether to do this before we ask to run it.",
-  ownerHeroSub:
-    "Three services in a fixed order. The first one is a paid study that ends in a Go or a No-Go — and the No-Go is a real answer we give often enough to mean it.",
+  ownerHeroSub: "Three services in a fixed order. The first is a paid study that ends in a Go / No-Go decision. A No-Go is a real answer, and we give it when the numbers do not support proceeding.",
   staircaseTitle: "A staircase, not a menu",
   whatYouGet: "What you get",
   notIncluded: "Not included, so there are no surprises",
@@ -115,17 +114,15 @@ export const en = {
   weDo: "We do this",
   weDont: "We do not",
   reportTitle: "What the report actually looks like", // NEW
-  reportBody:
-    "Six sections, and the recommendation is the last one rather than the first. The figures below are held back because inventing them would be worse than showing nothing — the real ones are priced against your property.", // NEW
+  reportBody: "Six sections, with the recommendation last rather than first. The figures below are hidden because inventing them would be worse than showing nothing. The real figures are calculated for your property.", // NEW
   proofTitle: "One we run ourselves", // NEW
-  proofBody:
-    "Lotus House, in Chang Khlan. Everything on this page is what we actually do for it — the permission, the channels, the TM30 filings, the guests.", // NEW
+  proofBody: "Lotus House, in Chang Khlan. Everything on this page is what we actually do for it: permission, channels, TM30 filings and guest care.", // NEW
   meetTheTeam: "The people who do it", // NEW
   faqTitle: "The questions everyone asks",
   startNumbers: "Start with the numbers.",
   lookingToStay: "Looking for a place to stay instead?",
   step1Name: "Feasibility and ROI study",
-  step1Meta: "Ends in a Go or a No-Go",
+  step1Meta: "Ends in a Go / No-Go decision",
   step2Name: "Vacation rental permission",
   step2Meta: "The step most managers skip",
   step3Name: "Vacation rental management",
@@ -149,19 +146,17 @@ export const en = {
   whatHappensNext: "What happens next",
   nextStep1: "We read it and reply within two working days.",
   nextStep2: "A call, then a visit to the property if it looks viable.",
-  nextStep3:
-    "A written feasibility report with real numbers — including the case for not doing it.",
+  nextStep3: "A written feasibility report with real numbers, including the case for not doing it.",
   businessNote:
     "Asking about business services rather than a property? Write to", // NEW
-  guestQnNote:
-    "Guest with a question about a booking? Use the booking panel on the property page instead — it carries your dates with it.", // adapted from the handoff
+  guestQnNote: "Guest with a question about a booking? Use the booking panel on the property page instead. It carries your dates with it.",  // adapted from the handoff
 
   // -- shared vocabulary --------------------------------------------------
   typeHouse: "House",
   typeTownhouse: "Townhouse",
   typePoolVilla: "Pool villa",
   typeCondoShort: "Condo / apartment",
-  bedSuffix: "bed",
+  bedSuffix: "{n} bed",
   yes: "Yes",
   no: "No",
   areaNimman: "Nimman",
@@ -176,7 +171,7 @@ export const en = {
   // -- property page ------------------------------------------------------
   checkDatesAndBook: "Check dates and book", // NEW
   showAllPhotos: "Show all photos",
-  photosOf: "Photos of", // NEW
+  photosOf: "Photos of {property}", // NEW
   close: "Close",
   enquireDates: "Enquire about dates", // NEW
   whatThisHas: "What this place has",
@@ -237,8 +232,7 @@ export const en = {
   lastUpdated: "Last updated",
   notFoundEyebrow: "Error 404", // NEW
   notFoundTitle: "That page isn't here.", // NEW
-  notFoundBody:
-    "The link may be out of date, or the address may have a typo in it. Everything on the site is one of these:", // NEW
+  notFoundBody: "The link may be out of date, or the address may contain a typo. Try one of these pages instead:", // NEW
   notFoundCta: "Tell us what you were looking for", // NEW
   backHome: "Back to the homepage",
 
@@ -257,7 +251,7 @@ export const en = {
   features: "Features", // NEW
   fromPrice: "from", // NEW
   perNight: "per night", // NEW
-  kmToCentre: "km to centre", // NEW
+  kmToCentre: "{n} km to centre", // NEW
   oneProperty: "1 place to stay", // NEW
   nProperties: "{n} places to stay", // NEW
   browseByArea: "Browse by neighbourhood", // NEW
@@ -331,8 +325,8 @@ export const en = {
   guideAll: "Everything", // NEW
   guideNearby: "Walkable", // NEW
   guidePicks: "Our favourites", // NEW
-  guideWalk: "min walk", // NEW
-  guideDrive: "min drive", // NEW
+  guideWalk: "{n} min walk", // NEW
+  guideDrive: "{n} min drive", // NEW
   guideNoWalk: "Too far to walk", // NEW
   guideDirections: "Directions", // NEW
   guideDirectionsApple: "Apple Maps", // NEW
@@ -362,8 +356,7 @@ export const en = {
   metaHomeDesc:
     "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Three separate steps, each one earning the next.",
   metaHowTitle: "How it works",
-  metaHowDesc:
-    "Three services sold as a staircase, not a menu: a paid feasibility and ROI study that can end in a No-Go, the non-hotel exemption filing, then OTA and direct booking management.",
+  metaHowDesc: "Three steps: a paid feasibility and ROI study that may end in a No-Go, the non-hotel exemption filing, then OTA and direct booking management.",
   metaPropertiesTitle: "Places to stay in Chiang Mai",
   metaPropertiesDesc:
     "Homes, villas and townhouses in Chiang Mai, managed on the ground. Filter by neighbourhood, type and size, and book direct.",
@@ -374,8 +367,7 @@ export const en = {
   metaGuideDesc:
     "{n} places around {property} in Chiang Mai, chosen by the hosts, with walking and driving times from the door.",
   metaDestinationsTitle: "Chiang Mai neighbourhoods",
-  metaDestinationsDesc:
-    "The eight Chiang Mai neighbourhoods we cover, Nimman, Old City, Santitham, Chang Khlan, Riverside, Hang Dong, Mae Rim and San Sai, and what each is actually like.",
+  metaDestinationsDesc: "Eight Chiang Mai neighbourhoods: Nimman, Old City, Santitham, Chang Khlan, Riverside, Hang Dong, Mae Rim and San Sai, and what each is like.",
   metaAreaTitle: "Staying in {area}, Chiang Mai",
   metaAreaDesc:
     "{area}: {vibe}. What the neighbourhood is like, and the places we manage there.",
@@ -395,7 +387,7 @@ export const en = {
   adults: "Adults", // NEW
   children: "Children", // NEW
   childrenNote: "Everyone counts toward the maximum, whatever their age.", // NEW
-  whatThisPlaceIsNot: "What this place is not", // NEW
+  whatThisPlaceIsNot: "Limits to know before booking", // NEW
   childSupervision: "Toddlers need supervision on the stairs and the roof terrace.", // NEW
 } as const;
 

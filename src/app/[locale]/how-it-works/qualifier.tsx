@@ -213,7 +213,7 @@ export function Qualifier({ t, contactHref }: { t: Dictionary; contactHref: stri
             {["1", "2", "3", "4+"].map((value) => (
               <Chip
                 key={value}
-                label={`${value} ${t.bedSuffix}`}
+                label={t.bedSuffix.replace("{n}", value)}
                 selected={beds === value}
                 onSelect={() => setBeds(value)}
               />

@@ -261,9 +261,11 @@ export default async function LocalGuidePage({
                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted">
                     <span>
                       {d?.walk != null
-                        ? `${d.walk} ${t.guideWalk}`
+                        ? t.guideWalk.replace("{n}", String(d.walk))
                         : t.guideNoWalk}
-                      {d?.drive != null ? ` · ${d.drive} ${t.guideDrive}` : ""}
+                      {d?.drive != null
+                        ? ` · ${t.guideDrive.replace("{n}", String(d.drive))}`
+                        : ""}
                     </span>
                     <DirectionsLinks
                       from={{ lat: origin.lat, lng: origin.lng }}

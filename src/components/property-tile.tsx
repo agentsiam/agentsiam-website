@@ -76,7 +76,7 @@ export function PropertyTile({
         )}
 
         <span className="absolute left-2.5 top-2.5 rounded-full bg-bg/95 px-2.5 py-1 text-[11px] font-semibold">
-          {km < 10 ? km.toFixed(1) : Math.round(km)} {t.kmToCentre}
+          {t.kmToCentre.replace("{n}", km < 10 ? km.toFixed(1) : String(Math.round(km)))}
         </span>
       </div>
 

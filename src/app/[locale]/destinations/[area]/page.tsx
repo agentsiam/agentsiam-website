@@ -71,7 +71,7 @@ export default async function AreaPage({
       </h1>
       <p className="mt-2.5 max-w-[560px] text-base leading-relaxed text-body">{area.vibe}</p>
       <p className="mt-2 text-[13px] text-muted">
-        {km < 10 ? km.toFixed(1) : Math.round(km)} {t.kmToCentre}
+        {t.kmToCentre.replace("{n}", km < 10 ? km.toFixed(1) : String(Math.round(km)))}
       </p>
 
       {properties.length > 0 ? (
