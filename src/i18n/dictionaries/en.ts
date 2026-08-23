@@ -16,7 +16,7 @@ export const en = {
   navStay: "Stay",
   navGuests: "Guests", // NEW
   navDestinations: "Destinations", // NEW
-  navListProperty: "List your property", // NEW
+  navListProperty: "Have us manage yours", // NEW
   navOwners: "Property Owners",
   navContact: "Contact",
   skipToContent: "Skip to content", // NEW

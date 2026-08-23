@@ -11,7 +11,7 @@ export const zh: Dictionary = {
   navStay: "入住",
   navGuests: "住客", // NEW
   navDestinations: "区域", // NEW
-  navListProperty: "出租您的房产", // NEW
+  navListProperty: "交给我们托管", // NEW
   navOwners: "房东",
   navContact: "联系我们",
   skipToContent: "跳到正文", // NEW
