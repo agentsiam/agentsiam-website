@@ -3,10 +3,10 @@
 //
 // Strings are keyed semantically (heroTitleA, not "Stay somewhere") and the keys match
 // design_handoff_agentsiam_portal/i18n.js, so a string can be traced back to the design.
-// Values marked NEW below were written for this site rather than taken from the handoff --
-// the handoff's portal has a search bar and 50 listings, this site has one property -- and
-// their Thai and Chinese were reviewed on 23/08/2026. Everything else is the handoff's
-// own translation. Findings and the reasoning behind each change are in
+// Some values were written for this site rather than taken from the handoff -- the
+// handoff's portal has a search bar and 50 listings, this site has one property. All 296
+// keys were reviewed in English, Thai and Chinese on 23/08/2026 and the findings applied.
+// Everything else is the handoff's own translation. Findings and the reasoning are in
 // agentsiam-consulting/as-work/2026-08-18-website-launch-blockers/copy-review-findings.md.
 
 export const en = {
@@ -14,13 +14,13 @@ export const en = {
 
   // -- chrome -------------------------------------------------------------
   navStay: "Stay",
-  navGuests: "Guests", // NEW
-  navDestinations: "Destinations", // NEW
-  navListProperty: "Have us manage yours", // NEW
+  navGuests: "Guests",
+  navDestinations: "Destinations",
+  navListProperty: "Have us manage yours",
   navOwners: "Property Owners",
   navContact: "Contact",
-  skipToContent: "Skip to content", // NEW
-  languageLabel: "Language", // NEW
+  skipToContent: "Skip to content",
+  languageLabel: "Language",
 
   footStay: "Stay",
   footOwners: "Owners",
@@ -31,19 +31,19 @@ export const en = {
   businessServices: "Business Services",
   terms: "Terms & conditions",
   privacy: "Privacy policy",
-  copyright: "© 2026 AgentSiam Co., Ltd.", // NEW (handoff's said "Prototype -- sample data")
+  copyright: "© 2026 AgentSiam Co., Ltd.", // replaces the handoff's "Prototype -- sample data"
 
   // Shown on /th and /zh above long-form copy that has not been translated yet.
   pendingNote:
-    "Not yet translated: property descriptions, legal pages and the detailed owner sections below. Shown in English rather than machine-translated.", // NEW
+    "Not yet translated: property descriptions, legal pages and the detailed owner sections below. Shown in English rather than machine-translated.",
 
   // -- home ---------------------------------------------------------------
   heroEyebrow: "Chiang Mai · book direct",
   heroTitleA: "Stay somewhere",
   heroTitleB: "actually looked after.",
   heroSub:
-    "One house in Chiang Mai, managed on the ground by the people who answer the phone. More as we take them on.", // NEW (handoff described a portfolio)
-  viewProperty: "See the property", // NEW
+    "One house in Chiang Mai, managed on the ground by the people who answer the phone. More as we take them on.", // replaces the handoff's portfolio wording
+  viewProperty: "See the property",
 
   forGuests: "For guests",
   forOwners: "For owners",
@@ -56,7 +56,7 @@ export const en = {
   ownerPanelLink: "See how management works",
 
   featuredTitle: "The property",
-  featuredSub: "One house, live now. We would rather run one well than list ten.", // NEW
+  featuredSub: "One house, live now. We would rather run one well than list ten.",
 
   whyA: "Direct rate, no platform markup",
   whyABody:
@@ -66,8 +66,8 @@ export const en = {
   whyC: "Reachable through your stay",
   whyCBody: "Phone or LINE, 24/7, for the whole time you are here.",
 
-  guestReviews: "What guests said", // NEW
-  guestReviewSource: "Airbnb guest review", // NEW
+  guestReviews: "What guests said",
+  guestReviewSource: "Airbnb guest review",
 
   ownerBandTitle: "Thinking of renting yours out?",
   ownerBandSub: "Three steps, in order. The first is a paid study that ends in a clear Go / No-Go decision. You can stop after any step.",
@@ -113,11 +113,11 @@ export const en = {
   mgmtTitle: "What management actually means",
   weDo: "We do this",
   weDont: "We do not",
-  reportTitle: "What the report actually looks like", // NEW
-  reportBody: "Six sections, with the recommendation last rather than first. The figures below are hidden because inventing them would be worse than showing nothing. The real figures are calculated for your property.", // NEW
-  proofTitle: "One we run ourselves", // NEW
-  proofBody: "Lotus House, in Chang Khlan. Everything on this page is what we actually do for it: permission, channels, TM30 filings and guest care.", // NEW
-  meetTheTeam: "The people who do it", // NEW
+  reportTitle: "What the report actually looks like",
+  reportBody: "Six sections, with the recommendation last rather than first. The figures below are hidden because inventing them would be worse than showing nothing. The real figures are calculated for your property.",
+  proofTitle: "One we run ourselves",
+  proofBody: "Lotus House, in Chang Khlan. Everything on this page is what we actually do for it: permission, channels, TM30 filings and guest care.",
+  meetTheTeam: "The people who do it",
   faqTitle: "The questions everyone asks",
   startNumbers: "Start with the numbers.",
   lookingToStay: "Looking for a place to stay instead?",
@@ -139,16 +139,16 @@ export const en = {
   anythingElse: "Anything else (optional)",
   contactMsgHint:
     "Size, bedrooms, whether it is furnished, anything unusual",
-  optional: "optional", // NEW
-  phoneOrLine: "Phone or LINE", // NEW
+  optional: "optional",
+  phoneOrLine: "Phone or LINE",
   send: "Send",
-  sending: "Sending…", // NEW
+  sending: "Sending…",
   whatHappensNext: "What happens next",
   nextStep1: "We read it and reply within two working days.",
   nextStep2: "A call, then a visit to the property if it looks viable.",
   nextStep3: "A written feasibility report with real numbers, including the case for not doing it.",
   businessNote:
-    "Asking about business services rather than a property? Write to", // NEW
+    "Asking about business services rather than a property? Write to",
   guestQnNote: "Guest with a question about a booking? Use the booking panel on the property page instead. It carries your dates with it.",  // adapted from the handoff
 
   // -- shared vocabulary --------------------------------------------------
@@ -169,11 +169,11 @@ export const en = {
   areaSanSai: "San Sai",
 
   // -- property page ------------------------------------------------------
-  checkDatesAndBook: "Check dates and book", // NEW
+  checkDatesAndBook: "Check dates and book",
   showAllPhotos: "Show all photos",
-  photosOf: "Photos of {property}", // NEW
+  photosOf: "Photos of {property}",
   close: "Close",
-  enquireDates: "Enquire about dates", // NEW
+  enquireDates: "Enquire about dates",
   whatThisHas: "What this place has",
   whereYoullBe: "Where you'll be",
   goodToKnow: "Good to know",
@@ -187,161 +187,153 @@ export const en = {
   neighbourhood: "Neighbourhood",
 
   // -- booking panel ------------------------------------------------------
-  // All NEW: the handoff's portal hands booking to a hosted widget, so it has no
-  // strings for a calendar, a quote or a request form. Thai and Chinese unreviewed.
-  pickDate: "Select", // NEW
-  clearDates: "Clear", // NEW
-  previousMonth: "Previous month", // NEW
-  nextMonth: "Next month", // NEW
-  loadingAvailability: "Loading availability…", // NEW
-  pricing: "Checking the price…", // NEW
-  night: "night", // NEW
-  nights: "nights", // NEW
-  pickDatesHint: "Pick your dates to see the total. {n}-night minimum.", // NEW
-  minStayError: "The minimum stay is {n} nights.", // NEW
-  datesUnavailable: "Those dates are not available.", // NEW
-  requestToBook: "Request to book", // NEW
-  bookAndPay: "Book now, pay online", // NEW
-  continueToPayment: "Continue to payment", // NEW
-  payNow: "Pay", // NEW
-  paying: "Taking payment…", // NEW
+  // Written for this site: the handoff's portal hands booking to a hosted widget, so it
+  // has no strings for a calendar, a quote or a request form.
+  pickDate: "Select",
+  clearDates: "Clear",
+  previousMonth: "Previous month",
+  nextMonth: "Next month",
+  loadingAvailability: "Loading availability…",
+  pricing: "Checking the price…",
+  night: "night",
+  nights: "nights",
+  pickDatesHint: "Pick your dates to see the total. {n}-night minimum.",
+  minStayError: "The minimum stay is {n} nights.",
+  datesUnavailable: "Those dates are not available.",
+  requestToBook: "Request to book",
+  bookAndPay: "Book now, pay online",
+  continueToPayment: "Continue to payment",
+  payNow: "Pay",
+  paying: "Taking payment…",
   heldNote:
-    "Your dates are held while you pay. Card details go straight to our payment provider and are never stored on this site.", // NEW
-  paidTitle: "Booked.", // NEW
+    "Your dates are held while you pay. Card details go straight to our payment provider and are never stored on this site.",
+  paidTitle: "Booked.",
   paidBody:
-    "Payment received and your stay is confirmed. A receipt is on its way to your email, and we will be in touch before you arrive.", // NEW
+    "Payment received and your stay is confirmed. A receipt is on its way to your email, and we will be in touch before you arrive.",
   requestOnlyNote:
-    "We confirm by email, usually the same day. Nothing is charged now.", // NEW
+    "We confirm by email, usually the same day. Nothing is charged now.",
   twoWaysNote:
-    "Request to book and we confirm by email, usually the same day. Or pay now and your stay is confirmed straight away.", // NEW
-  firstName: "First name", // NEW
-  lastName: "Last name", // NEW
-  sendRequest: "Send request", // NEW
-  back: "Back", // NEW
+    "Request to book and we confirm by email, usually the same day. Or pay now and your stay is confirmed straight away.",
+  firstName: "First name",
+  lastName: "Last name",
+  sendRequest: "Send request",
+  back: "Back",
   requestPrivacyNote:
-    "By sending this you agree to us contacting you about your stay. See our", // NEW
-  requestSentTitle: "Request sent.", // NEW
+    "By sending this you agree to us contacting you about your stay. See our",
+  requestSentTitle: "Request sent.",
   requestSentBody:
-    "We will confirm by email, usually the same day. Nothing has been charged.", // NEW
-  bookingFailed: "Something went wrong. Please email us at", // NEW
+    "We will confirm by email, usually the same day. Nothing has been charged.",
+  bookingFailed: "Something went wrong. Please email us at",
   bookingUnavailable:
-    "We could not load the calendar just now. Tell us your dates and we will confirm availability and the total for your stay, usually the same day.", // NEW
+    "We could not load the calendar just now. Tell us your dates and we will confirm availability and the total for your stay, usually the same day.",
 
   // -- legal + 404 --------------------------------------------------------
   legalEyebrow: "Legal",
   lastUpdated: "Last updated",
-  notFoundEyebrow: "Error 404", // NEW
-  notFoundTitle: "That page isn't here.", // NEW
-  notFoundBody: "The link may be out of date, or the address may contain a typo. Try one of these pages instead:", // NEW
-  notFoundCta: "Tell us what you were looking for", // NEW
+  notFoundEyebrow: "Error 404",
+  notFoundTitle: "That page isn't here.",
+  notFoundBody: "The link may be out of date, or the address may contain a typo. Try one of these pages instead:",
+  notFoundCta: "Tell us what you were looking for",
   backHome: "Back to the homepage",
 
-  // -- search, filters and results (all NEW) ------------------------------
-  where: "Where", // NEW
-  any: "Any", // NEW
-  filters: "Filters", // NEW
-  applyFilters: "Apply", // NEW
-  clearFilters: "Clear filters", // NEW
-  removeFilter: "Remove this filter", // NEW
-  filteringBy: "Filtering by", // NEW
-  sort: "Sort", // NEW
-  sort_area: "By neighbourhood", // NEW
-  sort_price_asc: "Price, lowest first", // NEW
-  sort_price_desc: "Price, highest first", // NEW
-  features: "Features", // NEW
-  fromPrice: "from", // NEW
-  perNight: "per night", // NEW
-  kmToCentre: "{n} km to centre", // NEW
-  oneProperty: "1 place to stay", // NEW
-  nProperties: "{n} places to stay", // NEW
-  browseByArea: "Browse by neighbourhood", // NEW
-  noMatchTitle: "Nothing matches all of that.", // NEW
-  noMatchRelax: "Drop the {filter} filter and {n} places come back.", // NEW
-  noMatchRelaxOne: "Drop the {filter} filter and one place comes back.", // NEW
+  // -- search, filters and results (written for this site) ----------------
+  where: "Where",
+  any: "Any",
+  filters: "Filters",
+  applyFilters: "Apply",
+  clearFilters: "Clear filters",
+  removeFilter: "Remove this filter",
+  filteringBy: "Filtering by",
+  sort: "Sort",
+  sort_area: "By neighbourhood",
+  sort_price_asc: "Price, lowest first",
+  sort_price_desc: "Price, highest first",
+  features: "Features",
+  fromPrice: "from",
+  perNight: "per night",
+  kmToCentre: "{n} km to centre",
+  oneProperty: "1 place to stay",
+  nProperties: "{n} places to stay",
+  browseByArea: "Browse by neighbourhood",
+  noMatchTitle: "Nothing matches all of that.",
+  noMatchRelax: "Drop the {filter} filter and {n} places come back.",
+  noMatchRelaxOne: "Drop the {filter} filter and one place comes back.",
   noMatchNothing:
     "Relaxing any one filter would not change it either. Tell us what you are looking for and we will say honestly whether we can help.",
-  launchingSoon: "Launching soon", // NEW
-  cityComingTitle: "{city} is not open yet.", // NEW
+  launchingSoon: "Launching soon",
+  cityComingTitle: "{city} is not open yet.",
   cityComingBody:
     "We manage properties in Chiang Mai today, on the ground, with our own team. {city} is next. Tell us what you need there and we will come back to you when it opens.",
-  browseChiangMai: "Browse Chiang Mai", // NEW
-  tellUsWhatYouNeed: "Tell us what you need", // NEW
-  type_apartment: "Apartment", // NEW
-  type_townhouse: "Townhouse", // NEW
-  type_house: "House", // NEW
-  type_villa: "Villa", // NEW
-  feature_pool: "Pool", // NEW
-  feature_rooftop: "Rooftop", // NEW
-  feature_kitchen: "Full kitchen", // NEW
-  feature_wifi: "Fast Wi-Fi", // NEW
-  feature_parking: "Parking", // NEW
-  feature_workspace: "Workspace", // NEW
-  feature_washer: "Washing machine", // NEW
-  feature_pet_friendly: "Pet friendly", // NEW
-  filter_areas: "neighbourhood", // NEW
-  filter_types: "property type", // NEW
-  filter_features: "features", // NEW
-  filter_bedrooms: "bedrooms", // NEW
-  filter_bathrooms: "bathrooms", // NEW
-  filter_guests: "guests", // NEW
+  browseChiangMai: "Browse Chiang Mai",
+  tellUsWhatYouNeed: "Tell us what you need",
+  type_apartment: "Apartment",
+  type_townhouse: "Townhouse",
+  type_house: "House",
+  type_villa: "Villa",
+  feature_pool: "Pool",
+  feature_rooftop: "Rooftop",
+  feature_kitchen: "Full kitchen",
+  feature_wifi: "Fast Wi-Fi",
+  feature_parking: "Parking",
+  feature_workspace: "Workspace",
+  feature_washer: "Washing machine",
+  feature_pet_friendly: "Pet friendly",
+  filter_areas: "neighbourhood",
+  filter_types: "property type",
+  filter_features: "features",
+  filter_bedrooms: "bedrooms",
+  filter_bathrooms: "bathrooms",
+  filter_guests: "guests",
 
-  destinationsTitle: "Eight neighbourhoods, honestly described.", // NEW
+  destinationsTitle: "Eight neighbourhoods, honestly described.",
   destinationsIntro:
     "Chiang Mai is small enough to cross in twenty minutes and varied enough that the neighbourhood decides the holiday. Here is what each one is actually like, and what we manage there.",
-  areaNoneYet: "Nothing here yet", // NEW
-  areaEmptyTitle: "We do not manage anywhere in {area} yet.", // NEW
+  areaNoneYet: "Nothing here yet",
+  areaEmptyTitle: "We do not manage anywhere in {area} yet.",
   areaEmptyBody:
     "Rather than pad this page out, we would sooner say so. We take on properties one at a time and only where we can look after them properly, so this list grows slowly and on purpose.",
-  seeEverything: "See everything we manage", // NEW
-  otherAreas: "Other neighbourhoods", // NEW
-  searchThisArea: "Search {area}", // NEW
+  seeEverything: "See everything we manage",
+  otherAreas: "Other neighbourhoods",
+  searchThisArea: "Search {area}",
 
-  search: "Search", // NEW
-  forkGuestTitle: "I want to stay here.", // NEW
-  forkGuestBody:
-    "Book direct and you pay no platform markup, and the person who answers your message is the person who looks after the house.",
-  forkGuestLink: "Browse all properties", // NEW
-  forkOwnerTitle: "I own a property here.", // NEW
-  forkOwnerBody:
-    "We start with a paid feasibility study that can end in a No-Go. If your place will not earn, we would rather tell you before you sign anything.",
-  forkOwnerLink: "See how management works", // NEW
+  search: "Search",
 
-  showMap: "Show map", // NEW
-  hideMap: "Hide map", // NEW
-  mapLabel: "Map of the places we manage", // NEW
+  showMap: "Show map",
+  hideMap: "Hide map",
+  mapLabel: "Map of the places we manage",
 
-  allProperties: "All properties", // NEW
-  footAreas: "Areas we manage", // NEW
+  allProperties: "All properties",
+  footAreas: "Areas we manage",
 
 
   // -- local guide --------------------------------------------------------
-  // Strings written for this site: the handoff has no guide. Thai and Chinese unreviewed.
-  guideTitle: "Local guide", // NEW
-  guideIntro: "Places we have been to ourselves, with how long they take to reach from the house.", // NEW
-  guideCount: "{n} places", // NEW
-  guideCountOne: "1 place", // NEW
-  guideFilterCategory: "What for", // NEW
-  guideFilterArea: "Neighbourhood", // NEW
-  guideAll: "Everything", // NEW
-  guideNearby: "Walkable", // NEW
-  guidePicks: "Our favourites", // NEW
-  guideWalk: "{n} min walk", // NEW
-  guideDrive: "{n} min drive", // NEW
-  guideNoWalk: "Too far to walk", // NEW
-  guideDirections: "Directions", // NEW
-  guideDirectionsApple: "Apple Maps", // NEW
-  guideDirectionsGoogle: "Google Maps", // NEW
-  guideOutsideAreas: "Further out", // NEW
-  guideEmpty: "Nothing matches that combination.", // NEW
-  guideClear: "Clear filters", // NEW
-  guideFrom: "Times are from {property}.", // NEW
-  guideBookDirect: "Book direct with us", // NEW
-  guideBookDirectSub: "Same hosts who wrote this guide.", // NEW
-  guideAskTitle: "Talk to the AgentSiam local guide", // NEW
-  guideAskBody: "Ask us anything about Chiang Mai, or about staying here.", // NEW
-  guideAskCta: "Message us on WhatsApp", // NEW
-  guideAskPrefill: "Hello AgentSiam, I am reading the Lotus House local guide and have a question.", // NEW
-  guideAskDismiss: "Not now", // NEW
+  // Strings written for this site: the handoff has no guide.
+  guideTitle: "Local guide",
+  guideIntro: "Places we have been to ourselves, with how long they take to reach from the house.",
+  guideCount: "{n} places",
+  guideCountOne: "1 place",
+  guideFilterCategory: "What for",
+  guideFilterArea: "Neighbourhood",
+  guideAll: "Everything",
+  guideNearby: "Walkable",
+  guidePicks: "Our favourites",
+  guideWalk: "{n} min walk",
+  guideDrive: "{n} min drive",
+  guideNoWalk: "Too far to walk",
+  guideDirections: "Directions",
+  guideDirectionsApple: "Apple Maps",
+  guideDirectionsGoogle: "Google Maps",
+  guideOutsideAreas: "Further out",
+  guideEmpty: "Nothing matches that combination.",
+  guideClear: "Clear filters",
+  guideFrom: "Times are from {property}.",
+  guideBookDirect: "Book direct with us",
+  guideBookDirectSub: "Same hosts who wrote this guide.",
+  guideAskTitle: "Talk to the AgentSiam local guide",
+  guideAskBody: "Ask us anything about Chiang Mai, or about staying here.",
+  guideAskCta: "Message us on WhatsApp",
+  guideAskPrefill: "Hello AgentSiam, I am reading the Lotus House local guide and have a question.",
+  guideAskDismiss: "Not now",
   // -- page metadata ------------------------------------------------------
   //
   // Titles and descriptions were English in every locale until 18/08/2026: each
@@ -384,11 +376,11 @@ export const en = {
   metaPrivacyDesc:
     "How AgentSiam collects, uses and stores the information you send through this site, and the rights you have over it under Thailand's PDPA.",
   addressAfterBooking: "We send the exact address when your booking is confirmed.",
-  adults: "Adults", // NEW
-  children: "Children", // NEW
-  childrenNote: "Everyone counts toward the maximum, whatever their age.", // NEW
-  whatThisPlaceIsNot: "Limits to know before booking", // NEW
-  childSupervision: "Toddlers need supervision on the stairs and the roof terrace.", // NEW
+  adults: "Adults",
+  children: "Children",
+  childrenNote: "Everyone counts toward the maximum, whatever their age.",
+  whatThisPlaceIsNot: "Limits to know before booking",
+  childSupervision: "Toddlers need supervision on the stairs and the roof terrace.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

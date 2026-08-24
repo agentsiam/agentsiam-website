@@ -1,21 +1,21 @@
 import type { Dictionary } from "./en";
 
 // Thai. Strings shared with design_handoff_agentsiam_portal/i18n.js are that file's own
-// translations, unchanged. Lines marked NEW were written here rather than taken from the
-// handoff. All 296 keys were reviewed on 23/08/2026, see
+// translations, unchanged. The rest were written here rather than taken from the
+// handoff. All 296 keys were reviewed on 23/08/2026 and the findings applied, see
 // as-work/2026-08-18-website-launch-blockers/copy-review-findings.md.
 
 export const th: Dictionary = {
   langName: "ไทย",
 
   navStay: "เข้าพัก",
-  navGuests: "ผู้เข้าพัก", // NEW
-  navDestinations: "ย่านที่พัก", // NEW
-  navListProperty: "ฝากบ้านให้เราดูแล", // NEW
+  navGuests: "ผู้เข้าพัก",
+  navDestinations: "ย่านที่พัก",
+  navListProperty: "ฝากบ้านให้เราดูแล",
   navOwners: "เจ้าของบ้าน",
   navContact: "ติดต่อเรา",
-  skipToContent: "ข้ามไปยังเนื้อหา", // NEW
-  languageLabel: "ภาษา", // NEW
+  skipToContent: "ข้ามไปยังเนื้อหา",
+  languageLabel: "ภาษา",
 
   footStay: "เข้าพัก",
   footOwners: "เจ้าของบ้าน",
@@ -26,15 +26,15 @@ export const th: Dictionary = {
   businessServices: "บริการที่ปรึกษาธุรกิจ",
   terms: "ข้อกำหนดและเงื่อนไข",
   privacy: "นโยบายความเป็นส่วนตัว",
-  copyright: "© 2026 AgentSiam Co., Ltd.", // NEW
+  copyright: "© 2026 AgentSiam Co., Ltd.",
 
   pendingNote: "ยังไม่ได้แปล: รายละเอียดที่พัก หน้าข้อกำหนดทางกฎหมาย และเนื้อหาสำหรับเจ้าของบ้านโดยละเอียดด้านล่าง จึงแสดงเป็นภาษาอังกฤษแทนการแปลด้วยเครื่อง",  // adapted from the handoff
 
   heroEyebrow: "เชียงใหม่ · จองตรงกับเรา",
   heroTitleA: "พักในบ้าน",
   heroTitleB: "ที่มีคนดูแลจริง",
-  heroSub: "บ้านหนึ่งหลังในเชียงใหม่ ดูแลโดยทีมในพื้นที่ที่รับสายเอง เราจะเพิ่มทีละหลังเมื่อพร้อมรับดูแล", // NEW
-  viewProperty: "ดูที่พัก", // NEW
+  heroSub: "บ้านหนึ่งหลังในเชียงใหม่ ดูแลโดยทีมในพื้นที่ที่รับสายเอง เราจะเพิ่มทีละหลังเมื่อพร้อมรับดูแล",
+  viewProperty: "ดูที่พัก",
 
   forGuests: "สำหรับผู้เข้าพัก",
   forOwners: "สำหรับเจ้าของบ้าน",
@@ -44,8 +44,8 @@ export const th: Dictionary = {
   ownerPanelBody: "เราคำนวณตัวเลขให้ก่อนเซ็นสัญญา ถ้าไม่คุ้ม เราจะบอกตรง ๆ",
   ownerPanelLink: "ดูวิธีที่เราดูแล",
 
-  featuredTitle: "ที่พักของเรา", // NEW
-  featuredSub: "บ้านหนึ่งหลัง เปิดรับจองแล้ว เราอยากดูแลหลังเดียวให้ดี มากกว่าลงประกาศสิบหลัง", // NEW
+  featuredTitle: "ที่พักของเรา",
+  featuredSub: "บ้านหนึ่งหลัง เปิดรับจองแล้ว เราอยากดูแลหลังเดียวให้ดี มากกว่าลงประกาศสิบหลัง",
 
   whyA: "ราคาจองตรง ไม่มีค่าบวกจากแพลตฟอร์ม",
   whyABody: "จองกับทีมที่ดูแลบ้านโดยตรง ไม่มีค่าบวกจากแพลตฟอร์ม",
@@ -54,8 +54,8 @@ export const th: Dictionary = {
   whyC: "ติดต่อได้ตลอดการเข้าพัก",
   whyCBody: "โทรหรือ LINE ได้ 24 ชั่วโมง ตลอดเวลาที่คุณอยู่ที่นี่",
 
-  guestReviews: "เสียงจากผู้เข้าพัก", // NEW
-  guestReviewSource: "รีวิวจากผู้เข้าพักบน Airbnb", // NEW
+  guestReviews: "เสียงจากผู้เข้าพัก",
+  guestReviewSource: "รีวิวจากผู้เข้าพักบน Airbnb",
 
   ownerBandTitle: "กำลังคิดจะปล่อยเช่าบ้านอยู่ไหม",
   ownerBandSub: "สามขั้นตอนตามลำดับ ขั้นแรกคือการศึกษาความเป็นไปได้แบบมีค่าบริการ ซึ่งจบด้วยข้อสรุป ควรดำเนินการ / ไม่ควรดำเนินการ ท่านหยุดได้หลังจบทุกขั้นตอน",
@@ -93,11 +93,11 @@ export const th: Dictionary = {
   mgmtTitle: "การดูแลของเราครอบคลุมอะไรจริง ๆ",
   weDo: "สิ่งที่เราทำ",
   weDont: "สิ่งที่เราไม่ทำ",
-  reportTitle: "รายงานหน้าตาเป็นอย่างไร", // NEW
-  reportBody: "รายงานมีหกส่วน โดยข้อเสนอแนะอยู่ส่วนสุดท้าย ตัวเลขด้านล่างถูกปิดไว้ เพราะการไม่แสดงย่อมดีกว่าการสมมติ ตัวเลขจริงจะคำนวณจากบ้านของท่าน", // NEW
-  proofTitle: "หลังที่เราดูแลเอง", // NEW
-  proofBody: "Lotus House ย่านช้างคลาน คือบ้านที่เราดูแลอยู่จริง ทุกอย่างในหน้านี้เป็นงานที่เราทำให้บ้านหลังนี้ ทั้งการขออนุญาตประกอบธุรกิจที่พักระยะสั้น ช่องทางการจอง การแจ้ง ตม.30 และการดูแลผู้เข้าพัก", // NEW
-  meetTheTeam: "คนที่ลงมือทำ", // NEW
+  reportTitle: "รายงานหน้าตาเป็นอย่างไร",
+  reportBody: "รายงานมีหกส่วน โดยข้อเสนอแนะอยู่ส่วนสุดท้าย ตัวเลขด้านล่างถูกปิดไว้ เพราะการไม่แสดงย่อมดีกว่าการสมมติ ตัวเลขจริงจะคำนวณจากบ้านของท่าน",
+  proofTitle: "หลังที่เราดูแลเอง",
+  proofBody: "Lotus House ย่านช้างคลาน คือบ้านที่เราดูแลอยู่จริง ทุกอย่างในหน้านี้เป็นงานที่เราทำให้บ้านหลังนี้ ทั้งการขออนุญาตประกอบธุรกิจที่พักระยะสั้น ช่องทางการจอง การแจ้ง ตม.30 และการดูแลผู้เข้าพัก",
+  meetTheTeam: "คนที่ลงมือทำ",
   faqTitle: "คำถามที่เจ้าของบ้านถามบ่อย",
   startNumbers: "เริ่มจากตัวเลขก่อน",
   lookingToStay: "กำลังหาที่พักอยู่หรือเปล่า",
@@ -117,17 +117,17 @@ export const th: Dictionary = {
   whereIsIt: "อยู่ย่านไหน",
   anythingElse: "อย่างอื่นที่อยากบอก (ไม่บังคับ)",
   contactMsgHint: "ขนาด จำนวนห้องนอน เฟอร์นิเจอร์ และรายละเอียดพิเศษอื่น ๆ",
-  optional: "ไม่บังคับ", // NEW
-  phoneOrLine: "เบอร์โทร หรือ LINE", // NEW
+  optional: "ไม่บังคับ",
+  phoneOrLine: "เบอร์โทร หรือ LINE",
   send: "ส่ง",
-  sending: "กำลังส่ง…", // NEW
+  sending: "กำลังส่ง…",
   whatHappensNext: "ขั้นตอนต่อไป",
   nextStep1: "เราอ่านเองและตอบกลับภายในสองวันทำการ",
   nextStep2: "พูดคุยทางโทรศัพท์ จากนั้นนัดดูบ้านหากข้อมูลเบื้องต้นผ่านเกณฑ์",
   nextStep3:
     "รายงานความเป็นไปได้เป็นลายลักษณ์อักษร พร้อมตัวเลขจริง รวมถึงเหตุผลที่ไม่ควรทำ",
   businessNote:
-    "อยากสอบถามเรื่องบริการที่ปรึกษาธุรกิจ ไม่ใช่เรื่องบ้าน? เขียนมาที่", // NEW
+    "อยากสอบถามเรื่องบริการที่ปรึกษาธุรกิจ ไม่ใช่เรื่องบ้าน? เขียนมาที่",
   guestQnNote: "หากมีคำถามเรื่องการจอง ให้ใช้แผงจองบนหน้าที่พัก ระบบจะแนบวันที่ที่เลือกไปด้วย",  // adapted from the handoff
 
   typeHouse: "บ้านเดี่ยว",
@@ -146,11 +146,11 @@ export const th: Dictionary = {
   areaMaeRim: "แม่ริม",
   areaSanSai: "สันทราย",
 
-  checkDatesAndBook: "เช็กวันว่างและจอง", // NEW
+  checkDatesAndBook: "เช็กวันว่างและจอง",
   showAllPhotos: "ดูรูปทั้งหมด",
-  photosOf: "รูปของ {property}", // NEW
+  photosOf: "รูปของ {property}",
   close: "ปิด",
-  enquireDates: "สอบถามวันว่าง", // NEW
+  enquireDates: "สอบถามวันว่าง",
   whatThisHas: "สิ่งอำนวยความสะดวก",
   whereYoullBe: "ทำเลที่พัก",
   goodToKnow: "สิ่งที่ควรรู้",
@@ -163,177 +163,171 @@ export const th: Dictionary = {
   guests: "ผู้เข้าพัก",
   neighbourhood: "ย่าน",
 
-  // -- booking panel (all NEW, unreviewed) --------------------------------
-  pickDate: "เลือก", // NEW
-  clearDates: "ล้าง", // NEW
-  previousMonth: "เดือนก่อนหน้า", // NEW
-  nextMonth: "เดือนถัดไป", // NEW
-  loadingAvailability: "กำลังตรวจสอบวันว่าง…", // NEW
-  pricing: "กำลังคำนวณราคา…", // NEW
-  night: "คืน", // NEW
-  nights: "คืน", // NEW
-  pickDatesHint: "เลือกวันที่เพื่อดูยอดรวม ต้องพักอย่างน้อย {n} คืน", // NEW
-  minStayError: "ต้องเข้าพักอย่างน้อย {n} คืน", // NEW
-  datesUnavailable: "วันที่เลือกไม่ว่าง", // NEW
-  requestToBook: "ส่งคำขอจอง", // NEW
-  bookAndPay: "จองและชำระเงินตอนนี้", // NEW
-  continueToPayment: "ไปหน้าชำระเงิน", // NEW
-  payNow: "ชำระเงิน", // NEW
-  paying: "กำลังชำระเงิน…", // NEW
-  heldNote: "เราจะกันวันที่ที่เลือกไว้ระหว่างชำระเงิน ข้อมูลบัตรจะส่งตรงไปยังผู้ให้บริการชำระเงิน และเว็บไซต์นี้จะไม่จัดเก็บข้อมูลดังกล่าว", // NEW
-  paidTitle: "จองสำเร็จ", // NEW
-  paidBody: "รับชำระเงินและยืนยันการจองแล้ว ใบเสร็จกำลังส่งไปยังอีเมลของคุณ และเราจะติดต่อก่อนวันเข้าพัก", // NEW
-  requestOnlyNote: "เราจะยืนยันทางอีเมล โดยปกติภายในวันเดียวกัน ขั้นตอนนี้ยังไม่มีการเรียกเก็บเงิน", // NEW
-  twoWaysNote: "ส่งคำขอจองแล้วรอการยืนยันทางอีเมล ซึ่งปกติได้รับภายในวันเดียวกัน หรือชำระเงินตอนนี้เพื่อยืนยันการจองทันที", // NEW
-  firstName: "ชื่อ", // NEW
-  lastName: "นามสกุล", // NEW
-  sendRequest: "ส่งคำขอ", // NEW
-  back: "กลับ", // NEW
-  requestPrivacyNote: "เมื่อส่งข้อมูลนี้ คุณยินยอมให้เราติดต่อเกี่ยวกับการเข้าพัก โปรดดู", // NEW
-  requestSentTitle: "ส่งคำขอแล้ว", // NEW
-  requestSentBody: "เราจะยืนยันทางอีเมล โดยปกติภายในวันเดียวกัน และยังไม่มีการเรียกเก็บเงิน", // NEW
+  // -- booking panel (written for this site) ------------------------------
+  pickDate: "เลือก",
+  clearDates: "ล้าง",
+  previousMonth: "เดือนก่อนหน้า",
+  nextMonth: "เดือนถัดไป",
+  loadingAvailability: "กำลังตรวจสอบวันว่าง…",
+  pricing: "กำลังคำนวณราคา…",
+  night: "คืน",
+  nights: "คืน",
+  pickDatesHint: "เลือกวันที่เพื่อดูยอดรวม ต้องพักอย่างน้อย {n} คืน",
+  minStayError: "ต้องเข้าพักอย่างน้อย {n} คืน",
+  datesUnavailable: "วันที่เลือกไม่ว่าง",
+  requestToBook: "ส่งคำขอจอง",
+  bookAndPay: "จองและชำระเงินตอนนี้",
+  continueToPayment: "ไปหน้าชำระเงิน",
+  payNow: "ชำระเงิน",
+  paying: "กำลังชำระเงิน…",
+  heldNote: "เราจะกันวันที่ที่เลือกไว้ระหว่างชำระเงิน ข้อมูลบัตรจะส่งตรงไปยังผู้ให้บริการชำระเงิน และเว็บไซต์นี้จะไม่จัดเก็บข้อมูลดังกล่าว",
+  paidTitle: "จองสำเร็จ",
+  paidBody: "รับชำระเงินและยืนยันการจองแล้ว ใบเสร็จกำลังส่งไปยังอีเมลของคุณ และเราจะติดต่อก่อนวันเข้าพัก",
+  requestOnlyNote: "เราจะยืนยันทางอีเมล โดยปกติภายในวันเดียวกัน ขั้นตอนนี้ยังไม่มีการเรียกเก็บเงิน",
+  twoWaysNote: "ส่งคำขอจองแล้วรอการยืนยันทางอีเมล ซึ่งปกติได้รับภายในวันเดียวกัน หรือชำระเงินตอนนี้เพื่อยืนยันการจองทันที",
+  firstName: "ชื่อ",
+  lastName: "นามสกุล",
+  sendRequest: "ส่งคำขอ",
+  back: "กลับ",
+  requestPrivacyNote: "เมื่อส่งข้อมูลนี้ คุณยินยอมให้เราติดต่อเกี่ยวกับการเข้าพัก โปรดดู",
+  requestSentTitle: "ส่งคำขอแล้ว",
+  requestSentBody: "เราจะยืนยันทางอีเมล โดยปกติภายในวันเดียวกัน และยังไม่มีการเรียกเก็บเงิน",
   bookingFailed:
-    "เกิดข้อผิดพลาด กรุณาส่งอีเมลมาที่", // NEW
-  bookingUnavailable: "ตอนนี้เปิดปฏิทินไม่ได้ แจ้งวันที่ที่ต้องการ แล้วเราจะยืนยันวันว่างและยอดรวมให้ โดยปกติภายในวันเดียวกัน", // NEW
+    "เกิดข้อผิดพลาด กรุณาส่งอีเมลมาที่",
+  bookingUnavailable: "ตอนนี้เปิดปฏิทินไม่ได้ แจ้งวันที่ที่ต้องการ แล้วเราจะยืนยันวันว่างและยอดรวมให้ โดยปกติภายในวันเดียวกัน",
 
   legalEyebrow: "ข้อกำหนด",
-  lastUpdated: "ปรับปรุงล่าสุด", // NEW
-  notFoundEyebrow: "ข้อผิดพลาด 404", // NEW
-  notFoundTitle: "ไม่พบหน้านี้", // NEW
-  notFoundBody: "ลิงก์อาจหมดอายุหรือพิมพ์ที่อยู่ผิด ลองไปที่หน้าใดหน้าหนึ่งต่อไปนี้", // NEW
-  notFoundCta: "บอกเราว่าคุณกำลังหาอะไร", // NEW
-  backHome: "กลับไปหน้าแรก", // NEW
+  lastUpdated: "ปรับปรุงล่าสุด",
+  notFoundEyebrow: "ข้อผิดพลาด 404",
+  notFoundTitle: "ไม่พบหน้านี้",
+  notFoundBody: "ลิงก์อาจหมดอายุหรือพิมพ์ที่อยู่ผิด ลองไปที่หน้าใดหน้าหนึ่งต่อไปนี้",
+  notFoundCta: "บอกเราว่าคุณกำลังหาอะไร",
+  backHome: "กลับไปหน้าแรก",
 
-  // -- search, filters and results (all NEW, unreviewed) ------------------
-  where: "เมือง", // NEW
-  any: "ไม่จำกัด", // NEW
-  filters: "ตัวกรอง", // NEW
-  applyFilters: "ใช้ตัวกรอง", // NEW
-  clearFilters: "ล้างตัวกรอง", // NEW
-  removeFilter: "นำตัวกรองนี้ออก", // NEW
-  filteringBy: "กรองตาม", // NEW
-  sort: "เรียงตาม", // NEW
-  sort_area: "ตามย่าน", // NEW
-  sort_price_asc: "ราคาต่ำไปสูง", // NEW
-  sort_price_desc: "ราคาสูงไปต่ำ", // NEW
-  features: "สิ่งอำนวยความสะดวก", // NEW
-  fromPrice: "เริ่มต้น", // NEW
-  perNight: "ต่อคืน", // NEW
-  kmToCentre: "{n} กม. จากใจกลางเมือง", // NEW
-  oneProperty: "ที่พัก 1 แห่ง", // NEW
-  nProperties: "ที่พัก {n} แห่ง", // NEW
-  browseByArea: "เลือกดูตามย่าน", // NEW
-  noMatchTitle: "ไม่มีที่พักตรงกับเงื่อนไขทั้งหมด", // NEW
-  noMatchRelax: "นำตัวกรอง{filter}ออก แล้วจะพบที่พัก {n} แห่ง", // NEW
-  noMatchRelaxOne: "นำตัวกรอง{filter}ออก แล้วจะพบที่พัก 1 แห่ง", // NEW
+  // -- search, filters and results (written for this site) ----------------
+  where: "เมือง",
+  any: "ไม่จำกัด",
+  filters: "ตัวกรอง",
+  applyFilters: "ใช้ตัวกรอง",
+  clearFilters: "ล้างตัวกรอง",
+  removeFilter: "นำตัวกรองนี้ออก",
+  filteringBy: "กรองตาม",
+  sort: "เรียงตาม",
+  sort_area: "ตามย่าน",
+  sort_price_asc: "ราคาต่ำไปสูง",
+  sort_price_desc: "ราคาสูงไปต่ำ",
+  features: "สิ่งอำนวยความสะดวก",
+  fromPrice: "เริ่มต้น",
+  perNight: "ต่อคืน",
+  kmToCentre: "{n} กม. จากใจกลางเมือง",
+  oneProperty: "ที่พัก 1 แห่ง",
+  nProperties: "ที่พัก {n} แห่ง",
+  browseByArea: "เลือกดูตามย่าน",
+  noMatchTitle: "ไม่มีที่พักตรงกับเงื่อนไขทั้งหมด",
+  noMatchRelax: "นำตัวกรอง{filter}ออก แล้วจะพบที่พัก {n} แห่ง",
+  noMatchRelaxOne: "นำตัวกรอง{filter}ออก แล้วจะพบที่พัก 1 แห่ง",
   noMatchNothing:
     "แม้นำตัวกรองใดออกก็ยังไม่พบที่พัก บอกเราว่าคุณกำลังมองหาอะไร แล้วเราจะตอบตามตรงว่าช่วยได้หรือไม่",
-  launchingSoon: "เร็ว ๆ นี้", // NEW
-  cityComingTitle: "ยังไม่เปิดให้บริการที่ {city}", // NEW
+  launchingSoon: "เร็ว ๆ นี้",
+  cityComingTitle: "ยังไม่เปิดให้บริการที่ {city}",
   cityComingBody:
     "ขณะนี้เราดูแลที่พักในเชียงใหม่ โดยทีมงานของเราเองในพื้นที่ {city} เป็นเมืองถัดไป บอกความต้องการของคุณไว้ แล้วเราจะติดต่อกลับเมื่อเปิดให้บริการ",
-  browseChiangMai: "ดูที่พักในเชียงใหม่", // NEW
-  tellUsWhatYouNeed: "บอกความต้องการของคุณ", // NEW
-  type_apartment: "อพาร์ตเมนต์", // NEW
-  type_townhouse: "ทาวน์เฮาส์", // NEW
-  type_house: "บ้านเดี่ยว", // NEW
-  type_villa: "วิลล่า", // NEW
-  feature_pool: "สระว่ายน้ำ", // NEW
-  feature_rooftop: "ดาดฟ้า", // NEW
-  feature_kitchen: "ครัวครบครัน", // NEW
-  feature_wifi: "Wi-Fi ความเร็วสูง", // NEW
-  feature_parking: "ที่จอดรถ", // NEW
-  feature_workspace: "มุมทำงาน", // NEW
-  feature_washer: "เครื่องซักผ้า", // NEW
-  feature_pet_friendly: "นำสัตว์เลี้ยงได้", // NEW
-  filter_areas: "ย่าน", // NEW
-  filter_types: "ประเภทที่พัก", // NEW
-  filter_features: "สิ่งอำนวยความสะดวก", // NEW
-  filter_bedrooms: "ห้องนอน", // NEW
-  filter_bathrooms: "ห้องน้ำ", // NEW
-  filter_guests: "จำนวนผู้เข้าพัก", // NEW
+  browseChiangMai: "ดูที่พักในเชียงใหม่",
+  tellUsWhatYouNeed: "บอกความต้องการของคุณ",
+  type_apartment: "อพาร์ตเมนต์",
+  type_townhouse: "ทาวน์เฮาส์",
+  type_house: "บ้านเดี่ยว",
+  type_villa: "วิลล่า",
+  feature_pool: "สระว่ายน้ำ",
+  feature_rooftop: "ดาดฟ้า",
+  feature_kitchen: "ครัวครบครัน",
+  feature_wifi: "Wi-Fi ความเร็วสูง",
+  feature_parking: "ที่จอดรถ",
+  feature_workspace: "มุมทำงาน",
+  feature_washer: "เครื่องซักผ้า",
+  feature_pet_friendly: "นำสัตว์เลี้ยงได้",
+  filter_areas: "ย่าน",
+  filter_types: "ประเภทที่พัก",
+  filter_features: "สิ่งอำนวยความสะดวก",
+  filter_bedrooms: "ห้องนอน",
+  filter_bathrooms: "ห้องน้ำ",
+  filter_guests: "จำนวนผู้เข้าพัก",
 
-  destinationsTitle: "แปดย่าน อธิบายตามจริง", // NEW
+  destinationsTitle: "แปดย่าน อธิบายตามจริง",
   destinationsIntro: "เชียงใหม่ข้ามเมืองได้ในราวยี่สิบนาที แต่แต่ละย่านให้บรรยากาศการเที่ยวต่างกัน ที่นี่บอกตามตรงว่าแต่ละย่านเป็นอย่างไร และเราดูแลที่พักใดบ้าง",
-  areaNoneYet: "ยังไม่มีที่พัก", // NEW
-  areaEmptyTitle: "เรายังไม่มีที่พักที่ดูแลใน {area}", // NEW
+  areaNoneYet: "ยังไม่มีที่พัก",
+  areaEmptyTitle: "เรายังไม่มีที่พักที่ดูแลใน {area}",
   areaEmptyBody: "หน้านี้จึงไม่เติมรายชื่อให้ดูเต็ม เรารับดูแลที่พักทีละแห่ง เฉพาะเมื่อมั่นใจว่าดูแลได้ดี รายการจึงเพิ่มอย่างช้า ๆ โดยตั้งใจ",
-  seeEverything: "ดูที่พักทั้งหมดที่เราดูแล", // NEW
-  otherAreas: "ย่านอื่น ๆ", // NEW
-  searchThisArea: "ค้นหาที่พักใน {area}", // NEW
+  seeEverything: "ดูที่พักทั้งหมดที่เราดูแล",
+  otherAreas: "ย่านอื่น ๆ",
+  searchThisArea: "ค้นหาที่พักใน {area}",
 
-  search: "ค้นหา", // NEW
-  forkGuestTitle: "อยากพักที่นี่", // NEW
-  forkGuestBody: "จองตรงกับเรา ไม่มีค่าบวกจากแพลตฟอร์ม และข้อความของคุณจะตอบโดยทีมที่ดูแลบ้านหลังนั้นเอง",
-  forkGuestLink: "ดูที่พักทั้งหมด", // NEW
-  forkOwnerTitle: "ฉันมีบ้านให้เช่า", // NEW
-  forkOwnerBody: "เราเริ่มจากการศึกษาความเป็นไปได้แบบมีค่าบริการ ซึ่งอาจสรุปว่าไม่ควรดำเนินการ หากคาดว่าบ้านของท่านไม่สร้างผลตอบแทนที่คุ้มค่า เราจะแจ้งให้ทราบก่อนท่านเซ็นสัญญา",
-  forkOwnerLink: "ดูขั้นตอนการรับดูแล", // NEW
+  search: "ค้นหา",
 
-  showMap: "แสดงแผนที่", // NEW
-  hideMap: "ซ่อนแผนที่", // NEW
-  mapLabel: "แผนที่ที่พักที่เราดูแล", // NEW
+  showMap: "แสดงแผนที่",
+  hideMap: "ซ่อนแผนที่",
+  mapLabel: "แผนที่ที่พักที่เราดูแล",
 
-  allProperties: "ที่พักทั้งหมด", // NEW
-  footAreas: "ย่านที่เราดูแล", // NEW
+  allProperties: "ที่พักทั้งหมด",
+  footAreas: "ย่านที่เราดูแล",
 
 
   // -- local guide --------------------------------------------------------
-  guideTitle: "คู่มือย่านนี้", // NEW
-  guideIntro: "สถานที่ที่เราไปจริง พร้อมเวลาเดินทางจากบ้าน", // NEW
-  guideCount: "{n} แห่ง", // NEW
-  guideCountOne: "1 แห่ง", // NEW
-  guideFilterCategory: "ประเภท", // NEW
-  guideFilterArea: "ย่าน", // NEW
-  guideAll: "ทั้งหมด", // NEW
-  guideNearby: "เดินไปได้", // NEW
-  guidePicks: "ที่เราชอบ", // NEW
-  guideWalk: "{n} นาที (เดิน)", // NEW
-  guideDrive: "{n} นาที (ขับรถ)", // NEW
-  guideNoWalk: "ไกลเกินกว่าจะเดิน", // NEW
-  guideDirections: "เส้นทาง", // NEW
-  guideDirectionsApple: "Apple Maps", // NEW
-  guideDirectionsGoogle: "Google Maps", // NEW
-  guideOutsideAreas: "ไกลออกไป", // NEW
-  guideEmpty: "ไม่พบสถานที่ตามที่เลือก", // NEW
-  guideClear: "ล้างตัวกรอง", // NEW
-  guideFrom: "เวลาเดินทางเริ่มจาก {property}", // NEW
-  guideBookDirect: "จองตรงกับเรา", // NEW
-  guideBookDirectSub: "ทีมเจ้าบ้านที่เขียนคู่มือนี้จะดูแลคุณเอง", // NEW
-  guideAskTitle: "คุยกับทีมท้องถิ่นของ AgentSiam", // NEW
-  guideAskBody: "ถามเราได้ทุกเรื่องเกี่ยวกับเชียงใหม่ หรือการเข้าพัก", // NEW
-  guideAskCta: "ทักเราทาง WhatsApp", // NEW
-  guideAskPrefill: "สวัสดี AgentSiam อ่านคู่มือย่านรอบ Lotus House อยู่และมีคำถาม", // NEW
-  guideAskDismiss: "ไว้ก่อน", // NEW
+  guideTitle: "คู่มือย่านนี้",
+  guideIntro: "สถานที่ที่เราไปจริง พร้อมเวลาเดินทางจากบ้าน",
+  guideCount: "{n} แห่ง",
+  guideCountOne: "1 แห่ง",
+  guideFilterCategory: "ประเภท",
+  guideFilterArea: "ย่าน",
+  guideAll: "ทั้งหมด",
+  guideNearby: "เดินไปได้",
+  guidePicks: "ที่เราชอบ",
+  guideWalk: "{n} นาที (เดิน)",
+  guideDrive: "{n} นาที (ขับรถ)",
+  guideNoWalk: "ไกลเกินกว่าจะเดิน",
+  guideDirections: "เส้นทาง",
+  guideDirectionsApple: "Apple Maps",
+  guideDirectionsGoogle: "Google Maps",
+  guideOutsideAreas: "ไกลออกไป",
+  guideEmpty: "ไม่พบสถานที่ตามที่เลือก",
+  guideClear: "ล้างตัวกรอง",
+  guideFrom: "เวลาเดินทางเริ่มจาก {property}",
+  guideBookDirect: "จองตรงกับเรา",
+  guideBookDirectSub: "ทีมเจ้าบ้านที่เขียนคู่มือนี้จะดูแลคุณเอง",
+  guideAskTitle: "คุยกับทีมท้องถิ่นของ AgentSiam",
+  guideAskBody: "ถามเราได้ทุกเรื่องเกี่ยวกับเชียงใหม่ หรือการเข้าพัก",
+  guideAskCta: "ทักเราทาง WhatsApp",
+  guideAskPrefill: "สวัสดี AgentSiam อ่านคู่มือย่านรอบ Lotus House อยู่และมีคำถาม",
+  guideAskDismiss: "ไว้ก่อน",
   // -- page metadata ------------------------------------------------------
-  metaHomeTitle: "AgentSiam | รับดูแลบ้านพักระยะสั้นในเชียงใหม่", // NEW
-  metaHomeDesc: "ศึกษาความเป็นไปได้ ขออนุญาตประกอบธุรกิจที่พักระยะสั้น และรับดูแลที่พักระยะสั้นในเชียงใหม่ สามขั้นตามลำดับ แต่ละขั้นต้องผ่านเกณฑ์ก่อนขั้นถัดไป", // NEW
-  metaHowTitle: "เราทำงานอย่างไร", // NEW
-  metaHowDesc: "สามขั้นตามลำดับ: การศึกษาความเป็นไปได้แบบมีค่าบริการ ซึ่งอาจสรุปว่าไม่ควรดำเนินการ การขออนุญาตประกอบธุรกิจที่พักระยะสั้น และการรับดูแล", // NEW
-  metaPropertiesTitle: "ที่พักในเชียงใหม่", // NEW
-  metaPropertiesDesc: "บ้าน วิลล่า และทาวน์โฮมในเชียงใหม่ ดูแลโดยทีมในพื้นที่ กรองตามย่าน ประเภท และขนาด แล้วจองตรงกับเรา", // NEW
-  metaLotusTitle: "Lotus House ทาวน์เฮาส์ส่วนตัวใกล้ไนท์บาซาร์", // NEW
-  metaLotusDesc: "ทาวน์โฮมสามชั้นพร้อมดาดฟ้าในย่านช้างคลาน เชียงใหม่ มีห้องนอนเตียงคิง 2 ห้อง ห้องน้ำ 2 ห้อง ครัวครบครัน พักได้ 4 คน", // NEW
-  metaGuideTitle: "คู่มือย่านรอบ {property}", // NEW
-  metaGuideDesc: "{n} สถานที่รอบ {property} ในเชียงใหม่ คัดโดยทีมเจ้าบ้าน พร้อมเวลาเดินและขับรถจากที่พัก", // NEW
-  metaDestinationsTitle: "ย่านที่พักในเชียงใหม่", // NEW
+  metaHomeTitle: "AgentSiam | รับดูแลบ้านพักระยะสั้นในเชียงใหม่",
+  metaHomeDesc: "ศึกษาความเป็นไปได้ ขออนุญาตประกอบธุรกิจที่พักระยะสั้น และรับดูแลที่พักระยะสั้นในเชียงใหม่ สามขั้นตามลำดับ แต่ละขั้นต้องผ่านเกณฑ์ก่อนขั้นถัดไป",
+  metaHowTitle: "เราทำงานอย่างไร",
+  metaHowDesc: "สามขั้นตามลำดับ: การศึกษาความเป็นไปได้แบบมีค่าบริการ ซึ่งอาจสรุปว่าไม่ควรดำเนินการ การขออนุญาตประกอบธุรกิจที่พักระยะสั้น และการรับดูแล",
+  metaPropertiesTitle: "ที่พักในเชียงใหม่",
+  metaPropertiesDesc: "บ้าน วิลล่า และทาวน์โฮมในเชียงใหม่ ดูแลโดยทีมในพื้นที่ กรองตามย่าน ประเภท และขนาด แล้วจองตรงกับเรา",
+  metaLotusTitle: "Lotus House ทาวน์เฮาส์ส่วนตัวใกล้ไนท์บาซาร์",
+  metaLotusDesc: "ทาวน์โฮมสามชั้นพร้อมดาดฟ้าในย่านช้างคลาน เชียงใหม่ มีห้องนอนเตียงคิง 2 ห้อง ห้องน้ำ 2 ห้อง ครัวครบครัน พักได้ 4 คน",
+  metaGuideTitle: "คู่มือย่านรอบ {property}",
+  metaGuideDesc: "{n} สถานที่รอบ {property} ในเชียงใหม่ คัดโดยทีมเจ้าบ้าน พร้อมเวลาเดินและขับรถจากที่พัก",
+  metaDestinationsTitle: "ย่านที่พักในเชียงใหม่",
   metaDestinationsDesc:
-    "แปดย่านในเชียงใหม่ที่เราดูแล Nimman, Old City, Santitham, Chang Khlan, Riverside, Hang Dong, Mae Rim และ San Sai พร้อมบรรยากาศจริงของแต่ละย่าน", // NEW
-  metaAreaTitle: "พักในย่าน {area} เชียงใหม่", // NEW
-  metaAreaDesc: "{area}: {vibe} รู้จักบรรยากาศของย่านและที่พักที่เราดูแลในพื้นที่", // NEW
-  metaContactTitle: "ติดต่อเรา", // NEW
-  metaContactDesc: "เล่าเรื่องบ้านของคุณในเชียงใหม่ แล้วเราจะติดต่อกลับเรื่องการศึกษาความเป็นไปได้ การขออนุญาตประกอบธุรกิจที่พักระยะสั้น หรือการรับดูแล", // NEW
-  metaBusinessTitle: "บริการสำหรับธุรกิจ", // NEW
-  metaBusinessDesc: "สำหรับธุรกิจที่เข้ามาในไทย: จดทะเบียนบริษัทและดูแลการปฏิบัติตามกฎหมาย OEM และซัพพลายเชน เปิดร้านบน LINE TikTok Shopee และ Lazada พร้อมวางแผนการเติบโต", // NEW
-  metaTermsTitle: "ข้อกำหนดและเงื่อนไข", // NEW
-  metaTermsDesc: "ข้อกำหนดสำหรับบริการศึกษาความเป็นไปได้ การขออนุญาตประกอบธุรกิจที่พักระยะสั้น การรับดูแลที่พักระยะสั้นของ AgentSiam และการใช้เว็บไซต์นี้", // NEW
-  metaPrivacyTitle: "นโยบายความเป็นส่วนตัว", // NEW
+    "แปดย่านในเชียงใหม่ที่เราดูแล Nimman, Old City, Santitham, Chang Khlan, Riverside, Hang Dong, Mae Rim และ San Sai พร้อมบรรยากาศจริงของแต่ละย่าน",
+  metaAreaTitle: "พักในย่าน {area} เชียงใหม่",
+  metaAreaDesc: "{area}: {vibe} รู้จักบรรยากาศของย่านและที่พักที่เราดูแลในพื้นที่",
+  metaContactTitle: "ติดต่อเรา",
+  metaContactDesc: "เล่าเรื่องบ้านของคุณในเชียงใหม่ แล้วเราจะติดต่อกลับเรื่องการศึกษาความเป็นไปได้ การขออนุญาตประกอบธุรกิจที่พักระยะสั้น หรือการรับดูแล",
+  metaBusinessTitle: "บริการสำหรับธุรกิจ",
+  metaBusinessDesc: "สำหรับธุรกิจที่เข้ามาในไทย: จดทะเบียนบริษัทและดูแลการปฏิบัติตามกฎหมาย OEM และซัพพลายเชน เปิดร้านบน LINE TikTok Shopee และ Lazada พร้อมวางแผนการเติบโต",
+  metaTermsTitle: "ข้อกำหนดและเงื่อนไข",
+  metaTermsDesc: "ข้อกำหนดสำหรับบริการศึกษาความเป็นไปได้ การขออนุญาตประกอบธุรกิจที่พักระยะสั้น การรับดูแลที่พักระยะสั้นของ AgentSiam และการใช้เว็บไซต์นี้",
+  metaPrivacyTitle: "นโยบายความเป็นส่วนตัว",
   metaPrivacyDesc:
-    "AgentSiam เก็บ ใช้ และรักษาข้อมูลที่คุณส่งผ่านเว็บไซต์นี้อย่างไร และสิทธิของคุณภายใต้ PDPA ของไทย", // NEW
-  addressAfterBooking: "เราจะส่งที่อยู่โดยละเอียดให้หลังยืนยันการจอง", // NEW
-  adults: "ผู้ใหญ่", // NEW
-  children: "เด็ก", // NEW
-  childrenNote: "ทุกคนนับรวมในจำนวนผู้เข้าพักสูงสุด ไม่ว่าอายุเท่าใด", // NEW
-  whatThisPlaceIsNot: "ข้อจำกัดที่ควรรู้ก่อนจอง", // NEW
-  childSupervision: "เด็กเล็กต้องมีผู้ใหญ่ดูแลเมื่ออยู่บริเวณบันไดและดาดฟ้า", // NEW
+    "AgentSiam เก็บ ใช้ และรักษาข้อมูลที่คุณส่งผ่านเว็บไซต์นี้อย่างไร และสิทธิของคุณภายใต้ PDPA ของไทย",
+  addressAfterBooking: "เราจะส่งที่อยู่โดยละเอียดให้หลังยืนยันการจอง",
+  adults: "ผู้ใหญ่",
+  children: "เด็ก",
+  childrenNote: "ทุกคนนับรวมในจำนวนผู้เข้าพักสูงสุด ไม่ว่าอายุเท่าใด",
+  whatThisPlaceIsNot: "ข้อจำกัดที่ควรรู้ก่อนจอง",
+  childSupervision: "เด็กเล็กต้องมีผู้ใหญ่ดูแลเมื่ออยู่บริเวณบันไดและดาดฟ้า",
 };
