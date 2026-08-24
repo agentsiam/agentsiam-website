@@ -32,9 +32,18 @@ transfer adds a year — see Path 2.
 Note the SPF include is `zohomail.eu`, **not** `zoho.com`. Zoho's EU tenant. Getting this
 wrong breaks all outbound mail, so copy it exactly.
 
-### The complete zone — 9 records
+### The complete zone — 10 records
 
 Everything that exists today. Needed if you ever recreate the zone elsewhere.
+
+> **Corrected 24/08/2026: this table said 9 records and missed `property`.** A CNAME for
+> `property.agentsiam.com` exists, points at `cdn1.wixdns.net` like `www`, and 301-redirects
+> to `https://www.agentsiam.com/`. It is live, it is referenced nowhere in either repo, and
+> it was absent from this list. Found by reading the Wix domains page rather than the zone.
+>
+> A sweep of 40 common subdomain names on the same day found only `www` and `property`. That
+> is a guessed-name probe rather than a zone transfer, so treat it as strong evidence rather
+> than proof, and read the zone off Wix directly before rebuilding it elsewhere.
 
 > **Stale after 26/08/2026.** This table is the pre-cutover zone. At cutover the apex `A`
 > set and the `www` `CNAME` are repointed from Wix to Vercel, so **four of these nine
@@ -42,7 +51,9 @@ Everything that exists today. Needed if you ever recreate the zone elsewhere.
 > restore the Wix website and undo the launch.
 >
 > The five that carry over unchanged are the three `MX` and the two `TXT`, which are the
-> records that carry the mail. Take the apex and `www` targets from the Vercel dashboard on
+> records that carry the mail. `property` is a sixth open question rather than a carry-over:
+> it points at Wix, so it breaks when Wix stops serving, and it either gets repointed at
+> Vercel as a redirect or is dropped deliberately. It must not be dropped by accident. Take the apex and `www` targets from the Vercel dashboard on
 > the day, never from a document: Vercel's addresses change.
 >
 > Execution plan for the September registrar transfer, including which records survive:
@@ -54,6 +65,7 @@ Everything that exists today. Needed if you ever recreate the zone elsewhere.
 | A | `@` | `185.230.63.107` | — |
 | A | `@` | `185.230.63.171` | — |
 | CNAME | `www` | `cdn1.wixdns.net` | — |
+| CNAME | `property` | `cdn1.wixdns.net` | — |
 | MX | `@` | `mx.zoho.eu` | 10 |
 | MX | `@` | `mx2.zoho.eu` | 20 |
 | MX | `@` | `mx3.zoho.eu` | 30 |
