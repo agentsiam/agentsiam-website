@@ -121,6 +121,35 @@ button {
     color: var(--color-muted);
   }
 
+  /* Bento-card gradient grounds, the design system's `.on-grad` variant.
+     Copied verbatim from as-context/06-design-system/design-system.html lines 232-236 --
+     full brand colour to 20%, then to white by 62%, at 178deg so the fade is very slightly
+     off-vertical. Never retype these values: colour comes from the design system and
+     nowhere else (Law 3), and a hardcoded hex in a build file is a bug even when it
+     renders correctly.
+
+     `.on-grad` carries ink text throughout, so a card using one of these keeps text-ink
+     and never white -- white on the near-white lower half is unreadable.
+
+     All five are here because the system defines five. Only three are in use today, on the
+     home page's 3-step staircase, which website-wireframe.html specifies as
+     "3-STEP STAIRCASE -- bento-grid, 3x bento-card.on-grad". */
+  .grad-blue {
+    background: linear-gradient(178deg, #0100dd 0%, #0100dd 20%, #ffffff 62%);
+  }
+  .grad-sand {
+    background: linear-gradient(178deg, #d9b16b 0%, #d9b16b 20%, #ffffff 62%);
+  }
+  .grad-vermilion {
+    background: linear-gradient(178deg, #fb5932 0%, #fb5932 20%, #ffffff 62%);
+  }
+  .grad-pink {
+    background: linear-gradient(178deg, #f7acc6 0%, #f7acc6 22%, #ffffff 68%);
+  }
+  .grad-teal {
+    background: linear-gradient(178deg, #00b4b1 0%, #00b4b1 20%, #ffffff 62%);
+  }
+
   /* The solid ink pill: every page's single primary CTA. */
   .pill-primary {
     display: inline-block;

@@ -140,6 +140,8 @@ const CAPTIONS = {
   // where naming beats describing: "a smiling man in glasses" tells a screen-reader user
   // nothing about why the photo is on the page.
   "team/Paul_b__portrait_as_Co-founder.jpg": "Paul, co-founder of AgentSiam",
+  "team/agentsiam-team-group-portrait.jpg":
+    "The AgentSiam team, the five people who run the company",
   "team/Nils_m_portrait_as_Co-founder.jpeg": "Nils, co-founder of AgentSiam",
   "team/Patthanapong_p_portrait_Appraisal_&_RealEstate_Specialist_as.jpg":
     "Patthanapong, appraisal and real estate specialist at AgentSiam",
@@ -162,6 +164,7 @@ const RATINGS = {
   // Ratings are only a tiebreak here -- TEAM in src/lib/team.ts is what actually orders the
   // row -- but keeping them in step means the manifest reads in the same order as the page.
   "team/Paul_b__portrait_as_Co-founder.jpg": 5,
+  "team/agentsiam-team-group-portrait.jpg": 5,
   "team/Nils_m_portrait_as_Co-founder.jpeg": 5,
   "team/Patthanapong_p_portrait_Appraisal_&_RealEstate_Specialist_as.jpg": 4,
   "team/Phakkaya_jen_k__portrait_as_Digital_&_Creative_Consultant.jpg": 3,

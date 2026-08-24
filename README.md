@@ -325,9 +325,14 @@ The pipeline, so nobody has to think about image formats:
 
 ## Known gaps
 
-- ~~No photography yet.~~ Resolved. Real Lotus House photography landed 15/08/2026, 52
-  frames across seven rooms, plus five team portraits. The old generic stock library stays
-  removed, per the design system's "no stock, no fake mockups" rule.
+- ~~No photography yet.~~ Resolved. Real Lotus House photography landed 15/08/2026. As of
+  24/08/2026 the published set is 46 Lotus House frames across seven rooms, plus five team
+  portraits. Three carport shots are held back in `_excluded/` for showing the house number.
+  The old generic stock library stays removed, per the design system's "no stock, no fake
+  mockups" rule.
+- **No `src/photos/team/team-on-site.jpg`.** One landscape frame of the team on a site visit.
+  Until it exists, both homepage fork panels render as brand fills rather than photos, because
+  they are coded to take a photo or neither. See `src/photos/team/README.md`.
 - No icon set. Value-prop icons are typographic glyphs, as in the handoff.
 - No phone number or LINE ID published. The footer carries name, address and email only; all
   three have to match the Google Business Profile character for character.
@@ -356,26 +361,49 @@ site: short-term rental first, with those four services demoted to `/business-se
 Deploying to the apex domain replaces the live site. That is a positioning decision for Paul and
 Nils, not a deploy step.
 
-Hard blockers, in order:
+Hard blockers, in order. State as of 24/08/2026.
 
-1. **T&Cs have not been through counsel.** The short-term-rental clauses are new, and the page
-   presents them as binding.
-2. **The Thai and Chinese strings marked `// NEW` have not been reviewed by a native speaker.**
-   Everything else in those files is the handoff's own translation.
-3. **Four listing disclosures are missing from `/lotushouse`, one of them `safety`.** The
-   property profile requires them in the listing, and the booking panel hardcodes
-   `children: 0` so the safety trigger cannot fire. This is the blocker with a real victim:
-   see `as-work/2026-08-18-website-launch-blockers/findings.md` in the consulting repo.
-4. **The exact street address and coordinates are public before booking**, including a
-   house pin and door-to-door directions on the indexed local-guide page. Same source.
-5. **Contact form delivery is unverified end to end.** The transport is Zoho SMTP, not
+1. **Contact form delivery is unverified end to end.** The transport is Zoho SMTP, not
    Resend: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` and `CONTACT_TO_EMAIL`
    have to be set in Vercel and a real send tested. `.env.example` documents all seventeen
-   variables.
+   variables. Cannot be closed until the Vercel project exists.
+2. **A real Beds24 test booking has not been run end to end.** There is no Beds24 sandbox, so
+   it charges a real card against the live account and has to be cleaned up afterwards. The
+   procedure and the cost are in `as-work/2026-08-18-website-launch-blockers/test-booking-runbook.md`.
+
+Not a blocker, but the first thing anyone sees: **`src/photos/team/team-on-site.jpg` does not
+exist.** The homepage asks for it by that exact name, and because the two fork panels are
+written to take a photo or neither, one missing file suppresses two homepage photos and both
+render as flat brand fills. It wants one landscape frame of the team on a site visit, 16:9,
+minimum 1440x810 and ideally 2560x1440. Brief: `src/photos/team/README.md`, and the full spec
+plus the generation prompt in
+`as-work/2026-08-24-vercel-setup-and-deploy/team-wide-image-prompt.md`.
+
+Closed, kept here so they are not re-opened by mistake:
+
+- ~~**T&Cs have not been through counsel.**~~ Cleared for draft 1 by Paul, 24/08/2026.
+- ~~**The Thai and Chinese strings marked `// NEW` have not been reviewed by a native speaker.**~~
+  Closed 23/08/2026. All 296 keys were reviewed in English, Thai and Chinese, 199 findings
+  raised and applied. The `// NEW` markers were stale after that and were removed 24/08/2026.
+  See `as-work/2026-08-18-website-launch-blockers/copy-review-findings.md`.
+- ~~**Four listing disclosures are missing from `/lotushouse`, one of them `safety`.**~~ Closed
+  22/08/2026. The child-safety disclosure leads "What this place is not" in all three
+  languages, the booking panel counts adults and children separately, and the acknowledgement
+  is enforced server-side on both the request and the payment path.
+- ~~**The exact street address and coordinates are public before booking.**~~ Closed
+  18/08/2026 as text, and 24/08/2026 in image form: three carport photographs showing the
+  house number "42" are held back in `src/photos/lotushouse/_excluded/`, and two shots of the
+  lane had a licence plate redacted before being republished. The rule follows the fact
+  rather than the format. See that folder's README.
 
 Then, the deploy itself: connect the GitHub repo to Vercel, set `NEXT_PUBLIC_SITE_URL` on
 preview deployments so previews don't advertise the production canonical, ship to a preview URL
 first, and only repoint DNS once the list above is clear.
+
+**Vercel must be on Pro before the first production deploy.** `vercel.json` carries the real
+`*/10 * * * *` hold sweep, and Hobby caps crons at once per day, so Vercel rejects it at deploy
+time. Upgrade the team first, then deploy. `scripts/check-cron.mjs` guards the other direction:
+a production build carrying the daily stopgap is refused.
 
 **A note on git locks.** This checkout moved out of Google Drive on 15/08/2026, which fixed
 the old "Operation not permitted" failure on `.git/index.lock`. Two zero-byte lock files

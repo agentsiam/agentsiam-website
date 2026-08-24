@@ -35,30 +35,30 @@ import lotushouse_24 from "@/photos/lotushouse/Bed - 2nd Floor/20240411_091214_e
 import lotushouse_25 from "@/photos/lotushouse/Bed - 2nd Floor/IMG_5651_edited.jpg";
 import lotushouse_26 from "@/photos/lotushouse/Bed - 2nd Floor/IMG_5659_edited.jpg";
 import lotushouse_27 from "@/photos/lotushouse/Exterior/20240402_052729_edited.jpg";
-import lotushouse_28 from "@/photos/lotushouse/Exterior/20240402_053738_edited_resized.jpg";
-import lotushouse_29 from "@/photos/lotushouse/Exterior/mainstree_exterior_lotushouse.jpg";
-import lotushouse_30 from "@/photos/lotushouse/Exterior/Parking House.jpg";
-import lotushouse_31 from "@/photos/lotushouse/Exterior/Parking zone Street.jpg";
-import lotushouse_32 from "@/photos/lotushouse/Kitchen/20240412_040311_edited.jpg";
-import lotushouse_33 from "@/photos/lotushouse/Living Room/20240405_162330_edited.jpg";
-import lotushouse_34 from "@/photos/lotushouse/Living Room/20240411_045027_edited.jpg";
-import lotushouse_35 from "@/photos/lotushouse/Living Room/20240411_052817_edited.jpg";
-import lotushouse_36 from "@/photos/lotushouse/Living Room/20240411_053018_edited.jpg";
-import lotushouse_37 from "@/photos/lotushouse/Terrace/891b0e74-8666-4bef-8723-685261955329.jpg";
-import lotushouse_38 from "@/photos/lotushouse/Bed - 1st Floor/20240411_044832_edited.jpg";
-import lotushouse_39 from "@/photos/lotushouse/Bed - 2nd Floor/20240411_091311_edited.jpg";
-import lotushouse_40 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-1.jpg";
-import lotushouse_41 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-2.jpg";
-import lotushouse_42 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-3.jpg";
-import lotushouse_43 from "@/photos/lotushouse/Kitchen/kitchen_with_people.jpg";
-import lotushouse_44 from "@/photos/lotushouse/Terrace/asian_couple_terrace_sunset_3900px.jpg";
-import lotushouse_45 from "@/photos/lotushouse/Terrace/terrace_people.jpg";
-import lotushouse_46 from "@/photos/lotushouse/Terrace/two_men_terrace_sunset_1280.jpg";
-import team_0 from "@/photos/team/Nils_m_portrait_as_Co-founder.jpeg";
-import team_1 from "@/photos/team/Paul_b__portrait_as_Co-founder.jpg";
-import team_2 from "@/photos/team/Patthanapong_p_portrait_Appraisal_&_RealEstate_Specialist_as.jpg";
-import team_3 from "@/photos/team/Phakkaya_jen_k__portrait_as_Digital_&_Creative_Consultant.jpg";
-import team_4 from "@/photos/team/thicha_maseng_portrait_as_Project_Coordinator.jpg";
+import lotushouse_28 from "@/photos/lotushouse/Exterior/mainstree_exterior_lotushouse.jpg";
+import lotushouse_29 from "@/photos/lotushouse/Exterior/Parking zone Street.jpg";
+import lotushouse_30 from "@/photos/lotushouse/Kitchen/20240412_040311_edited.jpg";
+import lotushouse_31 from "@/photos/lotushouse/Living Room/20240405_162330_edited.jpg";
+import lotushouse_32 from "@/photos/lotushouse/Living Room/20240411_045027_edited.jpg";
+import lotushouse_33 from "@/photos/lotushouse/Living Room/20240411_052817_edited.jpg";
+import lotushouse_34 from "@/photos/lotushouse/Living Room/20240411_053018_edited.jpg";
+import lotushouse_35 from "@/photos/lotushouse/Terrace/891b0e74-8666-4bef-8723-685261955329.jpg";
+import lotushouse_36 from "@/photos/lotushouse/Bed - 1st Floor/20240411_044832_edited.jpg";
+import lotushouse_37 from "@/photos/lotushouse/Bed - 2nd Floor/20240411_091311_edited.jpg";
+import lotushouse_38 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-1.jpg";
+import lotushouse_39 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-2.jpg";
+import lotushouse_40 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-3.jpg";
+import lotushouse_41 from "@/photos/lotushouse/Kitchen/kitchen_with_people.jpg";
+import lotushouse_42 from "@/photos/lotushouse/Terrace/asian_couple_terrace_sunset_3900px.jpg";
+import lotushouse_43 from "@/photos/lotushouse/Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg";
+import lotushouse_44 from "@/photos/lotushouse/Terrace/terrace_people.jpg";
+import lotushouse_45 from "@/photos/lotushouse/Terrace/two_men_terrace_sunset_1280.jpg";
+import team_0 from "@/photos/team/agentsiam-team-group-portrait.jpg";
+import team_1 from "@/photos/team/Nils_m_portrait_as_Co-founder.jpeg";
+import team_2 from "@/photos/team/Paul_b__portrait_as_Co-founder.jpg";
+import team_3 from "@/photos/team/Patthanapong_p_portrait_Appraisal_&_RealEstate_Specialist_as.jpg";
+import team_4 from "@/photos/team/Phakkaya_jen_k__portrait_as_Digital_&_Creative_Consultant.jpg";
+import team_5 from "@/photos/team/thicha_maseng_portrait_as_Project_Coordinator.jpg";
 
 export type Photo = {
   src: StaticImageData;
@@ -102,31 +102,31 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: lotushouse_25, file: "Bed - 2nd Floor/IMG_5651_edited.jpg", alt: "Desk under the window in the second-floor bedroom", room: "Bed - 2nd Floor" },
     { src: lotushouse_26, file: "Bed - 2nd Floor/IMG_5659_edited.jpg", alt: "Desk and lamp in the second-floor bedroom, under a framed botanical print", room: "Bed - 2nd Floor" },
     { src: lotushouse_27, file: "Exterior/20240402_052729_edited.jpg", alt: "The lane outside the house, looking along the soi towards the trees", room: "Exterior" },
-    { src: lotushouse_28, file: "Exterior/20240402_053738_edited_resized.jpg", alt: "A car parked in the covered carport, with the front door and window to the right", room: "Exterior" },
-    { src: lotushouse_29, file: "Exterior/mainstree_exterior_lotushouse.jpg", alt: "The street the house sits on, with neighbouring townhouses along it", room: "Exterior" },
-    { src: lotushouse_30, file: "Exterior/Parking House.jpg", alt: "The carport gate open at number 42, with the car parked inside", room: "Exterior" },
-    { src: lotushouse_31, file: "Exterior/Parking zone Street.jpg", alt: "The lane outside, with off-street parking beside the house", room: "Exterior" },
-    { src: lotushouse_32, file: "Kitchen/20240412_040311_edited.jpg", alt: "Open shelf under the kitchen island, stacked with crockery and pans below the induction hob", room: "Kitchen" },
-    { src: lotushouse_33, file: "Living Room/20240405_162330_edited.jpg", alt: "Wine and snacks on the glass coffee table in front of the navy sofa", room: "Living Room" },
-    { src: lotushouse_34, file: "Living Room/20240411_045027_edited.jpg", alt: "The black steel staircase, with afternoon light falling across the wall", room: "Living Room" },
-    { src: lotushouse_35, file: "Living Room/20240411_052817_edited.jpg", alt: "Sideboard in the living room, with a vase and carved wood pieces on top", room: "Living Room" },
-    { src: lotushouse_36, file: "Living Room/20240411_053018_edited.jpg", alt: "The navy sofa, horseshoe chair and glass coffee table in the living room", room: "Living Room" },
-    { src: lotushouse_37, file: "Terrace/891b0e74-8666-4bef-8723-685261955329.jpg", alt: "Sunset over the mountains, seen from the roof terrace", room: "Terrace" },
-    { src: lotushouse_38, file: "Bed - 1st Floor/20240411_044832_edited.jpg", alt: "Bidet sprayer beside the toilet in the first-floor bathroom", room: "Bed - 1st Floor" },
-    { src: lotushouse_39, file: "Bed - 2nd Floor/20240411_091311_edited.jpg", alt: "Shower gel and shampoo on the rack in the second-floor shower", room: "Bed - 2nd Floor" },
-    { src: lotushouse_40, file: "Floor Plan/Lotus House Layout Fl-1.jpg", alt: "First floor plan: garage, kitchen, second bedroom and the back yard", room: "Floor Plan" },
-    { src: lotushouse_41, file: "Floor Plan/Lotus House Layout Fl-2.jpg", alt: "Second floor plan: living room and the main bedroom", room: "Floor Plan" },
-    { src: lotushouse_42, file: "Floor Plan/Lotus House Layout Fl-3.jpg", alt: "Third floor plan: the front and back roof patios", room: "Floor Plan" },
-    { src: lotushouse_43, file: "Kitchen/kitchen_with_people.jpg", alt: "Four people around the kitchen island, with the arched door and the staircase behind", room: "Kitchen" },
-    { src: lotushouse_44, file: "Terrace/asian_couple_terrace_sunset_3900px.jpg", alt: "Two people on loungers beside the tub on the roof terrace at sunset", room: "Terrace" },
-    { src: lotushouse_45, file: "Terrace/terrace_people.jpg", alt: "Four people on the roof terrace at sunset, one of them in the tub", room: "Terrace" },
-    { src: lotushouse_46, file: "Terrace/two_men_terrace_sunset_1280.jpg", alt: "Two men on the roof terrace at sunset, one on a lounger beside the tub", room: "Terrace" },
+    { src: lotushouse_28, file: "Exterior/mainstree_exterior_lotushouse.jpg", alt: "The street the house sits on, with neighbouring townhouses along it", room: "Exterior" },
+    { src: lotushouse_29, file: "Exterior/Parking zone Street.jpg", alt: "The lane outside, with off-street parking beside the house", room: "Exterior" },
+    { src: lotushouse_30, file: "Kitchen/20240412_040311_edited.jpg", alt: "Open shelf under the kitchen island, stacked with crockery and pans below the induction hob", room: "Kitchen" },
+    { src: lotushouse_31, file: "Living Room/20240405_162330_edited.jpg", alt: "Wine and snacks on the glass coffee table in front of the navy sofa", room: "Living Room" },
+    { src: lotushouse_32, file: "Living Room/20240411_045027_edited.jpg", alt: "The black steel staircase, with afternoon light falling across the wall", room: "Living Room" },
+    { src: lotushouse_33, file: "Living Room/20240411_052817_edited.jpg", alt: "Sideboard in the living room, with a vase and carved wood pieces on top", room: "Living Room" },
+    { src: lotushouse_34, file: "Living Room/20240411_053018_edited.jpg", alt: "The navy sofa, horseshoe chair and glass coffee table in the living room", room: "Living Room" },
+    { src: lotushouse_35, file: "Terrace/891b0e74-8666-4bef-8723-685261955329.jpg", alt: "Sunset over the mountains, seen from the roof terrace", room: "Terrace" },
+    { src: lotushouse_36, file: "Bed - 1st Floor/20240411_044832_edited.jpg", alt: "Bidet sprayer beside the toilet in the first-floor bathroom", room: "Bed - 1st Floor" },
+    { src: lotushouse_37, file: "Bed - 2nd Floor/20240411_091311_edited.jpg", alt: "Shower gel and shampoo on the rack in the second-floor shower", room: "Bed - 2nd Floor" },
+    { src: lotushouse_38, file: "Floor Plan/Lotus House Layout Fl-1.jpg", alt: "First floor plan: garage, kitchen, second bedroom and the back yard", room: "Floor Plan" },
+    { src: lotushouse_39, file: "Floor Plan/Lotus House Layout Fl-2.jpg", alt: "Second floor plan: living room and the main bedroom", room: "Floor Plan" },
+    { src: lotushouse_40, file: "Floor Plan/Lotus House Layout Fl-3.jpg", alt: "Third floor plan: the front and back roof patios", room: "Floor Plan" },
+    { src: lotushouse_41, file: "Kitchen/kitchen_with_people.jpg", alt: "Four people around the kitchen island, with the arched door and the staircase behind", room: "Kitchen" },
+    { src: lotushouse_42, file: "Terrace/asian_couple_terrace_sunset_3900px.jpg", alt: "Two people on loungers beside the tub on the roof terrace at sunset", room: "Terrace" },
+    { src: lotushouse_43, file: "Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg", alt: "The soaking tub and loungers on the roof terrace at sunset", room: "Terrace" },
+    { src: lotushouse_44, file: "Terrace/terrace_people.jpg", alt: "Four people on the roof terrace at sunset, one of them in the tub", room: "Terrace" },
+    { src: lotushouse_45, file: "Terrace/two_men_terrace_sunset_1280.jpg", alt: "Two men on the roof terrace at sunset, one on a lounger beside the tub", room: "Terrace" },
   ],
   "team": [
-    { src: team_0, file: "Nils_m_portrait_as_Co-founder.jpeg", alt: "Nils, co-founder of AgentSiam" },
-    { src: team_1, file: "Paul_b__portrait_as_Co-founder.jpg", alt: "Paul, co-founder of AgentSiam" },
-    { src: team_2, file: "Patthanapong_p_portrait_Appraisal_&_RealEstate_Specialist_as.jpg", alt: "Patthanapong, appraisal and real estate specialist at AgentSiam" },
-    { src: team_3, file: "Phakkaya_jen_k__portrait_as_Digital_&_Creative_Consultant.jpg", alt: "Jen, digital and creative consultant at AgentSiam" },
-    { src: team_4, file: "thicha_maseng_portrait_as_Project_Coordinator.jpg", alt: "Thicha, project coordinator at AgentSiam" },
+    { src: team_0, file: "agentsiam-team-group-portrait.jpg", alt: "The AgentSiam team, the five people who run the company" },
+    { src: team_1, file: "Nils_m_portrait_as_Co-founder.jpeg", alt: "Nils, co-founder of AgentSiam" },
+    { src: team_2, file: "Paul_b__portrait_as_Co-founder.jpg", alt: "Paul, co-founder of AgentSiam" },
+    { src: team_3, file: "Patthanapong_p_portrait_Appraisal_&_RealEstate_Specialist_as.jpg", alt: "Patthanapong, appraisal and real estate specialist at AgentSiam" },
+    { src: team_4, file: "Phakkaya_jen_k__portrait_as_Digital_&_Creative_Consultant.jpg", alt: "Jen, digital and creative consultant at AgentSiam" },
+    { src: team_5, file: "thicha_maseng_portrait_as_Project_Coordinator.jpg", alt: "Thicha, project coordinator at AgentSiam" },
   ],
 };

@@ -149,14 +149,20 @@ export default async function HowItWorksPage({
   const href = (path: string) => localePath(locale as Locale, path);
 
   // Three shots that show the work rather than the mood: the terrace we maintain, the
-  // kitchen we turn over, the front door we hand keys at. Falls back to the top of the set
-  // if any of these are renamed, and the whole block disappears if there are no photos.
+  // kitchen we turn over, the street we operate on. Falls back to the top of the set if any
+  // of these are renamed, and the whole block disappears if there are no photos.
+  //
   // Not lotus_exterior_1: that file is a portrait shot padded with blurred bars to fake a
   // landscape crop, and the bars show up the moment it is cropped to 4:3.
+  //
+  // The third slot used to ask for 20240402_053731, the carport, as "the front door we hand
+  // keys at". That file was pulled on 18/08/2026 for showing the house number and a legible
+  // licence plate, so the fragment had been resolving to nothing and pickPhotos was silently
+  // topping the slot up from the front of the set. See _excluded/README.md.
   const proofPhotos = pickPhotos(LOTUS_HOUSE.slug, [
     "IMG_5359",
     "IMG_5724",
-    "20240402_053731",
+    "mainstree_exterior_lotushouse",
   ]);
 
   const steps = [

@@ -62,20 +62,48 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   // src/photos/team/ is for. Drop a portrait in there and both panels light up together.
   const guestForkPhoto =
     pickPhoto(property.slug, "20250413_100343") ?? cardPhoto;
-  // Deliberately not a team portrait: those are ~480px square avatars, and this slot is a
-  // wide 16:9 band that would crop heads and upscale them. It wants a landscape photo --
-  // the team at a property, a street, a site visit. Drop one in src/photos/team-wide/.
-  const ownerForkPhoto = heroPhoto("team-wide");
+  // Deliberately not one of the square avatars: those are ~480px, and this slot is a wide
+  // 16:9 band that would crop heads and upscale them. It wants a landscape frame of the
+  // team at a property, a street, a site visit.
+  //
+  // It lives in src/photos/team/ alongside the portraits rather than in a set of its own,
+  // and is picked by name. A whole top-level set for one file is a folder to maintain, a
+  // key to remember and a thing to explain; TEAM in src/lib/team.ts already addresses this
+  // set by filename fragment, so this is the idiom the folder is already using. Nothing
+  // iterates the set blind -- TeamRow walks the explicit TEAM list -- so an extra file here
+  // shows up in this slot and nowhere else.
+  const ownerForkPhoto = pickPhoto("team", "team-group-portrait");
+
+  // The hero ground. Paul, 24/08/2026: the hero should carry a photograph rather than the
+  // flat ink panel. The migration plan's original shot list asked for "one Chiang Mai
+  // context frame for the homepage hero" and this is it -- sunset over the mountains, shot
+  // from the Lotus House terrace, so it is real, ours, and actually of Chiang Mai.
+  //
+  // Deliberately not IMG_4991, the terrace-at-sunset frame: the 18/08 QA pass ruled it out
+  // of lead roles because it shows a man in the tub and a beer on the table, and it is the
+  // uncovered tub the rooftop-bathtub disclosure exists for. Fine as gallery photo nine,
+  // wrong as the front door.
+  //
+  // Falls back to the flat ink panel if the file is ever renamed, so the hero cannot break.
+  const heroGround = pickPhoto(property.slug, "891b0e74");
   const forkPhotos =
     guestForkPhoto && ownerForkPhoto
       ? { guest: guestForkPhoto, owner: ownerForkPhoto }
       : null;
 
-  // The three staircase cards. Fills rotate through the brand palette, as in the design.
+  // The three staircase cards. website-wireframe.html specifies these as
+  // "3-STEP STAIRCASE -- bento-grid, 3x bento-card.on-grad", and on-grad is a gradient
+  // rather than a flat fill: full brand colour to 20%, fading to white by 62%. They were
+  // flat bg-teal/bg-secondary/bg-sand until 24/08/2026, which read heavier and more
+  // poster-like than the system intends. The .grad-* classes are in globals.css, copied
+  // from the design system rather than retyped.
+  //
+  // Ink text throughout is part of the variant, not a choice: the lower half of each card
+  // is near-white, so white text would vanish there.
   const staircase = [
-    { n: "1", title: t.stair1Title, body: t.stair1Body, fill: "bg-teal" },
-    { n: "2", title: t.stair2Title, body: t.stair2Body, fill: "bg-secondary" },
-    { n: "3", title: t.stair3Title, body: t.stair3Body, fill: "bg-sand" },
+    { n: "1", title: t.stair1Title, body: t.stair1Body, fill: "grad-teal" },
+    { n: "2", title: t.stair2Title, body: t.stair2Body, fill: "grad-vermilion" },
+    { n: "3", title: t.stair3Title, body: t.stair3Body, fill: "grad-sand" },
   ];
 
   const why = [
@@ -86,12 +114,52 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
 
   return (
     <div>
-      {/* -- Hero. Ink panel inset from the viewport, blue and gold stripes on the right
-             quarter. The stripes drop below 900px, where they would squeeze the copy. */}
+      {/* -- Hero. Ink panel inset from the viewport, carrying a photograph of Chiang Mai
+             behind the copy. Until 24/08/2026 this was flat ink with a blue and gold stripe
+             on the right quarter; the stripes came out with the photo, because a photograph
+             plus two colour blocks is three treatments competing in one panel.
+
+             One scrim, and it runs left to right rather than top to bottom. The design
+             system's .on-photo scrim (design-system.html line 219) is vertical, because it
+             is built for cards whose text sits at the bottom. This hero's text sits
+             top-left, so a vertical scrim darkens the wrong half: it dims the sunset and
+             still leaves the headline on bright sky. Stacking both was tried first and the
+             two compounded into near-black, which is the flat panel again with extra steps.
+
+             So: a single horizontal scrim, using the system's own rgba(10,8,20,...) ink,
+             opaque enough to hold the text column and releasing almost entirely by the
+             right edge so the mountains and the sun actually read. Cropped to the bottom of
+             the frame, where the ridge line and the sun are; the top two thirds of the
+             source is empty sky.
+
+             The photo stays decorative: alt="" and aria-hidden, because the h1 immediately
+             below already says what this section is, and a screen reader announcing a
+             sunset before the headline is noise rather than information. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-ink px-6 py-12 sm:px-12 sm:py-13">
-          <div className="absolute inset-y-0 right-0 hidden w-[30%] bg-primary min-[900px]:block" />
-          <div className="absolute inset-y-0 right-[30%] hidden w-[8%] bg-sand min-[900px]:block" />
+          {heroGround ? (
+            <>
+              <Image
+                src={heroGround.src}
+                alt=""
+                aria-hidden="true"
+                placeholder="blur"
+                fill
+                priority
+                sizes="(min-width: 1440px) 1400px, 100vw"
+                className="object-cover object-bottom"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,8,20,0.88)_0%,rgba(10,8,20,0.72)_30%,rgba(10,8,20,0.28)_58%,rgba(10,8,20,0.06)_100%)]"
+              />
+            </>
+          ) : (
+            <>
+              <div className="absolute inset-y-0 right-0 hidden w-[30%] bg-primary min-[900px]:block" />
+              <div className="absolute inset-y-0 right-[30%] hidden w-[8%] bg-sand min-[900px]:block" />
+            </>
+          )}
 
           <div className="relative min-[900px]:max-w-[min(640px,calc(58%-24px))]">
             <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
@@ -117,44 +185,17 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      {/* -- Fork band. Two panels, equal weight, where a visitor self-identifies.
-             Both are secondary tier on purpose: the hero's search already holds primary,
-             and two solid pills here would recreate the competing-primaries problem the
-             design forbids. The fork sorts people; it does not ask them to convert. */}
-      <section className="mx-auto mt-9 grid max-w-(--container-chrome) gap-5 px-5 sm:grid-cols-2">
-        <div className="rounded-panel bg-surface px-7 py-8">
-          <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
-            {t.forkGuestTitle}
-          </h2>
-          <p className="mt-2.5 text-[14.5px] leading-relaxed text-body">{t.forkGuestBody}</p>
-          <Link
-            href={href("/properties")}
-            className="mt-4 inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
-          >
-            {t.forkGuestLink}
-          </Link>
-        </div>
-        <div className="rounded-panel bg-wash-gold px-7 py-8">
-          <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
-            {t.forkOwnerTitle}
-          </h2>
-          <p className="mt-2.5 text-[14.5px] leading-relaxed text-body">{t.forkOwnerBody}</p>
-          <Link
-            href={href("/how-it-works")}
-            className="mt-4 inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
-          >
-            {t.forkOwnerLink}
-          </Link>
-        </div>
-      </section>
-
       {/* -- The audience fork. Guests left, owners right, both low-key panels rather than
-             competing buttons.
+             competing buttons. This is the *only* place the visitor is asked to
+             self-identify: a second, text-only fork band sat directly above this one until
+             24/08/2026, repeating "I want to stay here." and "I own a property here."
+             verbatim about 200px higher up. Two identical headings on one screen read as a
+             build error, so it was removed along with its six now-orphaned fork keys.
 
              The two panels carry a photo only when *both* have one, so the pair always
              reads as a matched set. Guests see the house; owners see the people who run it.
-             Until a portrait exists in src/photos/team/, both stay flat colour, which is
-             the handoff's own treatment -- one panel with a photo and one without leaves a
+             With either photo missing, both fall back to flat brand colour, which is the
+             handoff's own treatment -- one panel with a photo and one without leaves a
              hole where the second image should be. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
         <div className="grid gap-4 sm:grid-cols-[repeat(auto-fit,minmax(270px,1fr))]">
