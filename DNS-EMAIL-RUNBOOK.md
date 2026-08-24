@@ -51,9 +51,11 @@ Everything that exists today. Needed if you ever recreate the zone elsewhere.
 > restore the Wix website and undo the launch.
 >
 > The five that carry over unchanged are the three `MX` and the two `TXT`, which are the
-> records that carry the mail. `property` is a sixth open question rather than a carry-over:
-> it points at Wix, so it breaks when Wix stops serving, and it either gets repointed at
-> Vercel as a redirect or is dropped deliberately. It must not be dropped by accident. Take the apex and `www` targets from the Vercel dashboard on
+> records that carry the mail. **`property` is deliberately not carried over.** Paul,
+> 24/08/2026: it is a legacy Wix subdomain, referenced nowhere, and it is being retired
+> rather than rebuilt. Leave it working for as long as Wix serves it, which costs nothing,
+> and simply omit it from the Cloudflare zone. **Do not recreate it**, and do not treat its
+> absence after the transfer as a mistake to fix. Take the apex and `www` targets from the Vercel dashboard on
 > the day, never from a document: Vercel's addresses change.
 >
 > Execution plan for the September registrar transfer, including which records survive:
