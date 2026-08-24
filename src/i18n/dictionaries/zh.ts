@@ -272,6 +272,7 @@ export const zh: Dictionary = {
 
   allProperties: "全部房源",
   footAreas: "我们管理的区域",
+  footCities: "我们服务的城市",
 
 
   // -- local guide --------------------------------------------------------

@@ -3,6 +3,7 @@ import { Logo } from "./logo";
 import { getDictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
+import { MANAGEMENT_CITIES } from "@/lib/management-cities";
 import { CONTACT_EMAIL } from "@/lib/site";
 
 /**
@@ -18,6 +19,15 @@ import { CONTACT_EMAIL } from "@/lib/site";
  * nothing would have been the kind of empty SEO the rest of this site argues against.
  * With the pages built, this is one of the three routes into them the handoff names --
  * the nav, this footer, and organic search.
+ *
+ * The city column follows the same reasoning and exists for the same reason. Without it the
+ * two `/management/*` pages were orphans -- reachable from the sitemap and from nothing on
+ * the site, which earns them a crawl and no internal link equity at all.
+ *
+ * It is headed "Cities we cover" rather than "Cities we manage" on purpose. Phuket and
+ * Bangkok are opportunistic markets under decision #29 and there is nothing under management
+ * in either. "Manage" would be a claim; "cover" is what is actually true, which is that the
+ * service is sold there and delivered from Chiang Mai.
  */
 export function Footer({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
@@ -36,6 +46,13 @@ export function Footer({ locale }: { locale: Locale }) {
       links: AREAS.map((area) => ({
         href: href(`/destinations/${area.slug}`),
         label: area.name,
+      })),
+    },
+    {
+      heading: t.footCities,
+      links: MANAGEMENT_CITIES.map((city) => ({
+        href: href(`/management/${city.slug}`),
+        label: city.name,
       })),
     },
     {
