@@ -305,6 +305,7 @@ export const en = {
   allProperties: "All properties",
   footAreas: "Areas we manage",
   footCities: "Cities we cover",
+  homeCity: "Chiang Mai",
 
 
   // -- local guide --------------------------------------------------------

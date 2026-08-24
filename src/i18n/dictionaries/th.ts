@@ -271,6 +271,7 @@ export const th: Dictionary = {
   allProperties: "ที่พักทั้งหมด",
   footAreas: "ย่านที่เราดูแล",
   footCities: "เมืองที่เราให้บริการ",
+  homeCity: "เชียงใหม่",
 
 
   // -- local guide --------------------------------------------------------

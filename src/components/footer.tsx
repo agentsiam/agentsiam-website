@@ -50,10 +50,21 @@ export function Footer({ locale }: { locale: Locale }) {
     },
     {
       heading: t.footCities,
-      links: MANAGEMENT_CITIES.map((city) => ({
-        href: href(`/management/${city.slug}`),
-        label: city.name,
-      })),
+      links: [
+        // Chiang Mai has no /management page and must not get one: the homepage already
+        // targets that head term, and a second page would compete with it for the same
+        // query. Its owner-side destination is /how-it-works, which brief-01 of the
+        // 24/08 keyword research names as the Chiang Mai owner conversion page.
+        //
+        // It is listed first and it is not optional. Omitting the home market from a
+        // column headed "Cities we cover" reads as not working here, which is worse than
+        // the orphan problem this column was added to solve.
+        { href: href("/how-it-works"), label: t.homeCity },
+        ...MANAGEMENT_CITIES.map((city) => ({
+          href: href(`/management/${city.slug}`),
+          label: city.name,
+        })),
+      ],
     },
     {
       heading: t.footOwners,
