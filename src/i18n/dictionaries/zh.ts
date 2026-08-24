@@ -306,7 +306,7 @@ export const zh: Dictionary = {
   // -- page metadata ------------------------------------------------------
   metaHomeTitle: "AgentSiam｜清迈短租托管",
   metaHomeDesc: "清迈短租房的可行性研究、短租许可办理和日常托管。三项服务依次进行，每一步都要先通过，才能进入下一步。",
-  metaHowTitle: "清迈短租物业管理如何运作",
+  metaHowTitle: "短租物业管理如何运作",
   metaHowDesc: "三项服务按顺序进行：收费的可行性研究可能得出“不可行”；随后进行短租许可办理；最后管理主要OTA和官网直订。",
   metaMgmtTitle: "{city}短租物业管理",
   metaMgmtDesc: "为{city}业主提供短租可行性研究、经营许可与物业管理，由清迈团队交付。",
