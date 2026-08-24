@@ -347,8 +347,17 @@ export const en = {
   metaHomeTitle: "AgentSiam | Short-term rental management in Chiang Mai",
   metaHomeDesc:
     "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Three separate steps, each one earning the next.",
-  metaHowTitle: "How it works",
+  metaHowTitle: "How short-term rental management works",
   metaHowDesc: "Three steps: a paid feasibility and ROI study that may end in a No-Go, the non-hotel exemption filing, then OTA and direct booking management.",
+  metaMgmtTitle: "Short-term rental management in {city}",
+  metaMgmtDesc: "Feasibility, vacation rental permission and management for short-term rentals in {city}, delivered from our Chiang Mai team.",
+  mgmtEyebrow: "For owners",
+  mgmtHeroTitle: "Short-term rental management in {city}",
+  mgmtHeroSub: "The same three services we run in Chiang Mai, available in {city} when the work comes. It starts with a study that is allowed to say No.",
+  mgmtServicesTitle: "What AgentSiam does",
+  mgmtScopeTitle: "What we do not do in {city} yet",
+  mgmtCtaTitle: "Thinking about short-term letting in {city}?",
+  mgmtHowLink: "See how it works",
   metaPropertiesTitle: "Places to stay in Chiang Mai",
   metaPropertiesDesc:
     "Homes, villas and townhouses in Chiang Mai, managed on the ground. Filter by neighbourhood, type and size, and book direct.",

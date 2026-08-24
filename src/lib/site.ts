@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DEFAULT_LOCALE, HTML_LANG, LOCALES, localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
+import { MANAGEMENT_CITIES } from "@/lib/management-cities";
 
 // Single source for the site's canonical URL, share copy and route list.
 // Everything metadata-related (layout.tsx, sitemap.ts, robots.ts, opengraph-image.tsx)
@@ -66,6 +67,15 @@ export const ROUTES: RouteMeta[] = [
       path: `/destinations/${area.slug}`,
       changeFrequency: "monthly",
       priority: 0.6,
+    }),
+  ),
+  // One entry per opportunistic market. Chiang Mai is deliberately not here: the homepage
+  // already targets that query, and a second page would compete with it.
+  ...MANAGEMENT_CITIES.map(
+    (city): RouteMeta => ({
+      path: `/management/${city.slug}`,
+      changeFrequency: "monthly",
+      priority: 0.7,
     }),
   ),
   { path: "/contact", changeFrequency: "yearly", priority: 0.7 },
