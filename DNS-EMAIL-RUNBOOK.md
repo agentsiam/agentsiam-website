@@ -36,6 +36,18 @@ wrong breaks all outbound mail, so copy it exactly.
 
 Everything that exists today. Needed if you ever recreate the zone elsewhere.
 
+> **Stale after 26/08/2026.** This table is the pre-cutover zone. At cutover the apex `A`
+> set and the `www` `CNAME` are repointed from Wix to Vercel, so **four of these nine
+> records stop being current**. Rebuilding the zone from this table after that date would
+> restore the Wix website and undo the launch.
+>
+> The five that carry over unchanged are the three `MX` and the two `TXT`, which are the
+> records that carry the mail. Take the apex and `www` targets from the Vercel dashboard on
+> the day, never from a document: Vercel's addresses change.
+>
+> Execution plan for the September registrar transfer, including which records survive:
+> `agentsiam-consulting/as-work/2026-08-24-registrar-transfer/transfer-plan.md`.
+
 | Type | Name | Value | Priority |
 |---|---|---|---|
 | A | `@` | `185.230.63.186` | — |
@@ -124,6 +136,13 @@ missing DKIM and DMARC.
 **Timing matters.** The domain expires 23 Sep 2026 and a transfer takes about a week. Either
 start well before that, or renew at Wix first and transfer afterwards — do not let a
 transfer run down to the wire.
+
+**Decided 24/08/2026, Paul: transfer rather than renew, in the window 1 to 10 September.**
+After the 26/08 cutover has settled, and with at least ten days of margin before expiry. Both
+60-day ICANN locks were checked against live WHOIS that day and are clear. One trap that is
+not obvious and would cost the whole plan: **do not edit the registrant contact first**, as
+that starts a fresh 60-day transfer lock which lands past 23 Sep. Full plan:
+`agentsiam-consulting/as-work/2026-08-24-registrar-transfer/transfer-plan.md`.
 
 ### Steps
 
