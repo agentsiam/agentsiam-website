@@ -25,25 +25,26 @@ transfer adds a year — see Path 2.
 | Website | Wix (`185.230.63.186 / .107 / .171`) |
 | Mail | **Zoho EU** (`mx.zoho.eu`) |
 | SPF | `v=spf1 include:zohomail.eu ~all` |
-| DKIM | **none** |
+| DKIM | **present**, selector `zmail._domainkey` (corrected 24/08/2026) |
 | DMARC | **none** |
 | Locks | `clientTransferProhibited`, `clientUpdateProhibited` |
 
 Note the SPF include is `zohomail.eu`, **not** `zoho.com`. Zoho's EU tenant. Getting this
 wrong breaks all outbound mail, so copy it exactly.
 
-### The complete zone — 10 records
+### The complete zone — 12 records
 
 Everything that exists today. Needed if you ever recreate the zone elsewhere.
 
-> **Corrected 24/08/2026: this table said 9 records and missed `property`.** A CNAME for
-> `property.agentsiam.com` exists, points at `cdn1.wixdns.net` like `www`, and 301-redirects
-> to `https://www.agentsiam.com/`. It is live, it is referenced nowhere in either repo, and
-> it was absent from this list. Found by reading the Wix domains page rather than the zone.
+> **Corrected twice on 24/08/2026. This table said 9 records and there are 12.** Missing were
+> `property.agentsiam.com`, `www.property.agentsiam.com` and, most importantly, the **DKIM
+> record**, which this file elsewhere claimed did not exist.
 >
-> A sweep of 40 common subdomain names on the same day found only `www` and `property`. That
-> is a guessed-name probe rather than a zone transfer, so treat it as strong evidence rather
-> than proof, and read the zone off Wix directly before rebuilding it elsewhere.
+> Both corrections came from reading the Wix DNS page directly. A `dig` sweep of 40 common
+> subdomain names found `www` and `property` but missed `www.property`, and could not have
+> found DKIM without already knowing the selector. **The lesson for the September rebuild:
+> export the zone from the Wix UI on the day. Do not trust this table, a `dig` sweep, or
+> Cloudflare's own scanner, which is documented to miss TXT records.**
 
 > **Stale after 26/08/2026.** This table is the pre-cutover zone. At cutover the apex `A`
 > set and the `www` `CNAME` are repointed from Wix to Vercel, so **four of these nine
@@ -51,7 +52,8 @@ Everything that exists today. Needed if you ever recreate the zone elsewhere.
 > restore the Wix website and undo the launch.
 >
 > The five that carry over unchanged are the three `MX` and the two `TXT`, which are the
-> records that carry the mail. **`property` is deliberately not carried over.** Paul,
+> records that carry the mail, **and the DKIM TXT on `zmail._domainkey` is a sixth that must
+> come with them**. **`property` and `www.property` are deliberately not carried over.** Paul,
 > 24/08/2026: it is a legacy Wix subdomain, referenced nowhere, and it is being retired
 > rather than rebuilt. Leave it working for as long as Wix serves it, which costs nothing,
 > and simply omit it from the Cloudflare zone. **Do not recreate it**, and do not treat its
@@ -68,11 +70,13 @@ Everything that exists today. Needed if you ever recreate the zone elsewhere.
 | A | `@` | `185.230.63.171` | — |
 | CNAME | `www` | `cdn1.wixdns.net` | — |
 | CNAME | `property` | `cdn1.wixdns.net` | — |
+| CNAME | `www.property` | `cdn1.wixdns.net` | — |
 | MX | `@` | `mx.zoho.eu` | 10 |
 | MX | `@` | `mx2.zoho.eu` | 20 |
 | MX | `@` | `mx3.zoho.eu` | 30 |
 | TXT | `@` | `v=spf1 include:zohomail.eu ~all` | — |
 | TXT | `@` | `zoho-verification=zb55231650.zmverify.zoho.eu` | — |
+| TXT | `zmail._domainkey` | `v=DKIM1; k=rsa; p=MIGfMA0GCSq...` **copy live, do not transcribe** | — |
 
 **Trap:** querying `www` returns A/MX/TXT values. Those are the CNAME chain resolving, not
 real records. `www` is one CNAME. Do not recreate the rest.
@@ -139,7 +143,8 @@ Settings, confirmed for the EU tenant:
 ## Path 2 — Transfer the domain, then Cloudflare DNS, then Resend.
 
 Best if you want a proper email setup and full DNS control. Also the moment to fix the
-missing DKIM and DMARC.
+missing DMARC. DKIM already exists on `zmail._domainkey` and must be carried over, not
+recreated.
 
 - **Cost:** ~USD 10.44/year at Cloudflare Registrar (at-cost, no markup). This **replaces**
   the Wix renewal rather than adding to it, and is usually cheaper. Cloudflare's DNS
@@ -192,9 +197,11 @@ that starts a fresh 60-day transfer lock which lands past 23 Sep. Full plan:
 
 Both are deliverability gaps that put booking confirmations in spam folders.
 
-- **No DKIM on Zoho.** There is no `zoho._domainkey` record. Zoho can generate one
-  (Mail Admin → Domains → DKIM). On Path 1 this is addable in Wix's DNS editor today,
-  since it is a root-level TXT.
+- ~~**No DKIM on Zoho.**~~ **Wrong, corrected 24/08/2026.** DKIM is configured and live on
+  selector **`zmail._domainkey`**, verified by `dig`. This file previously said there was no
+  DKIM record, which was checked only at the apex. It is a subdomain TXT and a plain apex
+  query cannot see it. **It must be carried into any new zone**, and the key is long enough
+  that transcribing it by hand is how it gets broken: copy the live value.
 - **No DMARC.** Start in monitor mode and tighten later:
 
   ```
