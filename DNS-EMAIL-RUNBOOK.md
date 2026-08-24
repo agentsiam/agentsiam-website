@@ -120,14 +120,41 @@ environment variables, not code.
 
 Remaining steps (configuration only):
 
-1. Zoho Mail → **Settings → Mail Accounts → IMAP/SMTP**, make sure SMTP access is enabled.
+1. ~~Make sure SMTP access is enabled.~~ **Settled 24/08/2026: this plan has SMTP, and
+   there is nothing to enable.** Zoho's settings page for `paul@agentsiam.com` blocks
+   **POP** ("available exclusively with the paid plans") and **IMAP** ("not available for
+   your account"), but the **SMTP** section carries no such banner — only a *Save copy of
+   sent emails* checkbox, which is on. `scripts/smtp-check.mjs` then authenticated against
+   `smtp.zoho.eu` for real, so this is proven rather than inferred. **Do not spend time on
+   the plan again**: a 535 from here on is a wrong value, not a missing feature.
 2. Generate an **app-specific password** at `accounts.zoho.eu` → **Security → App
    Passwords**. Not the account password: Zoho enforces 2FA and rejects the real one.
-3. Fill `SMTP_USER` and `SMTP_PASSWORD` in `.env.local` (already scaffolded), and set the
-   same in Vercel at deploy.
-4. Leave `CONTACT_FROM_EMAIL` unset unless `noreply@agentsiam.com` genuinely exists as a
+   **`.eu`, not `.com`** — the tenants are separate systems and a password minted on the
+   wrong one fails as a 535, indistinguishable from a typo. Confirmed 24/08/2026: the same
+   password that authenticates on `smtp.zoho.eu` is refused 535 by `smtp.zoho.com`.
+
+   **The tenant is therefore decided: `SMTP_HOST=smtp.zoho.eu`.** The 535 seen from the
+   deployed site was a wrong value in Vercel, not the plan and not the password.
+3. Fill `SMTP_PASSWORD` in `.env.local` — **the rest of the block is already scaffolded**
+   (host, port 465, `SMTP_USER=paul@agentsiam.com`, `CONTACT_TO_EMAIL=hi@agentsiam.com`) —
+   and set the same five variables in Vercel at deploy.
+
+   **Mark only `SMTP_PASSWORD` as Sensitive in Vercel.** Sensitive is write-only: the value
+   cannot be read back from the dashboard, the CLI or the API afterwards, only overwritten.
+   All five were set Sensitive on the first attempt, which is how the 535 became hard to
+   diagnose — `SMTP_HOST` was the prime suspect and could not be read to check it. The host,
+   port, user and to-address are not secrets. Leave them plain so they can be verified.
+4. Prove it, in this order, both from the project root:
+   - `node scripts/smtp-check.mjs` — prompts for the password, tries the EU **and** the COM
+     tenant, and names the one that authenticates. Run this first after any 535.
+   - `node scripts/smtp-send-test.mjs [address]` — reads `.env.local` and sends a real
+     message. A login can succeed and the message still be refused at `RCPT`/`DATA`, which
+     `verify()` never sees, so this is the step that actually settles it.
+5. Leave `CONTACT_FROM_EMAIL` unset unless `noreply@agentsiam.com` genuinely exists as a
    Zoho mailbox or alias. Zoho rejects a From it does not own; unset means the mailer uses
    `SMTP_USER`, which always works.
+6. Confirm `hi@agentsiam.com` really exists as a mailbox or alias — it is where every
+   enquiry is addressed, and the primary mailbox is `paul@`, not `hi@`.
 
 Settings, confirmed for the EU tenant:
 
