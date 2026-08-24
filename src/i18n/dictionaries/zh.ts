@@ -272,6 +272,8 @@ export const zh: Dictionary = {
 
   allProperties: "全部房源",
   footAreas: "我们管理的区域",
+  footCities: "我们服务的城市",
+  homeCity: "清迈",
 
 
   // -- local guide --------------------------------------------------------
@@ -304,8 +306,17 @@ export const zh: Dictionary = {
   // -- page metadata ------------------------------------------------------
   metaHomeTitle: "AgentSiam｜清迈短租托管",
   metaHomeDesc: "清迈短租房的可行性研究、短租许可办理和日常托管。三项服务依次进行，每一步都要先通过，才能进入下一步。",
-  metaHowTitle: "我们如何运作",
+  metaHowTitle: "短租物业管理如何运作",
   metaHowDesc: "三项服务按顺序进行：收费的可行性研究可能得出“不可行”；随后进行短租许可办理；最后管理主要OTA和官网直订。",
+  metaMgmtTitle: "{city}短租物业管理",
+  metaMgmtDesc: "为{city}业主提供短租可行性研究、经营许可与物业管理，由清迈团队交付。",
+  mgmtEyebrow: "致业主",
+  mgmtHeroTitle: "{city}短租物业管理",
+  mgmtHeroSub: "与我们在清迈运营的三项服务相同，{city}亦可承接。从一份敢于给出否定结论的可行性研究开始。",
+  mgmtServicesTitle: "AgentSiam 提供什么",
+  mgmtScopeTitle: "我们在{city}尚未开展的部分",
+  mgmtCtaTitle: "正在考虑在{city}做短租？",
+  mgmtHowLink: "了解运作方式",
   metaPropertiesTitle: "清迈房源",
   metaPropertiesDesc: "清迈的独栋住宅、别墅和联排住宅，由本地团队管理。可按区域、类型和面积筛选，并在官网直订。",
   metaLotusTitle: "Lotus House，夜市附近的私人联排住宅",
