@@ -312,6 +312,16 @@ export default async function LocalGuidePage({
                         ? ` · ${t.guideDrive.replace("{n}", String(d.drive))}`
                         : ""}
                     </span>
+                    {place.website ? (
+                      <a
+                        href={place.website}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline underline-offset-2 transition-colors hover:text-ink"
+                      >
+                        {t.guideWebsite}
+                      </a>
+                    ) : null}
                     <DirectionsLinks
                       google={
                         place.google ||

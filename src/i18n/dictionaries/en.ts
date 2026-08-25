@@ -326,6 +326,7 @@ export const en = {
   guideOpenIn: "Open in {app}",
   guideDirectionsApple: "Apple Maps",
   guideDirectionsGoogle: "Google Maps",
+  guideWebsite: "Website",
   guideOutsideAreas: "Further out",
   guideEmpty: "Nothing matches that combination.",
   guideClear: "Clear filters",

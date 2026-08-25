@@ -293,6 +293,7 @@ export const zh: Dictionary = {
   guideOpenIn: "在{app}中打开",
   guideDirectionsApple: "Apple地图",
   guideDirectionsGoogle: "Google地图",
+  guideWebsite: "网站",
   guideOutsideAreas: "更远区域",
   guideEmpty: "没有符合条件的地点。",
   guideClear: "清除筛选",

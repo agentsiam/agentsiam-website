@@ -53,7 +53,7 @@
       "comment": "Rooftop · $$",
       "google": "https://maps.app.goo.gl/2m7QgJycCbrFPuVT9",
       "apple": "https://maps.apple.com/place?coordinate=18.7852702,99.0026149&name=MAI%20The%20Sky%20Bar&map=explore",
-      "website": ""
+      "website": "https://www.melia.com/en/hotels/thailand/chiang-mai/melia-chiang-mai/restaurants/mai-the-sky-bar"
     },
     {
       "name": "MaHoRee City of Music",
@@ -96,6 +96,20 @@
       "website": ""
     },
     {
+      "name": "SALT & FIRE Rooftop Bar",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "cocktails",
+        "rooftop"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://www.google.com/maps/place/SALT+%26+FIRE+Rooftop+Bar/@18.796678,98.981099,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bc8a103dde7:0xf660630854a5dc45!8m2!3d18.796678!4d98.981099",
+      "apple": "",
+      "website": ""
+    },
+    {
       "name": "Shangri-La Lobby Lounge",
       "category": "Bars",
       "city": "chiang-mai",
@@ -106,7 +120,7 @@
       "comment": "Shangri-La Lobby Lounge on the second floor set with traditional Lanna Grand Hotel Atmosphere offers every day 2 for 1 happy hour for classic cocktails from 17h to 19h.",
       "google": "https://maps.app.goo.gl/JgejB1NWJ7iyjtmi9",
       "apple": "https://maps.apple/p/hNJDsgyJsZiNUc",
-      "website": ""
+      "website": "https://www.shangri-la.com/chiangmai/shangrila/dining/bars-lounges/the-lobby-lounge/"
     },
     {
       "name": "THE A TER - Steak & Music",
@@ -159,7 +173,7 @@
       "comment": "Located in a historic building inside Anantara Hotel, serving excellent cocktails and food in an outdoor or indoor setting.",
       "google": "https://maps.app.goo.gl/WXj4Up2PvtPCtoah9",
       "apple": "https://maps.apple/p/BbvifBsDZWQpD.z",
-      "website": ""
+      "website": "https://www.service1921.com/"
     },
     {
       "name": "The White Rabbit",
@@ -172,7 +186,7 @@
       "comment": "Speakeasy type Cocktailbar",
       "google": "https://maps.app.goo.gl/ZVP3m96HZmf2kvpt9",
       "apple": "https://maps.apple/p/R5mVIFn-wnhkUg",
-      "website": ""
+      "website": "https://linktr.ee/thewhiterabbit.speakeasy"
     },
     {
       "name": "ร้านแลงตอง",
@@ -717,6 +731,17 @@
       "website": ""
     },
     {
+      "name": "Chiang Mai Sauna Ice Bath Eudemonia",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Sauna, ice bath and pool · $$ · out towards Hang Dong",
+      "google": "https://www.google.com/maps/place/Chiang+Mai+Sauna+Ice+Bath+Eudemonia/@18.7366909,98.9009549,17z/data=!3m1!4b1!4m6!3m5!1s0x30da37456ec1f00b:0x26607b70c5f40bc6!8m2!3d18.7366909!4d98.9009549",
+      "apple": "",
+      "website": ""
+    },
+    {
       "name": "Daydream Sleep Salon (Suriwong)",
       "category": "Massage/Spa",
       "city": "chiang-mai",
@@ -1122,7 +1147,7 @@
       "comment": "Stylish teak house in Chiang Mai serving creative Thai and Western dishes in a relaxed garden setting.",
       "google": "https://maps.app.goo.gl/eQFhjQBN5W3SJHi38",
       "apple": "https://maps.apple/p/vCAIC224dJsj6x",
-      "website": ""
+      "website": "http://www.dashchiangmai.com/"
     },
     {
       "name": "Deck 1",
@@ -1135,7 +1160,7 @@
       "comment": "Refined place with thai food and views of the Ping river.",
       "google": "https://maps.app.goo.gl/soUitFdaodVFrw9F7",
       "apple": "https://maps.apple/p/U5JjcAJr2YKJ-W",
-      "website": ""
+      "website": "http://thedeck1.com/"
     },
     {
       "name": "Dinky's BBQ",
@@ -1176,7 +1201,7 @@
       "comment": "$$$ · out towards Hang Dong",
       "google": "https://maps.app.goo.gl/ytfDR6tBWbP8xaqL9",
       "apple": "https://maps.apple.com/place?coordinate=18.7034091,98.9091854&name=Friend%27s%20Table&map=explore",
-      "website": ""
+      "website": "https://friendstablecnx.com/"
     },
     {
       "name": "Garden Grove",
@@ -1258,7 +1283,7 @@
       "comment": "Excellent restaurant renowned for its authentic Northern Thai cuisine. It offers traditional dishes like khao soi, sai ua, and nam prik with a focus on fresh, locally sourced ingredients, all served in a cozy and rustic setting.",
       "google": "https://maps.app.goo.gl/o81MdxeJzGrZDY9Y7",
       "apple": "https://maps.apple/p/arGx0BZgK2YpIE",
-      "website": ""
+      "website": "http://www.huenmuanjai2554.com/"
     },
     {
       "name": "Ibaki House of Japanese Food and Sushi",
@@ -1327,7 +1352,7 @@
       "comment": "$$$",
       "google": "https://maps.app.goo.gl/7y1jsdWJN3giLLY69",
       "apple": "https://maps.apple.com/place?coordinate=18.801762,99.0045846&name=Oxygen%20Dining%20Room&map=explore",
-      "website": ""
+      "website": "http://crosschiangmairiverside.com/dine"
     },
     {
       "name": "River View Bar",
@@ -1354,6 +1379,34 @@
       "comment": "$$",
       "google": "https://maps.app.goo.gl/LQtFrj4YFb6heURY7",
       "apple": "https://maps.apple.com/place?coordinate=18.7981431,98.9740941&name=Salsa%20Kitchen&map=explore",
+      "website": "https://salsafeast.com/"
+    },
+    {
+      "name": "Sanmai Ramen Nimman",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "japanese",
+        "ramen"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://www.google.com/maps/place/Sanmai+Ramen+Nimman/@18.7967975,98.9685472,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bb756f4bc13:0x8c38135119dcb318!8m2!3d18.7967975!4d98.9685472",
+      "apple": "",
+      "website": ""
+    },
+    {
+      "name": "Sanmai Ramen Suriwong",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "japanese",
+        "ramen"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://www.google.com/maps/place/Sanmai+Ramen+Suriwong/@18.7810633,98.9978176,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bde2ec1a445:0x95928e6825a76341!8m2!3d18.7810633!4d98.9978176",
+      "apple": "",
       "website": ""
     },
     {
@@ -1394,7 +1447,7 @@
       "comment": "Quality seafood restaurant with river view.",
       "google": "https://maps.app.goo.gl/zbrv2bN4sd1fCRn88",
       "apple": "https://maps.apple/p/U4ZD6wFy5oESjN",
-      "website": ""
+      "website": "https://www.terraceseafood.com/"
     },
     {
       "name": "The Duke's Ping River",
@@ -1407,7 +1460,7 @@
       "comment": "$$",
       "google": "https://maps.app.goo.gl/jpytKyaYgFVuaTpF8",
       "apple": "https://maps.apple.com/place?coordinate=18.785107,99.005124&name=The%20Duke%27s%20Ping%20River&map=explore",
-      "website": ""
+      "website": "https://wherestheduke.com/home/"
     },
     {
       "name": "Toey Dim Sum",

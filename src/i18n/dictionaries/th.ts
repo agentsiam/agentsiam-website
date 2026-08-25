@@ -291,6 +291,7 @@ export const th: Dictionary = {
   guideOpenIn: "เปิดใน {app}",
   guideDirectionsApple: "Apple Maps",
   guideDirectionsGoogle: "Google Maps",
+  guideWebsite: "เว็บไซต์",
   guideOutsideAreas: "ไกลออกไป",
   guideEmpty: "ไม่พบสถานที่ตามที่เลือก",
   guideClear: "ล้างตัวกรอง",

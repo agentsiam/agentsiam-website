@@ -784,6 +784,26 @@
       "lat": 18.8077714,
       "lng": 99.0198017,
       "via": "apple-link"
+    },
+    "https://www.google.com/maps/place/SALT+%26+FIRE+Rooftop+Bar/@18.796678,98.981099,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bc8a103dde7:0xf660630854a5dc45!8m2!3d18.796678!4d98.981099": {
+      "lat": 18.796678,
+      "lng": 98.981099,
+      "via": "google-pin"
+    },
+    "https://www.google.com/maps/place/Chiang+Mai+Sauna+Ice+Bath+Eudemonia/@18.7366909,98.9009549,17z/data=!3m1!4b1!4m6!3m5!1s0x30da37456ec1f00b:0x26607b70c5f40bc6!8m2!3d18.7366909!4d98.9009549": {
+      "lat": 18.7366909,
+      "lng": 98.9009549,
+      "via": "google-pin"
+    },
+    "https://www.google.com/maps/place/Sanmai+Ramen+Nimman/@18.7967975,98.9685472,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bb756f4bc13:0x8c38135119dcb318!8m2!3d18.7967975!4d98.9685472": {
+      "lat": 18.7967975,
+      "lng": 98.9685472,
+      "via": "google-pin"
+    },
+    "https://www.google.com/maps/place/Sanmai+Ramen+Suriwong/@18.7810633,98.9978176,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bde2ec1a445:0x95928e6825a76341!8m2!3d18.7810633!4d98.9978176": {
+      "lat": 18.7810633,
+      "lng": 98.9978176,
+      "via": "google-pin"
     }
   },
   "routes": {
@@ -1566,6 +1586,26 @@
       "walk": 79,
       "drive": 10,
       "metres": 5949
+    },
+    "lotushouse|https://www.google.com/maps/place/SALT+%26+FIRE+Rooftop+Bar/@18.796678,98.981099,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bc8a103dde7:0xf660630854a5dc45!8m2!3d18.796678!4d98.981099": {
+      "walk": 62,
+      "drive": 10,
+      "metres": 4683
+    },
+    "lotushouse|https://www.google.com/maps/place/Chiang+Mai+Sauna+Ice+Bath+Eudemonia/@18.7366909,98.9009549,17z/data=!3m1!4b1!4m6!3m5!1s0x30da37456ec1f00b:0x26607b70c5f40bc6!8m2!3d18.7366909!4d98.9009549": {
+      "walk": null,
+      "drive": 16,
+      "metres": 14084
+    },
+    "lotushouse|https://www.google.com/maps/place/Sanmai+Ramen+Nimman/@18.7967975,98.9685472,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bb756f4bc13:0x8c38135119dcb318!8m2!3d18.7967975!4d98.9685472": {
+      "walk": 79,
+      "drive": 10,
+      "metres": 5922
+    },
+    "lotushouse|https://www.google.com/maps/place/Sanmai+Ramen+Suriwong/@18.7810633,98.9978176,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bde2ec1a445:0x95928e6825a76341!8m2!3d18.7810633!4d98.9978176": {
+      "walk": 23,
+      "drive": 4,
+      "metres": 1720
     }
   }
 }
