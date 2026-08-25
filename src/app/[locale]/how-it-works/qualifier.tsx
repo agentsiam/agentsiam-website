@@ -8,10 +8,17 @@ import type { Dictionary } from "@/i18n";
  * The qualifier from the handoff: four questions, and a verdict card that changes tone and
  * colour with the answer.
  *
- * The verdicts are the point. Two of them are a real no -- condos have no route through the
- * non-hotel exemption, and a one-bed usually loses to a long-term tenant -- and softening
- * either into lead capture is the one change the handoff says breaks the product. A "no"
- * may offer a lower-commitment link; none of them pretends the answer was yes.
+ * The verdicts are the point. A real no stays a real no -- a one-bed usually loses to a
+ * long-term tenant -- and softening one into lead capture is the one change the handoff says
+ * breaks the product. A "no" may offer a lower-commitment link; none of them pretends the
+ * answer was yes.
+ *
+ * The condo verdict is deliberately conditional rather than a no. Condos went into scope on
+ * 20/08/2026 with a precondition: the building's juristic person must permit short stays in
+ * writing, and that has to be on file before anything is signed. The exemption reasoning in
+ * the old copy was correct and is kept -- it just does not decide the answer, the building
+ * does. An unconfirmed condo is still treated as excluded; the verdict says so without
+ * closing the door on a building that does permit it.
  *
  * Verdict logic and copy are the design's, unchanged. The question labels are translated;
  * the verdict bodies are not, and the page carries the pending-translation note for that.
@@ -68,10 +75,11 @@ function verdictFor(
 
   if (type === "Condo / apartment") {
     return {
-      kicker: "Almost certainly not",
-      title: "We do not take condominium units.",
-      body: "The non-hotel exemption that makes short-let legal is available to landed property — houses, townhouses, small buildings — and not to condos. Most Thai condo buildings also prohibit stays under 30 days outright. We would rather say that now than take a study fee for it.",
-      tone: "no",
+      kicker: "It depends on your building",
+      title: "A condo works when the building permits it in writing.",
+      body: "Condos take a different legal route. The non-hotel exemption that covers houses and townhouses is not available to them, so what matters instead is your building: the juristic person has to permit short stays in writing, and we need that on file before anything is signed. Most Chiang Mai buildings do prohibit stays under 30 days, so this often ends in a no — but it is the building's answer, not ours, and it is worth checking rather than assuming.",
+      tone: "maybe",
+      cta: "Ask us to check your building",
     };
   }
 
