@@ -141,27 +141,81 @@ const EXTRAS = [
 ];
 
 /**
+ * Route icons. Four stroke glyphs, drawn here rather than pulled from an icon library so
+ * nothing new lands in the dependency tree for four shapes. They inherit currentColor and
+ * sit in the tinted chip on each route card.
+ *
+ * The design system carries no icon set. Paul authorised introducing one on 25/08/2026;
+ * design-guardrails.md still says otherwise and is stale until that is recorded, which is a
+ * Law 1 write and needs its own approval.
+ *
+ * They sit in a gold rounded-square chip on plain ground -- no card, no border. The routes
+ * are the lightest block on the page and boxing them competes with the menu below, which is
+ * the block that should carry the weight.
+ */
+const ICONS: Record<string, React.ReactNode> = {
+  // earning already -- a rising line
+  trend: (
+    <>
+      <polyline points="3 16.5 9.5 10 13.5 14 21 6.5" />
+      <polyline points="15.5 6.5 21 6.5 21 12" />
+    </>
+  ),
+  // listed but underperforming -- a question to diagnose
+  search: (
+    <>
+      <circle cx="11" cy="11" r="6.25" />
+      <line x1="15.6" y1="15.6" x2="20.5" y2="20.5" />
+    </>
+  ),
+  // nothing yet -- the property itself
+  house: (
+    <>
+      <path d="M3.75 10.75 12 4.25l8.25 6.5" />
+      <path d="M5.75 12.4V19.25h12.5V12.4" />
+    </>
+  ),
+  // held elsewhere -- a handover
+  transfer: (
+    <>
+      <path d="M3.75 8.75h14.5" />
+      <polyline points="15 5.5 18.25 8.75 15 12" />
+      <path d="M20.25 15.25H5.75" />
+      <polyline points="9 12 5.75 15.25 9 18.5" />
+    </>
+  ),
+};
+
+/**
  * The routes. This is the "tailored" half of a menu -- six services in a list is not a
  * tailored offering, six services with a recommended starting point per situation is.
  * Ordered by how often we see them, not by service number.
  */
 const ROUTES = [
   {
+    icon: "trend",
+    grad: "grad-sand",
     when: "Already listed, and it is doing well",
     take: "Management. Permission too, if you do not hold one.",
     why: "Your own occupancy and rate history is better evidence than anything we could model, so there is nothing for a study to tell you. We read your numbers instead, and it costs you nothing.",
   },
   {
+    icon: "search",
+    grad: "grad-blue",
     when: "Listed, but the bookings are not coming",
     take: "Start with the study, then management.",
     why: "The question here is diagnostic rather than whether to begin: is it the listing, the pricing, the photographs — or the property. The study answers that against real local comparables instead of guessing, and it is the cheapest thing on this page.",
   },
   {
+    icon: "house",
+    grad: "grad-teal",
     when: "Not listed yet",
     take: "Study, then permission, then management.",
     why: "There is no history to read, so the numbers have to be modelled before anyone should commit money to it. This is the route the study was built for, and the one where a No-Go saves you the most.",
   },
   {
+    icon: "transfer",
+    grad: "grad-vermilion",
     when: "Already with another manager",
     take: "Bring us your numbers. Management when you are ready.",
     why: "We will look at what the property is actually doing before suggesting anything. If the study would not tell you more than your own statements already do, we will say so rather than sell it to you.",
@@ -339,21 +393,58 @@ export default async function HowItWorksPage({
           {t.routeBody}
         </p>
 
-        <div className="mt-6 grid gap-3.5 sm:grid-cols-2">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2">
           {ROUTES.map((route) => (
             <div
               key={route.when}
-              className="flex flex-col gap-2 rounded-panel border border-hairline px-6 py-5.5"
+              className="rounded-panel bg-surface-2 p-3.5"
             >
-              <h3 className="font-display text-[17px] font-bold leading-snug tracking-[-0.015em]">
-                {route.when}
-              </h3>
-              <p className="text-[14px] font-semibold leading-snug text-primary">
-                {route.take}
-              </p>
-              <p className="text-[13.5px] leading-relaxed text-body">
-                {route.why}
-              </p>
+              <div className="flex h-full flex-col overflow-hidden rounded-box bg-bg">
+                <div className="flex items-center gap-3 px-5 pt-5">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sand text-ink"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="size-[18px]"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      {ICONS[route.icon]}
+                    </svg>
+                  </span>
+                  <h3 className="font-display text-[16px] font-bold leading-snug tracking-[-0.015em]">
+                    {route.when}
+                  </h3>
+                </div>
+
+                {/* Image slot. The abstract gradient ground is the correct current-state
+                    treatment, not a stopgap: zero active photos exist and the guardrails
+                    forbid dropping in stock "just for now". Swap for real photography
+                    once something clears intake.
+
+                    The hue per route is deliberately NOT matched to its sentiment. Teal is
+                    the positive-verdict token here and vermilion the negative one, so the
+                    obvious assignment -- teal on "doing well", vermilion on "not coming" --
+                    reads as a good/bad rating of the owner's situation. It is not one. */}
+                <div
+                  aria-hidden="true"
+                  className={`mx-5 mt-4 h-[156px] rounded-lg ${route.grad}`}
+                />
+
+                <div className="flex flex-col gap-2 px-5 pt-4 pb-5.5">
+                  <p className="text-[14px] font-semibold leading-snug text-primary">
+                    {route.take}
+                  </p>
+                  <p className="text-[13.5px] leading-relaxed text-body">
+                    {route.why}
+                  </p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
