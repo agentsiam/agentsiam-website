@@ -8,7 +8,7 @@ import { WhatsAppCta } from "@/components/whatsapp-cta";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, LOCALES, type Locale } from "@/i18n/config";
 import { areaBySlug } from "@/lib/areas";
-import { appleDirections, googleDirections } from "@/lib/directions";
+import { applePlace, googlePlace } from "@/lib/directions";
 import { categoryIcon, categoryLabel, tagLabel, tagsInFamily } from "@/lib/guide-vocabulary";
 import { PHOTOS } from "@/lib/photos.generated";
 import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES, GUIDE_TAGS } from "@/lib/guide.generated";
@@ -323,14 +323,8 @@ export default async function LocalGuidePage({
                       </a>
                     ) : null}
                     <DirectionsLinks
-                      google={
-                        place.google ||
-                        googleDirections(origin, place, d?.walk != null ? "walking" : "driving")
-                      }
-                      apple={
-                        place.apple ||
-                        appleDirections(origin, place, d?.walk != null ? "walking" : "driving")
-                      }
+                      google={place.google || googlePlace(place)}
+                      apple={place.apple || applePlace(place, place.name)}
                       t={t}
                     />
                   </div>
