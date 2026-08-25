@@ -18,9 +18,9 @@
  * that cannot route at all. Neither is a preference we should be expressing on their
  * behalf, so the primary button follows the device and the other app stays one tap away.
  *
- * The sheet's own links are kept as that secondary path, because they point at the exact
- * business Nils chose, including cases where a name is ambiguous or the pin sits in a
- * building with several entrances. Coordinates are the fallback, never the first choice.
+ * A place's own Maps link is what the guide renders, because it points at the exact
+ * business, including where a name is ambiguous or the pin sits in a building with several
+ * entrances. The route builders below are the fallback for a place without one.
  */
 
 export type TravelMode = "walking" | "driving";

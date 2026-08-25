@@ -2,10 +2,15 @@
 
 import { useSyncExternalStore } from "react";
 import type { Dictionary } from "@/i18n";
-import { appleDirections, googleDirections, prefersAppleMaps, type Point, type TravelMode } from "@/lib/directions";
+import { prefersAppleMaps } from "@/lib/directions";
 
 /**
  * The two ways out of a card, ordered by what the guest is holding.
+ *
+ * The hrefs are the place's own Maps links, passed in by the caller. They open the business
+ * itself, so the guest gets its hours, its photos and a Directions button that starts from
+ * where they are actually standing. `directions.ts` builds a route from coordinates as the
+ * fallback for a place with no link of its own.
  *
  * Both links are rendered on the server so the page works with no JavaScript and a crawler
  * sees them. The only thing that happens on the client is the *order*: an iPhone user
@@ -21,31 +26,29 @@ import { appleDirections, googleDirections, prefersAppleMaps, type Point, type T
  * platform, where Apple Maps links do not.
  */
 export function DirectionsLinks({
-  from,
-  to,
-  mode,
+  google,
+  apple,
   t,
 }: {
-  from: Point;
-  to: Point;
-  mode: TravelMode;
+  google: string;
+  apple: string;
   t: Dictionary;
 }) {
   // Which maps app the device prefers is external state that never changes, so it is read
   // rather than stored. useSyncExternalStore gives React a server value (false) and a
   // client value, which is exactly the hydration-safe shape; setState in an effect would
   // render once, then immediately render again.
-  const apple = useSyncExternalStore(
+  const preferApple = useSyncExternalStore(
     () => () => {},
     () => prefersAppleMaps(),
     () => false,
   );
 
   const links = [
-    { href: googleDirections(from, to, mode), label: t.guideDirectionsGoogle, key: "google" },
-    { href: appleDirections(from, to, mode), label: t.guideDirectionsApple, key: "apple" },
+    { href: google, label: t.guideDirectionsGoogle, key: "google" },
+    { href: apple, label: t.guideDirectionsApple, key: "apple" },
   ];
-  if (apple) links.reverse();
+  if (preferApple) links.reverse();
 
   return (
     <span className="flex flex-wrap items-center gap-2">
@@ -61,7 +64,7 @@ export function DirectionsLinks({
               : "rounded-full border border-hairline px-3 py-1.5 text-[12px] font-semibold transition-colors hover:border-ink"
           }
         >
-          {i === 0 ? `${t.guideDirections} · ${link.label}` : link.label}
+          {i === 0 ? t.guideOpenIn.replace("{app}", link.label) : link.label}
         </a>
       ))}
     </span>

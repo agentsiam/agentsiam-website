@@ -8,9 +8,10 @@ import { WhatsAppCta } from "@/components/whatsapp-cta";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, LOCALES, type Locale } from "@/i18n/config";
 import { areaBySlug } from "@/lib/areas";
-import { categoryIcon } from "@/lib/guide-icons";
+import { appleDirections, googleDirections } from "@/lib/directions";
+import { categoryIcon, categoryLabel, tagLabel, tagsInFamily } from "@/lib/guide-vocabulary";
 import { PHOTOS } from "@/lib/photos.generated";
-import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
+import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES, GUIDE_TAGS } from "@/lib/guide.generated";
 import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
 import { pageMeta, WHATSAPP_NUMBER } from "@/lib/site";
 
@@ -25,10 +26,9 @@ import { pageMeta, WHATSAPP_NUMBER } from "@/lib/site";
  * impossible to send to someone. Every filter here is a link, the page is server-rendered,
  * and "coffee within walking distance" is a URL you can paste into a message.
  *
- * **Distances come from the property, not the sheet.** The sheet's own walk and drive
- * columns are hardcoded to Lotus House and are deliberately not imported. GUIDE_DISTANCES
- * is keyed by property, so when there is a second property this page serves it by looking
- * up a different key rather than by being rewritten.
+ * **Distances come from the property, not from the place.** GUIDE_DISTANCES is keyed by
+ * property, so a second property is served by looking up a different key rather than by
+ * rewriting this page.
  */
 
 const NEARBY_MINUTES = 20;
@@ -69,6 +69,7 @@ export default async function LocalGuidePage({
 
   const category = GUIDE_CATEGORIES.includes(one(query.for) ?? "") ? one(query.for)! : null;
   const area = one(query.area) ?? null;
+  const tag = GUIDE_TAGS.includes(one(query.tag) ?? "") ? one(query.tag)! : null;
   const nearby = one(query.near) === "1";
   const picks = one(query.picks) === "1";
 
@@ -79,6 +80,7 @@ export default async function LocalGuidePage({
     const d = distances[place.name];
     if (category && place.category !== category) return false;
     if (area && (area === "outside" ? place.area !== null : place.area !== area)) return false;
+    if (tag && !place.tags.includes(tag)) return false;
     if (nearby && !(d?.walk !== null && d?.walk !== undefined && d.walk <= NEARBY_MINUTES)) return false;
     if (picks && !place.highlight) return false;
     return true;
@@ -95,6 +97,7 @@ export default async function LocalGuidePage({
 
   // Only the neighbourhoods that actually contain something, so the filter never offers a
   // choice that leads to an empty page.
+  const foodTags = tagsInFamily(GUIDE_TAGS, "food");
   const areasPresent = [...new Set(GUIDE_PLACES.map((p) => p.area).filter((a): a is string => a !== null))];
   const hasOutside = GUIDE_PLACES.some((p) => p.area === null);
 
@@ -137,6 +140,7 @@ export default async function LocalGuidePage({
     const current: Record<string, string | null> = {
       for: category,
       area,
+      tag,
       near: nearby ? "1" : null,
       picks: picks ? "1" : null,
       ...patch,
@@ -188,10 +192,26 @@ export default async function LocalGuidePage({
         </Link>
         {GUIDE_CATEGORIES.map((name) => (
           <Link key={name} href={filterHref({ for: name })} className={chip(category === name)}>
-            {name}
+            {categoryLabel(name, locale)}
           </Link>
         ))}
       </div>
+
+      {/* Food only. Dietary and practical tags are shown on the card but never offered as a
+          filter: narrowing the whole guide to the four cash-only places is not a question a
+          guest is asking, and every extra row of chips costs the ones above it attention. */}
+      {foodTags.length ? (
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link href={filterHref({ tag: null })} className={chip(!tag)}>
+            {t.guideFilterTags}: {t.guideAll}
+          </Link>
+          {foodTags.map((slug) => (
+            <Link key={slug} href={filterHref({ tag: slug })} className={chip(tag === slug)}>
+              {tagLabel(slug, locale)}
+            </Link>
+          ))}
+        </div>
+      ) : null}
 
       <div className="mt-3 flex flex-wrap gap-2">
         <Link href={filterHref({ area: null })} className={chip(!area)}>
@@ -250,9 +270,34 @@ export default async function LocalGuidePage({
                   </div>
 
                   <p className="eyebrow mt-1">
-                    {place.category}
+                    {categoryLabel(place.category, locale)}
                     {areaName ? ` · ${areaName}` : ` · ${t.guideOutsideAreas}`}
                   </p>
+
+                  {place.tags.length ? (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {tagsInFamily(place.tags, "food").map((slug) => (
+                        <Link
+                          key={slug}
+                          href={filterHref({ tag: slug })}
+                          className="rounded-full border border-hairline px-2 py-0.5 text-[11px] text-muted transition-colors hover:border-ink hover:text-ink"
+                        >
+                          {tagLabel(slug, locale)}
+                        </Link>
+                      ))}
+                      {[
+                        ...tagsInFamily(place.tags, "dietary"),
+                        ...tagsInFamily(place.tags, "practical"),
+                      ].map((slug) => (
+                        <span
+                          key={slug}
+                          className="rounded-full bg-surface px-2 py-0.5 text-[11px] text-muted"
+                        >
+                          {tagLabel(slug, locale)}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
 
                   {place.comment ? (
                     <p className="mt-2 text-[14px] text-body">{place.comment}</p>
@@ -268,9 +313,14 @@ export default async function LocalGuidePage({
                         : ""}
                     </span>
                     <DirectionsLinks
-                      from={{ lat: origin.lat, lng: origin.lng }}
-                      to={{ lat: place.lat, lng: place.lng }}
-                      mode={d?.walk != null ? "walking" : "driving"}
+                      google={
+                        place.google ||
+                        googleDirections(origin, place, d?.walk != null ? "walking" : "driving")
+                      }
+                      apple={
+                        place.apple ||
+                        appleDirections(origin, place, d?.walk != null ? "walking" : "driving")
+                      }
                       t={t}
                     />
                   </div>

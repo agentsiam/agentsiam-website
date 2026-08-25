@@ -1,0 +1,1898 @@
+{
+  "places": [
+    {
+      "name": "6ixcret Show",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "drag-show",
+        "late-night"
+      ],
+      "highlight": false,
+      "comment": "Usually busy show bar that performs daily sophisticated drag shows from 22:00h (free entry) high-energy cabaret performance in Chiang Mai, featuring dazzling costumes, talented performers, and captivating dance routines, delivering an unforgettable evening of entertainment.",
+      "google": "https://maps.app.goo.gl/rmNBiUYiWnvti65D7",
+      "apple": "https://maps.apple/p/-3RjbEsN~fov.M",
+      "website": ""
+    },
+    {
+      "name": "Hardcocktail Bar",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "cocktails"
+      ],
+      "highlight": false,
+      "comment": "Very friendly beach bar style, outdoor cocktail bar and eatery.",
+      "google": "https://maps.app.goo.gl/wY3YcaMf4oDDGR8aA",
+      "apple": "https://maps.apple/p/kR6CdCx0_kL-52",
+      "website": ""
+    },
+    {
+      "name": "InterContinental Mae Ping (rooftop)",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "cocktails",
+        "rooftop"
+      ],
+      "highlight": false,
+      "comment": "Rooftop · $$",
+      "google": "https://maps.app.goo.gl/3Wi1opCdBTfAtDRu9",
+      "apple": "https://maps.apple.com/place?coordinate=18.78291,98.99801&name=InterContinental%20Mae%20Ping%20%28rooftop%29&map=explore",
+      "website": ""
+    },
+    {
+      "name": "MAI The Sky Bar",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "cocktails",
+        "rooftop"
+      ],
+      "highlight": false,
+      "comment": "Rooftop · $$",
+      "google": "https://maps.app.goo.gl/2m7QgJycCbrFPuVT9",
+      "apple": "https://maps.apple.com/place?coordinate=18.7852702,99.0026149&name=MAI%20The%20Sky%20Bar&map=explore",
+      "website": ""
+    },
+    {
+      "name": "MaHoRee City of Music",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "live-music"
+      ],
+      "highlight": false,
+      "comment": "Jazz bar · $$",
+      "google": "https://maps.app.goo.gl/tqEHng79KUDmT4ae9",
+      "apple": "https://maps.apple.com/place?coordinate=18.7889544,98.9879476&name=MaHoRee%20City%20of%20Music&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Nophaburi Bar | Thai Cocktail",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "cocktails"
+      ],
+      "highlight": false,
+      "comment": "Thai-inspired cocktails in a stylish and relaxed setting, blending traditional flavors with modern mixology.",
+      "google": "https://maps.app.goo.gl/FWmLLH3HA8zH2zco9",
+      "apple": "https://maps.apple/p/qHZoaJG-vKzIrZ",
+      "website": ""
+    },
+    {
+      "name": "Ram Bar",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "drag-show",
+        "late-night"
+      ],
+      "highlight": true,
+      "comment": "Usually busy show bar that performs daily sophisticated drag shows from 22:00h (free entry) vibrant LGBTQ+ friendly venue in Chiang Mai, known for its lively cabaret shows, creative cocktails, and welcoming atmosphere, offering unforgettable entertainment and fun.",
+      "google": "https://maps.app.goo.gl/BRaqrwUiYhYyWC1q9",
+      "apple": "https://maps.apple/p/jNgeiwsaI2yZpy",
+      "website": ""
+    },
+    {
+      "name": "Shangri-La Lobby Lounge",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "cocktails"
+      ],
+      "highlight": false,
+      "comment": "Shangri-La Lobby Lounge on the second floor set with traditional Lanna Grand Hotel Atmosphere offers every day 2 for 1 happy hour for classic cocktails from 17h to 19h.",
+      "google": "https://maps.app.goo.gl/JgejB1NWJ7iyjtmi9",
+      "apple": "https://maps.apple/p/hNJDsgyJsZiNUc",
+      "website": ""
+    },
+    {
+      "name": "THE A TER - Steak & Music",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "live-music"
+      ],
+      "highlight": false,
+      "comment": "Jazz bar, also food · $$",
+      "google": "https://maps.app.goo.gl/X8zkAJbLJuEpxJNZ7",
+      "apple": "https://maps.apple.com/place?coordinate=18.7847636,99.003033&name=THE%20A%20TER%20-%20Steak%20%26%20Music&map=explore",
+      "website": ""
+    },
+    {
+      "name": "The Continental Bar",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "cocktails"
+      ],
+      "highlight": false,
+      "comment": "Speakeasy · $$",
+      "google": "https://maps.app.goo.gl/yGPTzhcUUUjtG4sw7",
+      "apple": "https://maps.apple.com/place?coordinate=18.7983727,98.9707212&name=The%20Continental%20Bar&map=explore",
+      "website": ""
+    },
+    {
+      "name": "The North Gate Jazz Co-Op",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "live-music",
+        "late-night"
+      ],
+      "highlight": false,
+      "comment": "North Gate Jazz Club is long standing \"institution\" for every night life music, go when it opens at 7PM to get a spot. It often gets very crowded",
+      "google": "https://maps.app.goo.gl/LC61Y87YZ4GMQiHk8",
+      "apple": "https://maps.apple/p/q8DnH1r97XjW-k",
+      "website": ""
+    },
+    {
+      "name": "The Service at 1921 House",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "cocktails"
+      ],
+      "highlight": false,
+      "comment": "Located in a historic building inside Anantara Hotel, serving excellent cocktails and food in an outdoor or indoor setting.",
+      "google": "https://maps.app.goo.gl/WXj4Up2PvtPCtoah9",
+      "apple": "https://maps.apple/p/BbvifBsDZWQpD.z",
+      "website": ""
+    },
+    {
+      "name": "The White Rabbit",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [
+        "cocktails"
+      ],
+      "highlight": false,
+      "comment": "Speakeasy type Cocktailbar",
+      "google": "https://maps.app.goo.gl/ZVP3m96HZmf2kvpt9",
+      "apple": "https://maps.apple/p/R5mVIFn-wnhkUg",
+      "website": ""
+    },
+    {
+      "name": "ร้านแลงตอง",
+      "category": "Bars",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Local neighborhood beer bar and eatery in a rustic environment. (Last we checked, this place has changed name but new location is not on Google Maps yet)",
+      "google": "https://maps.app.goo.gl/VpBA84wAEx7c4eTV9",
+      "apple": "https://maps.apple/p/tTzLBPY.QwscUL",
+      "website": ""
+    },
+    {
+      "name": "ATM Kasikorn Bank & Bangkok Bank",
+      "category": "Basics & Utilities",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "",
+      "google": "https://maps.app.goo.gl/35WbaUcmsZbNQbBH6",
+      "apple": "https://maps.apple/p/xaTIhZDTIbEv~i",
+      "website": ""
+    },
+    {
+      "name": "Baggage storage, AIRPORTELs (Central Airport Mall)",
+      "category": "Basics & Utilities",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Baggage Storage inside Central Airport Mall",
+      "google": "https://maps.app.goo.gl/QsppNwRjZoLqoQx1A",
+      "apple": "https://maps.apple/p/-UjvxAp8ZT2BjV",
+      "website": ""
+    },
+    {
+      "name": "Baggage storage, AIRPORTELs (airport terminal)",
+      "category": "Basics & Utilities",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Baggage Storage inside the airport terminal, 1st Floor Entrance 7, (across from Thai Post Office)",
+      "google": "https://maps.app.goo.gl/9J24Vopb1ZY38a5q9",
+      "apple": "https://maps.apple/p/.V5Q~Jia~SbPtm",
+      "website": ""
+    },
+    {
+      "name": "D2 Bike Changklan Motorcycle",
+      "category": "Basics & Utilities",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Close by motorbike rent shop",
+      "google": "https://maps.app.goo.gl/A7SbpHn62jAGGqHCA",
+      "apple": "https://maps.apple/p/YmCe_R94YLvRI9",
+      "website": ""
+    },
+    {
+      "name": "Heartwork the Sharing Space",
+      "category": "Basics & Utilities",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Co-working and coffee store. The charge a very small fee for the usage of (with work desks equipeed) co-working space and you have to grab a coffee or some food.",
+      "google": "https://maps.app.goo.gl/pDnsjywFUfnsSGvi7",
+      "apple": "https://maps.apple/p/Uf5tR_zggeJEBN",
+      "website": ""
+    },
+    {
+      "name": "Luggage Corner",
+      "category": "Basics & Utilities",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Baggage Storage next to Tha Phae Gate",
+      "google": "https://maps.app.goo.gl/97ojbue4QbtniaFg8",
+      "apple": "https://maps.apple/p/z~YfoIe1g-3AAb",
+      "website": ""
+    },
+    {
+      "name": "Pharmacy ขวัญดาวเภสัช",
+      "category": "Basics & Utilities",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Near by pharamacy",
+      "google": "https://maps.app.goo.gl/T7Y3ZXeBZj1VytKs9",
+      "apple": "https://maps.apple/p/P.NQ.8iRwV-tVQ",
+      "website": ""
+    },
+    {
+      "name": "Pharmacy ร้านยาเวียงพิงค์เภสัช สาขาตลาดต้นพยอม2",
+      "category": "Basics & Utilities",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Pharamacy next door to 7 eleven",
+      "google": "https://maps.app.goo.gl/j4T42Su8jNCGZ4GL9",
+      "apple": "https://maps.apple/p/P.NQ.8iRwV-tVQ",
+      "website": ""
+    },
+    {
+      "name": "Baan Bakery",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [
+        "bakery"
+      ],
+      "highlight": false,
+      "comment": "",
+      "google": "https://maps.app.goo.gl/LBKeEaWGQnbGDiff6",
+      "apple": "https://maps.apple/p/x8ALJx_ApDGbCN",
+      "website": ""
+    },
+    {
+      "name": "Elefin Farm & Cafe",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "out in Mae Rim, about 15km",
+      "google": "https://maps.app.goo.gl/k27dBY9rEZarDSBn6",
+      "apple": "https://maps.apple.com/place?coordinate=18.8038339,98.8196672&name=Elefin%20Farm%20%26%20Cafe&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Fern Forest Cafe",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "",
+      "google": "https://maps.app.goo.gl/1Cxek6iwEMeKJJ6ZA",
+      "apple": "https://maps.apple.com/place?coordinate=18.7933635,98.982022&name=Fern%20Forest%20Cafe&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Food4Thought (flagship)",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "",
+      "google": "https://maps.app.goo.gl/a9Cyn9cBNchAUjBz8",
+      "apple": "https://maps.apple.com/place?coordinate=18.8061115,98.9614233&name=Food4Thought%20%28flagship%29&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Fran's Chiang Mai",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "",
+      "google": "https://maps.app.goo.gl/zuvty3tjUZSQ8Xts8",
+      "apple": "https://maps.apple.com/place?coordinate=18.7943719,98.9689733&name=Fran%27s%20Chiang%20Mai&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Going up cafe",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [
+        "sandwiches"
+      ],
+      "highlight": false,
+      "comment": "Small coffee shop specialized in sandwiches",
+      "google": "https://maps.app.goo.gl/Ec1NG9PAfcGAJLdy5",
+      "apple": "https://maps.apple/p/.kRpQ0uE6j3Ag9",
+      "website": ""
+    },
+    {
+      "name": "Kai Ka Ta Lert Ros Chiang Mai 1",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [
+        "vietnamese"
+      ],
+      "highlight": false,
+      "comment": "Vietnamese Breakfast place",
+      "google": "https://maps.app.goo.gl/togkdQ5T9kWxMx5a7",
+      "apple": "https://maps.apple/p/Te6i5P75a7wY7L",
+      "website": ""
+    },
+    {
+      "name": "L'Opéra",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [
+        "french",
+        "bakery"
+      ],
+      "highlight": false,
+      "comment": "French Bakery and Cafe",
+      "google": "https://maps.app.goo.gl/yoRxEAZZxNB2vkLt7",
+      "apple": "https://maps.apple/p/1vQNXb6QPJxgP_",
+      "website": ""
+    },
+    {
+      "name": "Living A Dream",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Inside Chiang Mai university campus with a view over Angkaew Reservoir",
+      "google": "https://maps.app.goo.gl/f7HUxGfeGWtfoSTt5",
+      "apple": "https://maps.apple/p/JHpMqZYsQiKTAq",
+      "website": ""
+    },
+    {
+      "name": "More Morning",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Little breakfast and coffe place",
+      "google": "https://maps.app.goo.gl/zyhwRECUqFaHaNbq9",
+      "apple": "https://maps.apple/p/qXidsCm.hh_RRZ",
+      "website": ""
+    },
+    {
+      "name": "Nai To Congee Shop",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [
+        "thai"
+      ],
+      "highlight": true,
+      "comment": "Great place to experience Thai breakfast in seated environment and not as street food",
+      "google": "https://maps.app.goo.gl/gMTsPV85r9YoGXQJ7",
+      "apple": "https://maps.apple/p/f7sDQwoF_yj3kJ",
+      "website": ""
+    },
+    {
+      "name": "Ozark by Food4Thought",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "out towards Hang Dong",
+      "google": "https://maps.app.goo.gl/W7UkBzxGxrsjT7zz7",
+      "apple": "https://maps.apple.com/place?coordinate=18.760205,98.904868&name=Ozark%20by%20Food4Thought&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Sunday Baker",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [
+        "bakery"
+      ],
+      "highlight": false,
+      "comment": "Charming café in Chiang Mai known for its delectable baked goods, specialty coffee, and cozy, Instagram-worthy ambiance, perfect for a relaxing treat.",
+      "google": "https://maps.app.goo.gl/CBmMnUhrCQT1grTB8",
+      "apple": "https://maps.apple/p/NjoVA5Gj5.CWvE",
+      "website": ""
+    },
+    {
+      "name": "The Moon Eatery",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "",
+      "google": "https://maps.app.goo.gl/F1SXAq4mhnRSqVns9",
+      "apple": "https://maps.apple.com/place?coordinate=18.7977257,98.9749577&name=The%20Moon%20Eatery&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Wooden Door Cafe",
+      "category": "Breakfast",
+      "city": "chiang-mai",
+      "tags": [
+        "western"
+      ],
+      "highlight": true,
+      "comment": "Our preffered western brunch place close by the house (ther's a short cut on Google Map if you're walking)",
+      "google": "https://maps.app.goo.gl/CftsRJZxFdTgajNW7",
+      "apple": "https://maps.apple/p/q-s6hs_3M_q53t",
+      "website": ""
+    },
+    {
+      "name": "Warm Up Cafe",
+      "category": "Club",
+      "city": "chiang-mai",
+      "tags": [
+        "thai",
+        "live-music",
+        "late-night"
+      ],
+      "highlight": false,
+      "comment": "Popular Chiang Mai nightlife spot, known for live music, DJs, and a lively atmosphere with great drinks and Thai food.",
+      "google": "https://maps.app.goo.gl/NbTAeodxgZZ4gYqo7",
+      "apple": "https://maps.apple/p/8yL5DKAiPFSowi",
+      "website": ""
+    },
+    {
+      "name": "Zoe in Yellow",
+      "category": "Club",
+      "city": "chiang-mai",
+      "tags": [
+        "late-night"
+      ],
+      "highlight": false,
+      "comment": "The party spot in old town",
+      "google": "https://maps.app.goo.gl/3T4qKYW4XCVTS8tg8",
+      "apple": "https://maps.apple/p/8~uE.-j~ptAT_X",
+      "website": ""
+    },
+    {
+      "name": "A Day In Chiang Mai Coffee Brew",
+      "category": "Coffee",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Specialty coffee with a focus on local beans in a small but cozy, inviting setting.",
+      "google": "https://maps.app.goo.gl/D6YgAU8wWRjuAmGA6",
+      "apple": "https://maps.apple/p/8_8nRCzCgByjMA",
+      "website": ""
+    },
+    {
+      "name": "Beam&Col. coffee bar",
+      "category": "Coffee",
+      "city": "chiang-mai",
+      "tags": [
+        "live-music"
+      ],
+      "highlight": true,
+      "comment": "Coffee, Shop, Evening Bar, Life Music on weekends....Beam&Col. is all of this together. Stop by and enjoy at any time of the day.",
+      "google": "https://maps.app.goo.gl/LRD2K7cCt5hmGqzV7",
+      "apple": "https://maps.apple/p/q0WSk8Y_2DG-DR",
+      "website": ""
+    },
+    {
+      "name": "Brewginning coffee",
+      "category": "Coffee",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "A cozy café serving specialty coffee and freshly brewed beverages in a relaxed atmosphere.",
+      "google": "https://maps.app.goo.gl/heLscSo7yAsyDBvD7",
+      "apple": "https://maps.apple/p/oYicXwNVJbgK-p",
+      "website": ""
+    },
+    {
+      "name": "Light Beverage and MORE",
+      "category": "Coffee",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Coffee shop and breakfast next to the river ping",
+      "google": "https://maps.app.goo.gl/nRddMzuL2ve1UCuw6",
+      "apple": "https://maps.apple/p/2MpbJM9fCHnDUw",
+      "website": ""
+    },
+    {
+      "name": "Maajoy Cafe & Tailor",
+      "category": "Coffee",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Small Coffee Shop with excellent coffee. They serve good food(Limited options) as well.",
+      "google": "https://maps.app.goo.gl/9fRmJcMtSBR3r6Sc9",
+      "apple": "https://maps.apple/p/AaLyiAEbfn9wU.z",
+      "website": ""
+    },
+    {
+      "name": "Simply Happy - สุขพอดี",
+      "category": "Coffee",
+      "city": "chiang-mai",
+      "tags": [
+        "dessert"
+      ],
+      "highlight": false,
+      "comment": "Charming café offering a mix of coffee, tea, and homemade treats in a peaceful and welcoming setting, perfect for relaxation.",
+      "google": "https://maps.app.goo.gl/cLsZjP79HrhWh75M7",
+      "apple": "https://maps.apple/p/wg~-5.X_t2tBZo",
+      "website": ""
+    },
+    {
+      "name": "VP Coffee",
+      "category": "Coffee",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Based in VP City Park, enjoy the calm and relaxed atmosphere sitting under the shades of old trees.",
+      "google": "https://maps.app.goo.gl/8G6Z3UvEBaaeS93g9",
+      "apple": "https://maps.apple.com/place?address=Pracha%20Samphan%20Road,%20Chang%20Khlan,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.771007,98.991311&name=VP%20Coffee%20at%20VP%20City%20Park&place-id=IE4E6B03736D6E815&map=explore",
+      "website": ""
+    },
+    {
+      "name": "khna coffee brewers",
+      "category": "Coffee",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "A specialty café offering meticulously brewed coffee and espresso drinks in a stylish and laid-back atmosphere.",
+      "google": "https://maps.app.goo.gl/KoZ4f8Vq6b6EmKCd9",
+      "apple": "https://maps.apple/p/7RKhYaLc_7aU8y",
+      "website": ""
+    },
+    {
+      "name": "ตราบุญ Coffee Station",
+      "category": "Coffee",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Next door outdoor coffee shop run buy very welcoming people (speak some English). If you stop by, say you're staying at Paul & Nils for special treatment",
+      "google": "https://maps.app.goo.gl/i6C2A7XxXMqekdua9",
+      "apple": "https://maps.apple/p/L0~RXIRA.0_wF0",
+      "website": ""
+    },
+    {
+      "name": "7 Eleven",
+      "category": "Convenience & Grocery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Convinience store",
+      "google": "https://maps.app.goo.gl/xhe7stWRMtLmtG6u9",
+      "apple": "https://maps.apple/p/fkksTvJC_q_Aot",
+      "website": ""
+    },
+    {
+      "name": "Big C",
+      "category": "Convenience & Grocery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Supermarket close to the Night Bazaar. With extensive travel gift food options.",
+      "google": "https://maps.app.goo.gl/LdKw9VRiRfgHthaD7",
+      "apple": "https://maps.apple.com/place?address=Room%20No.%20101,%201st%20Floor,%20152/1%20Chang%20Klan%20Road%0AChang%20Khlan,%20Mueang%20Chiang%20Mai%0AChiang%20Mai%2050100%0AThailand&coordinate=18.781974,98.997390&name=Big%20C%20Market&place-id=I1264250CD512E4E6&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Kad Kom Market",
+      "category": "Convenience & Grocery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Closest local wet market with fresh meat, fish, fruits, vegtables and several street food vendors early morning and late afternoon (Local Experience)",
+      "google": "https://maps.app.goo.gl/VwXzwb28SzPzXjjs7",
+      "apple": "https://maps.apple/p/jcMpsujWEFuuSU",
+      "website": ""
+    },
+    {
+      "name": "Lotus's Go Fresh",
+      "category": "Convenience & Grocery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Convinience store that offers fresh food options as well. Incl. Fruits, Vegetables, Meat and Fish.",
+      "google": "https://maps.app.goo.gl/zWCaqRcT9ZEVKwch7",
+      "apple": "https://maps.apple.com/place?address=96/2%20Soi%20Suriyawong%205,%20Hai%20Ya,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.774236,98.990337&name=Lotus's%20Go%20Fresh&place-id=I53ABA83340AF8CFA&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Mini BigC",
+      "category": "Convenience & Grocery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Small supermarket",
+      "google": "https://maps.app.goo.gl/CUYYd8aFTY9nnGQo8",
+      "apple": "https://maps.apple/p/J9aiSwp7m0ZcGV",
+      "website": ""
+    },
+    {
+      "name": "Rimping Supermarket",
+      "category": "Convenience & Grocery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Gourmet supermarket with a national and international products.",
+      "google": "https://maps.app.goo.gl/HNNWzhxfGK2NpDWr7",
+      "apple": "https://maps.apple.com/place?address=199/8%20Mahidol%20Rd.,%20Haiya,%20Mueang%20Chiang%20Mai,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.771507,98.976865&name=Rimping%20Supermarket&place-id=I2CBE7CE55020B013&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Tops Supermarket",
+      "category": "Convenience & Grocery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Extensive supermarket with a broad variety of options, incl. international food.",
+      "google": "https://maps.app.goo.gl/xRm3MXm5xmo6y4f17",
+      "apple": "https://maps.apple.com/place?address=Mahidon%20Frontage%20Road,%20Suthep,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050200,%20Thailand&coordinate=18.768958,98.975981&name=Top%20Supermarket%20Central%20Airport%20Chiangmai&place-id=I56C623734FB813E9&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Antique Massage Chiangmai",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "Mid-Scale massage place with lovely facilities inside a traditional thai building. CALL 091-566-5569 TO BOOK FREE SHUTTLE TAXI OF THE MASSAGE PLACE",
+      "google": "https://maps.app.goo.gl/GvfqE4ANFCsQa8q9A",
+      "apple": "https://maps.apple/p/U90Ea1iovv64QX",
+      "website": ""
+    },
+    {
+      "name": "Calm Massage and Spa (Chiang Mai Gate)",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/WUoGDJdKQiEUPQKo8",
+      "apple": "https://maps.apple.com/place?coordinate=18.7822651,98.9889016&name=Calm%20Massage%20and%20Spa%20%28Chiang%20Mai%20Gate%29&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Calm Massage and Spa (Fern Forest)",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/Wjc25tizKm2opWsm9",
+      "apple": "https://maps.apple.com/place?coordinate=18.7933461,98.9820602&name=Calm%20Massage%20and%20Spa%20%28Fern%20Forest%29&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Calm Massage and Spa (Somphet Market)",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/uM7o9fEJXHL6nqRJA",
+      "apple": "https://maps.apple.com/place?coordinate=18.7922519,98.9933965&name=Calm%20Massage%20and%20Spa%20%28Somphet%20Market%29&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Calm Massage and Spa (Suriwong)",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/2e4e17bN2njUdspg7",
+      "apple": "https://maps.apple.com/place?coordinate=18.7811909,98.9958826&name=Calm%20Massage%20and%20Spa%20%28Suriwong%29&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Daydream Sleep Salon (Suriwong)",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/iC6A9xjRMkKM4Uu19",
+      "apple": "https://maps.apple.com/place?coordinate=18.7812342,98.995974&name=Daydream%20Sleep%20Salon%20%28Suriwong%29&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Everyday Nails",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/iTiTjfg8D8DTUaw58",
+      "apple": "https://maps.apple.com/place?coordinate=18.7755856,98.9992254&name=Everyday%20Nails&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Ferment Space",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$ · out towards Hang Dong",
+      "google": "https://maps.app.goo.gl/hxq5ZStqdvvKD4cd8",
+      "apple": "https://maps.apple.com/place?coordinate=18.705758,98.9024774&name=Ferment%20Space&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Green Bamboo Massage",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Offers eco-friendly treatments in a cozy, traditional Thai house. Known for its skilled therapists, it’s a great spot for relaxing massages near the heart of Chiang Mai.",
+      "google": "https://maps.app.goo.gl/fWeidGHtRTosiNdB6",
+      "apple": "https://maps.apple/p/UBU1rY7yNtDW0h",
+      "website": ""
+    },
+    {
+      "name": "Lila Thai Massage Ratchapakhinai",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/UFmY5LrYTC2ucFeq7",
+      "apple": "https://maps.apple.com/place?coordinate=18.78289,98.990248&name=Lila%20Thai%20Massage%20Ratchapakhinai&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Sense Garden Massage & Spa",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/6FpaiKxZB8t9wj9r6",
+      "apple": "https://maps.apple.com/place?coordinate=18.7927941,98.9791718&name=Sense%20Garden%20Massage%20%26%20Spa&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Sense Massage & Spa Nimman",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/Np76QUwQTKfF9dUXA",
+      "apple": "https://maps.apple.com/place?coordinate=18.798212,98.9710694&name=Sense%20Massage%20%26%20Spa%20Nimman&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Sense Onsen Suandok Wellness & Spa",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/4WRxeh4EpnoM4zFS6",
+      "apple": "https://maps.apple.com/place?coordinate=18.7863488,98.9696587&name=Sense%20Onsen%20Suandok%20Wellness%20%26%20Spa&map=explore",
+      "website": ""
+    },
+    {
+      "name": "The Home Massage and Spa",
+      "category": "Massage/Spa",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Luxuary spa and massage in an upscale facility. Offers a free shuttle service when requested 2h in advance.",
+      "google": "https://maps.app.goo.gl/233dgLhkZ8s6n4ra8",
+      "apple": "https://maps.apple/p/vr7UC_ucVqpu.-",
+      "website": ""
+    },
+    {
+      "name": "Chiang Mai City Arts & Cultural Center",
+      "category": "Museum/Gallery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Museum showcasing the history, culture, and traditions of Chiang Mai through interactive exhibits, multimedia displays, and historical artifacts in a beautifully restored building.",
+      "google": "https://maps.app.goo.gl/2upmHTdu18Xz96F97",
+      "apple": "https://maps.apple/p/e70ZeYvjtujW~h",
+      "website": ""
+    },
+    {
+      "name": "Chiang Mai House of Photography",
+      "category": "Museum/Gallery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Small but very nice photo exhibition. Free Entrance",
+      "google": "https://maps.app.goo.gl/WstqhhEEf4hgvZ5f7",
+      "apple": "https://maps.apple/p/dHPqHBjFrjAzJE",
+      "website": ""
+    },
+    {
+      "name": "Chiang Mai University Art Center",
+      "category": "Museum/Gallery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Modern Art Exhibtion Centre, Free Entrance",
+      "google": "https://maps.app.goo.gl/Qp35PXTQg5eo2Tcr8",
+      "apple": "https://maps.apple/p/sb4_J69rcB~u~5",
+      "website": ""
+    },
+    {
+      "name": "Dream Space Gallery",
+      "category": "Museum/Gallery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "Art center focused on street art with huge spaces for the artists and smaller gallery areas and a coffee shop. Free entry. Pass by and get lost in the place.",
+      "google": "https://maps.app.goo.gl/AiBTpoW8mvZhTLTy5",
+      "apple": "https://maps.apple/p/8mq.GJQhQmPsnd",
+      "website": ""
+    },
+    {
+      "name": "La Luna Gallery",
+      "category": "Museum/Gallery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Contemporary art space in Chiang Mai showcasing works by local and international artists, featuring paintings, sculptures, and mixed media in a serene setting.",
+      "google": "https://maps.app.goo.gl/h76GnGq4jFCK9BNo6",
+      "apple": "https://maps.apple/p/t98nem52JfS6je",
+      "website": ""
+    },
+    {
+      "name": "Lanna Folklife Museum",
+      "category": "Museum/Gallery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Cultural museum in Chiang Mai dedicated to preserving and showcasing Lanna traditions, arts, and daily life through detailed exhibits, artifacts, and traditional crafts, set in a beautifully restored colonial-style building.",
+      "google": "https://maps.app.goo.gl/tPGcgF24fmxbpB4d7",
+      "apple": "https://maps.apple/p/nRSTXGB4n-KEEf",
+      "website": ""
+    },
+    {
+      "name": "MAIIAM Contemporary Art Museum",
+      "category": "Museum/Gallery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "A modern art museum in Chiang Mai showcasing cutting-edge contemporary art from Thailand and beyond, featuring rotating exhibitions, installations, and a sleek, architecturally striking space.",
+      "google": "https://maps.app.goo.gl/MrMTGuV5iQJpyD3AA",
+      "apple": "https://maps.apple/p/.pQJp.TvDFvQbb",
+      "website": ""
+    },
+    {
+      "name": "Old Chiang Mai Cultural Center",
+      "category": "Museum/Gallery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Cultural center dedicated to preserving and showcasing traditional Lanna culture through performances, events, and cultural experiences in Chiang Mai.",
+      "google": "https://maps.app.goo.gl/yHf1358Jr4g4UE5d6",
+      "apple": "https://maps.apple/p/4y9LpXdaxHIPft",
+      "website": ""
+    },
+    {
+      "name": "The Treasury Museum Chiang Mai",
+      "category": "Museum/Gallery",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "Sounds boring, but actually interesting, newly set up. Free Entrance and very much worth it.",
+      "google": "https://maps.app.goo.gl/TLVYqgXp6w8eZkHFA",
+      "apple": "https://maps.apple/p/S4H2PB0WG8Bhyp",
+      "website": ""
+    },
+    {
+      "name": "Buak Had Public Park",
+      "category": "Nature & Viewpoint",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "A relatively small, but newly renovated Park in Old Town. The park has kids playground.",
+      "google": "https://maps.app.goo.gl/Z552ZzFgkR6nkern7",
+      "apple": "https://maps.apple.com/place?address=Bamrung%20Buri%20Rd.,%20Phra%20Sing,%20Mueang%20Chiang%20Mai,%20Chiang%20Mai%2050200,%20Thailand&coordinate=18.782091,98.979317&name=Buak%20Hat%20Public%20Park&place-id=ICBADE9F95F261561&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Doi Inthanon National Park",
+      "category": "Nature & Viewpoint",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Home to Thailand's highest peak, this park features waterfalls, nature trails, and diverse flora and fauna, ideal for nature lovers.",
+      "google": "https://maps.app.goo.gl/i6LJEgvmBPUtfcNy9",
+      "apple": "https://maps.apple/p/Y1I7qhQfWkdCNP",
+      "website": ""
+    },
+    {
+      "name": "Huay Tueng Thao Reservoir",
+      "category": "Nature & Viewpoint",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "out towards Mae Rim",
+      "google": "https://maps.app.goo.gl/ztXcPKbfnbHUuyea6",
+      "apple": "https://maps.apple.com/place?coordinate=18.8665946,98.9448834&name=Huay%20Tueng%20Thao%20Reservoir&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Wat Pha Lat trail head (Monk's Trail)",
+      "category": "Nature & Viewpoint",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "a very easy and enjoyable hike that ends at one of the most beautiful temples in Chiang Mai",
+      "google": "https://maps.app.goo.gl/B24VTnK7PR5ed7oR8",
+      "apple": "https://maps.apple.com/place?coordinate=18.79632,98.94347&name=Wat%20Pha%20Lat%20trail%20head%20%28Monk%27s%20Trail%29&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Aba Kitchen",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "thai",
+        "burmese",
+        "fusion"
+      ],
+      "highlight": false,
+      "comment": "Nearest restaurant from our place: Serves a fusion of Thai and Burmese cuisines, featuring dishes like beef Khao Soi and lamb shank biryani. The restaurant offers halal food in a cozy, welcoming atmosphere.",
+      "google": "https://maps.app.goo.gl/Asb1MdckN9zA7dY99",
+      "apple": "https://maps.apple/p/C2Rsk5Y37n_~GD",
+      "website": ""
+    },
+    {
+      "name": "Adirak Pizza Nim City",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "pizza"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/uaJ9M2LFHP17Lyze9",
+      "apple": "https://maps.apple/p/xNdpkZbZnp~4Dy",
+      "website": "https://order.foodstory.co/restaurant/336c5d60-13f5-4475-bac8-3c4114aa0c6f/d03722cf-97e3-4c67-8d36-2812c382ea99"
+    },
+    {
+      "name": "B Samcook Home16",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "fusion",
+        "reservations"
+      ],
+      "highlight": true,
+      "comment": "Asian Fusion Restaurant run by a creative Chef and a fixed menu for a fair price. Reservation mandatory.",
+      "google": "https://maps.app.goo.gl/WGYxAqk3JgmUfJRn8",
+      "apple": "https://maps.apple/p/C_6s7cPeKphP3j",
+      "website": ""
+    },
+    {
+      "name": "Bacco - Gastro Wine Bar",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "italian",
+        "wine"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/wuzSMpGNKUSRvvbG6",
+      "apple": "https://maps.apple/p/5yT8.npKvPL5YH",
+      "website": "http://baccochiangmai.netlify.app/"
+    },
+    {
+      "name": "Beast Burger and Pizza",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "pizza",
+        "burgers"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/RfbE7RyLRzWn35cc8",
+      "apple": "https://maps.apple.com/place?coordinate=18.7950345,98.967685&name=Beast%20Burger%20and%20Pizza&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Bella Madre Pizza",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "italian",
+        "pizza"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/oYWmq1k9ndcJX81d8",
+      "apple": "https://maps.apple.com/place?coordinate=18.7962649,99.0079955&name=Bella%20Madre%20Pizza&map=explore",
+      "website": ""
+    },
+    {
+      "name": "CRU 2nd Floor Wine Bar",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "fusion",
+        "wine"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/8jXV8Ua1MX7GuEQh8",
+      "apple": "https://maps.apple/p/FmPLSPEppjGcr-",
+      "website": "http://www.facebook.com/cruwinebarcm"
+    },
+    {
+      "name": "Chef House CNX",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "western",
+        "fusion"
+      ],
+      "highlight": false,
+      "comment": "$$$ · out in San Sai, about 12km",
+      "google": "https://maps.app.goo.gl/iUuiTZVDDUY7TNMR8",
+      "apple": "https://maps.apple.com/place?coordinate=18.7780361,99.1189877&name=Chef%20House%20CNX&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Cherry Burmese",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "burmese"
+      ],
+      "highlight": false,
+      "comment": "Simple restaurant with excellent burmese kitchen. Staff speaks english.",
+      "google": "https://maps.app.goo.gl/JCZJ8ETeox545dre6",
+      "apple": "https://maps.apple/p/u7-rrnVAI5umuP",
+      "website": ""
+    },
+    {
+      "name": "Chickpea",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "thai"
+      ],
+      "highlight": true,
+      "comment": "Very recommendable chicken rice",
+      "google": "https://maps.app.goo.gl/cs5t7CohntrPULMr8",
+      "apple": "https://maps.apple/p/JRCQ8iPxCsf4hL",
+      "website": ""
+    },
+    {
+      "name": "Cluck - Southern Fried Chicken",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "american",
+        "halal"
+      ],
+      "highlight": false,
+      "comment": "$",
+      "google": "https://maps.app.goo.gl/a9YVTb6ejNYV2syw7",
+      "apple": "https://maps.apple.com/place?coordinate=18.7849858,99.0051158&name=Cluck%20-%20Southern%20Fried%20Chicken&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Dash Teak House",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "thai",
+        "western"
+      ],
+      "highlight": false,
+      "comment": "Stylish teak house in Chiang Mai serving creative Thai and Western dishes in a relaxed garden setting.",
+      "google": "https://maps.app.goo.gl/eQFhjQBN5W3SJHi38",
+      "apple": "https://maps.apple/p/vCAIC224dJsj6x",
+      "website": ""
+    },
+    {
+      "name": "Deck 1",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "thai"
+      ],
+      "highlight": false,
+      "comment": "Refined place with thai food and views of the Ping river.",
+      "google": "https://maps.app.goo.gl/soUitFdaodVFrw9F7",
+      "apple": "https://maps.apple/p/U5JjcAJr2YKJ-W",
+      "website": ""
+    },
+    {
+      "name": "Dinky's BBQ",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "bbq"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/oD8eH3BJrLe1y5cXA",
+      "apple": "https://maps.apple.com/place?coordinate=18.778325,98.9500546&name=Dinky%27s%20BBQ&map=explore",
+      "website": ""
+    },
+    {
+      "name": "En Chiangmai",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "japanese"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/mhHnRVV3PpGN6JeL7",
+      "apple": "https://maps.apple/p/EiJkxUFkfIH~fb",
+      "website": "https://www.facebook.com/en139.1/"
+    },
+    {
+      "name": "Friend's Table",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "western",
+        "fusion",
+        "reservations"
+      ],
+      "highlight": false,
+      "comment": "$$$ · out towards Hang Dong",
+      "google": "https://maps.app.goo.gl/ytfDR6tBWbP8xaqL9",
+      "apple": "https://maps.apple.com/place?coordinate=18.7034091,98.9091854&name=Friend%27s%20Table&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Garden Grove",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "italian",
+        "pizza"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/cURpKfC9DWNYoFRX7",
+      "apple": "https://maps.apple/p/BvqgjKu~DQQbMB",
+      "website": "http://www.gardengrovegroup.com/"
+    },
+    {
+      "name": "Greensmoked",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "western",
+        "fusion"
+      ],
+      "highlight": false,
+      "comment": "$$$",
+      "google": "https://maps.app.goo.gl/9Y6t2WKAnjV9eRK69",
+      "apple": "https://maps.apple/p/aXCVrVLhDXHq5y",
+      "website": "https://www.facebook.com/GREENSMOKED.RB/?_rdr"
+    },
+    {
+      "name": "Han Teung Chiangmai",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "northern-thai",
+        "michelin-guide"
+      ],
+      "highlight": false,
+      "comment": "Between street food and restaurant. Traditional northern Thai kitchen. Made it into Michelin Guide.",
+      "google": "https://maps.app.goo.gl/tqvb6qAfC1zQaM178",
+      "apple": "https://maps.apple/p/UbP8eosnrzfjyc",
+      "website": ""
+    },
+    {
+      "name": "Han The Chinese Cuisine",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "chinese",
+        "dim-sum"
+      ],
+      "highlight": false,
+      "comment": "$$ · THB 600 all-you-can-eat dumpling lunch",
+      "google": "https://maps.app.goo.gl/vYvaDTyqX7vfZBYx6",
+      "apple": "https://maps.apple.com/place?coordinate=18.7843821,98.9998747&name=Han%20The%20Chinese%20Cuisine&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Healthy Junk",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "healthy"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/j8KaF5ecC2kZH19z7",
+      "apple": "https://maps.apple/p/f6fkbcLRZcnnD3",
+      "website": "https://linktr.ee/healthy_junk"
+    },
+    {
+      "name": "Huen Muan Jai",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "northern-thai"
+      ],
+      "highlight": true,
+      "comment": "Excellent restaurant renowned for its authentic Northern Thai cuisine. It offers traditional dishes like khao soi, sai ua, and nam prik with a focus on fresh, locally sourced ingredients, all served in a cozy and rustic setting.",
+      "google": "https://maps.app.goo.gl/o81MdxeJzGrZDY9Y7",
+      "apple": "https://maps.apple/p/arGx0BZgK2YpIE",
+      "website": ""
+    },
+    {
+      "name": "Ibaki House of Japanese Food and Sushi",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "japanese",
+        "sushi"
+      ],
+      "highlight": true,
+      "comment": "Serves authentic Japanese cuisine, including fresh sushi, sashimi, and traditional dishes, in a cozy and inviting atmosphere.",
+      "google": "https://maps.app.goo.gl/bXu3gUVKH7ouywKt5",
+      "apple": "https://maps.apple/p/sfD1TBaYc6jq_G",
+      "website": ""
+    },
+    {
+      "name": "Khao Soi Khun Yai",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "northern-thai",
+        "noodles"
+      ],
+      "highlight": false,
+      "comment": "$",
+      "google": "https://maps.app.goo.gl/AomGgvHBVnru1LG37",
+      "apple": "https://maps.apple/p/powDViZ8NZAI6b",
+      "website": ""
+    },
+    {
+      "name": "Khao-Sō-i",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "thai"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/cmJ1Rx2DDesFuiq59",
+      "apple": "https://maps.apple/p/razrwI2GXRh7IV",
+      "website": "https://www.facebook.com/khao.so.i.group/"
+    },
+    {
+      "name": "Ksushi CNX",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "japanese",
+        "sushi"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/vdvfYKWcRHydxMQt7",
+      "apple": "https://maps.apple/p/XdPohc8jnHeKh0",
+      "website": "https://ksushicnx.com/"
+    },
+    {
+      "name": "Oxygen Dining Room",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "western",
+        "fusion"
+      ],
+      "highlight": false,
+      "comment": "$$$",
+      "google": "https://maps.app.goo.gl/7y1jsdWJN3giLLY69",
+      "apple": "https://maps.apple.com/place?coordinate=18.801762,99.0045846&name=Oxygen%20Dining%20Room&map=explore",
+      "website": ""
+    },
+    {
+      "name": "River View Bar",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "thai",
+        "live-music"
+      ],
+      "highlight": true,
+      "comment": "Relaxed thai-style restaurant next to the river Ping frequented by locals and tourists. Often with life musi, coffering refreshing drinks, light bites, and delicious hot pot options, all with stunning views of the Ping River—perfect for a relaxing evening.",
+      "google": "https://maps.app.goo.gl/LsyPJjre6bHYExwZ6",
+      "apple": "https://maps.apple/p/2b5EUKHZqJioWR",
+      "website": ""
+    },
+    {
+      "name": "Salsa Kitchen",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "mexican"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/LQtFrj4YFb6heURY7",
+      "apple": "https://maps.apple.com/place?coordinate=18.7981431,98.9740941&name=Salsa%20Kitchen&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Smash Daddy's Burgers CNX",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "burgers"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/4qexdUqfgAiN3DwL7",
+      "apple": "https://maps.apple.com/place?coordinate=18.7981238,98.973738&name=Smash%20Daddy%27s%20Burgers%20CNX&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Sushi Umai",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "japanese",
+        "sushi"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/om4KZKzxBUcU7DvJ8",
+      "apple": "https://maps.apple/p/jSK.S-~xdi6QfP",
+      "website": "https://www.facebook.com/p/Sushi-Umai-%E0%B8%AA%E0%B8%B2%E0%B8%82%E0%B8%B2-Nim-city-100063769572010/"
+    },
+    {
+      "name": "Terrace Seafood Restaurant Chiang Mai",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "seafood"
+      ],
+      "highlight": false,
+      "comment": "Quality seafood restaurant with river view.",
+      "google": "https://maps.app.goo.gl/zbrv2bN4sd1fCRn88",
+      "apple": "https://maps.apple/p/U4ZD6wFy5oESjN",
+      "website": ""
+    },
+    {
+      "name": "The Duke's Ping River",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "american"
+      ],
+      "highlight": false,
+      "comment": "$$",
+      "google": "https://maps.app.goo.gl/jpytKyaYgFVuaTpF8",
+      "apple": "https://maps.apple.com/place?coordinate=18.785107,99.005124&name=The%20Duke%27s%20Ping%20River&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Toey Dim Sum",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "chinese",
+        "dim-sum"
+      ],
+      "highlight": false,
+      "comment": "Offering freshly made dim sum, steamed buns, and Chinese street food-style dishes in a casual and authentic setting.",
+      "google": "https://maps.app.goo.gl/gHK8yzBgeKzYKLme8",
+      "apple": "https://maps.apple/p/rVInZihsXqSszY",
+      "website": ""
+    },
+    {
+      "name": "ข้าวต้มปลา ศ.ศรีราชา",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "thai",
+        "seafood"
+      ],
+      "highlight": false,
+      "comment": "Specialized in fish and fish soup",
+      "google": "https://maps.app.goo.gl/7pVczkYfb2fKJVsP9",
+      "apple": "https://maps.apple/p/Z9ji9vtvhGppTo",
+      "website": ""
+    },
+    {
+      "name": "ควันจุ๊งจุ๊ง Rooftop Bar & Bistro(ช้างคลาน)",
+      "category": "Restaurant",
+      "city": "chiang-mai",
+      "tags": [
+        "hotpot",
+        "rooftop"
+      ],
+      "highlight": false,
+      "comment": "Nearby rooftop hotpot restaurant",
+      "google": "https://maps.app.goo.gl/qYedcdy7Kr4c94kX7",
+      "apple": "https://maps.apple/p/e_.qRkACK4XFxj",
+      "website": ""
+    },
+    {
+      "name": "Ban Tawai Village",
+      "category": "Shop/Bazaar",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Shopping area for Home Decor and Antique + replicas. Known as the handicraft village of Chiang Mai, it offers a wide range of traditional crafts, furniture, and souvenirs.",
+      "google": "https://maps.app.goo.gl/3EKyoFVRDh54fBwp9",
+      "apple": "https://maps.apple/p/aAZ.BZ-fv6IXNb",
+      "website": ""
+    },
+    {
+      "name": "Central Airport",
+      "category": "Shop/Bazaar",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "One of the biggest malls in the City.",
+      "google": "https://maps.app.goo.gl/xSAawNuXqRNkDUUv6",
+      "apple": "https://maps.apple.com/place?address=9,%209/1%20Moo%203%0ASuthep,%20Mueang%20Chiang%20Mai%0AChiang%20Mai%2050200%0AThailand&coordinate=18.769097,98.974760&name=Central%20Chiangmai%20Airport&place-id=ID5B745FB5271E161&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Chamcha Market",
+      "category": "Shop/Bazaar",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Nice low-key weekend market",
+      "google": "https://maps.app.goo.gl/gX2qYGJWPKWjnVsx9",
+      "apple": "https://maps.apple/p/AHHnPt6TtGbHFj",
+      "website": ""
+    },
+    {
+      "name": "Chiang Mai Night Bazar & Kalare Night Bazaar",
+      "category": "Shop/Bazaar",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Near to Kalare Night Bazar so you can visit both: bustling markets offering a wide range of goods, including clothing, handicrafts, souvenirs, and local artwork. The Night Bazaar is famous for its vibrant atmosphere, street food, and live performances, while Kalare Night Bazaar provides a slightly more relaxed vibe with food courts, cultural shows, and unique artisan stalls. Both are must-visit spots for shopping and experiencing the lively nightlife of Chiang Mai.",
+      "google": "https://maps.app.goo.gl/fbUZWU9qraT5766f6",
+      "apple": "https://maps.apple.com/place?place-id=I9C59D415DB949238&_provider=9902",
+      "website": ""
+    },
+    {
+      "name": "Kalm Village Chiangmai",
+      "category": "Shop/Bazaar",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "Unique cultural hub that celebrates traditional Thai arts, crafts, and textiles. It features an art gallery, workshops, and a boutique showcasing beautifully handcrafted items that reflect Thailand's rich heritage. The space also includes a tranquil café where visitors can enjoy specialty coffee, tea, and light snacks while surrounded by inspiring artistry and design. It's a perfect destination for those seeking to connect with Thai culture in a serene and creative environment.",
+      "google": "https://maps.app.goo.gl/C2P9WMk5nqLWEaEKA",
+      "apple": "https://maps.apple/p/AFeLxvkkPD2RPS",
+      "website": ""
+    },
+    {
+      "name": "Khlong Mae Kha",
+      "category": "Shop/Bazaar",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "Historic canal in Chiang Mai that has undergone revitalization to restore its natural beauty and cultural significance. Once neglected, it has been transformed into a picturesque urban space with clean waterways, charming walkways, and quaint bridges. The area is now a peaceful retreat within the bustling city, offering locals and visitors a serene place to stroll, relax, and enjoy the surrounding greenery. Efforts to preserve and maintain Khlong Mae Kha highlight Chiang Mai’s commitment to sustainable urban development and environmental conservation.",
+      "google": "https://maps.app.goo.gl/tykATnrwWsuJwU8w7",
+      "apple": "https://maps.apple/p/ES~PBM~7b~nXgH",
+      "website": ""
+    },
+    {
+      "name": "Nong Ho Flea Market",
+      "category": "Shop/Bazaar",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Saturday/Sunday morning local outdoor flea market",
+      "google": "https://maps.app.goo.gl/SMjvR9ivUq6RKSMS8",
+      "apple": "https://maps.apple/p/LPNe48f~ri-5je",
+      "website": ""
+    },
+    {
+      "name": "Sunday Night Market",
+      "category": "Shop/Bazaar",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "Only on sunday evenings, Nearest entry point is at Chiang Mai Gate",
+      "google": "https://maps.app.goo.gl/D8Ptf12jMBTbutiz7",
+      "apple": "https://maps.apple/p/Hi61hyQGQrn-It",
+      "website": ""
+    },
+    {
+      "name": "Wua Lai Walking Street",
+      "category": "Shop/Bazaar",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "Only on saturday evenings",
+      "google": "https://maps.app.goo.gl/ZDjSQ2NtH7TCDLgx5",
+      "apple": "https://maps.apple/p/j~i5WKXjZW5JwF",
+      "website": ""
+    },
+    {
+      "name": "Jungle Flight Zipline (booking office)",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$$ · this is the town office, the course itself is out of the city",
+      "google": "https://maps.app.goo.gl/St8pqsTyogDMTRHq8",
+      "apple": "https://maps.apple.com/place?coordinate=18.7843634,98.9827745&name=Jungle%20Flight%20Zipline%20%28booking%20office%29&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Karnkanok 19 Pool",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "The \"moobaan\" next to the property allows the usage of their pool for non-residents paying a 50 THB fee (to be paid at the jurisdiction office window at the front of the building). The pool is not prepared for recreational usage but fair for a quick dip, some laps or kids plunge fun.",
+      "google": "https://maps.app.goo.gl/3Mqgi93eB61UnPsq9",
+      "apple": "https://maps.apple.com/place?coordinate=18.768438,98.991383&name=Marked%20Location&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Marriott Hotel Pool",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Marriot Hotel offers non-hotel guest a pool day pass for 500 THB, 250 THB per Child.",
+      "google": "https://maps.app.goo.gl/vfj5DTioHSdSuhJF6",
+      "apple": "https://maps.apple.com/place?address=108%20Chang%20Khlan%20Rd.%0AChang%20Khlan,%20Mueang%20Chiang%20Mai%0AChiang%20Mai%2050100%0AThailand&coordinate=18.784313,98.999712&name=Marriott&place-id=IE06432A5171FFE17&map=explore",
+      "website": ""
+    },
+    {
+      "name": "O2 GYM KPD(กำแพงดิน)",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Solid neighborhood spot. They’ve got an extensive equipment selection, and the cardio area is air-conditioned.",
+      "google": "https://maps.app.goo.gl/4aTWdxwdH6mx8XZFA",
+      "apple": "https://maps.apple.com/place?address=140/9%20Kamphaeng%20Din%20Road,%20Hai%20Ya,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.779753,98.997538&name=O2%20Gym%20KPD&place-id=I919F767A01DFC4F0&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Pump Fitness 2.0",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Fully air-conditioned and modern gym",
+      "google": "https://maps.app.goo.gl/LVtsfaY9Uv9yU2LZ8",
+      "apple": "https://maps.apple.com/place?address=89/1-3%20Bamrung%20Buri%20Rd.%0APhra%20Sing,%20Mueang%20Chiang%20Mai%0AChiang%20Mai%2050200%0AThailand&coordinate=18.781592,98.985881&name=Pump%20Fitness%202.0&place-id=I2819AF8F15ED433D&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Rambong Muay Thai Gym - Chiang Mai",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Local, authentic, traditional Muay Thai spot.",
+      "google": "https://maps.app.goo.gl/vTBHfSTAf5NmFfV19",
+      "apple": "https://maps.apple.com/place?address=79/43%20Soi%20Si%20Ping%20Mueang%204,%20Chang%20Khlan,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.770443,98.985109&name=Rambong%20Muay%20Thai%20Gym%20-%20Chiang%20Mai&place-id=I3D382F941F462137&map=explore",
+      "website": ""
+    },
+    {
+      "name": "RatiLanna Hotel Pool",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "The resort style hotel located next to the ping river offers a Pool Day pass for 400 THB per adult, 50% off for children under 12 years.",
+      "google": "https://maps.app.goo.gl/dMViqT2CaRhxq7TE7",
+      "apple": "https://maps.apple.com/place?address=5/6%20Chang%20Khlan%20Road,%20Pa%20Daet,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.762324,99.001783&name=%E0%B8%A3%E0%B8%95%E0%B8%B4%E0%B8%A5%E0%B8%B2%E0%B8%99%E0%B8%99%E0%B8%B2%20%E0%B8%A3%E0%B8%B4%E0%B9%80%E0%B8%A7%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B9%84%E0%B8%8B%E0%B8%94%E0%B9%8C%20%E0%B8%AA%E0%B8%9B%E0%B8%B2%20%E0%B8%A3%E0%B8%B5%E0%B8%AA%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%97&place-id=IA9C5A7FCB78029A7&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Sereephap Muay Thai",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Renown \"old-school Muay Thai gym\", with an authentic training experience. Owned and operated by the 'Big Mama', one of Thailand’s most famous female fighters.",
+      "google": "https://maps.app.goo.gl/H9kEFsxjQMxvn3pS8",
+      "apple": "https://maps.apple.com/place?address=66%20Soi%20Suriyawong%205,%20Hai%20Ya,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.774909,98.991523&name=Sereephap%20Muay%20Thai%20Gym&place-id=IA78A23F60B549803&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Shangri-La Health Club",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Located on the Ground Floor, Day pass (350 THB) (incl. Pool Access 600 THB). Month access (3500 THB)",
+      "google": "https://maps.app.goo.gl/EonAu9mmRSNANvJz5",
+      "apple": "https://maps.apple.com/place?address=89/8%20Chang%20Khlan%20Road,%20Chang%20Khlan,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.778348,99.000307&name=Shangri-La%20Hotel%20Chiang%20Mai&place-id=IF7E297CC3C06A309&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Shangri-La Hotel Pool",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Located on the Ground Floor, Access through Health Club. Day pass 450 THB per adult, 150 THB per Child.",
+      "google": "https://maps.app.goo.gl/EonAu9mmRSNANvJz5",
+      "apple": "https://maps.apple.com/place?address=89/8%20Chang%20Khlan%20Road,%20Chang%20Khlan,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.778348,99.000307&name=Shangri-La%20Hotel%20Chiang%20Mai&place-id=IF7E297CC3C06A309&map=explore",
+      "website": ""
+    },
+    {
+      "name": "The Arrow Rest",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "$",
+      "google": "https://maps.app.goo.gl/x7RksPK1hQnK5ePL6",
+      "apple": "https://maps.apple.com/place?coordinate=18.8077714,99.0198017&name=The%20Arrow%20Rest&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Xlion Muaythai Gym",
+      "category": "Sports & Pool",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "New Muay Thai spot in the area with good training facilities",
+      "google": "https://maps.app.goo.gl/UVoN3aRDmCfJswp88",
+      "apple": "https://maps.apple.com/place?address=59/20%20Ra%20Kaeng%20Road,%20Hai%20Ya,%20Mueang%20Chiang%20Mai%20District,%20Chiang%20Mai%2050100,%20Thailand&coordinate=18.778168,98.995354&name=Xlion%20Muaythai%20Gym&place-id=I9D4EFFA6BA653DC4&map=explore",
+      "website": ""
+    },
+    {
+      "name": "Khao Soi Lung Prakit Kad Kom",
+      "category": "Street Food",
+      "city": "chiang-mai",
+      "tags": [
+        "northern-thai",
+        "noodles",
+        "michelin-guide"
+      ],
+      "highlight": false,
+      "comment": "National known Khao Soi place after being featured in Michelin Guide and Master Chef Thailand. Be ready to wait for a table.",
+      "google": "https://maps.app.goo.gl/FEd6LuphSPLZ6H9M9",
+      "apple": "https://maps.apple/p/XkIHt~kncPWy15",
+      "website": ""
+    },
+    {
+      "name": "Roast Chicken Wichienbury Chang Klan",
+      "category": "Street Food",
+      "city": "chiang-mai",
+      "tags": [
+        "isaan"
+      ],
+      "highlight": false,
+      "comment": "Eat like a local if you are brave enough! Great Isaan style chicken in a very rustic environment. Search for this name in G maps to get exact location and more pictures: ร้านไก่ย่างวิเชียรบุรี-ช้างคลาน เชียงใหม่",
+      "google": "https://maps.app.goo.gl/CWvQM5bgEFLk9RQ16",
+      "apple": "https://maps.apple/p/k-hqHFp~UbNbmx",
+      "website": ""
+    },
+    {
+      "name": "Uan Ocha Chicken Rice Restaurant",
+      "category": "Street Food",
+      "city": "chiang-mai",
+      "tags": [
+        "thai"
+      ],
+      "highlight": false,
+      "comment": "Chicken Rice place",
+      "google": "https://maps.app.goo.gl/NkAeF4xbqU5soRjG9",
+      "apple": "https://maps.apple/p/1kociemnUWjWad",
+      "website": ""
+    },
+    {
+      "name": "ก๋วยเตี๋ยวโบราณ คุณยายปากแดง",
+      "category": "Street Food",
+      "city": "chiang-mai",
+      "tags": [
+        "thai",
+        "noodles"
+      ],
+      "highlight": false,
+      "comment": "Small make-to-order neighborhood place that serves delicious soups, pad kra pao and other dishes. A perfect place for a heathy breakfast or quick lunch around the corner.",
+      "google": "https://maps.app.goo.gl/rNRugAEmqctdVzj49",
+      "apple": "https://maps.apple/p/9vUrkgaBZvfJvf",
+      "website": ""
+    },
+    {
+      "name": "อิ่มเส้น ริมโค้ง",
+      "category": "Street Food",
+      "city": "chiang-mai",
+      "tags": [
+        "thai",
+        "noodles"
+      ],
+      "highlight": false,
+      "comment": "Noodle soups including Khao Soi and \"special\" chicken rice in a rustic place highly frequented by staff of the neighboring hospital",
+      "google": "https://maps.app.goo.gl/ZmqCA1CDjdPb6bD39",
+      "apple": "https://maps.apple/p/v2.XC0aUb1hnbF",
+      "website": ""
+    },
+    {
+      "name": "Wat Chedi Luang",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Historic Buddhist temple in Chiang Mai, renowned for its ancient, partially restored pagoda and spiritual significance, offering a glimpse into the city's rich cultural heritage.",
+      "google": "https://maps.app.goo.gl/gwGCXX2oT9ayhLpk8",
+      "apple": "https://maps.apple/p/EiBy62i6g.-G7G",
+      "website": ""
+    },
+    {
+      "name": "Wat Chiang Man",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Chiang Mai’s oldest temple, notable for its historic chedi, ancient Buddha images, and beautifully preserved Lanna design.",
+      "google": "https://maps.app.goo.gl/jn7sAPRrkbmxX9VP7",
+      "apple": "https://maps.apple/p/QxnDFG_x34cpa7",
+      "website": ""
+    },
+    {
+      "name": "Wat Hua Fai",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Close by temple. Works as well as a reference landmark to get close to the house when catching a Taxi or TukTuk on the road",
+      "google": "https://maps.app.goo.gl/fbF14Mdc7LhNJLNbA",
+      "apple": "https://maps.apple/p/mcRVv0yEQ~p1aP",
+      "website": ""
+    },
+    {
+      "name": "Wat Ket Karam",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "A riverside temple with unique architecture and a small museum showcasing local artifacts and cultural history.",
+      "google": "https://maps.app.goo.gl/LL75pK4Dq6KjG81u5",
+      "apple": "https://maps.apple/p/Z.~ifCFgiAWMGX",
+      "website": ""
+    },
+    {
+      "name": "Wat Lok Moli",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "A serene temple known for its ancient brick pagoda and peaceful atmosphere, located just outside the old city walls.",
+      "google": "https://maps.app.goo.gl/m4NoB94oq5wLnyxh8",
+      "apple": "https://maps.apple/p/D5uqBnxCg0LMEo",
+      "website": ""
+    },
+    {
+      "name": "Wat Phra Lat",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "Immerse yourself into this magical temple compound in the forests of Doi Suthep mountain.",
+      "google": "https://maps.app.goo.gl/CknNaS2ESfdzmwuR6",
+      "apple": "https://maps.apple/p/RotYTwptvVyuGp",
+      "website": ""
+    },
+    {
+      "name": "Wat Phra Singh Woramahawihan",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "One of Chiang Mai’s most revered temples, housing the sacred Phra Singh Buddha image and showcasing exquisite Lanna architecture.",
+      "google": "https://maps.app.goo.gl/z2wbdJeHBU3eKE3V9",
+      "apple": "https://maps.apple/p/TxCfjIs6xmXMWY",
+      "website": ""
+    },
+    {
+      "name": "Wat Phra That Doi Suthep",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "A revered temple situated atop Doi Suthep mountain, offering panoramic views of Chiang Mai and intricate temple architecture.",
+      "google": "https://maps.app.goo.gl/EtSNUcnd7jReuJSy8",
+      "apple": "https://maps.apple/p/i96ZKvKkaPz7n9",
+      "website": ""
+    },
+    {
+      "name": "Wat Sri Suphan",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "Also known as the Silver Temple, famous for its intricate silver decorations and craftsmanship, offering a unique and dazzling visual experience.",
+      "google": "https://maps.app.goo.gl/JDjgfaQKuP5p4nk16",
+      "apple": "https://maps.apple/p/H~RuFXesmQZ-9W",
+      "website": ""
+    },
+    {
+      "name": "Wat Umong Suan Phutthatham",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "A forest monastery featuring underground meditation tunnels and tranquil surroundings, ideal for quiet reflection.",
+      "google": "https://maps.app.goo.gl/4kGm3ck59mRaJxYT6",
+      "apple": "https://maps.apple/p/WUBEwUVJX7n1e7",
+      "website": ""
+    },
+    {
+      "name": "Wiang Kum Kam",
+      "category": "Temple",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": true,
+      "comment": "An ancient city near Chiang Mai, featuring historic temple ruins and archaeological sites. Once a thriving settlement, it now offers visitors a glimpse into its rich history through guided tours, horse-drawn carriages, and serene landscapes, making it a fascinating destination for history enthusiasts.",
+      "google": "https://maps.app.goo.gl/8s8gT4fDrZR6yVk57",
+      "apple": "https://maps.apple/p/kv8FG.0tJsmefP",
+      "website": ""
+    },
+    {
+      "name": "Thai Akha Kitchen",
+      "category": "Workshop",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "Excellent thai cooking school that offers different cooking classes and fresh market tours",
+      "google": "https://maps.app.goo.gl/JqwS7A6Kj2tYDLPg6",
+      "apple": "https://maps.apple/p/FqURZGaIC2m8~3",
+      "website": ""
+    },
+    {
+      "name": "Umbrella Making Centre in Bo Sang",
+      "category": "Workshop",
+      "city": "chiang-mai",
+      "tags": [],
+      "highlight": false,
+      "comment": "This center demonstrates the craftsmanship of Chiang Mai's famous hand-painted umbrellas.",
+      "google": "https://maps.app.goo.gl/TxUMqdFWr9AKZDnb8",
+      "apple": "https://maps.apple/p/FhJhy_rX1M2JkL",
+      "website": ""
+    }
+  ]
+}

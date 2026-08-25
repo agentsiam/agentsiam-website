@@ -1,31 +1,24 @@
 /**
- * Builds src/lib/guide.generated.ts from the Lotus House Sites & Tips sheet.
+ * Enriches src/data/places.json into src/lib/guide.generated.ts.
  *
- * WHY THIS IS NOT PART OF `prebuild`
+ * places.json is the library. This script adds only what a human should never type:
+ * coordinates resolved from each Maps link, the neighbourhood those coordinates fall in,
+ * and walking and driving times routed per property.
  *
- * The photo manifest runs before every build because it only reads the local disk.
- * This one talks to Google Sheets, Google Maps and a routing service, so making it a
- * build step would mean a deploy fails whenever a third party is slow, rate-limits us,
- * or Nils has the sheet open in a state that will not export. Instead its output and
- * its cache are both committed, and this is run by hand when the guide changes:
+ * NOT PART OF `prebuild`
+ *
+ * This talks to Google Maps and a routing service, so as a build step a deploy would fail
+ * whenever a third party is slow or rate-limits us. Its output and its cache are both
+ * committed and it is run by hand:
  *
  *     npm run guide
  *
- * A Vercel build therefore does no network work for the guide at all. It reads a
- * checked-in TypeScript file, which is also why the guide still renders if the sheet
- * is ever deleted.
+ * A deploy therefore does no network work for the guide at all.
  *
- * WHAT THE SHEET IS AND IS NOT
+ * DISTANCE IS NOT STORED ON A PLACE
  *
- * The sheet is the editing surface, and it stays that way: Nils adds a row with a
- * Google Maps link exactly as he does today. He never types a coordinate. This script
- * resolves the link once and remembers it in scripts/guide-cache.json, keyed by link,
- * so a rerun only touches rows that are actually new.
- *
- * The sheet stores distances hardcoded to Lotus House. Those columns are deliberately
- * NOT imported. Distance belongs to the pairing of a place and a property, not to the
- * place, which is the whole reason one guide can serve many properties later. Walking
- * and driving times are routed per property and cached the same way.
+ * It belongs to the pairing of a place and a property, which is what lets one library serve
+ * every property in its city. Walk and drive times are routed per property and cached.
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
@@ -36,9 +29,9 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
 const CACHE_PATH = join(HERE, "guide-cache.json");
 const OUT_PATH = join(ROOT, "src", "lib", "guide.generated.ts");
+const VOCABULARY_PATH = join(ROOT, "src", "lib", "guide-vocabulary.json");
 
-const SHEET_CSV =
-  "https://docs.google.com/spreadsheets/d/1WmFb9ZdmDt_ku4cF49-KoYoaabeTaDwJYImmlI-BXbU/export?format=csv";
+const PLACES_PATH = join(ROOT, "src", "data", "places.json");
 
 /**
  * Routers, one per travel mode, and they must be different servers.
@@ -76,56 +69,77 @@ const MAX_WALK_MINUTES = 90;
 const AREA_CAP_M = 2000;
 
 /**
- * Places entered twice that are genuinely one place.
+ * Everything the guide serves is in or around Chiang Mai. Anything outside this box is a
+ * link pointing at the wrong business, not a place we are 20km off about.
  *
- * Deliberately an explicit list and not an automatic rule. Merging by coordinates would
- * be wrong here: Shangri-La Health Club and Shangri-La Hotel Pool share both a coordinate
- * AND a Google Maps link, because they are two facilities inside one building, and a
- * guest paying for a pool day pass is not buying a gym day pass. Merging by Google place
- * id fails for the same reason. So a human decides, and records why.
- *
- * Wiang Kum Kam: verified as one place, not two. Both rows resolve to Google feature id
- * 0x30da303ad30599ad:0x475d9f34359213a3 and Knowledge Graph id /m/08tft3.
+ * Generous on purpose: Doi Inthanon is 86km out and legitimate, so the box is the province
+ * and its neighbours, not the city.
  */
-const MERGE = [
-  { keep: "Wiang Kum Kam", drop: "Wiang Kum Kam", byCategory: { keep: "Temple", drop: "Museum/Gallery" } },
-];
+const BOUNDS = { minLat: 17.5, maxLat: 20.5, minLng: 97.5, maxLng: 100.5 };
 
 /**
- * Rows whose sheet name is ambiguous to a guest. The sheet is left alone; the
- * disambiguation lives here so it can be reviewed in a diff.
+ * Distance is the loose half of the duplicate check; the name comparison is the sharp half.
+ * 400m rather than something tighter because two pins on one temple complex can be that far
+ * apart: Wat Umong's two entries were 268m from each other.
  */
-const RENAME = [
+const NEAR_DUPLICATE_M = 400;
+
+/**
+ * Rows that share one Google Maps link and are still two different places.
+ *
+ * Sharing a link is normally a copy-paste error and stops the build. These are the
+ * exceptions, and each one is a human decision recorded rather than a rule inferred.
+ */
+const SHARED_LINKS = [
   {
-    match: (r) => r.name.startsWith("Baggage storage, AIRPORTELs") && r.sheetArea === "Airport",
-    to: "Baggage storage, AIRPORTELs (airport terminal)",
-  },
-  {
-    match: (r) => r.name.startsWith("Baggage storage, AIRPORTELs") && r.sheetArea === "Urban",
-    to: "Baggage storage, AIRPORTELs (Central Airport Mall)",
+    link: "https://maps.app.goo.gl/EonAu9mmRSNANvJz5",
+    why: "Two AIRPORTELs branches. One Maps listing covers both; they are named apart in places.json.",
   },
 ];
 
-const HIGHLIGHT = "\u{1F536}"; // 🔶, used in the sheet's Site column to mark a host pick
-const ZERO_WIDTH = /[​-‍﻿]/g;
 
-// --- csv ---------------------------------------------------------------------
+// --- tags --------------------------------------------------------------------
 
-function parseCsv(text) {
-  const rows = [];
-  let row = [], field = "", quoted = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (quoted) {
-      if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else quoted = false; }
-      else field += c;
-    } else if (c === '"') quoted = true;
-    else if (c === ",") { row.push(field); field = ""; }
-    else if (c === "\n") { row.push(field); field = ""; rows.push(row); row = []; }
-    else if (c !== "\r") field += c;
+/**
+ * The library may carry a tag as a *label* ("Dim sum") or a *slug* ("dim-sum"). Matching is
+ * case and space insensitive and accepts either. Anything that still does not match stops
+ * the build: a silently dropped tag is a filter that quietly returns the wrong places.
+ */
+function normaliseKey(s) {
+  return s.toLowerCase().replace(/[\s_-]+/g, "");
+}
+
+/** Levenshtein, only ever run on the unknown tags in a failing build. */
+function editDistance(a, b) {
+  const rows = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 0; j <= b.length; j++) rows[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      rows[i][j] = Math.min(
+        rows[i - 1][j] + 1,
+        rows[i][j - 1] + 1,
+        rows[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
   }
-  if (field || row.length) { row.push(field); rows.push(row); }
-  return rows;
+  return rows[a.length][b.length];
+}
+
+/**
+ * Scored by edit distance as a proportion of the longer string, not an absolute count.
+ * Three edits is a typo in "Japanes Ramen" and a different word entirely in "Tapas", which
+ * an absolute rule matches to "Thai". A confidently wrong suggestion is worse than none.
+ */
+function didYouMean(unknown, vocabulary) {
+  const key = normaliseKey(unknown);
+  const scored = vocabulary
+    .map((tag) => {
+      const other = normaliseKey(tag.en);
+      return { tag, ratio: editDistance(key, other) / Math.max(key.length, other.length) };
+    })
+    .sort((x, y) => x.ratio - y.ratio);
+  const best = scored[0];
+  return best && best.ratio <= 0.4 ? best.tag.en : null;
 }
 
 // --- geo ---------------------------------------------------------------------
@@ -198,6 +212,35 @@ const cache = existsSync(CACHE_PATH) ? JSON.parse(readFileSync(CACHE_PATH, "utf8
 cache.coords ??= {};
 cache.routes ??= {};
 
+/**
+ * `npm run guide -- --refresh` drops every cached coordinate and route and recomputes.
+ * `npm run guide -- --refresh "Huen Muan Jai"` drops only the places whose name matches.
+ *
+ * The cache is keyed by Maps link and never expires, which is right almost always: a place
+ * does not move, so re-resolving every link on every run would be waste against
+ * community-funded servers. The exception is the case that never errors. When a business
+ * relocates, the link stays the same while the coordinates behind it change, so the cache
+ * keeps handing back the old position and nothing in the build can detect it. A human who
+ * knows a place has moved needs a way to say so that is not hand-editing a JSON cache.
+ */
+const REFRESH = (() => {
+  const i = process.argv.indexOf("--refresh");
+  if (i < 0) return null;
+  // npm strips the quotes, so `-- --refresh "Wat Umong"` arrives as two argv entries and
+  // taking only the first would match "wat" against all eleven temples. Rejoin them.
+  const rest = process.argv.slice(i + 1).filter((a) => !a.startsWith("--"));
+  return rest.length ? rest.join(" ").toLowerCase() : "*";
+})();
+
+const VOCABULARY_FILE = JSON.parse(readFileSync(VOCABULARY_PATH, "utf8"));
+const VOCABULARY = VOCABULARY_FILE.tags;
+const CATEGORY_NAMES = new Set(VOCABULARY_FILE.categories.map((c) => c.name));
+const TAG_BY_KEY = new Map();
+for (const tag of VOCABULARY) {
+  TAG_BY_KEY.set(normaliseKey(tag.en), tag.slug);
+  TAG_BY_KEY.set(normaliseKey(tag.slug), tag.slug);
+}
+
 const areasSrc = readFileSync(join(ROOT, "src", "lib", "areas.ts"), "utf8");
 const AREAS = [...areasSrc.matchAll(/slug:\s*"([a-z-]+)",[\s\S]*?lat:\s*([\d.]+),\s*\n\s*lng:\s*([\d.]+),/g)]
   .map((m) => ({ slug: m[1], lat: +m[2], lng: +m[3] }));
@@ -212,46 +255,105 @@ if (!PROPERTIES.length) throw new Error("Could not read any property coordinates
 
 console.log(`${AREAS.length} areas, ${PROPERTIES.length} propert${PROPERTIES.length === 1 ? "y" : "ies"}`);
 
-const csv = await fetch(SHEET_CSV).then((r) => {
-  if (!r.ok) throw new Error(`Sheet fetch failed (${r.status}). Still shared to anyone with the link?`);
-  return r.text();
-});
+let places = JSON.parse(readFileSync(PLACES_PATH, "utf8")).places.map((p) => ({
+  ...p,
+  rawTags: p.tags ?? [],
+}));
 
-const rows = parseCsv(csv);
-const head = rows[0].map((h) => h.trim());
-const idx = (n) => head.indexOf(n);
-const iSite = idx("Site"), iCat = idx("Category"), iArea = idx("Area");
-const iG = idx("Google Maps"), iA = idx("Apple Maps"), iC = idx("Comment");
-if (iSite < 0 || iG < 0) throw new Error(`Unexpected columns: ${head.join(", ")}`);
+console.log(`${places.length} places in the library`);
 
-let places = rows.slice(1)
-  .filter((r) => r.some((c) => c.trim()))
-  .map((r) => {
-    const raw = (r[iSite] || "").replace(ZERO_WIDTH, "");
-    return {
-      name: raw.replace(HIGHLIGHT, "").replace(/\s+/g, " ").trim(),
-      highlight: raw.includes(HIGHLIGHT),
-      category: (r[iCat] || "").trim(),
-      sheetArea: (r[iArea] || "").trim(),
-      google: (r[iG] || "").trim(),
-      apple: (r[iA] || "").trim(),
-      comment: (r[iC] || "").trim(),
-    };
-  });
+/**
+ * Tags, validated against the vocabulary before a single network call is made.
+ *
+ * Deliberately before coordinate resolution and routing: a typo should cost
+ * a second, not the four minutes of routing that would happen first if this ran later.
+ */
+{
+  const unknown = new Map();
+  for (const p of places) {
+    const slugs = [];
+    for (const raw of p.rawTags) {
+      const slug = TAG_BY_KEY.get(normaliseKey(raw));
+      if (slug) {
+        if (!slugs.includes(slug)) slugs.push(slug);
+      } else if (!unknown.has(raw)) {
+        unknown.set(raw, p.name);
+      }
+    }
+    // Vocabulary order, so a reordered list is not a diff.
+    p.tags = VOCABULARY.filter((tag) => slugs.includes(tag.slug)).map((tag) => tag.slug);
+    delete p.rawTags;
+  }
 
-for (const rule of RENAME) {
-  for (const p of places) if (rule.match(p)) p.name = rule.to;
+  if (unknown.size) {
+    const lines = [...unknown].map(([raw, where]) => {
+      const guess = didYouMean(raw, VOCABULARY);
+      return `  "${raw}" (on ${where})${guess ? ` — did you mean "${guess}"?` : ""}`;
+    });
+    throw new Error(
+      `${unknown.size} tag(s) are not in the vocabulary:\n${lines.join("\n")}\n\n` +
+        `Either fix the spelling in src/data/places.json, or add the tag to ` +
+        `src/lib/guide-vocabulary.json (and to the sheet's Vocabulary tab, so the ` +
+        `dropdown offers it to whoever is proposing places there).`,
+    );
+  }
+
+  const used = new Set(places.flatMap((p) => p.tags));
+  console.log(`tags: ${used.size} of ${VOCABULARY.length} in the vocabulary are in use`);
 }
 
-for (const m of MERGE) {
-  const keep = places.find((p) => p.name === m.keep && p.category === m.byCategory.keep);
-  const drop = places.find((p) => p.name === m.drop && p.category === m.byCategory.drop);
-  if (keep && drop) {
-    keep.highlight ||= drop.highlight;
-    if (drop.comment.length > keep.comment.length) keep.comment = drop.comment;
-    places = places.filter((p) => p !== drop);
-    console.log(`merged: ${m.drop} (${m.byCategory.drop}) into ${m.keep} (${m.byCategory.keep})`);
+/**
+ * A category the vocabulary does not know still ships, with a plain pin and its English
+ * name in every language. That degradation is deliberate and predates tags, so this warns
+ * rather than throws. It is loud enough that nobody discovers it from a guest.
+ */
+{
+  const unknown = [...new Set(places.map((p) => p.category).filter((c) => c && !CATEGORY_NAMES.has(c)))];
+  for (const c of unknown) {
+    console.warn(`  ! category "${c}" is not in guide-vocabulary.json: no icon, untranslated on /th and /zh`);
   }
+}
+
+/**
+ * Two places pointing at one Maps link.
+ *
+ * Almost always a copy-paste error, and a silent one: both resolve to the same coordinates,
+ * so one of the two is pinned somewhere it is not, with no warning anywhere. Real
+ * exceptions go in SHARED_LINKS with a reason.
+ */
+{
+  const allowed = new Set(SHARED_LINKS.map((s) => s.link));
+  const byLink = new Map();
+  for (const p of places) {
+    if (!p.google || allowed.has(p.google)) continue;
+    if (!byLink.has(p.google)) byLink.set(p.google, []);
+    byLink.get(p.google).push(p.name);
+  }
+  const clashes = [...byLink].filter(([, names]) => names.length > 1);
+  if (clashes.length) {
+    const lines = clashes.map(([link, names]) => `  ${names.join(" + ")}\n    ${link}`);
+    throw new Error(
+      `${clashes.length} Google Maps link(s) are used by more than one place:\n${lines.join("\n")}\n\n` +
+        `One of each pair is pinned in the wrong place. Fix the link in places.json, or add it to ` +
+        `SHARED_LINKS in this script with the reason it is genuinely one listing.`,
+    );
+  }
+}
+
+// A human saying "this place moved", which is the one thing the cache cannot notice itself.
+if (REFRESH) {
+  const targets = REFRESH === "*" ? places : places.filter((p) => p.name.toLowerCase().includes(REFRESH));
+  if (!targets.length) {
+    throw new Error(`--refresh "${REFRESH}" matched no place. Nothing was dropped; check the spelling.`);
+  }
+  let coords = 0, routes = 0;
+  for (const p of targets) {
+    if (cache.coords[p.google]) { delete cache.coords[p.google]; coords++; }
+    for (const key of Object.keys(cache.routes)) {
+      if (key.endsWith(`|${p.google}`)) { delete cache.routes[key]; routes++; }
+    }
+  }
+  console.log(`refresh: dropped ${coords} coordinate(s) and ${routes} route(s) for ${targets.length} place(s)`);
 }
 
 // coordinates, cached by google link
@@ -271,11 +373,57 @@ console.log(`coordinates: ${places.length - resolved} cached, ${resolved} newly 
 const missing = places.filter((p) => !Number.isFinite(p.lat));
 if (missing.length) throw new Error(`${missing.length} place(s) without coordinates; refusing to write a partial guide`);
 
+// A link that resolved somewhere no guest is walking to. See BOUNDS.
+{
+  const strays = places.filter(
+    (p) => p.lat < BOUNDS.minLat || p.lat > BOUNDS.maxLat || p.lng < BOUNDS.minLng || p.lng > BOUNDS.maxLng,
+  );
+  if (strays.length) {
+    const lines = strays.map((p) => `  ${p.name} -> ${p.lat},${p.lng}\n    ${p.google}`);
+    throw new Error(
+      `${strays.length} place(s) resolved outside Chiang Mai:\n${lines.join("\n")}\n\n` +
+        `That is a wrong link, not a distant place. Search the business in Maps again and ` +
+        `replace the link in places.json.`,
+    );
+  }
+}
+
+/**
+ * The same place entered twice under two names.
+ *
+ * Proximity alone cannot detect this: in a dense Chiang Mai street an ATM sits 1m from the
+ * 7-Eleven containing it and a pharmacy 23m from another pharmacy, which produces sixty
+ * warnings nobody reads. The signal is proximity AND a similar name, so distance is the
+ * loose filter and the name is the sharp one.
+ *
+ * Warns rather than throws: Shangri-La Health Club and Shangri-La Hotel Pool share a
+ * coordinate and are deliberately two entries, because a pool day pass is not a gym day
+ * pass. The judgement stays with a human.
+ */
+{
+  const similar = (a, b) => {
+    const x = normaliseKey(a), y = normaliseKey(b);
+    if (x.includes(y) || y.includes(x)) return true;
+    return editDistance(x, y) / Math.max(x.length, y.length) <= 0.4;
+  };
+  let found = 0;
+  for (let i = 0; i < places.length; i++) {
+    for (let j = i + 1; j < places.length; j++) {
+      const d = metres(places[i], places[j]);
+      if (d <= NEAR_DUPLICATE_M && similar(places[i].name, places[j].name)) {
+        console.warn(`  ! ${Math.round(d)}m apart and similarly named: "${places[i].name}" / "${places[j].name}"`);
+        found++;
+      }
+    }
+  }
+  if (found) console.warn(`  ! ${found} possible duplicate(s); confirm each is really two places`);
+}
+
 /**
  * GUIDE_DISTANCES is keyed by place name, so two places sharing one would collide and a
  * place would vanish from the map with no error. The sheet legitimately contained such a
- * pair (two AIRPORTELs branches), which is what RENAME above exists to separate. This
- * makes a future recurrence loud instead of silent.
+ * pair (two AIRPORTELs branches), which is why they carry disambiguating names in
+ * places.json. This makes a future recurrence loud instead of silent.
  */
 {
   const seen = new Map();
@@ -287,7 +435,8 @@ if (missing.length) throw new Error(`${missing.length} place(s) without coordina
   if (clashes.length) {
     throw new Error(
       `Duplicate place name(s): ${[...new Set(clashes)].join(", ")}. ` +
-        `Either they are one place (add to MERGE) or two (add to RENAME). Refusing to drop one silently.`,
+        `Either they are one place, and one row should go, or two, and one needs a ` +
+          `disambiguating name. Both are edits to places.json. Refusing to drop one silently.`,
     );
   }
 }
@@ -356,20 +505,27 @@ writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2) + "\n");
 // --- emit --------------------------------------------------------------------
 
 const categories = [...new Set(places.map((p) => p.category))].filter(Boolean).sort();
+const usedTags = VOCABULARY.map((t) => t.slug).filter((slug) => places.some((p) => p.tags.includes(slug)));
 const q = (s) => JSON.stringify(s);
 
 const out = `// GENERATED by scripts/build-guide.mjs. Do not edit by hand.
 //
-// Source: the "Lotus House Sites & Tips" sheet. Edit there, then run \`npm run guide\`.
-// Distances are NOT from the sheet: they are routed per property, so one guide can serve
-// any property. See the script for why this is not a build step.
+// Source: src/data/places.json. Edit there, then run \`npm run guide\`.
+// Distances are routed per property rather than stored on a place, so one library serves
+// every property in its city. See the script for why this is not a build step.
 
 export type GuidePlace = {
   name: string;
   category: string;
-  /** A host pick, marked with an orange diamond in the sheet's Site column. */
+  /** A host pick. */
   highlight: boolean;
   comment: string;
+  /** Slugs from src/lib/guide-vocabulary.json, in vocabulary order. */
+  tags: string[];
+  /** City slug from src/lib/areas.ts. One library serves every property in a city. */
+  city: string;
+  /** The place's own site, or "" when it has none. Never its Google listing. */
+  website: string;
   lat: number;
   lng: number;
   /** Slug from src/lib/areas.ts, or null when the place is outside every area we cover. */
@@ -383,6 +539,9 @@ export type GuideDistance = { walk: number | null; drive: number | null; metres:
 
 export const GUIDE_CATEGORIES: string[] = ${JSON.stringify(categories, null, 2)};
 
+/** Only tags actually used by a place, so a filter never offers an empty result. */
+export const GUIDE_TAGS: string[] = ${JSON.stringify(usedTags, null, 2)};
+
 export const GUIDE_PLACES: GuidePlace[] = [
 ${places
   .map(
@@ -391,6 +550,9 @@ ${places
     category: ${q(p.category)},
     highlight: ${p.highlight},
     comment: ${q(p.comment)},
+    tags: ${JSON.stringify(p.tags)},
+    city: ${q(p.city)},
+    website: ${q(p.website ?? "")},
     lat: ${p.lat},
     lng: ${p.lng},
     area: ${p.area ? q(p.area) : "null"},
