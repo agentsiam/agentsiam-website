@@ -192,34 +192,10 @@ const ICONS: Record<string, React.ReactNode> = {
  * Ordered by how often we see them, not by service number.
  */
 const ROUTES = [
-  {
-    icon: "trend",
-    grad: "grad-sand",
-    when: "Already listed, and it is doing well",
-    take: "Management. Permission too, if you do not hold one.",
-    why: "Your own occupancy and rate history is better evidence than anything we could model, so there is nothing for a study to tell you. We read your numbers instead, and it costs you nothing.",
-  },
-  {
-    icon: "search",
-    grad: "grad-blue",
-    when: "Listed, but the bookings are not coming",
-    take: "Start with the study, then management.",
-    why: "The question here is diagnostic rather than whether to begin: is it the listing, the pricing, the photographs — or the property. The study answers that against real local comparables instead of guessing, and it is the cheapest thing on this page.",
-  },
-  {
-    icon: "house",
-    grad: "grad-teal",
-    when: "Not listed yet",
-    take: "Study, then permission, then management.",
-    why: "There is no history to read, so the numbers have to be modelled before anyone should commit money to it. This is the route the study was built for, and the one where a No-Go saves you the most.",
-  },
-  {
-    icon: "transfer",
-    grad: "grad-vermilion",
-    when: "Already with another manager",
-    take: "Bring us your numbers. Management when you are ready.",
-    why: "We will look at what the property is actually doing before suggesting anything. If the study would not tell you more than your own statements already do, we will say so rather than sell it to you.",
-  },
+  { icon: "trend", grad: "grad-sand" },
+  { icon: "search", grad: "grad-blue" },
+  { icon: "house", grad: "grad-teal" },
+  { icon: "transfer", grad: "grad-vermilion" },
 ];
 
 const INCLUDED = [
@@ -303,6 +279,13 @@ export default async function HowItWorksPage({
     "IMG_5724",
     "mainstree_exterior_lotushouse",
   ]);
+
+  const routes = [
+    { ...ROUTES[0], when: t.route1When, take: t.route1Take, why: t.route1Why },
+    { ...ROUTES[1], when: t.route2When, take: t.route2Take, why: t.route2Why },
+    { ...ROUTES[2], when: t.route3When, take: t.route3Take, why: t.route3Why },
+    { ...ROUTES[3], when: t.route4When, take: t.route4Take, why: t.route4Why },
+  ];
 
   const core = [
     { ...CORE[0], title: t.step1Name, meta: t.step1Meta },
@@ -394,7 +377,7 @@ export default async function HowItWorksPage({
         </p>
 
         <div className="mt-8 grid gap-5 sm:grid-cols-2">
-          {ROUTES.map((route) => (
+          {routes.map((route) => (
             <div
               key={route.when}
               className="rounded-panel bg-surface-2 p-3.5"
