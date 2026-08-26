@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { Dictionary } from "@/i18n";
-import type { Locale } from "@/i18n/config";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { CONTACT_EMAIL } from "@/lib/site";
 
 /**
@@ -265,7 +265,12 @@ export function ContactForm({
         <Link className="underline hover:text-primary" href={privacyHref}>
           {t.privacy}
         </Link>
-        .
+        {/* English closes the sentence with a full stop after the link. Thai and Chinese
+            introduce it with a colon and take no terminal stop -- Thai does not use one at
+            all. This cannot live in the dictionary: getDictionary treats a blank string as
+            a translator's placeholder and falls back to English, so an empty value here
+            would render the English full stop on every locale. */}
+        {locale === DEFAULT_LOCALE ? "." : null}
       </p>
     </form>
   );
