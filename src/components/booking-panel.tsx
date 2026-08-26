@@ -809,7 +809,7 @@ function GuestForm({
         name="email"
         autoComplete="email"
         className={`${field} mt-2.5 w-full`}
-        placeholder="Email"
+        placeholder={t.labelEmail}
       />
       <input
         name="phone"

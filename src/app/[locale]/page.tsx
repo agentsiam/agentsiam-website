@@ -7,6 +7,7 @@ import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { heroPhoto, pickPhoto } from "@/lib/photos";
 import { HeroSearch } from "@/components/hero-search";
 import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
+import { areaVibe } from "@/i18n/area-vibe";
 import {
   OG_IMAGE,
   SITE_NAME,
@@ -91,7 +92,11 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       ? { guest: guestForkPhoto, owner: ownerForkPhoto }
       : null;
 
-  // The three staircase cards. website-wireframe.html specifies these as
+  // The three main services. Numbered as services rather than steps since 25/08/2026: the
+  // offering became a menu, so "Step 1" on the home page contradicted the page it links to.
+  // The card component is unchanged -- this is a label change, not a design change.
+  //
+  // website-wireframe.html specifies these as
   // "3-STEP STAIRCASE -- bento-grid, 3x bento-card.on-grad", and on-grad is a gradient
   // rather than a flat fill: full brand colour to 20%, fading to white by 62%. They were
   // flat bg-teal/bg-secondary/bg-sand until 24/08/2026, which read heavier and more
@@ -319,7 +324,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             <h3 className="font-display text-xl font-bold tracking-[-0.015em]">
               {property.title}
             </h3>
-            <span className="eyebrow mt-1.5 block">{area?.vibe}</span>
+            <span className="eyebrow mt-1.5 block">{areaVibe(t, area)}</span>
             <p className="mt-2.5 text-[15px] leading-relaxed text-body">
               {property.tagline}
             </p>
@@ -407,7 +412,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
                 className={`group flex min-h-[210px] flex-col gap-2.5 rounded-panel ${step.fill} p-6.5`}
               >
                 <span className="eyebrow text-ink/65">
-                  {t.step} {step.n}
+                  {t.service} {step.n}
                 </span>
                 <h3 className="font-display text-xl font-bold tracking-[-0.015em] text-ink">
                   {step.title}

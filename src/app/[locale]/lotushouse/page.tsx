@@ -10,6 +10,7 @@ import { PHOTOS } from "@/lib/photos.generated";
 import { alt as ogAlt } from "./opengraph-image";
 import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
 import { pageMeta, routeOgImage } from "@/lib/site";
+import { areaVibe } from "@/i18n/area-vibe";
 
 /**
  * Property detail, in the handoff's block order: title and area → gallery → highlights →
@@ -170,7 +171,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
               <p className="mt-2 text-sm leading-relaxed text-body">
                 {[area?.name, "Chiang Mai"].filter(Boolean).join(", ")}
               </p>
-              <p className="mt-1.5 text-[13px] text-muted">{area?.vibe}</p>
+              <p className="mt-1.5 text-[13px] text-muted">{areaVibe(t, area)}</p>
               <p className="mt-1.5 text-[13px] text-muted">{t.addressAfterBooking}</p>
             </div>
           </section>

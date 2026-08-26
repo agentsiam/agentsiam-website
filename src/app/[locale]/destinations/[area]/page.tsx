@@ -8,6 +8,7 @@ import { AREAS, areaBySlug, CITY_CENTRE, distanceKm } from "@/lib/areas";
 import { propertiesInArea } from "@/lib/property";
 import { searchToQuery } from "@/lib/search";
 import { pageMeta } from "@/lib/site";
+import { areaVibe } from "@/i18n/area-vibe";
 
 /**
  * One neighbourhood.
@@ -38,7 +39,7 @@ export async function generateMetadata({
 
   return pageMeta({
     title: t.metaAreaTitle.replace("{area}", area.name),
-    description: t.metaAreaDesc.replace("{area}", area.name).replace("{vibe}", area.vibe),
+    description: t.metaAreaDesc.replace("{area}", area.name).replace("{vibe}", areaVibe(t, area)),
     path: `/destinations/${area.slug}`,
     locale,
   });
@@ -69,7 +70,9 @@ export default async function AreaPage({
       <h1 className="mt-3 font-headline text-[clamp(28px,5vw,40px)] font-extrabold leading-[1.1] tracking-[-0.03em]">
         {area.name}
       </h1>
-      <p className="mt-2.5 max-w-[560px] text-base leading-relaxed text-body">{area.vibe}</p>
+      <p className="mt-2.5 max-w-[560px] text-base leading-relaxed text-body">
+        {areaVibe(t, area)}
+      </p>
       <p className="mt-2 text-[13px] text-muted">
         {t.kmToCentre.replace("{n}", km < 10 ? km.toFixed(1) : String(Math.round(km)))}
       </p>

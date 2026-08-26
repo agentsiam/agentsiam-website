@@ -14,16 +14,25 @@ import { pageMeta } from "@/lib/site";
 import { Qualifier } from "./qualifier";
 
 /**
- * The owner conversion page. This is where the design does its real work, and the block
- * order below is the handoff's, unchanged: hero → staircase → what the fee buys → the two
- * gates → the qualifier → included/not included → TM30 → FAQ → closing CTA → guest link.
+ * The owner conversion page. Block order: hero → routes → menu → what the fee buys → the
+ * two gates → the qualifier → included/not included → TM30 → FAQ → closing CTA → guest link.
  *
- * Two rules from the handoff hold this page together and should survive any edit:
+ * Restructured 25/08/2026 from "a staircase, not a menu" to a menu. The services no longer
+ * run in a fixed order: the study applies where there is no occupancy record to read, and
+ * the permission applies to owners who do not already hold one. The routes block above the
+ * menu is what keeps that from becoming a list the owner has to sort for themselves.
+ *
+ * Three rules hold this page together and should survive any edit:
  *
  * - No prices anywhere. Prices live in the internal price book, and a rate card here would
- *   turn a scoped study into a menu item.
- * - Exclusions are printed next to inclusions, every time. The "Not included" box on each
- *   step is not a disclaimer to be shrunk; it is the reason the inclusions are credible.
+ *   turn a scoped study into a line item. Confirmed again 25/08/2026.
+ * - Exclusions are printed next to inclusions on the three core services. The "Not included"
+ *   box is not a disclaimer to be shrunk; it is the reason the inclusions are credible. The
+ *   three alongside-management services deliberately have no such box -- they answer S3's
+ *   limits rather than adding to them, and introducing them through an exclusion is exactly
+ *   what the 25/08/2026 review asked us to stop doing.
+ * - The permission is offered, never demanded. Owners who choose not to apply are still
+ *   served, and the page says nothing that implies otherwise.
  *
  * The long-form English copy is the design's own. It is not translated -- the handoff
  * leaves owner-register long-form for a human translator -- so Thai and Chinese carry the
@@ -44,11 +53,11 @@ export async function generateMetadata({
   });
 }
 
-const STEPS = [
+const CORE = [
   {
     n: "1",
     fill: "bg-teal",
-    body: "One site visit, a written analysis and an hour on a call going through it with you. We model your property against real local comparables and give you a straight recommendation at the end.",
+    body: "One site visit, a written analysis and an hour on a call going through it with you. We model your property against real local comparables and give you a straight recommendation at the end. Worth taking when there is no occupancy record to read — an unlisted property, or one whose numbers are not telling you what you need to know.",
     gets: [
       "Market and demand analysis — location, competition, achievable nightly rate, seasonality",
       "Property assessment and positioning, including which feature to lead on",
@@ -63,7 +72,7 @@ const STEPS = [
   {
     n: "2",
     fill: "bg-secondary",
-    body: "Short-stay letting in Thailand is governed by the Hotel Act and the non-hotel accommodation framework. We assess what your property is actually allowed to do, prepare the documents, and file under power of attorney.",
+    body: "Short-stay letting in Thailand is governed by the Hotel Act and the non-hotel accommodation framework, and the rules are specific enough that most owners have never been told which ones apply to them. We work out what your property is actually allowed to do, prepare the documents, and file under power of attorney so you do not have to deal with the office yourself.",
     gets: [
       "Legal feasibility assessment against the Hotel Act framework",
       "Building and safety equipment requirements review",
@@ -76,18 +85,117 @@ const STEPS = [
   {
     n: "3",
     fill: "bg-sand",
-    body: "Listings, pricing, guests and compliance, run by the team here in Chiang Mai. We arrange the cleaning and the maintenance and supervise the quality; you pay those suppliers directly.",
+    body: "Listings, pricing, guests and compliance, run by the team here in Chiang Mai. This is the service most owners come for, and the only one that runs continuously.",
     gets: [
       "Listing creation and management across the main OTA channels",
       "A direct booking website, so not every night pays platform commission",
       "Channel and rate management in Beds24",
       "Guest communication across the whole stay",
       "Review, Superhost and Guest Favourite management",
-      "Compliance upkeep on the permission, and TM30 guest reporting",
+      "Compliance upkeep, and TM30 guest reporting",
     ],
     limit:
-      "The cost of cleaning, laundry, maintenance and vendors sits with you — we arrange and supervise, you pay the supplier. Insurance, photography, furnishing and renovation are also outside the fee.",
+      "Insurance is outside the fee. We will help you find a policy but we do not arrange or advise on one. Housekeeping, photography and interior work are separate services rather than exclusions — they are below.",
   },
+];
+
+/**
+ * The three that sit alongside management rather than in front of it. Deliberately no
+ * "Not included" box: these are the answer to S3's limits, not more limits, and framing
+ * them as exclusions is what the 25/08/2026 review asked us to stop doing.
+ */
+const EXTRAS = [
+  {
+    n: "4",
+    fill: "bg-wash-green",
+    body: "The turnover, the laundry and the upkeep, handled end to end so you are not managing suppliers from another country. Take it and the day-to-day stops being your problem; leave it and we still arrange and supervise the work, you just pay the suppliers yourself.",
+    gets: [
+      "Turnover cleaning to a written checklist, scheduled around arrivals",
+      "Laundry on every turnover and mid-stay",
+      "Consumables kept stocked",
+      "Maintenance and vendor visits arranged, supervised and documented",
+    ],
+  },
+  {
+    n: "5",
+    fill: "bg-wash-gold",
+    body: "Photography is the single biggest lever on how a listing performs, and most owner-supplied photographs cost bookings rather than win them. We brief the shoot, direct it, and edit the set to the standard the channels reward.",
+    gets: [
+      "Interior and exterior shoot, styled and lit for short-stay listings",
+      "Editing and colour work to a consistent house standard",
+      "A set sized and cropped for every channel, plus the direct site",
+      "Reshoots when the property changes",
+    ],
+  },
+  {
+    n: "6",
+    fill: "bg-wash-red",
+    body: "What a property earns is decided partly by what it is like to stay in. Where the numbers are held back by the house rather than the listing, we work out what to change, what it would cost, and whether the return justifies it — with the costing done properly rather than guessed.",
+    gets: [
+      "Advice on look, feel and the details guests actually book for",
+      "What to add, what to replace, and what to leave alone",
+      "Investment cost estimates against real supplier pricing",
+      "The return on the spend, modelled the same way the study models the property",
+    ],
+  },
+];
+
+/**
+ * Route icons. Four stroke glyphs, drawn here rather than pulled from an icon library so
+ * nothing new lands in the dependency tree for four shapes. They inherit currentColor and
+ * sit in the tinted chip on each route card.
+ *
+ * The design system carries no icon set. Paul authorised introducing one on 25/08/2026;
+ * design-guardrails.md still says otherwise and is stale until that is recorded, which is a
+ * Law 1 write and needs its own approval.
+ *
+ * They sit in a gold rounded-square chip on plain ground -- no card, no border. The routes
+ * are the lightest block on the page and boxing them competes with the menu below, which is
+ * the block that should carry the weight.
+ */
+const ICONS: Record<string, React.ReactNode> = {
+  // earning already -- a rising line
+  trend: (
+    <>
+      <polyline points="3 16.5 9.5 10 13.5 14 21 6.5" />
+      <polyline points="15.5 6.5 21 6.5 21 12" />
+    </>
+  ),
+  // listed but underperforming -- a question to diagnose
+  search: (
+    <>
+      <circle cx="11" cy="11" r="6.25" />
+      <line x1="15.6" y1="15.6" x2="20.5" y2="20.5" />
+    </>
+  ),
+  // nothing yet -- the property itself
+  house: (
+    <>
+      <path d="M3.75 10.75 12 4.25l8.25 6.5" />
+      <path d="M5.75 12.4V19.25h12.5V12.4" />
+    </>
+  ),
+  // held elsewhere -- a handover
+  transfer: (
+    <>
+      <path d="M3.75 8.75h14.5" />
+      <polyline points="15 5.5 18.25 8.75 15 12" />
+      <path d="M20.25 15.25H5.75" />
+      <polyline points="9 12 5.75 15.25 9 18.5" />
+    </>
+  ),
+};
+
+/**
+ * The routes. This is the "tailored" half of a menu -- six services in a list is not a
+ * tailored offering, six services with a recommended starting point per situation is.
+ * Ordered by how often we see them, not by service number.
+ */
+const ROUTES = [
+  { icon: "trend", grad: "grad-sand" },
+  { icon: "search", grad: "grad-blue" },
+  { icon: "house", grad: "grad-teal" },
+  { icon: "transfer", grad: "grad-vermilion" },
 ];
 
 const INCLUDED = [
@@ -103,10 +211,9 @@ const INCLUDED = [
 ];
 
 const EXCLUDED = [
-  "The cost of cleaning, laundry, maintenance and vendors — you pay the supplier",
+  "The cost of cleaning, laundry, maintenance and vendors, unless you take housekeeping — you pay the supplier either way",
   "Insurance. We will help you find a policy but we do not arrange or advise on one",
-  "Professional photography. We write the brief and recommend the photographer",
-  "Capital works, renovation and furnishing",
+  "The building work itself. We advise on it and cost it; we do not carry it out",
   "Long-term tenancy, and property sale or valuation",
   "Legal representation — we coordinate with counsel rather than advising",
   "Your tax filing",
@@ -116,7 +223,15 @@ const EXCLUDED = [
 const FAQ = [
   {
     q: "What do you charge?",
-    a: "A percentage of booking revenue for management, plus fixed fees for the feasibility and permission steps. The percentage depends on how much of the work you want us to carry. Exact figures come in your feasibility report, priced against your property rather than a rate card.",
+    a: "A percentage of booking revenue for management, plus fixed fees for the services you choose. The percentage depends on how much of the work you want us to carry — it is lower when we handle the housekeeping too. Exact figures are quoted against your property rather than read off a rate card.",
+  },
+  {
+    q: "Do I have to take the study first?",
+    a: "No. It is one service on the menu, not a gate. If your property is already listed and earning, your own numbers tell us more than a model would, and we will start from those instead. Where we think the study genuinely would change your decision, we will say so.",
+  },
+  {
+    q: "What if I do not have a licence, and do not want to apply for one?",
+    a: "Tell us and we will talk it through properly. The permission service exists because most owners have never been told which rules apply to their property, and a lot of them turn out to be straightforward. What we will not do is make the decision for you or pretend the question does not exist.",
   },
   {
     q: "Am I locked into a contract?",
@@ -165,10 +280,23 @@ export default async function HowItWorksPage({
     "mainstree_exterior_lotushouse",
   ]);
 
-  const steps = [
-    { ...STEPS[0], title: t.step1Name, meta: t.step1Meta },
-    { ...STEPS[1], title: t.step2Name, meta: t.step2Meta },
-    { ...STEPS[2], title: t.step3Name, meta: t.step3Meta },
+  const routes = [
+    { ...ROUTES[0], when: t.route1When, take: t.route1Take, why: t.route1Why },
+    { ...ROUTES[1], when: t.route2When, take: t.route2Take, why: t.route2Why },
+    { ...ROUTES[2], when: t.route3When, take: t.route3Take, why: t.route3Why },
+    { ...ROUTES[3], when: t.route4When, take: t.route4Take, why: t.route4Why },
+  ];
+
+  const core = [
+    { ...CORE[0], title: t.step1Name, meta: t.step1Meta },
+    { ...CORE[1], title: t.step2Name, meta: t.step2Meta },
+    { ...CORE[2], title: t.step3Name, meta: t.step3Meta },
+  ];
+
+  const extras = [
+    { ...EXTRAS[0], title: t.step4Name, meta: t.step4Meta },
+    { ...EXTRAS[1], title: t.step5Name, meta: t.step5Meta },
+    { ...EXTRAS[2], title: t.step6Name, meta: t.step6Meta },
   ];
 
   const valueProps = [
@@ -238,19 +366,85 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* -- The staircase. */}
+      {/* -- The routes. Before the menu, deliberately: a list of six services asks the owner
+             to work out which ones apply to them, which is the job we are supposed to do. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
-          {t.staircaseTitle}
+          {t.routeTitle}
+        </h2>
+        <p className="mt-2 max-w-[660px] text-[15px] leading-relaxed text-muted">
+          {t.routeBody}
+        </p>
+
+        <div className="mt-8 grid gap-5 sm:grid-cols-2">
+          {routes.map((route) => (
+            <div
+              key={route.when}
+              className="rounded-panel bg-surface-2 p-3.5"
+            >
+              <div className="flex h-full flex-col overflow-hidden rounded-box bg-bg">
+                <div className="flex items-center gap-3 px-5 pt-5">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sand text-ink"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="size-[18px]"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      {ICONS[route.icon]}
+                    </svg>
+                  </span>
+                  <h3 className="font-display text-[16px] font-bold leading-snug tracking-[-0.015em]">
+                    {route.when}
+                  </h3>
+                </div>
+
+                {/* Image slot. The abstract gradient ground is the correct current-state
+                    treatment, not a stopgap: zero active photos exist and the guardrails
+                    forbid dropping in stock "just for now". Swap for real photography
+                    once something clears intake.
+
+                    The hue per route is deliberately NOT matched to its sentiment. Teal is
+                    the positive-verdict token here and vermilion the negative one, so the
+                    obvious assignment -- teal on "doing well", vermilion on "not coming" --
+                    reads as a good/bad rating of the owner's situation. It is not one. */}
+                <div
+                  aria-hidden="true"
+                  className={`mx-5 mt-4 h-[156px] rounded-lg ${route.grad}`}
+                />
+
+                <div className="flex flex-col gap-2 px-5 pt-4 pb-5.5">
+                  <p className="text-[14px] font-semibold leading-snug text-primary">
+                    {route.take}
+                  </p>
+                  <p className="text-[13.5px] leading-relaxed text-body">
+                    {route.why}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* -- The menu. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
+          {t.menuTitle}
         </h2>
         <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
-          Each step qualifies you for the next. You can stop after any of them,
-          and some owners should. Most managers open at step three and skip step
-          two entirely.
+          Six services, taken in whatever combination your property needs. Most
+          owners take two or three. Nobody takes all six.
         </p>
 
         <div className="mt-7 flex flex-col gap-4.5">
-          {steps.map((step) => (
+          {core.map((step) => (
             <article
               key={step.n}
               className="overflow-hidden rounded-panel border border-hairline"
@@ -260,7 +454,7 @@ export default async function HowItWorksPage({
                   className={`flex flex-col gap-1.5 ${step.fill} px-6.5 py-7`}
                 >
                   <span className="eyebrow text-ink/65">
-                    {t.step} {step.n}
+                    {t.service} {step.n}
                   </span>
                   <h3 className="font-display text-[21px] font-bold leading-tight tracking-[-0.015em] text-ink">
                     {step.title}
@@ -301,11 +495,67 @@ export default async function HowItWorksPage({
             </article>
           ))}
         </div>
+
+        {/* -- The three that sit alongside management. Same card, no "Not included" box:
+               these answer S3's limits rather than adding to them. */}
+        <h3 className="mt-12 font-display text-[21px] font-bold tracking-[-0.02em]">
+          {t.addServicesTitle}
+        </h3>
+        <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
+          Take any of these with management, or on their own. Each is quoted for
+          the property rather than sold at a standard rate.
+        </p>
+
+        <div className="mt-6 flex flex-col gap-4.5">
+          {extras.map((extra) => (
+            <article
+              key={extra.n}
+              className="overflow-hidden rounded-panel border border-hairline"
+            >
+              <div className="grid min-[900px]:grid-cols-[230px_1fr]">
+                <div
+                  className={`flex flex-col gap-1.5 ${extra.fill} px-6.5 py-7`}
+                >
+                  <span className="eyebrow text-ink/65">
+                    {t.service} {extra.n}
+                  </span>
+                  <h3 className="font-display text-[21px] font-bold leading-tight tracking-[-0.015em] text-ink">
+                    {extra.title}
+                  </h3>
+                  <p className="mt-0.5 text-[12.5px] text-ink/70">
+                    {extra.meta}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-4 px-7 py-6.5">
+                  <p className="text-[15px] leading-relaxed text-body">
+                    {extra.body}
+                  </p>
+
+                  <div>
+                    <h4 className="eyebrow">{t.whatYouGet}</h4>
+                    <ul className="mt-2.5 grid gap-x-5.5 gap-y-1.5 sm:grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
+                      {extra.gets.map((get) => (
+                        <li
+                          key={get}
+                          className="flex gap-2.5 text-[13.5px] leading-normal"
+                        >
+                          <span className="font-bold text-primary">·</span>
+                          <span>{get}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
-      {/* -- The report. Step one's deliverable, shown rather than described. It sits
-             directly after the staircase because that is where step one is explained, and
-             the single most common owner objection -- "what do I actually get for the fee"
+      {/* -- The report. The study's deliverable, shown rather than described. It sits
+             directly after the menu because that is where the study is explained, and the
+             single most common owner objection -- "what do I actually get for the fee"
              -- is answered by looking at it. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
@@ -362,7 +612,8 @@ export default async function HowItWorksPage({
           <p className="mt-2.5 max-w-[700px] text-[15px] leading-relaxed text-white/80">
             Otherwise it is a sales document with a fee attached. Two things
             have to be true before we will manage a property, and they are
-            different questions:
+            different questions. A property that is already earning well answers
+            both of them without a study:
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-[repeat(auto-fit,minmax(260px,1fr))]">
@@ -385,9 +636,11 @@ export default async function HowItWorksPage({
                 The property has to be worth managing properly.
               </p>
               <p className="mt-2 text-[13.5px] leading-relaxed text-white/70">
-                Below a certain size the fee does not fund the attention the
-                property needs, and doing it badly helps nobody. This gate
-                applies to management only — anyone can buy the study.
+                Our fee is a share of what the property earns, so below a certain
+                level of revenue it does not fund the attention the property
+                needs — and doing it badly helps nobody. A property with a real
+                booking record answers this on its own numbers. This gate applies
+                to management only.
               </p>
             </div>
           </div>

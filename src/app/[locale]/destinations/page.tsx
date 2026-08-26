@@ -6,6 +6,7 @@ import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
 import { propertiesInArea } from "@/lib/property";
 import { pageMeta } from "@/lib/site";
+import { areaVibe } from "@/i18n/area-vibe";
 
 /**
  * The neighbourhoods index.
@@ -64,7 +65,7 @@ export default async function DestinationsPage({ params }: PageProps<"/[locale]"
                   {area.name}
                 </h2>
                 <p className="mt-2 flex-1 text-[14.5px] leading-relaxed text-body">
-                  {area.vibe}
+                  {areaVibe(t, area)}
                 </p>
                 <p className="mt-4 text-[13px] text-muted">
                   {count === 0
