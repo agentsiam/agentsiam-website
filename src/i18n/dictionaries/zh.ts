@@ -59,7 +59,7 @@ export const zh: Dictionary = {
 
   ownerBandTitle: "在考虑把房子租出去？",
   ownerBandSub: "这是一份服务菜单，不是固定流程。房产需要哪几项就选哪几项，不需要的可以不选；哪些真正需要，我们会直说。",
-  ownerBandFoot: "清迈的独栋住宅、联排住宅和小型楼房；公寓亦可，前提是业主委员会已书面同意短租。",
+  ownerBandFoot: "清迈的独栋住宅、联排住宅和小型楼房；公寓亦可，前提是公寓管理方已书面同意短租。",
   checkQualify: "看看您的房产是否符合条件",
   bookStudy: "预约可行性研究",
   step: "第",
@@ -67,7 +67,7 @@ export const zh: Dictionary = {
   stair1Title: "可行性研究",
   stair1Body: "我们根据您所在区域的实际入住率测算房源收入。适合尚无入住数据可供参考的房源。",
   stair2Title: "短租许可办理",
-  stair2Body: "泰国的短租规定具体且常被误读。我们会核实您的建筑类型和产权文件实际允许的用途。",
+  stair2Body: "泰国对短租的规定具体且常被误读。我们会核实您的建筑类型和产权文件实际允许的用途，并代您提交许可申请。",
   stair3Title: "日常管理",
   stair3Body: "房源上线、定价、住客接待与维修，全部由本地团队现场管理，不只交给后台系统。多数业主从这一项开始。",
 
@@ -107,7 +107,7 @@ export const zh: Dictionary = {
   startNumbers: "先从数字开始。",
   lookingToStay: "其实是在找住的地方？",
   step1Name: "可行性与投资回报研究",
-  step1Meta: "适合尚无入住数据可供参考时",
+  step1Meta: "尚无入住数据可供参考时",
   step2Name: "短租合法许可办理",
   step2Meta: "适合尚未持有许可的业主",
   step3Name: "短租日常管理",
@@ -117,7 +117,7 @@ export const zh: Dictionary = {
   step5Name: "室内摄影",
   step5Meta: "在房源上线之前",
   step6Name: "室内设计与房产升级",
-  step6Meta: "当房产收入低于其潜力时",
+  step6Meta: "当房产尚未发挥全部收益潜力时",
 
   contactEyebrow: "给房东",
   contactTitle: "说说你的房子。",
