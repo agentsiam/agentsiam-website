@@ -7,6 +7,7 @@ import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { heroPhoto, pickPhoto } from "@/lib/photos";
 import { HeroSearch } from "@/components/hero-search";
 import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
+import { areaVibe } from "@/i18n/area-vibe";
 import {
   OG_IMAGE,
   SITE_NAME,
@@ -323,7 +324,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             <h3 className="font-display text-xl font-bold tracking-[-0.015em]">
               {property.title}
             </h3>
-            <span className="eyebrow mt-1.5 block">{area?.vibe}</span>
+            <span className="eyebrow mt-1.5 block">{areaVibe(t, area)}</span>
             <p className="mt-2.5 text-[15px] leading-relaxed text-body">
               {property.tagline}
             </p>

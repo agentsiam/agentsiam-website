@@ -170,7 +170,7 @@ export function ContactForm({
             name="email"
             autoComplete="email"
             className={field}
-            placeholder="Email"
+            placeholder={t.labelEmail}
           />
         </label>
       </div>
@@ -261,7 +261,7 @@ export function ContactForm({
       </button>
 
       <p className="mt-3 text-xs leading-relaxed text-muted">
-        By sending this form you agree to us contacting you about your enquiry. See our{" "}
+        {t.formConsent}{" "}
         <Link className="underline hover:text-primary" href={privacyHref}>
           {t.privacy}
         </Link>
