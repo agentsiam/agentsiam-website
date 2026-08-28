@@ -185,14 +185,14 @@ The property page offers a guest two things, because they are two different prom
 | **Book now, pay online** | Nights held in Beds24 → Stripe takes the money on our own domain → webhook confirms the booking. Instant. |
 | **Request to book** | `POST /api/booking/request` → re-quoted server side → written to Beds24 as a `request` for manual confirmation. No money moves. |
 
-**Beds24 is never named in the front end**, and no Beds24 payment gateway is involved. Payment
+The naming rule is R4 in `CLAUDE.md`. No Beds24 payment gateway is involved either. Payment
 runs through our own Stripe account with the Payment Element embedded in the panel, so the guest
 never leaves the site and card details never reach this server — they go from the browser
 straight to Stripe, which is what keeps the site in the lightest PCI bracket (SAQ-A).
 
 ### The ordering is the design
 
-Hold the nights, *then* charge. Never the other way round.
+The ordering is R3 in `CLAUDE.md`, and it is the whole reason this section exists.
 
 1. `POST /api/booking/checkout` re-quotes, then writes a hold to Beds24 (`status: new`) with
    `checkAvailability`. If the nights went while the guest was choosing, Beds24 refuses and
@@ -321,7 +321,7 @@ The pipeline, so nobody has to think about image formats:
   derivatives are reachable, and the re-encode drops the metadata block along with the
   camera's GPS.
 
-`npm run photos` regenerates on demand. Never edit `photos.generated.ts` by hand.
+`npm run photos` regenerates on demand. Hand-editing a generated file is R5 in `CLAUDE.md`.
 
 ## Known gaps
 

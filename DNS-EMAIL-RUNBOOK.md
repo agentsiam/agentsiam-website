@@ -200,7 +200,7 @@ that starts a fresh 60-day transfer lock which lands past 23 Sep. Full plan:
 3. **Recreate the zone** in Cloudflare from the 9-record table above, before changing
    anything else. Cloudflare's scanner routinely misses TXT records — check by hand.
 4. **Set every record to "DNS only"** (grey cloud, not orange). Proxying breaks Wix's SSL,
-   and MX must never be proxied.
+   and MX must never be proxied (R6 in `CLAUDE.md`).
 5. **Verify** the site resolves and mail still routes to Zoho before going further. Ask
    Claude to run the checks.
 6. **Then add Resend's records:**
@@ -213,7 +213,7 @@ that starts a fresh 60-day transfer lock which lands past 23 Sep. Full plan:
 
    **Paste the host only** — `send`, not `send.agentsiam.com`. Cloudflare appends the
    domain itself, and pasting the full name creates `send.agentsiam.com.agentsiam.com`.
-   The DKIM record must be **DNS only**.
+   The DKIM record must be **DNS only** (R6 in `CLAUDE.md`).
 
 7. **Then set `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`** in `.env.local`
    and Vercel. The code already expects Resend — no changes needed on this path.

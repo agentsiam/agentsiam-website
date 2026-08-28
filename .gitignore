@@ -49,3 +49,5 @@ src/photos/**/raw/
 # The example is documentation of every variable the app reads, not a secret.
 # Real values live in .env.local and in the Vercel project. Keep it tracked.
 !.env.example
+
+_to_delete/
