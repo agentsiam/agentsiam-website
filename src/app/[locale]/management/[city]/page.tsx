@@ -118,15 +118,16 @@ export default async function ManagementCityPage({
         </div>
       </section>
 
-      {/* -- The three services. Same staircase as /how-it-works, stated short. */}
+      {/* -- The services. Same menu as /how-it-works, the three that travel. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
           {t.mgmtServicesTitle}
         </h2>
         <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
-          The same three services we run in Chiang Mai, sold as a staircase rather
-          than a menu. Each step qualifies you for the next, and you can stop
-          after any of them.
+          A menu, not a fixed path. These three are the ones that travel out of
+          Chiang Mai. Take the ones your property needs and leave the ones it does
+          not: neither the study nor the permission is a step you have to pass
+          before the next one, and we will tell you which apply to you.
         </p>
         <ol className="mt-8 space-y-7">
           {SERVICES.map((service, i) => (
@@ -146,7 +147,7 @@ export default async function ManagementCityPage({
           ))}
         </ol>
         <p className="mt-8 text-[15px] leading-relaxed text-muted">
-          Fees are quoted per property, after the study.{" "}
+          Fees are quoted per property.{" "}
           <Link
             href={href("/how-it-works")}
             className="underline underline-offset-4"
