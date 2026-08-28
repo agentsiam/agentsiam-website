@@ -19,10 +19,12 @@ three languages.
 | Route | State |
 |---|---|
 | `/` | Real. Guest-led: hero, audience fork, the property, why book direct, review, owner band. |
-| `/how-it-works` | Real. The owner conversion page: staircase, two gates, qualifier, TM30, FAQ. |
+| `/how-it-works` | Real. The owner conversion page: six services as a menu, routes by owner situation, qualifier, TM30, FAQ. |
 | `/properties` | Real. Server-rendered search results, URL-driven filters. |
 | `/destinations` + `/destinations/<area>` | Real. Eight neighbourhoods, prerendered per locale. |
 | `/lotushouse` | Real. Live Beds24 availability, prices, instant booking and requests. |
+| `/lotushouse/local-guide` | Real. The guest guide, filterable. Place prose is English on every locale. |
+| `/management/<city>` | Real. Owner pages for Phuket and Bangkok, from `src/lib/management-cities.ts`. |
 | `/contact` | Real. Owner intake, submits through `/api/contact` to Resend. |
 | `/business-services` | Real. The four non-STR service pillars. Footer-linked only. |
 | `/terms-and-conditions` | Real text, **not reviewed by counsel**. |
@@ -51,9 +53,10 @@ unfinished page out of the sitemap and set it to noindex.
 - **Deliberately untranslated:** property descriptions, the long-form owner sections on
   `/how-it-works`, and both legal pages. Those pages render `<TranslationNote>` on `/th` and
   `/zh`, which names what is still English rather than serving it silently.
-- **Unreviewed translations:** strings marked `// NEW` in `th.ts` and `zh.ts` were written for
-  this site rather than taken from the handoff, and no native speaker has read them. Everything
-  unmarked is the handoff's own translation. Get the marked ones checked before launch.
+- **Unreviewed translations:** there is no marker convention any more. Every key was reviewed in
+  all three languages on 23/08/2026 and the `// NEW` markers were removed on 24/08/2026. Keys
+  added since then are unreviewed and nothing in the files distinguishes them, so a review pass
+  has to scope itself by date rather than by marker.
 
 ## Metadata and SEO
 
@@ -80,14 +83,11 @@ Thai and Chinese dictionaries.
 
 What was deliberately **not** taken:
 
-- **Its 50 Chiang Mai properties are invented.** `src/lib/property.ts` carries the one real
-  property instead. The design's own argument is that nothing on the site is a claim a reader
-  could not check; seeding a portfolio with fiction breaks it.
-- **The handoff's 50 invented properties.** `src/lib/property.ts` carries the one real
-  property instead. The design's own argument is that nothing on the site is a claim a reader
-  could not check; seeding a portfolio with fiction breaks it. The eight *areas* are real
-  places and are imported, which is why `/destinations/<area>` can carry honest content long
-  before there is anything to list there.
+- **The handoff's 20 invented properties.** `src/lib/property.ts` carries the one real property
+  instead. The design's own argument is that nothing on the site is a claim a reader could not
+  check; seeding a portfolio with fiction breaks it. The eight *areas* are real places and are
+  imported, which is why `/destinations/<area>` can carry honest content long before there is
+  anything to list there.
 - **`/checkout` and `/booking/confirmed` as separate pages.** The design routes payment to a
   Beds24 iframe on its own page; we take payment with Stripe inside the property page's own
   booking panel, on our own domain, so the guest never leaves and Beds24 is never named. See
@@ -330,9 +330,9 @@ The pipeline, so nobody has to think about image formats:
   portraits. Three carport shots are held back in `_excluded/` for showing the house number.
   The old generic stock library stays removed, per the design system's "no stock, no fake
   mockups" rule.
-- **No `src/photos/team/team-on-site.jpg`.** One landscape frame of the team on a site visit.
-  Until it exists, both homepage fork panels render as brand fills rather than photos, because
-  they are coded to take a photo or neither. See `src/photos/team/README.md`.
+- ~~**No `src/photos/team/team-on-site.jpg`.**~~ Resolved. The homepage fork panel asks for
+  `team-group-portrait` instead, and `src/photos/team/agentsiam-team-group-portrait.jpg` exists,
+  so the panels render photographs rather than flat brand fills.
 - No icon set. Value-prop icons are typographic glyphs, as in the handoff.
 - No phone number or LINE ID published. The footer carries name, address and email only; all
   three have to match the Google Business Profile character for character.
@@ -340,7 +340,8 @@ The pipeline, so nobody has to think about image formats:
   neighbourhood pages.
 - ~~Page titles and meta descriptions are English in all three locales.~~ Found and fixed
   18/08/2026. All eleven route files now read `metaXxxTitle` / `metaXxxDesc` from the
-  dictionary. The 22 new Thai and Chinese strings are marked `// NEW` and are unreviewed.
+  dictionary. Those 22 Thai and Chinese strings were reviewed on 23/08/2026 and the `// NEW`
+  markers were removed on 24/08/2026, so nothing in the dictionaries carries a marker now.
 
 ## Getting started
 
@@ -371,13 +372,10 @@ Hard blockers, in order. State as of 24/08/2026.
    it charges a real card against the live account and has to be cleaned up afterwards. The
    procedure and the cost are in `as-work/2026-08-18-website-launch-blockers/test-booking-runbook.md`.
 
-Not a blocker, but the first thing anyone sees: **`src/photos/team/team-on-site.jpg` does not
-exist.** The homepage asks for it by that exact name, and because the two fork panels are
-written to take a photo or neither, one missing file suppresses two homepage photos and both
-render as flat brand fills. It wants one landscape frame of the team on a site visit, 16:9,
-minimum 1440x810 and ideally 2560x1440. Brief: `src/photos/team/README.md`, and the full spec
-plus the generation prompt in
-`as-work/2026-08-24-vercel-setup-and-deploy/team-wide-image-prompt.md`.
+The homepage fork panel photograph is in place: it asks for `team-group-portrait` and
+`src/photos/team/agentsiam-team-group-portrait.jpg` exists, so both panels render photographs.
+The original brief for a team-on-site frame is in `src/photos/team/README.md` if a landscape
+site-visit shot is ever wanted instead.
 
 Closed, kept here so they are not re-opened by mistake:
 
@@ -387,9 +385,12 @@ Closed, kept here so they are not re-opened by mistake:
   raised and applied. The `// NEW` markers were stale after that and were removed 24/08/2026.
   See `as-work/2026-08-18-website-launch-blockers/copy-review-findings.md`.
 - ~~**Four listing disclosures are missing from `/lotushouse`, one of them `safety`.**~~ Closed
-  22/08/2026. The child-safety disclosure leads "What this place is not" in all three
-  languages, the booking panel counts adults and children separately, and the acknowledgement
-  is enforced server-side on both the request and the payment path.
+  22/08/2026. The child-safety disclosure leads "Limits to know before booking" in all three
+  languages, as `childSupervision`, and the booking panel counts adults and children
+  separately. **There is no acknowledgement and no server-side enforcement.** The under-5
+  question, the checkbox and the enforcement on the request and payment paths were added on
+  22/08/2026 and removed again on 23/08/2026, replaced by the single plain line, which is the
+  default the guest-copy standard sets. Nothing in `src/` enforces an acknowledgement today.
 - ~~**The exact street address and coordinates are public before booking.**~~ Closed
   18/08/2026 as text, and 24/08/2026 in image form: three carport photographs showing the
   house number "42" are held back in `src/photos/lotushouse/_excluded/`, and two shots of the
