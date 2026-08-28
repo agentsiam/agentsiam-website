@@ -44,6 +44,7 @@ export default async function DestinationsPage({ params }: PageProps<"/[locale]"
 
   return (
     <div className="mx-auto max-w-(--container-chrome) px-5 pb-18 pt-11">
+      {/* shape: page-header -- Eyebrow, title and intro. */}
       <p className="eyebrow">{t.navDestinations}</p>
       <h1 className="mt-3 font-headline text-[clamp(28px,5vw,40px)] font-extrabold leading-[1.1] tracking-[-0.03em]">
         {t.destinationsTitle}
@@ -52,6 +53,7 @@ export default async function DestinationsPage({ params }: PageProps<"/[locale]"
         {t.destinationsIntro}
       </p>
 
+      {/* shape: area-grid -- Every area, with its property count. */}
       <ul className="mt-9 grid gap-5 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
         {AREAS.map((area) => {
           const count = propertiesInArea(area.slug).length;

@@ -68,6 +68,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
     <div>
       <TranslationNote locale={locale} />
 
+      {/* shape: hero -- One band, two renderings: the gallery when photography exists, the brand fill when it does not. */}
       {photos.length > 0 ? (
         <section className="mx-auto max-w-(--container-chrome) px-5 pt-9">
           {breadcrumb}
@@ -114,6 +115,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
       <div className="mx-auto grid max-w-(--container-chrome) items-start gap-11 px-5 pb-18 pt-11 min-[900px]:grid-cols-[1fr_372px]">
         {/* -- Left column: the content sequence. */}
         <div className="max-w-[720px]">
+          {/* shape: fact-grid -- The unit's facts, then what it is. */}
           <dl className="flex flex-wrap gap-x-8 gap-y-3 border-b border-hairline pb-6">
             {property.facts.map((fact) => (
               <div key={fact.label}>
@@ -131,7 +133,8 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
             ))}
           </div>
 
-          {/* -- The honest section. What this place is not, printed at full size next to
+          {/* shape: honest-section
+              -- The honest section. What this place is not, printed at full size next to
                  what it is. This is the block that makes the rest of the page credible;
                  it does not get shrunk or moved below the fold. */}
           <section className="mt-8 rounded-panel bg-wash-red px-6 py-5.5">
@@ -153,6 +156,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
             </ul>
           </section>
 
+          {/* shape: fact-grid -- Good to know, and where you will be. */}
           <section className="mt-8 grid gap-6 sm:grid-cols-2">
             <div>
               <h2 className="eyebrow">{t.goodToKnow}</h2>
@@ -176,6 +180,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
             </div>
           </section>
 
+          {/* shape: proof-block -- Guest reviews, or nothing at all when there are none. */}
           {property.reviews.length > 0 ? (
             <section className="mt-8">
               <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
@@ -200,7 +205,8 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
           ) : null}
         </div>
 
-        {/* -- Right column: the booking panel.
+        {/* shape: booking-panel
+            -- Right column: the booking panel.
 
                Deliberately not sticky. The design pins the booking panel on a property
                page, but that assumes a ~400px panel; a calendar plus a request form

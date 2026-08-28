@@ -86,7 +86,7 @@ export default async function ManagementCityPage({
     <div>
       <TranslationNote locale={locale} />
 
-      {/* -- Hero. Same blue panel and gold stripe as the owner page. */}
+      {/* shape: hero -- Hero. Same blue panel and gold stripe as the owner page. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-primary px-6 py-13 sm:px-12 sm:py-14">
           <div className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block" />
@@ -118,7 +118,7 @@ export default async function ManagementCityPage({
         </div>
       </section>
 
-      {/* -- The services. Same menu as /how-it-works, the three that travel. */}
+      {/* shape: service-card-stack -- The services. Same menu as /how-it-works, the three that travel. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
           {t.mgmtServicesTitle}
@@ -158,7 +158,7 @@ export default async function ManagementCityPage({
         </p>
       </section>
 
-      {/* -- The honest-scope block. The reason this page can exist ahead of depth. */}
+      {/* shape: honest-section -- The honest-scope block. The reason this page can exist ahead of depth. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16 pb-4">
         <div className="rounded-panel bg-wash-gold px-6 py-7 sm:px-8">
           <h2 className="font-display text-[20px] font-bold tracking-[-0.02em]">
@@ -185,7 +185,7 @@ export default async function ManagementCityPage({
         </div>
       </section>
 
-      {/* -- Close. */}
+      {/* shape: closing-cta -- Close. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-10 pb-20">
         <h2 className="font-display text-[22px] font-bold tracking-[-0.02em]">
           {t.mgmtCtaTitle.replace("{city}", city.name)}

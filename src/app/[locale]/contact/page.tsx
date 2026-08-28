@@ -34,6 +34,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
 
   return (
     <div className="mx-auto w-full max-w-[1000px] px-5 pb-20 pt-14">
+      {/* shape: page-header -- Eyebrow, title and the four-things line. */}
       <span className="eyebrow">{t.contactEyebrow}</span>
       <h1 className="mt-3.5 max-w-[640px] font-headline text-[clamp(26px,4.5vw,36px)] font-extrabold leading-[1.12] tracking-[-0.03em]">
         {t.contactTitle}
@@ -42,6 +43,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
         {t.contactSub}
       </p>
 
+      {/* shape: contact-form -- The form and the sidebar beside it. */}
       <div className="mt-8.5 grid items-start gap-10 min-[900px]:grid-cols-[1fr_340px]">
         <ContactForm
           t={t}

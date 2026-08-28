@@ -99,9 +99,11 @@ export default async function PropertiesPage({
 
   return (
     <div>
+      {/* shape: page-header -- The filters are this page's header: chrome, carrying no argument. */}
       <PropertyFilters t={t} locale={locale} state={state} resultCount={results.length} />
 
-      {/* Split view: list left, map right and sticky. The handoff's one breakpoint at
+      {/* shape: property-grid
+          -- Split view: list left, map right and sticky. The handoff's one breakpoint at
           900px -- below it the split cannot hold, so the list takes the full width and the
           map becomes a toggle inside ResultsMap. */}
       <div className="mx-auto grid max-w-(--container-chrome) gap-9 px-5 pb-18 pt-7 min-[900px]:grid-cols-[1fr_minmax(360px,42%)] min-[900px]:items-start">
@@ -169,7 +171,8 @@ export default async function PropertiesPage({
       </div>
 
       <div className="mx-auto max-w-(--container-chrome) px-5 pb-18">
-        {/* The areas, as a second way in. The handoff removed the homepage area row and
+        {/* shape: area-grid
+            -- The areas, as a second way in. The handoff removed the homepage area row and
             said the landing pages are reached from the nav, the footer and organic search
             -- this keeps a route to them from the results page too, which is where
             someone who filtered too hard actually is. */}

@@ -334,7 +334,7 @@ export default async function HowItWorksPage({
     <div>
       <TranslationNote locale={locale} />
 
-      {/* -- Hero. Blue panel, gold stripe on the right quarter. */}
+      {/* shape: hero -- Hero. Blue panel, gold stripe on the right quarter. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-primary px-6 py-13 sm:px-12 sm:py-14">
           <div className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block" />
@@ -366,7 +366,8 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* -- The routes. Before the menu, deliberately: a list of six services asks the owner
+      {/* shape: route-grid
+          -- The routes. Before the menu, deliberately: a list of six services asks the owner
              to work out which ones apply to them, which is the job we are supposed to do. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
@@ -433,7 +434,7 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* -- The menu. */}
+      {/* shape: service-card-stack -- The menu. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
           {t.menuTitle}
@@ -553,7 +554,8 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* -- The report. The study's deliverable, shown rather than described. It sits
+      {/* shape: report-preview
+          -- The report. The study's deliverable, shown rather than described. It sits
              directly after the menu because that is where the study is explained, and the
              single most common owner objection -- "what do I actually get for the fee"
              -- is answered by looking at it. */}
@@ -569,7 +571,7 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* -- What the fee buys. Every claim here is checkable; keep it that way. */}
+      {/* shape: value-glyph-grid -- What the fee buys. Every claim here is checkable; keep it that way. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
           {t.vpTitle}
@@ -601,9 +603,10 @@ export default async function HowItWorksPage({
         </Link>
       </section>
 
+      {/* shape: team-row -- The people. Rendered from a component, so the page declares it here. */}
       <TeamRow heading={t.meetTheTeam} />
 
-      {/* -- The two gates. This block is what makes the No-Go credible. */}
+      {/* shape: gates-block -- The two gates. This block is what makes the No-Go credible. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-15">
         <div className="rounded-panel bg-ink px-6 py-9 sm:px-10">
           <h2 className="font-display text-2xl font-bold tracking-[-0.02em] text-white">
@@ -652,7 +655,7 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* -- The qualifier. */}
+      {/* shape: qualifier -- The qualifier. */}
       <section
         id="qualify"
         className="mx-auto max-w-(--container-prose) scroll-mt-24 px-5 pt-16"
@@ -667,7 +670,7 @@ export default async function HowItWorksPage({
         <Qualifier t={t} contactHref={href("/contact")} />
       </section>
 
-      {/* -- Included / not included, side by side. */}
+      {/* shape: included-split -- Included / not included, side by side. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
           {t.mgmtTitle}
@@ -707,7 +710,7 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* -- TM30. Gold panel: the obligation most contracts hand back to the owner. */}
+      {/* shape: highlight-panel -- TM30. Gold panel: the obligation most contracts hand back to the owner. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-14">
         <div className="rounded-panel bg-linear-to-b from-sand from-20% to-white to-62% px-6 py-8 sm:px-8.5">
           <h2 className="eyebrow text-ink/65">
@@ -725,7 +728,7 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* -- FAQ. */}
+      {/* shape: faq-rows -- FAQ. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-15">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
           {t.faqTitle}
@@ -733,7 +736,8 @@ export default async function HowItWorksPage({
         <Faq items={FAQ} />
       </section>
 
-      {/* -- Proof. The page has just spent 2,000 words claiming we run properties here; this
+      {/* shape: proof-block
+          -- Proof. The page has just spent 2,000 words claiming we run properties here; this
              is the one we run. Photographs of the actual house, not atmosphere.
 
              The link out is plain text, never a button: it crosses audiences (owner page ->
@@ -773,7 +777,7 @@ export default async function HowItWorksPage({
         </section>
       ) : null}
 
-      {/* -- Closing CTA, then the cross-audience link as plain text one tier below it. */}
+      {/* shape: closing-cta -- Closing CTA, then the cross-audience link as plain text one tier below it. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-14">
         <div className="flex flex-wrap items-center justify-between gap-7 rounded-panel bg-ink px-6 py-9 sm:px-10">
           <div className="max-w-[560px]">
@@ -795,6 +799,7 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
+      {/* shape: cross-audience-link -- The guest route out, one tier below the owner CTA. */}
       <section className="mx-auto flex max-w-(--container-prose) flex-wrap items-center gap-2.5 px-5 pb-17 pt-8.5">
         <span className="text-sm text-muted">{t.lookingToStay}</span>
         <Link

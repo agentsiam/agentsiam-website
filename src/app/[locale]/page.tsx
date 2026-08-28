@@ -119,7 +119,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
 
   return (
     <div>
-      {/* -- Hero. Ink panel inset from the viewport, carrying a photograph of Chiang Mai
+      {/* shape: hero
+          -- Hero. Ink panel inset from the viewport, carrying a photograph of Chiang Mai
              behind the copy. Until 24/08/2026 this was flat ink with a blue and gold stripe
              on the right quarter; the stripes came out with the photo, because a photograph
              plus two colour blocks is three treatments competing in one panel.
@@ -190,7 +191,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      {/* -- The audience fork. Guests left, owners right, both low-key panels rather than
+      {/* shape: audience-fork
+          -- The audience fork. Guests left, owners right, both low-key panels rather than
              competing buttons. This is the *only* place the visitor is asked to
              self-identify: a second, text-only fork band sat directly above this one until
              24/08/2026, repeating "I want to stay here." and "I own a property here."
@@ -275,7 +277,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      {/* -- The property. One tile, using the same component shape a results grid would. */}
+      {/* shape: property-tile -- The property. One tile, using the same component shape a results grid would. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
         <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
           {t.featuredTitle}
@@ -343,7 +345,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </Link>
       </section>
 
-      {/* -- Why book direct. */}
+      {/* shape: value-glyph-grid -- Why book direct. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
         <div className="grid gap-6.5 rounded-panel bg-surface px-8 py-7.5 sm:grid-cols-[repeat(auto-fit,minmax(230px,1fr))]">
           {why.map((item) => (
@@ -357,7 +359,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      {/* -- Social proof. The handoff's rail carries eight review cards; we have the
+      {/* shape: proof-block
+          -- Social proof. The handoff's rail carries eight review cards; we have the
              reviews we actually have. A rail of one is a quote. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
         <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
@@ -380,7 +383,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      {/* -- Owner band. The cross-audience fork, given real weight here because owners are
+      {/* shape: audience-fork
+          -- Owner band. The cross-audience fork, given real weight here because owners are
              the business's paying side, but kept below the guest content. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-16">
         <div className="relative overflow-hidden rounded-panel bg-ink p-8 sm:p-12">
@@ -439,7 +443,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      {/* -- Closing. One CTA per audience, and the guest one is the plain link because the
+      {/* shape: closing-cta
+          -- Closing. One CTA per audience, and the guest one is the plain link because the
              page is guest-led: the owner CTA is the conversion this page is asking for. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pb-17 pt-14">
         <div className="grid gap-7 border-t border-hairline pt-7.5 sm:grid-cols-[repeat(auto-fit,minmax(260px,1fr))]">

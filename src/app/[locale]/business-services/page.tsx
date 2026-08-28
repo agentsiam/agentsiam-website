@@ -64,6 +64,7 @@ export default async function BusinessServicesPage({ params }: PageProps<"/[loca
       <TranslationNote locale={locale} />
 
       <div className="mx-auto w-full max-w-[1000px] px-5 pb-20 pt-14">
+        {/* shape: hero -- Eyebrow, title and the one paragraph placing this line of work. */}
         <span className="eyebrow">{t.businessServices}</span>
         <h1 className="mt-3.5 max-w-[660px] font-headline text-[clamp(26px,4.5vw,34px)] font-extrabold leading-[1.14] tracking-[-0.03em]">
           Consulting work, alongside the rentals.
@@ -77,6 +78,7 @@ export default async function BusinessServicesPage({ params }: PageProps<"/[loca
           .
         </p>
 
+        {/* shape: pillar-bento -- The four pillars. Carries scope and nothing else, which is the finding. */}
         <div className="mt-8 grid gap-4 sm:grid-cols-[repeat(auto-fit,minmax(260px,1fr))]">
           {PILLARS.map((pillar) => (
             <article
@@ -95,6 +97,7 @@ export default async function BusinessServicesPage({ params }: PageProps<"/[loca
           ))}
         </div>
 
+        {/* shape: closing-cta -- The ask. */}
         <Link href={href("/contact")} className="pill-primary mt-8">
           {t.navContact}
         </Link>
