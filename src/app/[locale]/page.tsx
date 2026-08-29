@@ -92,12 +92,19 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       ? { guest: guestForkPhoto, owner: ownerForkPhoto }
       : null;
 
-  // The three main services. Numbered as services rather than steps since 25/08/2026: the
-  // offering became a menu, so "Step 1" on the home page contradicted the page it links to.
-  // The card component is unchanged -- this is a label change, not a design change.
+  // The three services that lead the home page. Unnumbered and management-first since
+  // 29/08/2026, on Paul's instruction that the ladder is gone: numbering three of six
+  // services and opening on the study restated the staircase the offering dropped on
+  // 25/08/2026, whatever the eyebrow called them. Ordinals were removed from the cards
+  // and from the dictionary keys in the same edit, so the concept cannot come back by
+  // someone reading stair1Title and assuming a sequence. Management leads because it is
+  // the only recurring service and the one most owners actually arrive for.
   //
   // website-wireframe.html specifies these as
-  // "3-STEP STAIRCASE -- bento-grid, 3x bento-card.on-grad", and on-grad is a gradient
+  // "3-STEP STAIRCASE -- bento-grid, 3x bento-card.on-grad", which is the retired model
+  // stated as a build rule. It is already recorded as stale in the consulting repo's
+  // decisions-log.md; re-deriving it is a Law 1 change and has not been proposed. The
+  // gradient treatment below is taken from it and is unaffected. on-grad is a gradient
   // rather than a flat fill: full brand colour to 20%, fading to white by 62%. They were
   // flat bg-teal/bg-secondary/bg-sand until 24/08/2026, which read heavier and more
   // poster-like than the system intends. The .grad-* classes are in globals.css, copied
@@ -105,10 +112,25 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   //
   // Ink text throughout is part of the variant, not a choice: the lower half of each card
   // is near-white, so white text would vanish there.
-  const staircase = [
-    { n: "1", title: t.stair1Title, body: t.stair1Body, fill: "grad-teal" },
-    { n: "2", title: t.stair2Title, body: t.stair2Body, fill: "grad-vermilion" },
-    { n: "3", title: t.stair3Title, body: t.stair3Body, fill: "grad-sand" },
+  const leadServices = [
+    {
+      k: "management",
+      title: t.svcManagementTitle,
+      body: t.svcManagementBody,
+      fill: "grad-sand",
+    },
+    {
+      k: "permission",
+      title: t.svcPermissionTitle,
+      body: t.svcPermissionBody,
+      fill: "grad-vermilion",
+    },
+    {
+      k: "study",
+      title: t.svcStudyTitle,
+      body: t.svcStudyBody,
+      fill: "grad-teal",
+    },
   ];
 
   const why = [
@@ -404,25 +426,22 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               href={href("/contact")}
               className="whitespace-nowrap rounded-full bg-white px-6.5 py-3.5 text-[14.5px] font-semibold text-ink hover:bg-sand"
             >
-              {t.bookStudy}
+              {t.talkToUs}
             </Link>
           </div>
 
           <div className="relative mt-8 grid gap-4 sm:grid-cols-[repeat(auto-fit,minmax(240px,1fr))]">
-            {staircase.map((step) => (
+            {leadServices.map((svc) => (
               <Link
-                key={step.n}
+                key={svc.k}
                 href={href("/how-it-works")}
-                className={`group flex min-h-[210px] flex-col gap-2.5 rounded-panel ${step.fill} p-6.5`}
+                className={`group flex min-h-[210px] flex-col gap-2.5 rounded-panel ${svc.fill} p-6.5`}
               >
-                <span className="eyebrow text-ink/65">
-                  {t.service} {step.n}
-                </span>
                 <h3 className="font-display text-xl font-bold tracking-[-0.015em] text-ink">
-                  {step.title}
+                  {svc.title}
                 </h3>
                 <p className="text-[13.5px] leading-relaxed text-ink/80">
-                  {step.body}
+                  {svc.body}
                 </p>
                 <span className="mt-auto flex h-8.5 w-8.5 items-center justify-center rounded-full bg-ink text-white group-hover:bg-primary">
                   →
@@ -464,7 +483,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               {t.closingOwner}
             </h2>
             <Link href={href("/contact")} className="pill-primary mt-3">
-              {t.bookStudy}
+              {t.talkToUs}
             </Link>
           </div>
         </div>

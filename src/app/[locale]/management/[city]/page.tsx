@@ -105,7 +105,7 @@ export default async function ManagementCityPage({
                 href={href("/contact")}
                 className="rounded-full bg-ink px-6.5 py-3.5 text-[14.5px] font-semibold text-white hover:bg-white hover:text-ink"
               >
-                {t.bookStudy}
+                {t.talkToUs}
               </Link>
               <Link
                 href={href("/how-it-works")}
@@ -191,14 +191,15 @@ export default async function ManagementCityPage({
           {t.mgmtCtaTitle.replace("{city}", city.name)}
         </h2>
         <p className="mt-2 max-w-[620px] text-[15px] leading-relaxed text-muted">
-          Start with the study. It ends in a Go or a No-Go, and a No-Go is a real
-          outcome we are willing to hand you.
+          Tell us what the property is and what it is doing now. If a study
+          would genuinely tell you something your own numbers do not, we will
+          say so, and it ends in a Go or a No-Go we are willing to hand you.
         </p>
         <Link
           href={href("/contact")}
           className="mt-6 inline-block rounded-full bg-ink px-6.5 py-3.5 text-[14.5px] font-semibold text-white hover:bg-primary"
         >
-          {t.bookStudy}
+          {t.talkToUs}
         </Link>
       </section>
     </div>

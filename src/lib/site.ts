@@ -15,7 +15,7 @@ export const SITE_URL =
 export const SITE_NAME = "AgentSiam";
 
 export const SITE_DESCRIPTION =
-  "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Three separate steps, each one earning the next.";
+  "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Take the services your property needs and leave the ones it does not.";
 
 // The published contact address, used by the legal pages and as the reply-to on
 // contact form notifications, so it is written down once.

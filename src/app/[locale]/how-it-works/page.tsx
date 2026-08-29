@@ -353,7 +353,7 @@ export default async function HowItWorksPage({
                 href={href("/contact")}
                 className="rounded-full bg-ink px-6.5 py-3.5 text-[14.5px] font-semibold text-white hover:bg-white hover:text-ink"
               >
-                {t.bookStudy}
+                {t.talkToUs}
               </Link>
               <a
                 href="#qualify"
@@ -454,9 +454,6 @@ export default async function HowItWorksPage({
                 <div
                   className={`flex flex-col gap-1.5 ${step.fill} px-6.5 py-7`}
                 >
-                  <span className="eyebrow text-ink/65">
-                    {t.service} {step.n}
-                  </span>
                   <h3 className="font-display text-[21px] font-bold leading-tight tracking-[-0.015em] text-ink">
                     {step.title}
                   </h3>
@@ -517,9 +514,6 @@ export default async function HowItWorksPage({
                 <div
                   className={`flex flex-col gap-1.5 ${extra.fill} px-6.5 py-7`}
                 >
-                  <span className="eyebrow text-ink/65">
-                    {t.service} {extra.n}
-                  </span>
                   <h3 className="font-display text-[21px] font-bold leading-tight tracking-[-0.015em] text-ink">
                     {extra.title}
                   </h3>
@@ -599,7 +593,7 @@ export default async function HowItWorksPage({
           ))}
         </div>
         <Link href={href("/contact")} className="pill-primary mt-8">
-          {t.bookStudy} →
+          {t.talkToUs} →
         </Link>
       </section>
 

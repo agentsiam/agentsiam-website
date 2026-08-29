@@ -74,16 +74,15 @@ export const en = {
   ownerBandFoot: "Houses, townhouses and small buildings in Chiang Mai. Condos too, where the building permits short stays in writing.",
   checkQualify: "Check if yours qualifies",
   bookStudy: "Book a feasibility study",
-  step: "Step",
-  service: "Service",
-  stair1Title: "Feasibility",
-  stair1Body:
+  talkToUs: "Tell us about your property",
+  svcStudyTitle: "Feasibility",
+  svcStudyBody:
     "We model what your property would actually earn here, against real occupancy in your area. For when there is no track record to read yet.",
-  stair2Title: "Permission",
-  stair2Body:
+  svcPermissionTitle: "Permission",
+  svcPermissionBody:
     "Thailand's rules on short stays are specific and often misread. We establish what your building and title genuinely allow, and file for you.",
-  stair3Title: "Management",
-  stair3Body:
+  svcManagementTitle: "Management",
+  svcManagementBody:
     "Listings, pricing, guests, maintenance. A local team on the ground, not a dashboard. Most owners start here.",
 
   closingGuest: "Still looking for somewhere to stay?",
@@ -146,7 +145,7 @@ export const en = {
   proofBody: "Lotus House, in Chang Khlan. Everything on this page is what we actually do for it: permission, channels, TM30 filings and guest care.",
   meetTheTeam: "The people who do it",
   faqTitle: "The questions everyone asks",
-  startNumbers: "Start with the numbers.",
+  startNumbers: "Not sure it is worth doing?",
   lookingToStay: "Looking for a place to stay instead?",
   step1Name: "Feasibility and ROI study",
   step1Meta: "When there is no track record to read",
@@ -179,7 +178,7 @@ export const en = {
   whatHappensNext: "What happens next",
   nextStep1: "We read it and reply within two working days.",
   nextStep2: "A call, then a visit to the property if it looks viable.",
-  nextStep3: "A written feasibility report with real numbers, including the case for not doing it.",
+  nextStep3: "A written proposal covering only the services your property needs, including where we think you need none of them.",
   businessNote:
     "Asking about business services rather than a property? Write to",
   guestQnNote: "Guest with a question about a booking? Use the booking panel on the property page instead. It carries your dates with it.",  // adapted from the handoff
@@ -381,14 +380,14 @@ export const en = {
   // snippet would not match what the visitor lands on.
   metaHomeTitle: "AgentSiam | Short-term rental management in Chiang Mai",
   metaHomeDesc:
-    "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Three separate steps, each one earning the next.",
+    "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Take the services your property needs and leave the ones it does not.",
   metaHowTitle: "Vacation rental management in Chiang Mai",
-  metaHowDesc: "Three steps: a paid feasibility and ROI study that may end in a No-Go, the non-hotel exemption filing, then OTA and direct booking management.",
+  metaHowDesc: "Six services, chosen against your property rather than sold as a package. Feasibility, the non-hotel exemption filing, and OTA and direct booking management.",
   metaMgmtTitle: "Short-term rental management in {city}",
   metaMgmtDesc: "Feasibility, vacation rental permission and management for short-term rentals in {city}, delivered from our Chiang Mai team.",
   mgmtEyebrow: "For owners",
   mgmtHeroTitle: "Short-term rental management in {city}",
-  mgmtHeroSub: "The same three services we run in Chiang Mai, available in {city} when the work comes. It starts with a study that is allowed to say No.",
+  mgmtHeroSub: "The same three services we run in Chiang Mai, available in {city} when the work comes. Take the ones your property needs.",
   mgmtServicesTitle: "What AgentSiam does",
   mgmtScopeTitle: "What we do not do in {city} yet",
   mgmtCtaTitle: "Thinking about short-term letting in {city}?",
