@@ -57,22 +57,42 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
   const area = propertyArea(property);
   const photos = PHOTOS[property.slug] ?? [];
 
-  const breadcrumb = (
-    <nav aria-label="Breadcrumb" className="eyebrow">
-      <Link href={href("/")} className="hover:text-primary">
-        AgentSiam
-      </Link>{" "}
-      · Chiang Mai · {area?.name}
-    </nav>
-  );
-
-  // Mirrors the visible trail above, minus "Chiang Mai", which is a label rather than a
-  // page. The final crumb is the property itself and carries no URL.
+  // One trail. The visible breadcrumb and the marked-up one are rendered from this array,
+  // so they cannot drift apart, which is the whole reason a crawler is allowed to trust the
+  // markup. The final crumb is the property itself and carries no URL.
+  //
+  // "Chiang Mai" used to sit between the brand and the neighbourhood. It is gone, because
+  // every crumb but the last needs a URL and there is no Chiang Mai page to give it one.
+  // The city is still named in the heading, the tagline and the description.
   const crumbs: Crumb[] = [
     { name: SITE_NAME, path: "/" },
     ...(area ? [{ name: area.name, path: `/destinations/${area.slug}` }] : []),
     { name: property.title },
   ];
+
+  // Two renderings of the one trail: ink on the photo hero, light on the brand fill.
+  const breadcrumb = (tone: "ink" | "onFill") => (
+    <nav
+      aria-label="Breadcrumb"
+      className={tone === "ink" ? "eyebrow" : "eyebrow text-white/75"}
+    >
+      {crumbs.map((crumb, index) => (
+        <span key={crumb.name}>
+          {index > 0 ? " · " : null}
+          {crumb.path ? (
+            <Link
+              href={href(crumb.path)}
+              className={tone === "ink" ? "hover:text-primary" : "hover:text-white"}
+            >
+              {crumb.name}
+            </Link>
+          ) : (
+            crumb.name
+          )}
+        </span>
+      ))}
+    </nav>
+  );
 
   return (
     <div>
@@ -83,7 +103,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
       {/* shape: hero -- One band, two renderings: the gallery when photography exists, the brand fill when it does not. */}
       {photos.length > 0 ? (
         <section className="mx-auto max-w-(--container-chrome) px-5 pt-9">
-          {breadcrumb}
+          {breadcrumb("ink")}
           <h1 className="mt-3 font-headline text-[clamp(28px,5vw,40px)] font-extrabold leading-[1.1] tracking-[-0.03em]">
             {property.title}
           </h1>
@@ -108,12 +128,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
           <div
             className={`mx-auto mt-4 max-w-(--container-chrome) rounded-panel ${property.fill} px-6 py-11 sm:px-12`}
           >
-            <nav aria-label="Breadcrumb" className="eyebrow text-white/75">
-              <Link href={href("/")} className="hover:text-white">
-                AgentSiam
-              </Link>{" "}
-              · Chiang Mai · {area?.name}
-            </nav>
+            {breadcrumb("onFill")}
             <h1 className="mt-3.5 font-headline text-[clamp(28px,5vw,40px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white">
               {property.title}
             </h1>

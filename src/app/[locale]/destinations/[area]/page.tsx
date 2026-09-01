@@ -9,7 +9,7 @@ import { AREAS, areaBySlug, CITY_CENTRE, distanceKm } from "@/lib/areas";
 import { propertiesInArea } from "@/lib/property";
 import { searchToQuery } from "@/lib/search";
 import { pageMeta } from "@/lib/site";
-import { breadcrumbSchema } from "@/lib/structured-data";
+import { breadcrumbSchema, type Crumb } from "@/lib/structured-data";
 import { areaVibe } from "@/i18n/area-vibe";
 
 /**
@@ -60,21 +60,24 @@ export default async function AreaPage({
   const properties = propertiesInArea(area.slug);
   const km = distanceKm(CITY_CENTRE, { lat: area.lat, lng: area.lng });
 
+  // One trail, rendered and marked up from the same array so the two cannot drift apart.
+  //
+  // The trail used to end on "Chiang Mai" while the markup ended on the neighbourhood. It
+  // now ends on the neighbourhood in both, which is this page. The city is not a crumb:
+  // every crumb but the last needs a URL, and there is no Chiang Mai page to give it one.
+  const crumbs: Crumb[] = [
+    { name: t.navDestinations, path: "/destinations" },
+    { name: area.name },
+  ];
+
   return (
     <div className="mx-auto max-w-(--container-chrome) px-5 pb-18 pt-9">
-      {/* Mirrors the visible trail: the index, then this neighbourhood. "Chiang Mai" is
-          a label rather than a page, so it is not a crumb. */}
-      <JsonLd
-        data={breadcrumbSchema(locale, [
-          { name: t.navDestinations, path: "/destinations" },
-          { name: area.name },
-        ])}
-      />
+      <JsonLd data={breadcrumbSchema(locale, crumbs)} />
       <nav aria-label="Breadcrumb" className="eyebrow">
         <Link href={href("/destinations")} className="hover:text-primary">
           {t.navDestinations}
         </Link>{" "}
-        · Chiang Mai
+        · {area.name}
       </nav>
 
       <h1 className="mt-3 font-headline text-[clamp(28px,5vw,40px)] font-extrabold leading-[1.1] tracking-[-0.03em]">
