@@ -352,6 +352,20 @@ The pipeline, so nobody has to think about image formats:
   18/08/2026. All eleven route files now read `metaXxxTitle` / `metaXxxDesc` from the
   dictionary. Those 22 Thai and Chinese strings were reviewed on 23/08/2026 and the `// NEW`
   markers were removed on 24/08/2026, so nothing in the dictionaries carries a marker now.
+- **The vacation rental rich result is forfeited, not broken.** Google requires `geo` on a
+  `VacationRental`, and exact coordinates are booking-confirmation material under the same rule
+  the property page and the results map already follow. Checked against the Rich Results Test on
+  01/09/2026: the missing `geo` is the only critical issue left on the item, every other field
+  validates, and `/lotushouse` still earns a valid Local business result alongside it.
+  `approxLocation()` already publishes an offset point for public maps and would satisfy the
+  field, but it would hand a booking product a location that is deliberately wrong. Open, and a
+  decision rather than a bug.
+- **The `FAQPage` block on `/how-it-works` produces no rich result.** The markup is correct:
+  zero errors and zero warnings at validator.schema.org on 01/09/2026, and all eight questions
+  and answers appear verbatim in the rendered page, so markup and visible text agree. Google no
+  longer returns FAQ rich results for a site like this one, so the block earns nothing in Search
+  and is there for the other engines and the language models. Nothing to fix, and no FAQ
+  snippets to expect.
 
 ## Getting started
 
