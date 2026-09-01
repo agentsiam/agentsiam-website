@@ -5,6 +5,7 @@ import type { Photo } from "@/lib/photos.generated";
 import { propertyArea, type Property } from "@/lib/property";
 import {
   absoluteUrl,
+  assetUrl,
   CONTACT_EMAIL,
   POSTAL_ADDRESS,
   SITE_DESCRIPTION,
@@ -187,7 +188,7 @@ export function propertySchema({
     checkoutTime: property.checkOut,
     ...(amenities.length > 0 ? { amenityFeature: amenities } : {}),
     ...(photos.length > 0
-      ? { image: photos.slice(0, 12).map((photo) => `${SITE_URL}${photo.src.src}`) }
+      ? { image: photos.slice(0, 12).map((photo) => assetUrl(photo.src.src)) }
       : {}),
   };
 }

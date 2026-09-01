@@ -135,6 +135,21 @@ export function absoluteUrl(locale: Locale, path: string): string {
 }
 
 /**
+ * Absolute URL for a static asset, from the path a bundled import gives it.
+ *
+ * encodeURI rather than plain interpolation, because photo filenames come from the
+ * photographer and several carry spaces: "Parking zone Street.jpg" and
+ * "20250413_100343 (2).jpg" among them. A browser forgives an unescaped space in an
+ * img src, which is why the pages have always looked right, but a sitemap's <image:loc>
+ * and a JSON-LD image array are read by machines that do not forgive it. encodeURI
+ * escapes the space and leaves everything already legal in a path alone, parentheses
+ * included.
+ */
+export function assetUrl(path: string): string {
+  return `${SITE_URL}${encodeURI(path)}`;
+}
+
+/**
  * hreflang map for a route: one entry per locale plus x-default pointing at English.
  * Every page publishes the full set, which is what tells a search engine the three URLs
  * are the same page rather than three thin duplicates.

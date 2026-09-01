@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { ROUTES, SITE_URL, absoluteUrl, languageAlternates } from "@/lib/site";
+import { ROUTES, absoluteUrl, assetUrl, languageAlternates } from "@/lib/site";
 import { PHOTOS } from "@/lib/photos.generated";
 import { LOCALES } from "@/i18n/config";
 
@@ -18,10 +18,15 @@ const ROUTE_PHOTO_SET: Record<string, string> = {
   "/lotushouse": "lotushouse",
 };
 
-/** Absolute URLs for a photo set, in the manifest's running order. Empty when unset. */
+/**
+ * Absolute URLs for a photo set, in the manifest's running order. Empty when unset.
+ *
+ * Through assetUrl, because several of these filenames carry spaces and <image:loc> takes
+ * an escaped URL. Next writes whatever it is given into the XML unchanged.
+ */
 function setImages(set: string | undefined): string[] {
   if (!set) return [];
-  return (PHOTOS[set] ?? []).map((photo) => `${SITE_URL}${photo.src.src}`);
+  return (PHOTOS[set] ?? []).map((photo) => assetUrl(photo.src.src));
 }
 
 // Routes are declared once in src/lib/site.ts, so adding a page there puts it in the
