@@ -67,6 +67,9 @@ unfinished page out of the sitemap and set it to noindex.
 - Every page emits a canonical plus the full hreflang set (`en`, `th`, `zh-Hans`, `x-default`),
   and `sitemap.xml` repeats the same set per URL. The two have to agree; both are generated
   from `languageAlternates()` so they cannot drift.
+- `sitemap.xml` also carries image entries for the routes that render a whole photo set,
+  which today is `/lotushouse` and its gallery. The mapping is `ROUTE_PHOTO_SET` in
+  `src/app/sitemap.ts`; the team portraits are deliberately not advertised.
 - `src/app/opengraph-image.tsx` generates the 1200x630 share card at build time from the
   design-system colours and the filed wordmark, rather than a hand-exported PNG that drifts.
 - **Structured data** is built in `src/lib/structured-data.ts` and attached with
