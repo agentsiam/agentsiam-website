@@ -27,6 +27,11 @@ import {
  * - **No streetAddress and no geo on a property.** The exact address and coordinates are
  *   booking-confirmation material, the same rule the property page and the results map
  *   already follow. Structured data is published markup like any other, so it obeys it.
+ *   Know the price of this one: geo is a required field for Google's vacation rental rich
+ *   result, so withholding it forfeits that result. Confirmed against the Rich Results
+ *   Test, which reports the listing invalid on the missing geo alone. The block is still
+ *   correct for every other reader, and the property page earns a valid Local business
+ *   result regardless.
  * - **No telephone, no sameAs, no logo on the organisation.** No phone number or LINE ID
  *   is published anywhere on the site yet, no social profile is confirmed, and there is no
  *   logo file under public/. Each is a one-line addition on the day it becomes true.
@@ -124,9 +129,16 @@ export function breadcrumbSchema(locale: Locale, trail: Crumb[]): Record<string,
  * A property listing.
  *
  * VacationRental is schema.org's own type for a whole unit let short term, which is what
- * this is, rather than LodgingBusiness, which describes a hotel. Google's rich result for
- * it is partner-gated, so the immediate readers are the other engines and the language
- * models, and the markup is correct for whoever reads it.
+ * this is. It is a kind of LodgingBusiness, meaning it describes the letting rather than
+ * the rooms, so the room counts, the occupancy and the amenities hang off an Accommodation
+ * underneath it and not off the listing itself. schema.org rejects them on the listing, and
+ * Google asks for the same nesting under the name containsPlace.
+ *
+ * No provider and no inLanguage. Both were rejected on this type, and neither has an
+ * honest replacement: schema.org has no "managed by", and calling AgentSiam the property's
+ * parent organisation would state a relationship that does not exist. The company is
+ * already declared once per page from the root layout, and the page's language is already
+ * on the html element, so nothing is lost by leaving them out.
  *
  * Amenities are named from the dictionary, so they read in the page's own language and are
  * spelled once. A feature with no dictionary label is skipped rather than shown as its
@@ -162,12 +174,14 @@ export function propertySchema({
   return {
     "@context": SCHEMA_CONTEXT,
     "@type": "VacationRental",
-    "@id": `${url}#accommodation`,
+    "@id": `${url}#listing`,
+    // The slug, because it is the one name for this property that is stable across the
+    // site, the sitemap and the URL. Not the Beds24 id: that is a third party's key and
+    // Beds24 is never named in the front end.
+    identifier: property.slug,
     name: property.title,
     description: t.metaLotusDesc,
     url,
-    inLanguage: HTML_LANG[locale],
-    provider: { "@id": ORGANIZATION_ID },
     // Neighbourhood, city, country. No street and no coordinates, on purpose: see the
     // note at the top of this file.
     address: {
@@ -176,17 +190,27 @@ export function propertySchema({
       addressRegion: "Chiang Mai",
       addressCountry: "TH",
     },
-    numberOfBedrooms: property.bedrooms,
-    numberOfBathroomsTotal: property.bathrooms,
-    occupancy: {
-      "@type": "QuantitativeValue",
-      // C62 is the UN/CEFACT code for a plain count, which is what "guests" is here.
-      unitCode: "C62",
-      maxValue: property.maxGuests,
-    },
     checkinTime: property.checkIn,
     checkoutTime: property.checkOut,
-    ...(amenities.length > 0 ? { amenityFeature: amenities } : {}),
+    // The unit itself, carrying everything that describes the space rather than the
+    // letting. It keeps the #accommodation id, because it is the accommodation.
+    containsPlace: {
+      "@type": "Accommodation",
+      "@id": `${url}#accommodation`,
+      numberOfBedrooms: property.bedrooms,
+      numberOfBathroomsTotal: property.bathrooms,
+      occupancy: {
+        "@type": "QuantitativeValue",
+        // C62 is the UN/CEFACT code for a plain count, which is what "guests" is here.
+        unitCode: "C62",
+        // value, not maxValue. schema.org defines occupancy as the number of people the
+        // accommodation takes, so the figure is already a ceiling and needs no second word
+        // for it. Google reads value and ignores maxValue outright: with maxValue alone the
+        // Rich Results Test reported occupancy as having no value at all.
+        value: property.maxGuests,
+      },
+      ...(amenities.length > 0 ? { amenityFeature: amenities } : {}),
+    },
     ...(photos.length > 0
       ? { image: photos.slice(0, 12).map((photo) => assetUrl(photo.src.src)) }
       : {}),
