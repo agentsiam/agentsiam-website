@@ -22,6 +22,24 @@ export const SITE_DESCRIPTION =
 export const CONTACT_EMAIL = "hi@agentsiam.com";
 
 /**
+ * The registered postal address, as published.
+ *
+ * Written down once because two places publish it and they must not drift: the footer
+ * renders it, and the Organization node in src/lib/structured-data.ts declares it. It has
+ * to match the Google Business Profile character for character, or the two records compete
+ * in local search.
+ */
+export const POSTAL_ADDRESS = {
+  legalName: "AgentSiam Co., Ltd.",
+  street: "922/11 Rama 9 Road, Huaykwang",
+  locality: "Bangkok",
+  postalCode: "10310",
+  country: "Thailand",
+  /** ISO 3166-1 alpha-2, for schema.org's addressCountry. */
+  countryCode: "TH",
+} as const;
+
+/**
  * WhatsApp number that guest enquiries reach, digits only with country code and no plus,
  * e.g. 66812345678. Unset hides every WhatsApp call to action rather than rendering a link
  * that opens WhatsApp to nobody, which is worse than no button at all.

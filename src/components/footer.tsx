@@ -4,7 +4,7 @@ import { getDictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
 import { MANAGEMENT_CITIES } from "@/lib/management-cities";
-import { CONTACT_EMAIL } from "@/lib/site";
+import { CONTACT_EMAIL, POSTAL_ADDRESS } from "@/lib/site";
 
 /**
  * Ink footer from the handoff. Two rules from the design carried over:
@@ -111,11 +111,11 @@ export function Footer({ locale }: { locale: Locale }) {
             {/* Name and address must match the Google Business Profile character for
                 character, or the two records compete in local search. */}
             <address className="text-[13.5px] not-italic leading-relaxed text-white/80">
-              AgentSiam Co., Ltd.
+              {POSTAL_ADDRESS.legalName}
               <br />
-              922/11 Rama 9 Road, Huaykwang
+              {POSTAL_ADDRESS.street}
               <br />
-              Bangkok 10310, Thailand
+              {`${POSTAL_ADDRESS.locality} ${POSTAL_ADDRESS.postalCode}, ${POSTAL_ADDRESS.country}`}
             </address>
             <a
               href={`mailto:${CONTACT_EMAIL}`}

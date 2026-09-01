@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
+import { JsonLd } from "@/components/json-ld";
 import { SampleReport } from "@/components/sample-report";
 import { TeamRow } from "@/components/team-row";
 import { TranslationNote } from "@/components/translation-note";
@@ -11,6 +12,7 @@ import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { pickPhotos } from "@/lib/photos";
 import { LOTUS_HOUSE } from "@/lib/property";
 import { pageMeta } from "@/lib/site";
+import { faqSchema } from "@/lib/structured-data";
 import { Qualifier } from "./qualifier";
 
 /**
@@ -728,6 +730,8 @@ export default async function HowItWorksPage({
           {t.faqTitle}
         </h2>
         <Faq items={FAQ} />
+        {/* Same questions and answers as the accordion renders, from the same array. */}
+        <JsonLd data={faqSchema(FAQ)} />
       </section>
 
       {/* shape: proof-block

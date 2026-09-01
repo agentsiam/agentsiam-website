@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookingPanel } from "@/components/booking-panel";
+import { JsonLd } from "@/components/json-ld";
 import { PhotoGallery } from "@/components/photo-gallery";
 import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
@@ -9,7 +10,8 @@ import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { PHOTOS } from "@/lib/photos.generated";
 import { alt as ogAlt } from "./opengraph-image";
 import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
-import { pageMeta, routeOgImage } from "@/lib/site";
+import { pageMeta, routeOgImage, SITE_NAME } from "@/lib/site";
+import { breadcrumbSchema, propertySchema, type Crumb } from "@/lib/structured-data";
 import { areaVibe } from "@/i18n/area-vibe";
 
 /**
@@ -64,9 +66,19 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
     </nav>
   );
 
+  // Mirrors the visible trail above, minus "Chiang Mai", which is a label rather than a
+  // page. The final crumb is the property itself and carries no URL.
+  const crumbs: Crumb[] = [
+    { name: SITE_NAME, path: "/" },
+    ...(area ? [{ name: area.name, path: `/destinations/${area.slug}` }] : []),
+    { name: property.title },
+  ];
+
   return (
     <div>
       <TranslationNote locale={locale} />
+      <JsonLd data={propertySchema({ locale, t, property, photos })} />
+      <JsonLd data={breadcrumbSchema(locale, crumbs)} />
 
       {/* shape: hero -- One band, two renderings: the gallery when photography exists, the brand fill when it does not. */}
       {photos.length > 0 ? (

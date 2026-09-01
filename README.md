@@ -69,6 +69,13 @@ unfinished page out of the sitemap and set it to noindex.
   from `languageAlternates()` so they cannot drift.
 - `src/app/opengraph-image.tsx` generates the 1200x630 share card at build time from the
   design-system colours and the filed wordmark, rather than a hand-exported PNG that drifts.
+- **Structured data** is built in `src/lib/structured-data.ts` and attached with
+  `src/components/json-ld.tsx`. `Organization` and `WebSite` come from the root layout on
+  every page and carry stable `@id` values; `/lotushouse` adds `VacationRental`, and
+  `/lotushouse` and `/destinations/[area]` add a `BreadcrumbList` that mirrors the
+  breadcrumb the page actually renders. `/how-it-works` adds `FAQPage` from the same array
+  the accordion reads. No rating, no street address, no coordinates, no telephone: the file
+  says why for each, and each is a one-line addition on the day the data exists.
 
 ## Where the design comes from
 

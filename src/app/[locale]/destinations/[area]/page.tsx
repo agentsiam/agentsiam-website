@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/json-ld";
 import { PropertyTile } from "@/components/property-tile";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, LOCALES, type Locale } from "@/i18n/config";
@@ -8,6 +9,7 @@ import { AREAS, areaBySlug, CITY_CENTRE, distanceKm } from "@/lib/areas";
 import { propertiesInArea } from "@/lib/property";
 import { searchToQuery } from "@/lib/search";
 import { pageMeta } from "@/lib/site";
+import { breadcrumbSchema } from "@/lib/structured-data";
 import { areaVibe } from "@/i18n/area-vibe";
 
 /**
@@ -60,6 +62,14 @@ export default async function AreaPage({
 
   return (
     <div className="mx-auto max-w-(--container-chrome) px-5 pb-18 pt-9">
+      {/* Mirrors the visible trail: the index, then this neighbourhood. "Chiang Mai" is
+          a label rather than a page, so it is not a crumb. */}
+      <JsonLd
+        data={breadcrumbSchema(locale, [
+          { name: t.navDestinations, path: "/destinations" },
+          { name: area.name },
+        ])}
+      />
       <nav aria-label="Breadcrumb" className="eyebrow">
         <Link href={href("/destinations")} className="hover:text-primary">
           {t.navDestinations}

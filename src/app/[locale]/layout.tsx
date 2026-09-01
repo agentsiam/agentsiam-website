@@ -15,9 +15,11 @@ import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
 import { getDictionary } from "@/i18n";
 import { HTML_LANG, LOCALES, isLocale } from "@/i18n/config";
 import { OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL, languageAlternates } from "@/lib/site";
+import { organizationSchema, websiteSchema } from "@/lib/structured-data";
 
 // This is the root layout. It sits under a dynamic segment rather than at src/app/layout.tsx
 // because every page is localised; src/proxy.ts rewrites the bare English paths onto /en so
@@ -137,6 +139,10 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer locale={locale} />
+        {/* The company and the site, declared once per page with stable @id values so
+            every other block on the page can point at them instead of repeating them. */}
+        <JsonLd data={organizationSchema()} />
+        <JsonLd data={websiteSchema()} />
         <Analytics />
       </body>
     </html>
