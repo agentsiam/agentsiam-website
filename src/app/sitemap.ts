@@ -33,17 +33,20 @@ function setImages(set: string | undefined): string[] {
 // sitemap automatically. Pages flagged `placeholder` are left out: they are also set to
 // noindex, and a sitemap that advertises a noindex URL is a contradiction crawlers flag.
 //
+// No lastmod. It was `new Date()` applied to every entry, so each deploy told a crawler
+// that all twenty pages had changed at the same instant, which was never true. Google
+// discounts a lastmod it cannot trust, and a date nothing stands behind is the one value
+// here not derived from a real source. Omitting it says nothing rather than something
+// false. If it comes back, it has to come from the commit that last touched the route.
+//
 // Every route is listed once per locale, and each entry repeats the full hreflang set --
 // that is what Google's sitemap spec asks for, and it has to agree with the <link rel>
 // tags the pages themselves emit via pageMeta().
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
-
   return ROUTES.filter((route) => !route.placeholder).flatMap((route) => {
     const images = setImages(ROUTE_PHOTO_SET[route.path]);
     return LOCALES.map((locale) => ({
       url: absoluteUrl(locale, route.path),
-      lastModified,
       changeFrequency: route.changeFrequency,
       priority: route.priority,
       alternates: { languages: languageAlternates(route.path) },
