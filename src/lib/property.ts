@@ -109,7 +109,7 @@ export const LOTUS_HOUSE: Property = {
   ],
   description: [
     "Lotus House is your base for adventure and local living in Chiang Mai. Tucked on a quiet street among friendly neighbours, this three-storey home blends comfort with character, offering spacious rooms and a rooftop terrace to relax after exploring the city's vibrant markets, temples, and nightlife.",
-    "Lotus House features two king bedrooms, a back bedroom with patio, three dining spaces (indoor table, kitchen island, and rooftop terrace), a fully equipped kitchen, and a rooftop soaking tub. Fast Wi-Fi, smart TV, and a safety box are included. Garage parking and motorbike rental are available, with a 7/11 just a 5-minute walk away.",
+    "Lotus House features two king bedrooms, three dining spaces (indoor table, kitchen island, and rooftop terrace), a fully equipped kitchen, and a rooftop soaking tub. Fast Wi-Fi, smart TV, and a safety box are included. Gated parking for one car and motorbike rental are available, with a 7-Eleven a 4-minute walk away.",
   ],
   /**
    * The exact street address. NOT for the listing: it is released at
