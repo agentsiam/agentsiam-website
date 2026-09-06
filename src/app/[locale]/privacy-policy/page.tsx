@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
 import { isLocale } from "@/i18n/config";
-import { CONTACT_EMAIL, POLICY_UPDATED, pageMeta } from "@/lib/site";
+import { CONTACT_EMAIL, policyUpdated, pageMeta } from "@/lib/site";
 
 /**
  * Existing policy text, kept verbatim apart from one sentence: the enquiry paragraph now
@@ -42,13 +42,15 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
       <div className="mx-auto w-full max-w-[820px] px-5 pb-22 pt-14">
         <span className="eyebrow">{t.legalEyebrow}</span>
         <h1 className="mt-3.5 font-headline text-[clamp(24px,4vw,32px)] font-extrabold leading-[1.14] tracking-[-0.03em]">
-          Privacy Policy
+          {t.privacy}
         </h1>
         <p className="mt-2.5 text-sm text-muted">
-          {t.lastUpdated} {POLICY_UPDATED}
+          {t.lastUpdated} {policyUpdated(locale)}
         </p>
 
-        <div className="mt-8 text-[15px] leading-relaxed text-body [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:tracking-[-0.015em] [&_h2]:text-text [&_li]:mt-1 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-inside [&_ul]:list-disc">
+        <div className="mt-8 text-[15px] leading-relaxed text-body [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:tracking-[-0.015em] [&_h2]:text-text [&_li]:mt-1 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-inside [&_ul]:list-disc"
+          lang={locale === "en" ? undefined : "en"}
+        >
           <p>
             This policy explains what AgentSiam does with personal information collected
             through this website. It covers this site only. It does not cover the booking

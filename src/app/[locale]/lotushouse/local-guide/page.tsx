@@ -147,15 +147,25 @@ export default async function LocalGuidePage({
   };
 
   const chip = (active: boolean) =>
-    `rounded-full border px-3 py-1.5 text-[13px] transition-colors ${
+    `inline-flex min-h-11 items-center rounded-full border px-3.5 py-1.5 text-[13px] transition-colors ${
       active ? "border-ink bg-ink text-bg font-semibold" : "border-hairline hover:border-ink"
     }`;
+
+  // aria-current, because the active chip was distinguished by colour alone. The chips are
+  // links rather than buttons -- every filter here is a URL, deliberately -- so "current"
+  // is the right word for the one whose destination is the page you are on.
+  const chipCurrent = (active: boolean) => (active ? ("true" as const) : undefined);
 
 
   return (
     <div className="mx-auto max-w-(--container-chrome) px-5 pb-18 pt-9">
+      {locale !== "en" ? (
+        <p className="mb-6 rounded-panel bg-wash-gold px-5 py-3 text-[12.5px] leading-relaxed text-body">
+          {t.guidePendingNote}
+        </p>
+      ) : null}
       <p className="eyebrow">
-        <Link href={href("/lotushouse")} className="hover:underline">
+        <Link href={href("/lotushouse")} className="hit hover:underline">
           {LOTUS_HOUSE.title}
         </Link>
       </p>
@@ -165,45 +175,84 @@ export default async function LocalGuidePage({
       <p className="mt-3 max-w-2xl text-body">{t.guideIntro}</p>
 
 
-      <div className="mt-7 flex flex-wrap gap-2">
+      <div
+        role="group"
+        aria-label={t.guideFilterPicks}
+        className="mt-7 flex flex-wrap gap-2"
+      >
         <Link
+          aria-current={chipCurrent(picks)}
           href={filterHref({ picks: picks ? null : "1" })}
           className={
             picks
-              ? "inline-flex items-center gap-1.5 rounded-full border border-secondary bg-secondary px-3 py-1.5 text-[13px] font-semibold text-white"
-              : "inline-flex items-center gap-1.5 rounded-full border border-secondary px-3 py-1.5 text-[13px] font-semibold text-secondary transition-colors hover:bg-wash-red"
+              ? "inline-flex min-h-11 items-center gap-1.5 rounded-full border border-deep-red bg-deep-red px-3.5 py-1.5 text-[13px] font-semibold text-white"
+              : "inline-flex min-h-11 items-center gap-1.5 rounded-full border border-secondary px-3.5 py-1.5 text-[13px] font-semibold text-deep-red transition-colors hover:bg-wash-red"
           }
         >
           <span aria-hidden="true">★</span>
           {t.guidePicks}
         </Link>
-        <Link href={filterHref({ near: nearby ? null : "1" })} className={chip(nearby)}>
+        <Link
+          aria-current={chipCurrent(nearby)}
+          href={filterHref({ near: nearby ? null : "1" })}
+          className={chip(nearby)}
+        >
           {t.guideNearby}
         </Link>
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-2">
-        <Link href={filterHref({ for: null })} className={chip(!category)}>
+      <div
+        role="group"
+        aria-label={t.guideFilterCategory}
+        className="mt-3 flex flex-wrap gap-2"
+      >
+        <Link
+          aria-current={chipCurrent(!category)}
+          href={filterHref({ for: null })}
+          className={chip(!category)}
+        >
           {t.guideAll}
         </Link>
         {GUIDE_CATEGORIES.map((name) => (
-          <Link key={name} href={filterHref({ for: name })} className={chip(category === name)}>
+          <Link
+            key={name}
+            aria-current={chipCurrent(category === name)}
+            href={filterHref({ for: name })}
+            className={chip(category === name)}
+          >
             {name}
           </Link>
         ))}
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-2">
-        <Link href={filterHref({ area: null })} className={chip(!area)}>
+      <div
+        role="group"
+        aria-label={t.guideFilterArea}
+        className="mt-3 flex flex-wrap gap-2"
+      >
+        <Link
+          aria-current={chipCurrent(!area)}
+          href={filterHref({ area: null })}
+          className={chip(!area)}
+        >
           {t.guideFilterArea}: {t.guideAll}
         </Link>
         {areasPresent.map((slug) => (
-          <Link key={slug} href={filterHref({ area: slug })} className={chip(area === slug)}>
+          <Link
+            key={slug}
+            aria-current={chipCurrent(area === slug)}
+            href={filterHref({ area: slug })}
+            className={chip(area === slug)}
+          >
             {areaBySlug(slug)?.name ?? slug}
           </Link>
         ))}
         {hasOutside ? (
-          <Link href={filterHref({ area: "outside" })} className={chip(area === "outside")}>
+          <Link
+            aria-current={chipCurrent(area === "outside")}
+            href={filterHref({ area: "outside" })}
+            className={chip(area === "outside")}
+          >
             {t.guideOutsideAreas}
           </Link>
         ) : null}
@@ -242,7 +291,7 @@ export default async function LocalGuidePage({
                       {place.name}
                     </h2>
                     {place.highlight ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.04em] text-white">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-deep-red px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.04em] text-white">
                         <span aria-hidden="true">★</span>
                         {t.guidePicks}
                       </span>
@@ -271,6 +320,7 @@ export default async function LocalGuidePage({
                       from={{ lat: origin.lat, lng: origin.lng }}
                       to={{ lat: place.lat, lng: place.lng }}
                       mode={d?.walk != null ? "walking" : "driving"}
+                      place={place.name}
                       t={t}
                     />
                   </div>
@@ -317,6 +367,7 @@ export default async function LocalGuidePage({
             <ResultsMap
               pins={pins}
               t={t}
+              locale={locale}
               panOnCardClick
               collapsible={false}
               cluster

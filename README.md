@@ -343,29 +343,63 @@ The pipeline, so nobody has to think about image formats:
 - ~~**No `src/photos/team/team-on-site.jpg`.**~~ Resolved. The homepage fork panel asks for
   `team-group-portrait` instead, and `src/photos/team/agentsiam-team-group-portrait.jpg` exists,
   so the panels render photographs rather than flat brand fills.
-- No icon set. Value-prop icons are typographic glyphs, as in the handoff.
-- No phone number or LINE ID published. The footer carries name, address and email only; all
-  three have to match the Google Business Profile character for character.
-- ~~The footer has no "Areas we manage" column.~~ Resolved. The footer links all eight
-  neighbourhood pages.
-- ~~Page titles and meta descriptions are English in all three locales.~~ Found and fixed
-  18/08/2026. All eleven route files now read `metaXxxTitle` / `metaXxxDesc` from the
-  dictionary. Those 22 Thai and Chinese strings were reviewed on 23/08/2026 and the `// NEW`
-  markers were removed on 24/08/2026, so nothing in the dictionaries carries a marker now.
+- ~~No icon set.~~ Resolved 06/09/2026. `src/components/icon.tsx` is the set: the four route
+  glyphs moved there out of `how-it-works/page.tsx` when the property page wanted amenity
+  icons, and it now carries 26. The spec is in that file's header and is the one Paul
+  authorised on 25/08/2026: stroke only, `currentColor`, 24x24, always in a chip, chip
+  `aria-hidden`, literal rather than metaphorical. `design-guardrails.md` in the consulting
+  repo still says the design system carries no icons and is stale on this point.
+- **No phone number or LINE ID published.** The footer carries name, address and email only;
+  all three have to match the Google Business Profile character for character. Note that
+  `whyC` on the homepage says "Phone or LINE, 24/7, for the whole time you are here", which
+  is a route the site does not publish. Either the number goes up or that line changes.
+- **The company address in the footer is the Bangkok registered office.** Since 06/09/2026 a
+  second line says so and names Chiang Mai as where the work happens, which is what four
+  pages already claim. The postal block itself is untouched, because it has to match the
+  Google Business Profile. `organizationSchema()` is still `Organization` rather than
+  `LocalBusiness`: `LocalBusiness` is the type local search reads, but publishing it against
+  a Bangkok address on a Chiang Mai business would point local search at the wrong city.
+  Open, and a decision rather than a bug.
+- **No cancellation policy exists anywhere on the site.** Not in the booking panel, not in
+  the guest FAQ, and `/terms-and-conditions` contains no occurrence of *cancel*, *refund* or
+  *deposit*. The guest FAQ added 06/09/2026 says so plainly rather than inventing terms, and
+  the booking flow asks for the full amount of a stay up front with nothing stated about
+  what happens if the guest cannot travel. This is the largest remaining hole on the booking
+  path and it is a decision, not a build task.
+- **No aggregate rating and no review count.** One quoted Airbnb review, no verified figure
+  behind it. The homepage and the property page both render a single review as a quote
+  rather than as a rail of one, and neither states a count. The figure has to come off the
+  platform before anything on the page or in the markup can carry it.
+- **The 404 boundary is client-rendered in production.** Verified 06/09/2026 against
+  `next build` plus `next start`: `/nope` returns a correct 404 status and, with JavaScript,
+  the full localised page inside the normal layout. With JavaScript off the body is empty.
+  Every real page server-renders correctly, so this is confined to unmatched URLs. Next
+  renders a `notFound()` boundary this way; forcing the catch-all dynamic was tried and
+  changed nothing. Fixing it properly means the proxy matching the route table and rewriting
+  to a real page with a 404 status, which is more machinery than the problem is worth today.
+- **Guide place names, categories and host notes are English on every locale.** They come
+  from `src/lib/guide.generated.ts`, built from an English sheet and never hand-edited. Since
+  06/09/2026 the guide carries its own note saying so, and the copies on `/destinations/*`
+  are wrapped in `lang="en"` so a Thai voice engine does not read English aloud in Thai. The
+  real fix is in the sheet.
+- **Photo `alt` text is English on every locale.** Same shape as the guide: it comes from the
+  generated manifest, which reads the files' own metadata. Eight images per page carry it,
+  and it is unmarked. Smaller than the guide problem and not yet addressed.
 - **The vacation rental rich result is forfeited, not broken.** Google requires `geo` on a
-  `VacationRental`, and exact coordinates are booking-confirmation material under the same rule
-  the property page and the results map already follow. Checked against the Rich Results Test on
-  01/09/2026: the missing `geo` is the only critical issue left on the item, every other field
-  validates, and `/lotushouse` still earns a valid Local business result alongside it.
-  `approxLocation()` already publishes an offset point for public maps and would satisfy the
-  field, but it would hand a booking product a location that is deliberately wrong. Open, and a
-  decision rather than a bug.
+  `VacationRental`, and exact coordinates are booking-confirmation material under the same
+  rule the property page and the results map already follow. Checked against the Rich Results
+  Test on 01/09/2026: the missing `geo` is the only critical issue left on the item, every
+  other field validates, and `/lotushouse` still earns a valid Local business result
+  alongside it. `approxLocation()` already publishes an offset point for public maps and
+  would satisfy the field, but it would hand a booking product a location that is
+  deliberately wrong. Open, and a decision rather than a bug.
 - **The `FAQPage` block on `/how-it-works` produces no rich result.** The markup is correct:
   zero errors and zero warnings at validator.schema.org on 01/09/2026, and all eight questions
   and answers appear verbatim in the rendered page, so markup and visible text agree. Google no
   longer returns FAQ rich results for a site like this one, so the block earns nothing in Search
   and is there for the other engines and the language models. Nothing to fix, and no FAQ
-  snippets to expect.
+  snippets to expect. Since 06/09/2026 `/lotushouse` carries a second, separate `FAQPage` for
+  the seven guest questions, which is subject to the same limit.
 
 ## Getting started
 

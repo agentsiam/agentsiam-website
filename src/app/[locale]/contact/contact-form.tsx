@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { CONTACT_EMAIL } from "@/lib/site";
@@ -62,6 +62,9 @@ export function ContactForm({
   privacyHref: string;
 }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  // The confirmation replaces the form, so focus has to be moved onto it or it lands on
+  // <body> and the reader is left with no cursor and no announcement.
+  const sentRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [propertyType, setPropertyType] = useState("");
   const [area, setArea] = useState("");
@@ -85,6 +88,10 @@ export function ContactForm({
     ["San Sai", t.areaSanSai],
   ];
 
+  useEffect(() => {
+    if (status === "sent") sentRef.current?.focus();
+  }, [status]);
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
@@ -106,32 +113,41 @@ export function ContactForm({
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        setError(result.error ?? `Something went wrong. Please email ${CONTACT_EMAIL}.`);
+        // The route's own English string is no longer shown to the reader: it reached a
+        // Thai owner verbatim. It still travels, so it is kept for the console.
+        if (result.error) console.warn("[contact]", result.error);
+        setError(t.ctErrorGeneric.replace("{email}", CONTACT_EMAIL));
         setStatus("idle");
         return;
       }
       setStatus("sent");
     } catch {
-      setError(`Could not reach the server. Please email ${CONTACT_EMAIL}.`);
+      setError(t.ctErrorNetwork.replace("{email}", CONTACT_EMAIL));
       setStatus("idle");
     }
   }
 
   if (status === "sent") {
     return (
-      <div className="rounded-panel border border-hairline p-7">
+      // role="status" and a focused heading. The form is removed on success, so without
+      // both of these a screen-reader user got silence and a cursor on <body>.
+      <div
+        role="status"
+        ref={sentRef}
+        tabIndex={-1}
+        className="rounded-panel border border-hairline p-7 outline-none"
+      >
         <div
           aria-hidden="true"
           className="flex h-10.5 w-10.5 items-center justify-center rounded-full bg-teal text-xl text-white"
         >
           ✓
         </div>
-        <p className="mt-3.5 font-display text-[23px] font-extrabold tracking-[-0.02em]">
-          Got it.
-        </p>
+        <h2 className="mt-3.5 font-display text-[23px] font-extrabold tracking-[-0.02em]">
+          {t.ctSentTitle}
+        </h2>
         <p className="mt-2 text-[14.5px] leading-relaxed text-body">
-          We will read this properly rather than send you an autoresponder sequence. If it
-          is urgent, write to{" "}
+          {t.ctSentBody}{" "}
           <a className="text-primary hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
             {CONTACT_EMAIL}
           </a>
@@ -163,7 +179,7 @@ export function ContactForm({
           />
         </label>
         <label className="grid gap-1.5 text-sm">
-          <span className="sr-only">Email</span>
+          <span className="sr-only">{t.labelEmail}</span>
           <input
             required
             type="email"
@@ -201,11 +217,15 @@ export function ContactForm({
         </div>
       </fieldset>
 
+      {/* role="status": picking the condo chip inserts a paragraph of consequential
+          advice, and a sighted user sees it appear while a screen-reader user was told
+          nothing until they happened to wander back. */}
       {propertyType === "Condo / apartment" ? (
-        <p className="mt-3 rounded-box bg-wash-red px-3.5 py-3 text-[13.5px] leading-relaxed text-deep-red">
-          Worth knowing up front: most Thai condo buildings prohibit stays under 30 days,
-          and the juristic person has to permit it in writing. We check this before anything
-          is listed — but if your building has already refused, the honest answer may be no.
+        <p
+          role="status"
+          className="mt-3 rounded-box bg-wash-red px-3.5 py-3 text-[13.5px] leading-relaxed text-deep-red"
+        >
+          {t.ctCondoNote}
         </p>
       ) : null}
 
@@ -225,12 +245,22 @@ export function ContactForm({
         </div>
       </fieldset>
 
+      {/* The label said "Anything else (optional)" on a field carrying `required`, so the
+          browser refused the form over a field the label called optional. The field stays
+          required, because a lead with no message is not a lead; the label now says so.
+          maxLength matches the server, which silently truncated at 4,000 characters and
+          returned success. */}
       <label className="mt-5.5 grid gap-2.5 text-sm">
         <span className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-          {t.anythingElse}
+          {t.ctMessageLabel}{" "}
+          <span className="font-normal normal-case tracking-normal">
+            ({t.ctRequired})
+          </span>
         </span>
         <textarea
           required
+          aria-required="true"
+          maxLength={4000}
           name="message"
           rows={4}
           className={`${field} resize-y`}
@@ -255,7 +285,7 @@ export function ContactForm({
       <button
         type="submit"
         disabled={sending}
-        className="mt-6 w-full cursor-pointer rounded-full bg-ink px-6 py-3.5 text-[15px] font-semibold text-white hover:bg-primary disabled:cursor-not-allowed disabled:bg-[#c2c2ce]"
+        className="mt-6 w-full cursor-pointer rounded-full bg-ink px-6 py-3.5 text-[15px] font-semibold text-white hover:bg-primary disabled:cursor-not-allowed disabled:bg-muted/40"
       >
         {sending ? t.sending : t.send}
       </button>

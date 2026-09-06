@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "guide": "node scripts/build-guide.mjs",
+    "keys": "node scripts/add-dictionary-keys.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

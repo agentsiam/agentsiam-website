@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
 import { isLocale } from "@/i18n/config";
-import { POLICY_UPDATED, pageMeta } from "@/lib/site";
+import { policyUpdated, pageMeta } from "@/lib/site";
 
 /**
  * The handoff ships this page as an empty stub with a "Not yet written" box, on the
@@ -44,13 +44,15 @@ export default async function TermsPage({ params }: PageProps<"/[locale]">) {
       <div className="mx-auto w-full max-w-[820px] px-5 pb-22 pt-14">
         <span className="eyebrow">{t.legalEyebrow}</span>
         <h1 className="mt-3.5 font-headline text-[clamp(24px,4vw,32px)] font-extrabold leading-[1.14] tracking-[-0.03em]">
-          Terms &amp; Conditions
+          {t.terms}
         </h1>
         <p className="mt-2.5 text-sm text-muted">
-          {t.lastUpdated} {POLICY_UPDATED}
+          {t.lastUpdated} {policyUpdated(locale)}
         </p>
 
-        <div className="mt-8 text-[15px] leading-relaxed text-body [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:tracking-[-0.015em] [&_h2]:text-text [&_p]:mt-3">
+        <div className="mt-8 text-[15px] leading-relaxed text-body [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:tracking-[-0.015em] [&_h2]:text-text [&_p]:mt-3"
+          lang={locale === "en" ? undefined : "en"}
+        >
           <h2>Ownership of Intellectual Property, Copyrights, and Logos</h2>
           <p>
             All content published on this website, including text, graphics, logos, icons,

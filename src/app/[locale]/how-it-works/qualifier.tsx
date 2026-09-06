@@ -20,8 +20,11 @@ import type { Dictionary } from "@/i18n";
  * does. An unconfirmed condo is still treated as excluded; the verdict says so without
  * closing the door on a building that does permit it.
  *
- * Verdict logic and copy are the design's, unchanged. The question labels are translated;
- * the verdict bodies are not, and the page carries the pending-translation note for that.
+ * Verdict logic is the design's, unchanged. The copy is the design's too, and every string
+ * in it -- the four legends, all eight verdicts and the indicative-pricing footnote -- now
+ * reads from the dictionary. A Thai owner used to answer translated chips inside English
+ * questions and be handed an English verdict; the verdict is chosen by the English value
+ * behind the chip, not by its label, so the logic stays language-independent.
  */
 
 type Tone = "yes" | "no" | "maybe" | "neutral";
@@ -56,6 +59,7 @@ const TONE: Record<Tone, { panel: string; accent: string }> = {
 };
 
 function verdictFor(
+  t: Dictionary,
   type: string,
   beds: string,
   area: string,
@@ -66,82 +70,78 @@ function verdictFor(
 
   if (!type || !beds) {
     return {
-      kicker: "Answer the questions",
-      title: "We will give you a straight read.",
-      body: "Property type and bedroom count move the answer more than anything else, so start there.",
+      kicker: t.hwVEmptyKicker,
+      title: t.hwVEmptyTitle,
+      body: t.hwVEmptyBody,
       tone: "neutral",
     };
   }
 
   if (type === "Condo / apartment") {
     return {
-      kicker: "It depends on your building",
-      title: "A condo works when the building permits it in writing.",
-      body: "Condos take a different legal route. The non-hotel exemption that covers houses and townhouses is not available to them, so what matters instead is your building: the juristic person has to permit short stays in writing, and we need that on file before anything is signed. Most Chiang Mai buildings do prohibit stays under 30 days, so this often ends in a no — but it is the building's answer, not ours, and it is worth checking rather than assuming.",
+      kicker: t.hwVCondoKicker,
+      title: t.hwVCondoTitle,
+      body: t.hwVCondoBody,
       tone: "maybe",
-      cta: "Ask us to check your building",
+      cta: t.hwVCondoCta,
     };
   }
 
   if (beds === "1") {
     return {
-      kicker: "Probably a no",
-      title: "A one-bedroom rarely beats a tenant.",
-      body: "On the conservative case, a one-bed usually earns you less than a long-term let would, and it competes head-on against cheap condo rentals we cannot beat on cost. If yours is unusual — a design-led place, or an exceptional location — tell us and we will look properly.",
+      kicker: t.hwV1Kicker,
+      title: t.hwV1Title,
+      body: t.hwV1Body,
       tone: "no",
-      cta: "Tell us why yours is different",
+      cta: t.hwV1Cta,
     };
   }
 
   if (beds === "2") {
     return {
-      kicker: "This is the core fit",
-      title: "A two-bed landed property is exactly what we look for.",
-      body: `Two-bedroom stock is the clearest gap between what Chiang Mai lists and what guests actually book, and it serves both the long-stay remote worker and the cultural tourist — so the forecast does not rest on one kind of guest.${
-        outer ? " Out in the ring you will want off-street parking to make it work." : ""
-      }`,
+      kicker: t.hwV2Kicker,
+      title: t.hwV2Title,
+      // The outer-ring clause carries its own leading separator per language, so Chinese
+      // does not gain a stray space where Thai and English need one.
+      body: `${t.hwV2Body}${outer ? t.hwV2Outer : ""}`,
       tone: "yes",
-      cta: "Book a feasibility study",
+      cta: t.bookStudy,
     };
   }
 
   if (beds === "3") {
     if (pool === "Yes" && outer) {
       return {
-        kicker: "Good fit, with a caveat",
-        title: "A three-bed with a pool in the outer ring works.",
-        body: "It clears the conservative case with a modest margin. Bookings are lumpier than in town, so the seasonality assumptions matter more here than anywhere — which is the part the study is for.",
+        kicker: t.hwV3PoolKicker,
+        title: t.hwV3PoolTitle,
+        body: t.hwV3PoolBody,
         tone: "yes",
-        cta: "Book a feasibility study",
+        cta: t.bookStudy,
       };
     }
     if (pool === "No") {
       return {
-        kicker: "Likely a no",
-        title: "A three-bed without a pool tends not to clear its own alternative.",
-        body: `The nightly rate does not climb enough to cover the drop in occupancy, and the long-term let for a three-bed house is strong.${
-          thin
-            ? " Riverside also has thin comparable data, which widens the error bars considerably."
-            : ""
-        } We would need to see a real reason the rate would run high.`,
+        kicker: t.hwV3NoPoolKicker,
+        title: t.hwV3NoPoolTitle,
+        body: `${t.hwV3NoPoolBody}${thin ? t.hwV3ThinData : ""}${t.hwV3NoPoolTail}`,
         tone: "no",
-        cta: "Ask us to look anyway",
+        cta: t.hwV3NoPoolCta,
       };
     }
     return {
-      kicker: "Depends on the pool",
-      title: "For a three-bed, the pool is the deciding factor.",
-      body: "With one, in the outer ring, it works. Without one it usually does not, because the rate does not rise enough to offset lower occupancy. Answer the pool question above.",
+      kicker: t.hwV3AskPoolKicker,
+      title: t.hwV3AskPoolTitle,
+      body: t.hwV3AskPoolBody,
       tone: "neutral",
     };
   }
 
   return {
-    kicker: "Conditional",
-    title: "Four bedrooms and up is the highest-variance case we see.",
-    body: "It has the strongest long-term rental alternative to beat, and thinner occupancy. It works when the property is genuinely design-led and can hold a premium rate — not when it is simply a large house. We will only quote it against real comparables.",
+    kicker: t.hwV4Kicker,
+    title: t.hwV4Title,
+    body: t.hwV4Body,
     tone: "maybe",
-    cta: "Send us the details",
+    cta: t.hwV4Cta,
   };
 }
 
@@ -176,7 +176,7 @@ export function Qualifier({ t, contactHref }: { t: Dictionary; contactHref: stri
   const [area, setArea] = useState("");
   const [pool, setPool] = useState("");
 
-  const verdict = verdictFor(type, beds, area, pool);
+  const verdict = verdictFor(t, type, beds, area, pool);
   const tone = TONE[verdict.tone];
 
   // English keys, translated labels: the value that drives the logic never changes with
@@ -202,7 +202,7 @@ export function Qualifier({ t, contactHref }: { t: Dictionary; contactHref: stri
     <div className="mt-6.5 grid items-stretch gap-8 min-[900px]:grid-cols-[1fr_380px]">
       <div className="h-full rounded-panel border border-hairline p-6.5">
         <fieldset>
-          <legend className="eyebrow">1 · What kind of property</legend>
+          <legend className="eyebrow">{t.hwQ1Legend}</legend>
           <div className="mt-3 flex flex-wrap gap-2">
             {types.map(([value, label]) => (
               <Chip
@@ -216,7 +216,7 @@ export function Qualifier({ t, contactHref }: { t: Dictionary; contactHref: stri
         </fieldset>
 
         <fieldset className="mt-6">
-          <legend className="eyebrow">2 · Bedrooms</legend>
+          <legend className="eyebrow">{t.hwQ2Legend}</legend>
           <div className="mt-3 flex flex-wrap gap-2">
             {["1", "2", "3", "4+"].map((value) => (
               <Chip
@@ -230,7 +230,7 @@ export function Qualifier({ t, contactHref }: { t: Dictionary; contactHref: stri
         </fieldset>
 
         <fieldset className="mt-6">
-          <legend className="eyebrow">3 · Where in Chiang Mai</legend>
+          <legend className="eyebrow">{t.hwQ3Legend}</legend>
           <div className="mt-3 flex flex-wrap gap-2">
             {AREAS.map((value) => (
               <Chip
@@ -244,7 +244,7 @@ export function Qualifier({ t, contactHref }: { t: Dictionary; contactHref: stri
         </fieldset>
 
         <fieldset className="mt-6">
-          <legend className="eyebrow">Does it have a private pool?</legend>
+          <legend className="eyebrow">{t.hwQ4Legend}</legend>
           <div className="mt-3 flex flex-wrap gap-2">
             {[
               ["Yes", t.yes],
@@ -278,8 +278,7 @@ export function Qualifier({ t, contactHref }: { t: Dictionary; contactHref: stri
         ) : null}
 
         <p className="mt-auto pt-4 text-[11.5px] leading-normal text-muted">
-          Indicative only. The study prices your property against real local comparables
-          rather than a rule of thumb.
+          {t.hwQualifierFoot}
         </p>
       </div>
     </div>

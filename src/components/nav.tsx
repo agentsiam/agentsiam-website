@@ -35,24 +35,31 @@ export function Nav({ locale }: { locale: Locale }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-bg px-5">
-      <nav className="mx-auto flex min-h-[66px] max-w-(--container-chrome) flex-wrap items-center gap-x-6 gap-y-3 py-2.5">
-        <Link href={href("/")} aria-label={`AgentSiam — ${t.navGuests}`}>
+      {/* Named, because the breadcrumb on the property and area pages is a second
+          navigation landmark and two unnamed ones are indistinguishable in a landmark list. */}
+      <nav
+        aria-label={t.mainNav}
+        className="mx-auto flex min-h-[66px] max-w-(--container-chrome) flex-wrap items-center gap-x-6 gap-y-3 py-2.5"
+      >
+        {/* The accessible name is the destination. It read "AgentSiam — Guests" until
+            06/09/2026, naming the page two links to its right rather than the homepage it
+            actually goes to. */}
+        <Link href={href("/")} aria-label={t.homeLink} className="hit">
           <Logo className="h-[15px] w-auto text-text" />
         </Link>
 
-        <ul className="flex items-center gap-5 text-[13.5px] font-medium">
+        <ul className="order-last flex basis-full items-center gap-5 text-[13.5px] font-medium min-[560px]:order-none min-[560px]:basis-auto">
           {links.map((link) => (
             <li key={link.href}>
-              <Link href={link.href} className="hover:text-primary">
+              {/* .hit grows an 18px-tall link to the 24px minimum without moving it. */}
+              <Link href={link.href} className="hit hover:text-primary">
                 {link.label}
               </Link>
             </li>
           ))}
         </ul>
 
-        <span className="flex-1" />
-
-        <div className="flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-3">
           <LanguageSwitcher locale={locale} label={t.languageLabel} />
 
           {/* Hidden on narrow screens: the owner path is already in the nav list, the

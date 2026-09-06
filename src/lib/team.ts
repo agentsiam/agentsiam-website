@@ -9,17 +9,24 @@
  * has not been supplied yet simply does not render -- the row shows whoever has one.
  */
 
+import type { Dictionary } from "@/i18n";
+
 export type TeamMember = {
   /** Fragment of the filename in src/photos/team/. */
   match: string;
   name: string;
-  role: string;
+  /**
+   * Dictionary key for the job title, not the title itself. The four roles were English
+   * literals here and rendered as English under Thai and Chinese portraits; typing the
+   * field as a key of Dictionary means a role that is not translated is a compile error.
+   */
+  role: keyof Dictionary;
 };
 
 export const TEAM: TeamMember[] = [
-  { match: "Paul_b", name: "Paul", role: "Co-founder" },
-  { match: "Nils_m", name: "Nils", role: "Co-founder" },
-  { match: "Patthanapong_p", name: "Patthanapong", role: "Appraisal & real estate" },
-  { match: "Phakkaya_jen_k", name: "Jen", role: "Digital & creative" },
-  { match: "thicha_maseng", name: "Thicha", role: "Project coordination" },
+  { match: "Paul_b", name: "Paul", role: "hwRoleFounder" },
+  { match: "Nils_m", name: "Nils", role: "hwRoleFounder" },
+  { match: "Patthanapong_p", name: "Patthanapong", role: "hwRoleAppraisal" },
+  { match: "Phakkaya_jen_k", name: "Jen", role: "hwRoleDigital" },
+  { match: "thicha_maseng", name: "Thicha", role: "hwRoleCoordination" },
 ];

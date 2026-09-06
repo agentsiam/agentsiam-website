@@ -4,6 +4,7 @@ import {
   createBookingRequest,
   getQuote,
   isValidDate,
+  MAX_MONTHS_AHEAD,
   nightsBetween,
   stayWindowError,
   REQUEST_STATUS,
@@ -31,6 +32,14 @@ export const runtime = "nodejs";
  * system of record.
  */
 
+/**
+ * The throttle window, written down once so the Retry-After we send back is the same
+ * number the bucket actually uses. The browser keeps its submit button disabled for it,
+ * which matters here: every retry pushes another timestamp into the bucket and extends
+ * the lockout, so a guest hammering the button can never get through.
+ */
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+
 const MAX = {
   firstName: 100,
   lastName: 100,
@@ -50,7 +59,10 @@ export async function POST(request: Request) {
   if (!BEDS24_READY) {
     console.error("[booking/request] BEDS24_REFRESH_TOKEN is not set");
     return NextResponse.json(
-      { error: `Booking is unavailable right now. Please email us at ${CONTACT_EMAIL}.` },
+      {
+        error: `Booking is unavailable right now. Please email us at ${CONTACT_EMAIL}.`,
+        code: "not_configured",
+      },
       { status: 503 },
     );
   }
@@ -59,7 +71,7 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Malformed request." }, { status: 400 });
+    return NextResponse.json({ error: "Malformed request.", code: "malformed" }, { status: 400 });
   }
 
   // Honeypot, same trick as /api/contact: invisible to people, irresistible to bots.
@@ -68,10 +80,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  if (rateLimit("booking-request", callerIp(request), { max: 6, windowMs: 10 * 60 * 1000 })) {
+  if (rateLimit("booking-request", callerIp(request), { max: 6, windowMs: RATE_WINDOW_MS })) {
+    const retryAfter = Math.ceil(RATE_WINDOW_MS / 1000);
     return NextResponse.json(
-      { error: `Too many requests. Please email us at ${CONTACT_EMAIL}.` },
-      { status: 429 },
+      {
+        error: `Too many requests. Please email us at ${CONTACT_EMAIL}.`,
+        code: "rate_limited",
+        retryAfter,
+      },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } },
     );
   }
 
@@ -88,14 +105,18 @@ export async function POST(request: Request) {
   const locale = clean(body.locale, "locale") || "en";
 
   if (!isValidDate(arrival) || !isValidDate(departure) || departure <= arrival) {
-    return NextResponse.json({ error: "Please choose your dates again." }, { status: 400 });
+    return NextResponse.json({ error: "Please choose your dates again.", code: "bad_dates" }, { status: 400 });
   }
   if (arrival < today()) {
-    return NextResponse.json({ error: "That arrival date has passed." }, { status: 400 });
+    return NextResponse.json({ error: "That arrival date has passed.", code: "past_arrival" }, { status: 400 });
   }
   if (nightsBetween(arrival, departure) < LOTUS_HOUSE.minStay) {
     return NextResponse.json(
-      { error: `The minimum stay is ${LOTUS_HOUSE.minStay} nights.` },
+      {
+        error: `The minimum stay is ${LOTUS_HOUSE.minStay} nights.`,
+        code: "min_stay",
+        minNights: LOTUS_HOUSE.minStay,
+      },
       { status: 400 },
     );
   }
@@ -105,7 +126,13 @@ export async function POST(request: Request) {
   // real on every channel either way.
   const outsideWindow = stayWindowError(arrival, departure, LOTUS_HOUSE.maxStay);
   if (outsideWindow) {
-    return NextResponse.json({ error: outsideWindow }, { status: 400 });
+    return NextResponse.json({
+        error: outsideWindow,
+        code: nightsBetween(arrival, departure) > LOTUS_HOUSE.maxStay ? "max_stay" : "too_far_ahead",
+        maxNights: LOTUS_HOUSE.maxStay,
+        maxMonthsAhead: MAX_MONTHS_AHEAD,
+      },
+      { status: 400 },);
   }
   if (
     !Number.isInteger(adults) ||
@@ -115,14 +142,18 @@ export async function POST(request: Request) {
     adults + children > LOTUS_HOUSE.maxGuests
   ) {
     return NextResponse.json(
-      { error: `Lotus House sleeps up to ${LOTUS_HOUSE.maxGuests} guests.` },
+      {
+        error: `Lotus House sleeps up to ${LOTUS_HOUSE.maxGuests} guests.`,
+        code: "max_guests",
+        maxGuests: LOTUS_HOUSE.maxGuests,
+      },
       { status: 400 },
     );
   }
 
   if (!firstName || !lastName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json(
-      { error: "Please check the name and email fields." },
+      { error: "Please check the name and email fields.", code: "bad_contact" },
       { status: 400 },
     );
   }
@@ -136,7 +167,10 @@ export async function POST(request: Request) {
     const quote = await getQuote(arrival, departure, adults, children, true);
     if (!quote.available) {
       return NextResponse.json(
-        { error: "Those dates are no longer available. Please pick again." },
+        {
+          error: "Those dates are no longer available. Please pick again.",
+          code: "unavailable",
+        },
         { status: 409 },
       );
     }
@@ -144,7 +178,10 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[booking/request] quote failed", error);
     return NextResponse.json(
-      { error: `Could not check those dates. Please email us at ${CONTACT_EMAIL}.` },
+      {
+        error: `Could not check those dates. Please email us at ${CONTACT_EMAIL}.`,
+        code: "quote_failed",
+      },
       { status: 502 },
     );
   }
@@ -173,6 +210,7 @@ export async function POST(request: Request) {
         error:
           "Those dates were taken while you were filling this in. Please pick again, " +
           `or email us at ${CONTACT_EMAIL}.`,
+        code: "dates_taken",
       },
       { status: 409 },
     );

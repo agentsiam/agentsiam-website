@@ -3,11 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
+import { Icon } from "@/components/icon";
 import { JsonLd } from "@/components/json-ld";
 import { SampleReport } from "@/components/sample-report";
 import { TeamRow } from "@/components/team-row";
-import { TranslationNote } from "@/components/translation-note";
-import { getDictionary } from "@/i18n";
+import { type Dictionary, getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { pickPhotos } from "@/lib/photos";
 import { LOTUS_HOUSE } from "@/lib/property";
@@ -36,9 +36,19 @@ import { Qualifier } from "./qualifier";
  * - The permission is offered, never demanded. Owners who choose not to apply are still
  *   served, and the page says nothing that implies otherwise.
  *
- * The long-form English copy is the design's own. It is not translated -- the handoff
- * leaves owner-register long-form for a human translator -- so Thai and Chinese carry the
- * pending-translation note at the top.
+ * The long-form copy is the design's own and is unchanged in English. It was English on
+ * every locale until 06/09/2026, when the CORE, EXTRAS, INCLUDED, EXCLUDED and FAQ arrays,
+ * every inline sentence in the markup, the qualifier and the sample report were all moved
+ * into the dictionaries. The FAQ array also feeds faqSchema(), so that fixed the structured
+ * data at the same time.
+ *
+ * <TranslationNote> went with them. It named "property descriptions, legal pages and the
+ * detailed owner sections below", and the last of those is no longer true of this page, so
+ * the note would have been a false statement a reader could check in one scroll. The pages
+ * it does describe still render it. What is still English here is the alt text on the three
+ * proof photographs and the five portraits, which comes from the generated photo manifest
+ * (the captions are the image files' own metadata) rather than from any string in this
+ * repository, and is English on every page of the site rather than this one.
  */
 
 export async function generateMetadata({
@@ -56,49 +66,9 @@ export async function generateMetadata({
 }
 
 const CORE = [
-  {
-    n: "1",
-    fill: "bg-teal",
-    body: "One site visit, a written analysis and an hour on a call going through it with you. We model your property against real local comparables and give you a straight recommendation at the end. Worth taking when there is no occupancy record to read — an unlisted property, or one whose numbers are not telling you what you need to know.",
-    gets: [
-      "Market and demand analysis — location, competition, achievable nightly rate, seasonality",
-      "Property assessment and positioning, including which feature to lead on",
-      "Operating cost modelling",
-      "Business case across up to three scenarios: rate, occupancy, revenue, NOI, breakeven, ROI",
-      "A direct comparison against simply renting it long-term",
-      "A written Go or No-Go recommendation",
-    ],
-    limit:
-      "A projection is not a promise. Occupancy moves with the season, the economy and the platforms, so we show you the conservative case and judge on that one.",
-  },
-  {
-    n: "2",
-    fill: "bg-secondary",
-    body: "Short-stay letting in Thailand is governed by the Hotel Act and the non-hotel accommodation framework, and the rules are specific enough that most owners have never been told which ones apply to them. We work out what your property is actually allowed to do, prepare the documents, and file under power of attorney so you do not have to deal with the office yourself.",
-    gets: [
-      "Legal feasibility assessment against the Hotel Act framework",
-      "Building and safety equipment requirements review",
-      "Full document preparation",
-      "Submission and follow-up under power of attorney",
-    ],
-    limit:
-      "Government fees, and any fire safety remediation the inspection turns up, are not included. And we handle the application — we cannot guarantee the government's decision.",
-  },
-  {
-    n: "3",
-    fill: "bg-sand",
-    body: "Listings, pricing, guests and compliance, run by the team here in Chiang Mai. This is the service most owners come for, and the only one that runs continuously.",
-    gets: [
-      "Listing creation and management across the main OTA channels",
-      "A direct booking website, so not every night pays platform commission",
-      "Channel and rate management in Beds24",
-      "Guest communication across the whole stay",
-      "Review, Superhost and Guest Favourite management",
-      "Compliance upkeep, and TM30 guest reporting",
-    ],
-    limit:
-      "Insurance is outside the fee. We will help you find a policy but we do not arrange or advise on one. Housekeeping, photography and interior work are separate services rather than exclusions — they are below.",
-  },
+  { n: "1", fill: "bg-teal" },
+  { n: "2", fill: "bg-secondary" },
+  { n: "3", fill: "bg-sand" },
 ];
 
 /**
@@ -107,86 +77,17 @@ const CORE = [
  * them as exclusions is what the 25/08/2026 review asked us to stop doing.
  */
 const EXTRAS = [
-  {
-    n: "4",
-    fill: "bg-wash-green",
-    body: "The turnover, the laundry and the upkeep, handled end to end so you are not managing suppliers from another country. Take it and the day-to-day stops being your problem; leave it and we still arrange and supervise the work, you just pay the suppliers yourself.",
-    gets: [
-      "Turnover cleaning to a written checklist, scheduled around arrivals",
-      "Laundry on every turnover and mid-stay",
-      "Consumables kept stocked",
-      "Maintenance and vendor visits arranged, supervised and documented",
-    ],
-  },
-  {
-    n: "5",
-    fill: "bg-wash-gold",
-    body: "Photography is the single biggest lever on how a listing performs, and most owner-supplied photographs cost bookings rather than win them. We brief the shoot, direct it, and edit the set to the standard the channels reward.",
-    gets: [
-      "Interior and exterior shoot, styled and lit for short-stay listings",
-      "Editing and colour work to a consistent house standard",
-      "A set sized and cropped for every channel, plus the direct site",
-      "Reshoots when the property changes",
-    ],
-  },
-  {
-    n: "6",
-    fill: "bg-wash-red",
-    body: "What a property earns is decided partly by what it is like to stay in. Where the numbers are held back by the house rather than the listing, we work out what to change, what it would cost, and whether the return justifies it — with the costing done properly rather than guessed.",
-    gets: [
-      "Advice on look, feel and the details guests actually book for",
-      "What to add, what to replace, and what to leave alone",
-      "Investment cost estimates against real supplier pricing",
-      "The return on the spend, modelled the same way the study models the property",
-    ],
-  },
+  { n: "4", fill: "bg-wash-green" },
+  { n: "5", fill: "bg-wash-gold" },
+  { n: "6", fill: "bg-wash-red" },
 ];
 
 /**
- * Route icons. Four stroke glyphs, drawn here rather than pulled from an icon library so
- * nothing new lands in the dependency tree for four shapes. They inherit currentColor and
- * sit in the tinted chip on each route card.
- *
- * The design system carries no icon set. Paul authorised introducing one on 25/08/2026;
- * design-guardrails.md still says otherwise and is stale until that is recorded, which is a
- * Law 1 write and needs its own approval.
- *
- * They sit in a gold rounded-square chip on plain ground -- no card, no border. The routes
- * are the lightest block on the page and boxing them competes with the menu below, which is
- * the block that should carry the weight.
+ * The four route glyphs moved to src/components/icon.tsx on 06/09/2026, when the property
+ * page wanted amenity icons and a second private set would have been two systems on one
+ * site. The spec's own instruction is to extend the existing set rather than start another
+ * one, so that file is now the set. Route cards read from it by name below.
  */
-const ICONS: Record<string, React.ReactNode> = {
-  // earning already -- a rising line
-  trend: (
-    <>
-      <polyline points="3 16.5 9.5 10 13.5 14 21 6.5" />
-      <polyline points="15.5 6.5 21 6.5 21 12" />
-    </>
-  ),
-  // listed but underperforming -- a question to diagnose
-  search: (
-    <>
-      <circle cx="11" cy="11" r="6.25" />
-      <line x1="15.6" y1="15.6" x2="20.5" y2="20.5" />
-    </>
-  ),
-  // nothing yet -- the property itself
-  house: (
-    <>
-      <path d="M3.75 10.75 12 4.25l8.25 6.5" />
-      <path d="M5.75 12.4V19.25h12.5V12.4" />
-    </>
-  ),
-  // held elsewhere -- a handover
-  transfer: (
-    <>
-      <path d="M3.75 8.75h14.5" />
-      <polyline points="15 5.5 18.25 8.75 15 12" />
-      <path d="M20.25 15.25H5.75" />
-      <polyline points="9 12 5.75 15.25 9 18.5" />
-    </>
-  ),
-};
 
 /**
  * The routes. This is the "tailored" half of a menu -- six services in a list is not a
@@ -200,62 +101,45 @@ const ROUTES = [
   { icon: "transfer", grad: "grad-vermilion" },
 ];
 
-const INCLUDED = [
-  "Listings across the main OTA channels, plus testing secondary ones",
-  "A direct booking website",
-  "Channel and rate management in Beds24",
-  "Guest communication for the full stay, with automation behind it",
-  "Review, Superhost and Guest Favourite management",
-  "Arranging cleaning and turnover — scheduling and quality control",
-  "Arranging maintenance and vendor visits",
-  "Compliance upkeep once the permission is granted",
-  "TM30 foreign guest reporting to Immigration",
-];
+/**
+ * The included / not included split, and the FAQ. Built per locale from the dictionary
+ * rather than held as module-scope literals: the FAQ array is also what feeds faqSchema(),
+ * so an English literal here published English structured data on /th and /zh as well as
+ * English text on the page.
+ *
+ * Two of the nine inclusions are the same sentences as the management card's bullets, so
+ * they read from the same keys rather than a second spelling of the same promise.
+ */
+function includedList(t: Dictionary): string[] {
+  return [
+    t.hwInc1,
+    t.hwInc2,
+    t.hwCore3Get3,
+    t.hwInc4,
+    t.hwCore3Get5,
+    t.hwInc6,
+    t.hwInc7,
+    t.hwInc8,
+    t.hwInc9,
+  ];
+}
 
-const EXCLUDED = [
-  "The cost of cleaning, laundry, maintenance and vendors, unless you take housekeeping — you pay the supplier either way",
-  "Insurance. We will help you find a policy but we do not arrange or advise on one",
-  "The building work itself. We advise on it and cost it; we do not carry it out",
-  "Long-term tenancy, and property sale or valuation",
-  "Legal representation — we coordinate with counsel rather than advising",
-  "Your tax filing",
-  "Your own personal-use admin and your own guests",
-];
+function excludedList(t: Dictionary): string[] {
+  return [t.hwExc1, t.hwExc2, t.hwExc3, t.hwExc4, t.hwExc5, t.hwExc6, t.hwExc7];
+}
 
-const FAQ = [
-  {
-    q: "What do you charge?",
-    a: "A percentage of booking revenue for management, plus fixed fees for the services you choose. The percentage depends on how much of the work you want us to carry — it is lower when we handle the housekeeping too. Exact figures are quoted against your property rather than read off a rate card.",
-  },
-  {
-    q: "Do I have to take the study first?",
-    a: "No. It is one service on the menu, not a gate. If your property is already listed and earning, your own numbers tell us more than a model would, and we will start from those instead. Where we think the study genuinely would change your decision, we will say so.",
-  },
-  {
-    q: "What if I do not have a licence, and do not want to apply for one?",
-    a: "Tell us and we will talk it through properly. The permission service exists because most owners have never been told which rules apply to their property, and a lot of them turn out to be straightforward. What we will not do is make the decision for you or pretend the question does not exist.",
-  },
-  {
-    q: "Am I locked into a contract?",
-    a: "No minimum term on management. You give notice, we hand over the listings and calendars, and we do not hold your channel accounts hostage.",
-  },
-  {
-    q: "What happens if a guest damages something?",
-    a: "Every booking carries a deposit held through the channel. We inspect after checkout, document anything found, and pursue the claim ourselves. Above the deposit ceiling it becomes an insurance question — which is why we ask about your policy in step 2.",
-  },
-  {
-    q: "Can I still use the property myself?",
-    a: "Yes. You block the dates and we work around them. Frequent owner use lowers projected revenue, and the feasibility report will show you by how much.",
-  },
-  {
-    q: "Do you handle tax?",
-    a: "We provide the revenue reporting your accountant needs. We are not tax advisers and will not file on your behalf.",
-  },
-  {
-    q: "My condo says short lets are not allowed. Is that final?",
-    a: "Usually, yes. Most Thai condo buildings prohibit stays under 30 days and the juristic person has to permit it in writing. Where a building refuses, we say so rather than list it and hope.",
-  },
-];
+function faqList(t: Dictionary): { q: string; a: string }[] {
+  return [
+    { q: t.hwFaq1Q, a: t.hwFaq1A },
+    { q: t.hwFaq2Q, a: t.hwFaq2A },
+    { q: t.hwFaq3Q, a: t.hwFaq3A },
+    { q: t.hwFaq4Q, a: t.hwFaq4A },
+    { q: t.hwFaq5Q, a: t.hwFaq5A },
+    { q: t.hwFaq6Q, a: t.hwFaq6A },
+    { q: t.hwFaq7Q, a: t.hwFaq7A },
+    { q: t.hwFaq8Q, a: t.hwFaq8A },
+  ];
+}
 
 export default async function HowItWorksPage({
   params,
@@ -264,6 +148,10 @@ export default async function HowItWorksPage({
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale as Locale, path);
+
+  const included = includedList(t);
+  const excluded = excludedList(t);
+  const faq = faqList(t);
 
   // Three shots that show the work rather than the mood: the terrace we maintain, the
   // kitchen we turn over, the street we operate on. Falls back to the top of the set if any
@@ -290,15 +178,68 @@ export default async function HowItWorksPage({
   ];
 
   const core = [
-    { ...CORE[0], title: t.step1Name, meta: t.step1Meta },
-    { ...CORE[1], title: t.step2Name, meta: t.step2Meta },
-    { ...CORE[2], title: t.step3Name, meta: t.step3Meta },
+    {
+      ...CORE[0],
+      title: t.step1Name,
+      meta: t.step1Meta,
+      body: t.hwCore1Body,
+      limit: t.hwCore1Limit,
+      gets: [
+        t.hwCore1Get1,
+        t.hwCore1Get2,
+        t.hwCore1Get3,
+        t.hwCore1Get4,
+        t.hwCore1Get5,
+        t.hwCore1Get6,
+      ],
+    },
+    {
+      ...CORE[1],
+      title: t.step2Name,
+      meta: t.step2Meta,
+      body: t.hwCore2Body,
+      limit: t.hwCore2Limit,
+      gets: [t.hwCore2Get1, t.hwCore2Get2, t.hwCore2Get3, t.hwCore2Get4],
+    },
+    {
+      ...CORE[2],
+      title: t.step3Name,
+      meta: t.step3Meta,
+      body: t.hwCore3Body,
+      limit: t.hwCore3Limit,
+      gets: [
+        t.hwCore3Get1,
+        t.hwCore3Get2,
+        t.hwCore3Get3,
+        t.hwCore3Get4,
+        t.hwCore3Get5,
+        t.hwCore3Get6,
+      ],
+    },
   ];
 
   const extras = [
-    { ...EXTRAS[0], title: t.step4Name, meta: t.step4Meta },
-    { ...EXTRAS[1], title: t.step5Name, meta: t.step5Meta },
-    { ...EXTRAS[2], title: t.step6Name, meta: t.step6Meta },
+    {
+      ...EXTRAS[0],
+      title: t.step4Name,
+      meta: t.step4Meta,
+      body: t.hwExtra4Body,
+      gets: [t.hwExtra4Get1, t.hwExtra4Get2, t.hwExtra4Get3, t.hwExtra4Get4],
+    },
+    {
+      ...EXTRAS[1],
+      title: t.step5Name,
+      meta: t.step5Meta,
+      body: t.hwExtra5Body,
+      gets: [t.hwExtra5Get1, t.hwExtra5Get2, t.hwExtra5Get3, t.hwExtra5Get4],
+    },
+    {
+      ...EXTRAS[2],
+      title: t.step6Name,
+      meta: t.step6Meta,
+      body: t.hwExtra6Body,
+      gets: [t.hwExtra6Get1, t.hwExtra6Get2, t.hwExtra6Get3, t.hwExtra6Get4],
+    },
   ];
 
   const valueProps = [
@@ -334,8 +275,6 @@ export default async function HowItWorksPage({
 
   return (
     <div>
-      <TranslationNote locale={locale} />
-
       {/* shape: hero -- Hero. Blue panel, gold stripe on the right quarter. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-primary px-6 py-13 sm:px-12 sm:py-14">
@@ -359,7 +298,7 @@ export default async function HowItWorksPage({
               </Link>
               <a
                 href="#qualify"
-                className="text-[14.5px] text-white underline underline-offset-4"
+                className="hit inline-block text-[14.5px] text-white underline underline-offset-4"
               >
                 {t.checkQualify}
               </a>
@@ -391,17 +330,7 @@ export default async function HowItWorksPage({
                     aria-hidden="true"
                     className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sand text-ink"
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="size-[18px]"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      {ICONS[route.icon]}
-                    </svg>
+                    <Icon name={route.icon} className="size-[18px]" />
                   </span>
                   <h3 className="font-display text-[16px] font-bold leading-snug tracking-[-0.015em]">
                     {route.when}
@@ -442,8 +371,7 @@ export default async function HowItWorksPage({
           {t.menuTitle}
         </h2>
         <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
-          Six services, taken in whatever combination your property needs. Most
-          owners take two or three. Nobody takes all six.
+          {t.hwMenuIntro}
         </p>
 
         <div className="mt-7 flex flex-col gap-4.5">
@@ -459,7 +387,7 @@ export default async function HowItWorksPage({
                   <h3 className="font-display text-[21px] font-bold leading-tight tracking-[-0.015em] text-ink">
                     {step.title}
                   </h3>
-                  <p className="mt-0.5 text-[12.5px] text-ink/70">
+                  <p className="mt-0.5 text-[12.5px] text-ink">
                     {step.meta}
                   </p>
                 </div>
@@ -502,8 +430,7 @@ export default async function HowItWorksPage({
           {t.addServicesTitle}
         </h3>
         <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
-          Take any of these with management, or on their own. Each is quoted for
-          the property rather than sold at a standard rate.
+          {t.hwExtrasIntro}
         </p>
 
         <div className="mt-6 flex flex-col gap-4.5">
@@ -519,7 +446,7 @@ export default async function HowItWorksPage({
                   <h3 className="font-display text-[21px] font-bold leading-tight tracking-[-0.015em] text-ink">
                     {extra.title}
                   </h3>
-                  <p className="mt-0.5 text-[12.5px] text-ink/70">
+                  <p className="mt-0.5 text-[12.5px] text-ink">
                     {extra.meta}
                   </p>
                 </div>
@@ -563,7 +490,7 @@ export default async function HowItWorksPage({
           {t.reportBody}
         </p>
         <div className="mt-6">
-          <SampleReport />
+          <SampleReport t={t} />
         </div>
       </section>
 
@@ -600,7 +527,7 @@ export default async function HowItWorksPage({
       </section>
 
       {/* shape: team-row -- The people. Rendered from a component, so the page declares it here. */}
-      <TeamRow heading={t.meetTheTeam} />
+      <TeamRow t={t} heading={t.meetTheTeam} />
 
       {/* shape: gates-block -- The two gates. This block is what makes the No-Go credible. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-15">
@@ -609,44 +536,32 @@ export default async function HowItWorksPage({
             {t.gatesTitle}
           </h2>
           <p className="mt-2.5 max-w-[700px] text-[15px] leading-relaxed text-white/80">
-            Otherwise it is a sales document with a fee attached. Two things
-            have to be true before we will manage a property, and they are
-            different questions. A property that is already earning well answers
-            both of them without a study:
+            {t.hwGatesBody}
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-[repeat(auto-fit,minmax(260px,1fr))]">
             <div className="rounded-box bg-white/7 px-6 py-5.5">
-              <h3 className="eyebrow text-gold-on-ink">Gate one · your side</h3>
+              <h3 className="eyebrow text-gold-on-ink">{t.hwGate1Label}</h3>
               <p className="mt-2 text-base font-semibold leading-snug text-white">
-                At cautious occupancy, short-let has to beat renting it
-                long-term.
+                {t.hwGate1Title}
               </p>
               <p className="mt-2 text-[13.5px] leading-relaxed text-white/70">
-                Not at the optimistic case — at the conservative one. We pull a
-                real local long-term comparable at the time of the study rather
-                than assuming one, because that number is what decides the
-                verdict.
+                {t.hwGate1Body}
               </p>
             </div>
             <div className="rounded-box bg-white/7 px-6 py-5.5">
-              <h3 className="eyebrow text-gold-on-ink">Gate two · our side</h3>
+              <h3 className="eyebrow text-gold-on-ink">{t.hwGate2Label}</h3>
               <p className="mt-2 text-base font-semibold leading-snug text-white">
-                The property has to be worth managing properly.
+                {t.hwGate2Title}
               </p>
               <p className="mt-2 text-[13.5px] leading-relaxed text-white/70">
-                Our fee is a share of what the property earns, so below a certain
-                level of revenue it does not fund the attention the property
-                needs — and doing it badly helps nobody. A property with a real
-                booking record answers this on its own numbers. This gate applies
-                to management only.
+                {t.hwGate2Body}
               </p>
             </div>
           </div>
 
           <p className="mt-5 max-w-[760px] text-[13.5px] leading-relaxed text-white/60">
-            If your case works but we are not the right size of manager for it,
-            we will say that too, and point you somewhere better.
+            {t.hwGatesFoot}
           </p>
         </div>
       </section>
@@ -660,8 +575,7 @@ export default async function HowItWorksPage({
           {t.qualifyTitle}
         </h2>
         <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
-          Four questions. This is the same shape as our intake, so you get the
-          honest answer now rather than after a site visit.
+          {t.hwQualifyIntro}
         </p>
         <Qualifier t={t} contactHref={href("/contact")} />
       </section>
@@ -672,15 +586,13 @@ export default async function HowItWorksPage({
           {t.mgmtTitle}
         </h2>
         <p className="mt-2 max-w-[700px] text-[15px] leading-relaxed text-muted">
-          We arrange the work and supervise it. You pay the suppliers directly.
-          That is a different product from fully hands-off, and it is better
-          that you know which one you are buying now.
+          {t.hwMgmtIntro}
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
           <div className="rounded-panel border border-hairline px-6.5 py-6">
             <h3 className="eyebrow text-deep-green">{t.weDo}</h3>
             <ul className="mt-3.5 flex flex-col gap-2.5">
-              {INCLUDED.map((item) => (
+              {included.map((item) => (
                 <li key={item} className="flex gap-2.5 text-sm leading-normal">
                   <span aria-hidden="true" className="font-bold text-teal">
                     ✓
@@ -693,7 +605,7 @@ export default async function HowItWorksPage({
           <div className="rounded-panel bg-surface px-6.5 py-6">
             <h3 className="eyebrow text-deep-red">{t.weDont}</h3>
             <ul className="mt-3.5 flex flex-col gap-2.5">
-              {EXCLUDED.map((item) => (
+              {excluded.map((item) => (
                 <li key={item} className="flex gap-2.5 text-sm leading-normal">
                   <span aria-hidden="true" className="font-bold text-deep-red">
                     ·
@@ -709,17 +621,12 @@ export default async function HowItWorksPage({
       {/* shape: highlight-panel -- TM30. Gold panel: the obligation most contracts hand back to the owner. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-14">
         <div className="rounded-panel bg-linear-to-b from-sand from-20% to-white to-62% px-6 py-8 sm:px-8.5">
-          <h2 className="eyebrow text-ink/65">
-            The bit most managers leave with you
-          </h2>
+          <h2 className="eyebrow text-ink/65">{t.hwTm30Eyebrow}</h2>
           <p className="mt-2 font-display text-[23px] font-bold tracking-[-0.02em] text-ink">
-            TM30 reporting is included.
+            {t.hwTm30Title}
           </p>
           <p className="mt-2 max-w-[700px] text-[15px] leading-relaxed text-ink/85">
-            Every foreign guest has to be reported to Immigration. It is a legal
-            obligation on the property, it is tedious, and most management
-            contracts quietly hand it back to the owner. Ours does not. Keeping
-            the permission compliant once it is granted is part of the same job.
+            {t.hwTm30Body}
           </p>
         </div>
       </section>
@@ -729,9 +636,9 @@ export default async function HowItWorksPage({
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
           {t.faqTitle}
         </h2>
-        <Faq items={FAQ} />
+        <Faq items={faq} />
         {/* Same questions and answers as the accordion renders, from the same array. */}
-        <JsonLd data={faqSchema(FAQ)} />
+        <JsonLd data={faqSchema(faq)} />
       </section>
 
       {/* shape: proof-block
@@ -768,7 +675,7 @@ export default async function HowItWorksPage({
           </div>
           <Link
             href={href(`/${LOTUS_HOUSE.slug}`)}
-            className="mt-4 inline-block text-sm font-semibold text-primary hover:text-secondary"
+            className="hit mt-4 inline-block text-sm font-semibold text-primary hover:text-secondary"
           >
             {LOTUS_HOUSE.title} →
           </Link>
@@ -783,9 +690,7 @@ export default async function HowItWorksPage({
               {t.startNumbers}
             </h2>
             <p className="mt-2 text-[15px] leading-relaxed text-white/75">
-              One site visit, a written analysis, an hour on a call walking you
-              through it, and a straight Go or No-Go at the end. No management
-              contract attached.
+              {t.hwClosingBody}
             </p>
           </div>
           <Link
@@ -802,7 +707,7 @@ export default async function HowItWorksPage({
         <span className="text-sm text-muted">{t.lookingToStay}</span>
         <Link
           href={href(`/${LOTUS_HOUSE.slug}`)}
-          className="text-sm font-semibold text-primary hover:text-secondary"
+          className="hit text-sm font-semibold text-primary hover:text-secondary"
         >
           {t.viewProperty} →
         </Link>

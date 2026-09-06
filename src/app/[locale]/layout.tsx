@@ -135,7 +135,11 @@ export default async function RootLayout({
           {t.skipToContent}
         </a>
         <Nav locale={locale} />
-        <main id="main" className="flex-1">
+        {/* tabIndex -1 so the skip link actually moves focus. Without it Chrome moves
+            only the sequential-focus starting point, so the next Tab lands in the content
+            but the screen reader's reading cursor stays at the top of the page, which is
+            the half of the job that matters. */}
+        <main id="main" tabIndex={-1} className="flex-1 outline-none">
           {children}
         </main>
         <Footer locale={locale} />

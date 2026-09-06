@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Dictionary } from "@/i18n";
 import { pickPhoto } from "@/lib/photos";
 import { TEAM } from "@/lib/team";
 
@@ -17,8 +18,11 @@ import { TEAM } from "@/lib/team";
  * before each one is big enough to read a face in.
  *
  * Renders nothing when src/photos/team/ is empty, so the page stays whole either way.
+ *
+ * `member.role` is a dictionary key rather than a job title, so the row is resolved against
+ * the caller's locale here instead of shipping four English titles to every reader.
  */
-export function TeamRow({ heading }: { heading: string }) {
+export function TeamRow({ t, heading }: { t: Dictionary; heading: string }) {
   const members = TEAM.map((member) => ({
     ...member,
     photo: pickPhoto("team", member.match),
@@ -45,7 +49,7 @@ export function TeamRow({ heading }: { heading: string }) {
             <p className="mt-3 font-display text-[17px] font-bold tracking-[-0.015em]">
               {member.name}
             </p>
-            <p className="mt-0.5 text-[13px] leading-snug text-muted">{member.role}</p>
+            <p className="mt-0.5 text-[13px] leading-snug text-muted">{t[member.role]}</p>
           </li>
         ))}
       </ul>

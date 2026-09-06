@@ -35,6 +35,25 @@ export const FEATURES = [
 export const SORTS = ["area", "price-asc", "price-desc"] as const;
 export type Sort = (typeof SORTS)[number];
 
+/**
+ * How many results a map has to have before it is worth drawing.
+ *
+ * The handoff is explicit that a map view earns its place at three or more properties. At
+ * one pin it says nothing the tile has not already said -- the tile already carries the
+ * neighbourhood and the distance to the centre -- and it costs a mapping library, an
+ * external tile host and a second column to say it. Below this the results page renders no
+ * map at all, and the "Show map" toggle in the filter bar goes with it rather than
+ * remaining a control that does nothing.
+ */
+export const MAP_MIN_RESULTS = 3;
+
+/**
+ * The guest counts the filter bar offers by name. A larger number is still accepted from
+ * the URL -- the homepage stepper goes to twelve -- and the select grows to include it, so
+ * the control can never sit on "Any" while the search is filtering on twelve.
+ */
+export const GUEST_CHOICES = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+
 export type SearchState = {
   city: string;
   areas: string[];
@@ -122,6 +141,9 @@ export function activeFilters(state: SearchState): { key: string; value: string 
   for (const feature of state.features) active.push({ key: "features", value: feature });
   if (state.bedrooms) active.push({ key: "beds", value: String(state.bedrooms) });
   if (state.bathrooms) active.push({ key: "baths", value: String(state.bathrooms) });
+  // Guests narrows the list exactly as the others do, and leaving it out of here was how a
+  // `?guests=12` search could empty the page while the summary line named no filter at all.
+  if (state.guests) active.push({ key: "guests", value: String(state.guests) });
   return active;
 }
 

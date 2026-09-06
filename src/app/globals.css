@@ -78,7 +78,15 @@
     system-ui, sans-serif;
   --font-headline: var(--font-unbounded), var(--font-poppins), var(--font-noto-thai),
     var(--font-noto-sc), sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, Menlo, monospace;
+  /* Noto Thai and Noto SC sit behind Plex Mono for the same reason they sit behind the
+     Latin faces above, and it was missed here. Plex Mono carries no Thai and no Han
+     glyphs, so every eyebrow, field label, price and step code on /th and /zh fell
+     through to the OS generic monospace: a different weight, width and vertical metric
+     from the rest of the page, on 52 elements per locale. Neither Noto face is
+     monospaced, which is the right trade -- a label that matches the page beats a label
+     that matches a grid nothing else on the page sits on. */
+  --font-mono: var(--font-plex-mono), var(--font-noto-thai), var(--font-noto-sc),
+    ui-monospace, Menlo, monospace;
 
   /* 16px cards and panels, 12px inner boxes, 999px pills. */
   --radius-panel: 16px;
@@ -87,6 +95,20 @@
   /* Content max-widths: 1440px for chrome and full-bleed sections, 1080px for prose. */
   --container-chrome: 1440px;
   --container-prose: 1080px;
+}
+
+/* The sticky header's height, published so the sticky filter bar can sit under it rather
+   than guessing. It guessed 66px, which is the header's *minimum*: below 560px the header
+   wraps to two rows and stands at 93px, so the bar's own controls were sliced in half by
+   the header on every phone. Measured, not estimated: 66px at one row, 93px at two. */
+:root {
+  --nav-h: 93px;
+}
+
+@media (min-width: 560px) {
+  :root {
+    --nav-h: 66px;
+  }
 }
 
 body {
@@ -119,6 +141,52 @@ button {
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: var(--color-muted);
+  }
+
+  /* Thai stacks tone marks and vowels above and below the base character, and they belong
+     to the same orthographic cluster as the base. Tracking pulls that cluster apart, which
+     reads as broken rather than as an eyebrow. Uppercase is a no-op in both scripts, so on
+     th and zh the class keeps its size, colour and font and drops the two Latin
+     mannerisms that cost more than they buy. */
+  :lang(th) .eyebrow,
+  :lang(zh) .eyebrow {
+    letter-spacing: 0;
+  }
+
+  :lang(th) .eyebrow {
+    line-height: 1.7;
+  }
+
+  /* Icon chip. The icon spec: stroke-only SVG at 24x24, currentColor, never a library,
+     and never bare on the page -- always inside a chip, which is a 38px rounded square at
+     the 8px inner radius with the glyph in ink. The chip is aria-hidden at the call site,
+     because an icon that carries meaning the text does not is a bug. */
+  .icon-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: var(--color-surface);
+    color: var(--color-ink);
+  }
+  .icon-chip svg {
+    width: 19px;
+    height: 19px;
+  }
+  .icon-chip-ink {
+    background: rgb(255 255 255 / 0.1);
+    color: var(--color-gold-on-ink);
+  }
+
+  /* Grows a text link's hit area to the 24px AA minimum without moving it. Applied to the
+     footer, header and breadcrumb links, which rendered 14-20px tall with 10px between
+     them -- under SC 2.5.8 and, on a phone, genuinely hard to hit. */
+  .hit {
+    padding: 6px 4px;
+    margin: -6px -4px;
   }
 
   /* Bento-card gradient grounds, the design system's `.on-grad` variant.

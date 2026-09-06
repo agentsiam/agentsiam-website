@@ -6,10 +6,11 @@ import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { heroPhoto, pickPhoto } from "@/lib/photos";
 import { HeroSearch } from "@/components/hero-search";
-import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
+import { LOTUS_HOUSE, propertyArea, propertyFacts } from "@/lib/property";
 import { areaVibe } from "@/i18n/area-vibe";
 import {
   OG_IMAGE,
+  OG_LOCALE,
   SITE_NAME,
   absoluteUrl,
   languageAlternates,
@@ -35,6 +36,10 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       siteName: SITE_NAME,
+      // A page-level openGraph replaces the layout's outright, so this object has to
+      // carry everything the layout would have: the homepage published no og:locale at
+      // all, in any language, because this one was hand-built for the absolute title.
+      locale: OG_LOCALE[locale],
       url: absoluteUrl(locale, "/"),
       title,
       description: t.metaHomeDesc,
@@ -289,7 +294,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
                 </p>
                 <Link
                   href={panel.href}
-                  className={`mt-1 text-sm font-semibold underline underline-offset-4 ${panel.link}`}
+                  className={`hit mt-1 inline-block text-sm font-semibold underline underline-offset-4 ${panel.link}`}
                 >
                   {panel.label}
                 </Link>
@@ -350,10 +355,10 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             </h3>
             <span className="eyebrow mt-1.5 block">{areaVibe(t, area)}</span>
             <p className="mt-2.5 text-[15px] leading-relaxed text-body">
-              {property.tagline}
+              {t.lotusTagline}
             </p>
             <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-muted">
-              {property.facts.map((fact) => (
+              {propertyFacts(t, property).map((fact) => (
                 <div key={fact.label} className="flex gap-1.5">
                   <dt>{fact.label}</dt>
                   <dd className="font-semibold text-text">{fact.value}</dd>
@@ -383,26 +388,52 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
 
       {/* shape: proof-block
           -- Social proof. The handoff's rail carries eight review cards; we have the
-             reviews we actually have. A rail of one is a quote. */}
+             reviews we actually have, and its own comment already said "a rail of one is a
+             quote". It was still drawn as a rail: one 300px card in a 1,400px row, with
+             three quarters of the band empty, which reads as seven cards that failed to
+             load rather than as one quote we stand behind.
+
+             So one review is drawn as a quote at full measure and more than one goes back
+             to the rail. Nothing here states a count or an average, because neither is on
+             file: the figure a reader could check has to come off the platform, and a
+             number nobody verified is worse than no number. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
         <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
           {t.guestReviews}
         </h2>
-        <div className="mt-5 flex gap-4 overflow-x-auto pb-1">
-          {property.reviews.map((review) => (
-            <figure
-              key={review.quote}
-              className="flex min-h-[200px] w-[300px] shrink-0 flex-col gap-3 rounded-panel bg-pink p-5.5"
+
+        {property.reviews.length === 1 ? (
+          <figure className="mt-5 max-w-[780px] rounded-panel bg-pink px-8 py-7 sm:px-10 sm:py-9">
+            <blockquote
+              lang={property.reviews[0].lang}
+              className="font-display text-[clamp(18px,2.4vw,23px)] font-semibold leading-[1.45] tracking-[-0.01em] text-ink"
             >
-              <blockquote className="text-[14.5px] leading-relaxed text-ink">
-                {review.quote}
-              </blockquote>
-              <figcaption className="mt-auto flex items-center gap-3 border-t border-ink/12 pt-3.5 text-[12px] text-ink/75">
-                {t.guestReviewSource} · {property.title}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
+              {property.reviews[0].quote}
+            </blockquote>
+            <figcaption className="mt-5 border-t border-ink/12 pt-4 text-[12.5px] text-ink/75">
+              {t.guestReviewSource} · {property.title}
+            </figcaption>
+          </figure>
+        ) : (
+          <div className="mt-5 flex gap-4 overflow-x-auto pb-1">
+            {property.reviews.map((review) => (
+              <figure
+                key={review.quote}
+                className="flex min-h-[200px] w-[300px] shrink-0 flex-col gap-3 rounded-panel bg-pink p-5.5"
+              >
+                <blockquote
+                  lang={review.lang}
+                  className="text-[14.5px] leading-relaxed text-ink"
+                >
+                  {review.quote}
+                </blockquote>
+                <figcaption className="mt-auto flex items-center gap-3 border-t border-ink/12 pt-3.5 text-[12px] text-ink/75">
+                  {t.guestReviewSource} · {property.title}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* shape: audience-fork
@@ -473,7 +504,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             </h2>
             <Link
               href={href(`/${property.slug}`)}
-              className="mt-2.5 inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
+              className="hit mt-2.5 inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
             >
               {t.viewProperty}
             </Link>

@@ -151,6 +151,32 @@ because C29 requires each repo to state its own.
 - The local guide's neighbourhood filter chips render `AREAS[].name` from `src/lib/areas.ts`, which
   is English only, so they stay English on every locale. Its category and tag labels are localised
   correctly, so only half that page's chips are affected. Not a copy bug, and still open.
+- `not-found.tsx` renders **client-side only in production**. `next dev` server-renders it,
+  `next start` does not: `/nope` returns a 404 with the full page under JavaScript and an
+  empty `<body>` without it. Every real page server-renders correctly, so a blank 404 is not
+  evidence that SSR is broken site-wide. `export const dynamic` on the catch-all does not
+  change it; it was tried and reverted. See `README.md`, "Known gaps".
+- `min-h-[66px]` on the header is a **minimum**, not the height. Below 560px the header wraps
+  and stands at 93px, and the sticky filter bar on `/properties` was pinned at `top-[66px]`,
+  so the header sliced the bar's own controls in half on every phone. The height is now
+  published as `--nav-h` in `globals.css` and read by the bar. If the header gains a row,
+  that variable is what changes, not a number in a component.
+- `next build` cannot run without reaching Google Fonts. `next/font/google` fetches at build
+  time, so an offline or firewalled machine fails with "Failed to fetch `Poppins`" and a
+  module-not-found trace that looks like a code error. `NEXT_FONT_GOOGLE_MOCKED_RESPONSES`
+  exists but is not honoured by Turbopack's font pipeline. The way to build offline is to
+  swap the six `next/font/google` calls in `layout.tsx` for `next/font/local` against real
+  `.woff2` files, build, and swap back; `localFont` needs literal object arguments, so a
+  helper function that builds the `src` array fails to compile.
+- A blank dictionary string ships English and nobody notices, because the per-key fallback is
+  working exactly as designed. `scripts/add-dictionary-keys.mjs` will happily write one if a
+  spec file carries `""`; `en.ts` is where that does the most damage, since it is the
+  fallback everything else falls through to.
+- `t[key]` on data outside the dictionaries is the recurring i18n bug on this site, not
+  missing keys. Three separate rounds of it have been found: property facts, house rules and
+  the tagline in `property.ts`; the whole of `/how-it-works` in module-scope arrays; team
+  roles in `team.ts`. Anything a page prints that a reader can read belongs in the
+  dictionaries, including strings that live in a `lib/` array because they felt like data.
 - Editing the dictionaries string by string during a review is how the register split gets broken:
   owner strings take ท่าน, guest strings take คุณ, and swapping them costs more credibility than a
   clumsy sentence.

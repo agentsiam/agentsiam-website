@@ -1,3 +1,5 @@
+import type { Dictionary } from "@/i18n";
+
 /**
  * A page of the feasibility report, rendered as a document rather than shipped as a
  * screenshot.
@@ -19,38 +21,48 @@
  *
  * Built as markup rather than an image so it stays sharp at any size, reflows on a phone,
  * and can be read by a screen reader.
+ *
+ * Every string comes from the dictionary. The whole component was English literals until
+ * 06/09/2026, so a Thai or Chinese owner was shown the deliverable of a paid service in a
+ * language they had not asked for, redaction label included. The percentages are not
+ * strings and do not move: 52 / 61 / 68 and the 41 breakeven are the method on display.
  */
 
-const SECTIONS = [
-  ["1. Market and demand analysis", "p. 3"],
-  ["4. Business case, three scenarios", "p. 14"],
-  ["2. Property assessment and positioning", "p. 8"],
-  ["5. Against a long-term tenant", "p. 19"],
-  ["3. Operating cost model", "p. 11"],
-  ["6. Recommendation: Go or No-Go", "p. 22"],
+const SECTIONS = (t: Dictionary): [string, number][] => [
+  [t.hwSrSec1, 3],
+  [t.hwSrSec4, 14],
+  [t.hwSrSec2, 8],
+  [t.hwSrSec5, 19],
+  [t.hwSrSec3, 11],
+  [t.hwSrSec6, 22],
 ];
 
-const ROWS: { label: string; values: (string | null)[]; total?: boolean }[] = [
-  { label: "Average nightly rate", values: [null, null, null] },
-  { label: "Occupancy, annual", values: ["52%", "61%", "68%"] },
-  { label: "Gross revenue", values: [null, null, null] },
-  { label: "Operating cost", values: [null, null, null] },
-  { label: "Net operating income", values: [null, null, null], total: true },
-  { label: "Breakeven occupancy", values: ["41%", "41%", "41%"] },
+const ROWS = (
+  t: Dictionary,
+): { label: string; values: (string | null)[]; total?: boolean }[] => [
+  { label: t.hwSrRowRate, values: [null, null, null] },
+  { label: t.hwSrRowOccupancy, values: ["52%", "61%", "68%"] },
+  { label: t.hwSrRowGross, values: [null, null, null] },
+  { label: t.hwSrRowOpex, values: [null, null, null] },
+  { label: t.hwSrRowNoi, values: [null, null, null], total: true },
+  { label: t.hwSrRowBreakeven, values: ["41%", "41%", "41%"] },
 ];
 
 /** A withheld figure. aria-label so a screen reader hears why the cell is empty. */
-function Redacted() {
+function Redacted({ label }: { label: string }) {
   return (
     <span
       role="img"
-      aria-label="figure withheld in this sample"
+      aria-label={label}
       className="inline-block h-2.5 w-14 rounded-[3px] bg-[#d7d8e2] align-middle"
     />
   );
 }
 
-export function SampleReport() {
+export function SampleReport({ t }: { t: Dictionary }) {
+  const sections = SECTIONS(t);
+  const rows = ROWS(t);
+
   return (
     <article className="relative overflow-hidden rounded-panel border border-hairline bg-bg shadow-sm">
       <div className="absolute inset-y-0 right-0 hidden w-2.5 bg-sand sm:block" />
@@ -62,29 +74,28 @@ export function SampleReport() {
             <p className="font-display text-lg font-extrabold tracking-[-0.01em] text-ink">
               AgentSiam
             </p>
-            <p className="eyebrow mt-1.5">Feasibility &amp; ROI study · Chiang Mai</p>
+            <p className="eyebrow mt-1.5">{t.hwSrKicker}</p>
           </div>
           <p className="max-w-[330px] rounded-box border-[1.5px] border-dashed border-secondary bg-wash-red px-3 py-2">
-            <span className="eyebrow text-deep-red">Sample — not a client report</span>
+            <span className="eyebrow text-deep-red">{t.hwSrSampleLabel}</span>
             <span className="mt-1 block text-[11.5px] leading-snug text-body">
-              The structure and format of the report a client receives. Figures are
-              illustrative, not a forecast for any property.
+              {t.hwSrSampleBody}
             </span>
           </p>
         </header>
 
         <h3 className="mt-6 font-headline text-[clamp(22px,3.4vw,30px)] font-extrabold leading-[1.12] tracking-[-0.03em] text-ink">
-          Is short-let worth it
+          {t.hwSrTitleA}
           <br />
-          for this property?
+          {t.hwSrTitleB}
         </h3>
 
         <dl className="mt-5 grid grid-cols-2 gap-4 rounded-box bg-surface px-5 py-4 sm:grid-cols-4">
           {[
-            ["Property", "2-bed townhouse"],
-            ["Neighbourhood", "Chang Khlan"],
-            ["Site visit", "Completed"],
-            ["Verdict", "Section 6"],
+            [t.hwSrFactProperty, t.hwSrFactPropertyValue],
+            [t.neighbourhood, t.areaChangKhlan],
+            [t.hwSrFactVisit, t.hwSrFactVisitValue],
+            [t.hwSrFactVerdict, t.hwSrFactVerdictValue],
           ].map(([label, value]) => (
             <div key={label}>
               <dt className="eyebrow">{label}</dt>
@@ -95,48 +106,51 @@ export function SampleReport() {
 
         {/* -- contents ---------------------------------------------------- */}
         <h4 className="mt-7 font-display text-lg font-bold tracking-[-0.02em] text-ink">
-          What is in this report
+          {t.hwSrContentsTitle}
         </h4>
         <ul className="mt-3 grid gap-x-7 sm:grid-cols-2">
-          {SECTIONS.map(([name, page]) => (
+          {sections.map(([name, page]) => (
             <li
               key={name}
               className="flex justify-between gap-3 border-b border-hairline py-2 text-[13.5px]"
             >
               <span>{name}</span>
-              <span className="font-mono text-xs text-muted">{page}</span>
+              <span className="font-mono text-xs text-muted">
+                {t.hwSrPage.replace("{n}", String(page))}
+              </span>
             </li>
           ))}
         </ul>
 
         {/* -- the scenario table ------------------------------------------ */}
         <h4 className="mt-7 font-display text-lg font-bold tracking-[-0.02em] text-ink">
-          4 · Business case
+          {t.hwSrCaseTitle}
         </h4>
         <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
-          Three scenarios. The verdict is judged on the conservative column, never the
-          optimistic one.
+          {t.hwSrCaseIntro}
         </p>
 
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[420px] border-collapse text-[13.5px]">
             <thead>
               <tr>
-                {["", "Conservative", "Base", "Optimistic"].map((head, index) => (
-                  <th
-                    key={head || "row-label"}
-                    scope="col"
-                    className={`eyebrow pb-2.5 font-medium ${index === 0 ? "text-left" : "text-right"} ${
-                      index === 2 ? "bg-surface" : ""
-                    }`}
-                  >
-                    {head}
-                  </th>
-                ))}
+                {["", t.hwSrColConservative, t.hwSrColBase, t.hwSrColOptimistic].map(
+                  (head, index) => (
+                    <th
+                      key={head || "row-label"}
+                      scope="col"
+                      className={`eyebrow pb-2.5 font-medium ${index === 0 ? "text-left" : "text-right"} ${
+                        index === 2 ? "bg-surface" : ""
+                      }`}
+                    >
+                      {head}
+                    </th>
+                  ),
+                )}
               </tr>
             </thead>
             <tbody>
-              {ROWS.map((row) => (
+              {rows.map((row) => (
                 <tr key={row.label}>
                   <th
                     scope="row"
@@ -153,7 +167,7 @@ export function SampleReport() {
                         row.total ? "border-ink font-semibold text-ink" : "border-hairline"
                       } ${index === 1 ? "bg-surface" : ""}`}
                     >
-                      {value ?? <Redacted />}
+                      {value ?? <Redacted label={t.hwSrRedacted} />}
                     </td>
                   ))}
                 </tr>
@@ -164,15 +178,9 @@ export function SampleReport() {
 
         <div className="mt-5 grid gap-5 sm:grid-cols-2">
           <div className="rounded-box border border-hairline px-5 py-4">
-            <h5 className="text-[13px] font-semibold text-ink">
-              5 · The alternative we test against
-            </h5>
+            <h5 className="text-[13px] font-semibold text-ink">{t.hwSrAltTitle}</h5>
             <ul className="mt-2 space-y-1.5">
-              {[
-                "A real long-term rental comparable, pulled in this street at the time of the study",
-                "Net of the costs a tenant does not create: turnover, laundry, utilities, platform fees",
-                "Short-let has to beat it on the conservative column to pass",
-              ].map((item) => (
+              {[t.hwSrAlt1, t.hwSrAlt2, t.hwSrAlt3].map((item) => (
                 <li key={item} className="flex gap-2 text-[12.5px] leading-snug">
                   <span aria-hidden="true" className="font-bold text-primary">
                     ·
@@ -183,13 +191,9 @@ export function SampleReport() {
             </ul>
           </div>
           <div className="rounded-box border border-hairline px-5 py-4">
-            <h5 className="text-[13px] font-semibold text-ink">What moves the answer most</h5>
+            <h5 className="text-[13px] font-semibold text-ink">{t.hwSrMoversTitle}</h5>
             <ul className="mt-2 space-y-1.5">
-              {[
-                "Bedroom count, then off-street parking in the outer ring",
-                "Seasonality: burning season is modelled, not averaged away",
-                "Owner use — every blocked week is priced",
-              ].map((item) => (
+              {[t.hwSrMover1, t.hwSrMover2, t.hwSrMover3].map((item) => (
                 <li key={item} className="flex gap-2 text-[12.5px] leading-snug">
                   <span aria-hidden="true" className="font-bold text-primary">
                     ·
@@ -203,22 +207,18 @@ export function SampleReport() {
 
         {/* -- the verdict, which is the whole product --------------------- */}
         <div className="mt-5 rounded-box border-[1.5px] border-teal/50 bg-wash-green px-5 py-4">
-          <p className="eyebrow text-deep-green">6 · Recommendation</p>
+          <p className="eyebrow text-deep-green">{t.hwSrRecTitle}</p>
           <p className="mt-1.5 font-display text-xl font-bold tracking-[-0.015em] text-ink">
-            Go — on the conservative case, with two conditions.
+            {t.hwSrRecVerdict}
           </p>
           <p className="mt-2 max-w-[820px] text-[13px] leading-relaxed text-body">
-            Short-let clears the long-term comparable with margin at 52% occupancy.
-            Conditional on the non-hotel exemption being filed before listing, and on the fire
-            safety items in section 2 being remedied. A projection is not a promise: occupancy
-            moves with the season, the economy and the platforms, which is why the
-            conservative column is the one that decides.
+            {t.hwSrRecBody}
           </p>
         </div>
 
         <footer className="mt-5 flex flex-wrap justify-between gap-3 border-t border-hairline pt-3 font-mono text-[10.5px] text-muted">
-          <span>AgentSiam Co., Ltd. · Chiang Mai</span>
-          <span>Sample document · illustrative figures</span>
+          <span>AgentSiam Co., Ltd. · {t.homeCity}</span>
+          <span>{t.hwSrFooterNote}</span>
         </footer>
       </div>
     </article>

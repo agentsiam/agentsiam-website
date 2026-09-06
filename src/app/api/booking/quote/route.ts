@@ -17,7 +17,7 @@ const MAX_NIGHTS = 365;
 
 export async function GET(request: Request) {
   if (!BEDS24_READY) {
-    return NextResponse.json({ error: "Booking is not configured." }, { status: 503 });
+    return NextResponse.json({ error: "Booking is not configured.", code: "not_configured" }, { status: 503 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -27,19 +27,19 @@ export async function GET(request: Request) {
   const children = Number(searchParams.get("children") ?? "0");
 
   if (!isValidDate(arrival) || !isValidDate(departure) || departure <= arrival) {
-    return NextResponse.json({ error: "Bad dates." }, { status: 400 });
+    return NextResponse.json({ error: "Bad dates.", code: "bad_dates" }, { status: 400 });
   }
   if (arrival < today()) {
-    return NextResponse.json({ error: "That arrival date has passed." }, { status: 400 });
+    return NextResponse.json({ error: "That arrival date has passed.", code: "past_arrival" }, { status: 400 });
   }
   if (nightsBetween(arrival, departure) > MAX_NIGHTS) {
-    return NextResponse.json({ error: "That stay is too long to quote." }, { status: 400 });
+    return NextResponse.json({ error: "That stay is too long to quote.", code: "stay_too_long", maxNights: MAX_NIGHTS }, { status: 400 });
   }
   if (!Number.isInteger(adults) || adults < 1 || adults > LOTUS_HOUSE.maxGuests) {
-    return NextResponse.json({ error: "Bad guest count." }, { status: 400 });
+    return NextResponse.json({ error: "Bad guest count.", code: "bad_guests", maxGuests: LOTUS_HOUSE.maxGuests }, { status: 400 });
   }
   if (!Number.isInteger(children) || children < 0 || adults + children > LOTUS_HOUSE.maxGuests) {
-    return NextResponse.json({ error: "Bad guest count." }, { status: 400 });
+    return NextResponse.json({ error: "Bad guest count.", code: "bad_guests", maxGuests: LOTUS_HOUSE.maxGuests }, { status: 400 });
   }
 
   try {
@@ -47,6 +47,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ ...quote, currency: LOTUS_HOUSE.currency });
   } catch (error) {
     console.error("[booking/quote]", error);
-    return NextResponse.json({ error: "Could not price those dates." }, { status: 502 });
+    return NextResponse.json({ error: "Could not price those dates.", code: "quote_failed" }, { status: 502 });
   }
 }

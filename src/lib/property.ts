@@ -12,11 +12,11 @@
  */
 
 import { AREAS, type Area } from "@/lib/areas";
+import type { Dictionary } from "@/i18n";
 
 export type Property = {
   slug: string;
   title: string;
-  tagline: string;
   /** Area slug, resolved against src/lib/areas.ts. One spelling of a neighbourhood. */
   areaSlug: string;
   /**
@@ -64,19 +64,34 @@ export type Property = {
   fill: string;
   /** Text colour that meets contrast on `fill`. */
   onFill: string;
-  facts: { label: string; value: string }[];
-  description: string[];
+  /**
+   * The facts strip. Labels are dictionary keys and so are the values that are words
+   * rather than numbers, because until 06/09/2026 both were English literals here and
+   * rendered "Guests / Bedrooms / Beds / 2 king" on /th and /zh, on two pages.
+   */
+  facts: { labelKey: keyof Dictionary; value?: string; valueKey?: keyof Dictionary }[];
+  /** Dictionary keys, one per paragraph. Same reason as `facts`. */
+  descriptionKeys: (keyof Dictionary)[];
+  /** Dictionary key for the one-line pitch under the title. */
+  taglineKey: keyof Dictionary;
   address: string;
   checkIn: string;
   checkOut: string;
-  houseRules: string[];
-  reviews: { quote: string; source: string }[];
+  /** Dictionary keys. These sit in the same list as the localised safety line, so an
+   *  English literal here rendered the list half Thai and half English. */
+  houseRuleKeys: (keyof Dictionary)[];
+  /**
+   * A guest's own words, in the language they wrote them. Deliberately NOT a dictionary
+   * key: a review translated is no longer the review, and a quote a reader cannot trace
+   * to a platform is worth nothing. It carries `lang` at the point of use instead.
+   */
+  reviews: { quote: string; lang: string; source: string }[];
 };
 
 export const LOTUS_HOUSE: Property = {
   slug: "lotushouse",
   title: "Lotus House",
-  tagline: "Your base for adventure and local living in Chiang Mai",
+  taglineKey: "lotusTagline",
   areaSlug: "chang-khlan",
   citySlug: "chiang-mai",
   // The Beds24 property record carries these; copied here so a map pin and a distance
@@ -100,17 +115,14 @@ export const LOTUS_HOUSE: Property = {
   fill: "bg-primary",
   onFill: "text-white",
   facts: [
-    { label: "Guests", value: "4" },
-    { label: "Bedrooms", value: "2" },
-    { label: "Beds", value: "2 king" },
-    { label: "Bathrooms", value: "2" },
-    { label: "Kitchen", value: "1" },
-    { label: "Rooftop", value: "1" },
+    { labelKey: "guests", value: "4" },
+    { labelKey: "bedrooms", value: "2" },
+    { labelKey: "beds", valueKey: "twoKingBeds" },
+    { labelKey: "bathrooms", value: "2" },
+    { labelKey: "factKitchen", value: "1" },
+    { labelKey: "factRooftop", value: "1" },
   ],
-  description: [
-    "Lotus House is your base for adventure and local living in Chiang Mai. Tucked on a quiet street among friendly neighbours, this three-storey home blends comfort with character, offering spacious rooms and a rooftop terrace to relax after exploring the city's vibrant markets, temples, and nightlife.",
-    "Lotus House features two king bedrooms, three dining spaces (indoor table, kitchen island, and rooftop terrace), a fully equipped kitchen, and a rooftop soaking tub. Fast Wi-Fi, smart TV, and a safety box are included. Gated parking for one car and motorbike rental are available, with a 7-Eleven a 4-minute walk away.",
-  ],
+  descriptionKeys: ["lotusDesc1", "lotusDesc2"],
   /**
    * The exact street address. NOT for the listing: it is released at
    * booking-confirmation, like Airbnb's and Booking's. The property page shows the
@@ -120,15 +132,12 @@ export const LOTUS_HOUSE: Property = {
     "42 Soi 1, Tambon Chang Khlan, Amphoe Mueang Chiang Mai, Chang Wat Chiang Mai 50100, Thailand",
   checkIn: "15:00",
   checkOut: "12:00",
-  houseRules: [
-    "Pets not allowed",
-    "Not suitable for individuals with limited mobility",
-    "Wheelchair inaccessible",
-  ],
+  houseRuleKeys: ["ruleNoPets", "ruleLimitedMobility", "ruleWheelchair"],
   reviews: [
     {
       quote:
         "This was hands down one of the best Airbnbs my husband and I have ever stayed in. From the moment we walked in, it felt like home…",
+      lang: "en",
       source: "Airbnb guest review",
     },
   ],
@@ -183,4 +192,21 @@ export function propertyArea(property: Property): Area | undefined {
 /** Properties in a given area. Empty is a normal answer, not an error. */
 export function propertiesInArea(areaSlug: string): Property[] {
   return PROPERTIES.filter((property) => property.areaSlug === areaSlug);
+}
+
+/** The facts strip, resolved against a dictionary. */
+export function propertyFacts(
+  t: Dictionary,
+  property: Property,
+): { label: string; value: string }[] {
+  return property.facts.map((fact) => ({
+    label: t[fact.labelKey],
+    value: fact.valueKey ? t[fact.valueKey] : (fact.value ?? ""),
+  }));
+}
+
+/** The house rules, resolved. The safety line is added by the caller, not here: it is a
+ *  standing recommendation rather than a rule, and only the property page shows it. */
+export function propertyHouseRules(t: Dictionary, property: Property): string[] {
+  return property.houseRuleKeys.map((key) => t[key]);
 }

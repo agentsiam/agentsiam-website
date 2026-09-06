@@ -22,7 +22,7 @@ const DEFAULT_WINDOW_DAYS = 180;
 
 export async function GET(request: Request) {
   if (!BEDS24_READY) {
-    return NextResponse.json({ error: "Booking is not configured." }, { status: 503 });
+    return NextResponse.json({ error: "Booking is not configured.", code: "not_configured" }, { status: 503 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -35,12 +35,12 @@ export async function GET(request: Request) {
   // turned a bad query string into a 500 rather than the 400 it should be.
   const from = searchParams.get("from") ?? today();
   if (!isValidDate(from)) {
-    return NextResponse.json({ error: "Bad date range." }, { status: 400 });
+    return NextResponse.json({ error: "Bad date range.", code: "bad_dates" }, { status: 400 });
   }
 
   const to = searchParams.get("to") ?? addDays(from, window);
   if (!isValidDate(to) || to <= from) {
-    return NextResponse.json({ error: "Bad date range." }, { status: 400 });
+    return NextResponse.json({ error: "Bad date range.", code: "bad_dates" }, { status: 400 });
   }
 
   // Never quote the past, whatever was asked for: a calendar that offers yesterday is a
@@ -55,6 +55,6 @@ export async function GET(request: Request) {
     // Beds24 being down is our problem to see, not the visitor's to decode. The panel
     // falls back to the enquiry call to action on any failure here.
     console.error("[booking/availability]", error);
-    return NextResponse.json({ error: "Could not load availability." }, { status: 502 });
+    return NextResponse.json({ error: "Could not load availability.", code: "calendar_failed" }, { status: 502 });
   }
 }

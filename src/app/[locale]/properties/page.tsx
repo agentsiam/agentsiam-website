@@ -8,7 +8,14 @@ import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS, cityBySlug, DEFAULT_CITY } from "@/lib/areas";
 import { approxLocation } from "@/lib/property";
-import { activeFilters, loosestFilter, parseSearch, searchProperties } from "@/lib/search";
+import {
+  activeFilters,
+  loosestFilter,
+  MAP_MIN_RESULTS,
+  parseSearch,
+  searchProperties,
+  searchToQuery,
+} from "@/lib/search";
 import { pageMeta } from "@/lib/site";
 
 /**
@@ -68,7 +75,15 @@ export default async function PropertiesPage({
             {t.cityComingBody.replace("{city}", city.name)}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link href={href("/properties")} className="pill-primary">
+            {/* Carries the search across. Someone who typed dates, a guest count and three
+                filters and then picked Phuket has not changed their mind about any of the
+                rest, and sending them to a bare /properties made them do it all again. */}
+            <Link
+              href={
+                href("/properties") + searchToQuery({ ...state, city: DEFAULT_CITY.slug })
+              }
+              className="pill-primary"
+            >
               {t.browseChiangMai}
             </Link>
             <Link
@@ -96,6 +111,14 @@ export default async function PropertiesPage({
   }));
   const chips = activeFilters(state);
   const relaxable = results.length === 0 ? loosestFilter(state) : null;
+  // A map is worth drawing at three pins, not one. See MAP_MIN_RESULTS in src/lib/search.ts.
+  const showMap = pins.length >= MAP_MIN_RESULTS;
+  // The way out of an over-tight filter set, keeping the search itself. The city, the dates
+  // and the sort are what the guest is searching for; the filters are how they narrowed it,
+  // and only the narrowing should go.
+  const clearFiltersHref =
+    href("/properties") +
+    searchToQuery({ city: state.city, from: state.from, to: state.to, sort: state.sort });
 
   return (
     <div>
@@ -106,17 +129,33 @@ export default async function PropertiesPage({
           -- Split view: list left, map right and sticky. The handoff's one breakpoint at
           900px -- below it the split cannot hold, so the list takes the full width and the
           map becomes a toggle inside ResultsMap. */}
-      <div className="mx-auto grid max-w-(--container-chrome) gap-9 px-5 pb-18 pt-7 min-[900px]:grid-cols-[1fr_minmax(360px,42%)] min-[900px]:items-start">
+      <div
+        className={`mx-auto grid max-w-(--container-chrome) gap-9 px-5 pb-18 pt-7 ${
+          showMap ? "min-[900px]:grid-cols-[1fr_minmax(360px,42%)] min-[900px]:items-start" : ""
+        }`}
+      >
         <div>
-        <h1 className="font-display text-2xl font-bold tracking-[-0.015em]">
+        <p className="eyebrow">{t.psEyebrow}</p>
+        <h1 className="mt-2 font-display text-2xl font-bold tracking-[-0.015em]">
           {results.length === 1
             ? t.oneProperty
             : t.nProperties.replace("{n}", String(results.length))}
           <span className="text-muted"> · {city.name}</span>
         </h1>
+        <p className="mt-2 max-w-[52ch] text-[15px] leading-relaxed text-body">{t.psSubhead}</p>
+
+        {/* The honest gap. A count of one reads as a search that failed unless the page says
+            plainly that one is what there is, and why. Same register as the "we do not
+            manage anywhere in {area} yet" panel on the destination pages. */}
+        <p className="mt-3 max-w-[52ch] text-[13px] leading-relaxed text-muted">
+          {t.psGapNote}{" "}
+          <Link href={href("/how-it-works")} className="underline underline-offset-4 hover:text-ink">
+            {t.psGapLink}
+          </Link>
+        </p>
 
         {chips.length > 0 ? (
-          <p className="mt-2 text-[13px] text-muted">
+          <p className="mt-3 text-[13px] text-muted">
             {t.filteringBy} {chips.map((chip) => chipLabel(chip, t)).join(" · ")}
           </p>
         ) : null}
@@ -133,6 +172,10 @@ export default async function PropertiesPage({
                 key={property.slug}
                 property={property}
                 t={t}
+                locale={locale}
+                // The h1 here is the result count, and the tiles follow it directly. Every
+                // other call site sits under an h2 and keeps the default h3.
+                headingLevel={2}
                 href={href(`/${property.slug}`)}
               />
             ))}
@@ -151,7 +194,7 @@ export default async function PropertiesPage({
                 : t.noMatchNothing}
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link href={href("/properties")} className="pill-primary">
+              <Link href={clearFiltersHref} className="pill-primary">
                 {t.clearFilters}
               </Link>
               <Link
@@ -166,8 +209,11 @@ export default async function PropertiesPage({
 
         </div>
 
-        {/* Right column. Renders nothing at all when there is nothing to pin. */}
-        <ResultsMap pins={pins} t={t} />
+        {/* Right column. Only past the threshold: at one or two pins the map repeats the
+            neighbourhood and the distance the tile already carries, and charges a mapping
+            library and an external tile host for the repetition. The "Show map" toggle in
+            the bar is gated on the same constant, so it never survives the map. */}
+        {showMap ? <ResultsMap pins={pins} t={t} locale={locale} /> : null}
       </div>
 
       <div className="mx-auto max-w-(--container-chrome) px-5 pb-18">
@@ -185,13 +231,34 @@ export default async function PropertiesPage({
               <li key={area.slug}>
                 <Link
                   href={href(`/destinations/${area.slug}`)}
-                  className="inline-block rounded-full border-[1.5px] border-hairline px-3.5 py-2 text-[12.5px] hover:border-ink"
+                  className="inline-flex min-h-11 items-center rounded-full border-[1.5px] border-hairline px-4 py-2 text-[12.5px] hover:border-ink"
                 >
                   {area.name}
                 </Link>
               </li>
             ))}
           </ul>
+        </section>
+
+        {/* shape: cta-band
+            -- The page's one CTA pair, and it belongs at the foot. The header's job is to
+            get someone into the grid; asking them to write to us before they have looked at
+            anything is asking at the wrong end. */}
+        <section className="mt-12 rounded-panel bg-wash-gold px-8 py-10 text-center">
+          <h2 className="font-headline text-[clamp(22px,3.2vw,28px)] font-extrabold leading-tight tracking-[-0.03em]">
+            {t.psCtaTitle}
+          </h2>
+          <p className="mx-auto mt-3 max-w-[460px] text-[15px] leading-relaxed text-body">
+            {t.psCtaBody}
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link href={href("/contact")} className="pill-primary">
+              {t.tellUsWhatYouNeed}
+            </Link>
+            <Link href={href("/how-it-works")} className="pill-outline">
+              {t.psOwnerCta}
+            </Link>
+          </div>
         </section>
       </div>
     </div>
@@ -209,6 +276,9 @@ function chipLabel(chip: { key: string; value: string }, t: ReturnType<typeof ge
   if (chip.key === "area") {
     return AREAS.find((area) => area.slug === chip.value)?.name ?? chip.value;
   }
+  if (chip.key === "guests") return t.psGuestsN.replace("{n}", chip.value);
+  if (chip.key === "beds") return `${chip.value}+ ${t.bedrooms}`;
+  if (chip.key === "baths") return `${chip.value}+ ${t.bathrooms}`;
   const prefix = chip.key === "type" ? "type_" : chip.key === "features" ? "feature_" : "";
   if (!prefix) return chip.value;
   return t[`${prefix}${chip.value.replace(/-/g, "_")}` as keyof typeof t] ?? chip.value;

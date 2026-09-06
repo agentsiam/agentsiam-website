@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Dictionary } from "@/i18n";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 
 /**
  * The results map: sticky on the right of the list, from the handoff's Level 1.
@@ -52,6 +53,28 @@ function escapeHtml(value: string): string {
 /** Chiang Mai, framed to the city and its immediate districts. */
 const CITY = { lat: 18.7883, lng: 98.9853, zoom: 12 };
 
+/**
+ * Intl locale for each of our three. Copied from the booking panel rather than imported:
+ * pulling a Stripe-bearing client component in for a thousands separator is not a trade
+ * worth making. Thai is pinned to the Gregorian calendar there and is kept identical here.
+ */
+const INTL_LOCALE: Record<Locale, string> = {
+  en: "en-GB",
+  th: "th-TH-u-ca-gregory",
+  zh: "zh-Hans",
+};
+
+/**
+ * Whether to animate at all.
+ *
+ * Read at the moment of the interaction rather than once on mount, because the setting can
+ * change while the page is open and a map that keeps flying after someone has asked it to
+ * stop is exactly the complaint the setting exists for.
+ */
+function prefersReducedMotion(): boolean {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export function ResultsMap({
   pins,
   t,
@@ -96,6 +119,8 @@ export function ResultsMap({
   sticky = true,
   /** Desktop height. Shortened when a card shares the column. */
   mapHeightClass = "min-[900px]:h-[calc(100vh-190px)]",
+  /** Decides the thousands separator on the price pins. Defaults to English. */
+  locale = DEFAULT_LOCALE,
 }: {
   pins: Pin[];
   t: Dictionary;
@@ -106,6 +131,7 @@ export function ResultsMap({
   frameOn?: { lat: number; lng: number }[] | null;
   sticky?: boolean;
   mapHeightClass?: string;
+  locale?: Locale;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<import("leaflet").Map | null>(null);
@@ -154,15 +180,22 @@ export function ResultsMap({
         instance.addLayer(layer);
       }
 
+      const money = new Intl.NumberFormat(INTL_LOCALE[locale], { maximumFractionDigits: 0 });
+
       for (const pin of pins) {
         // A div icon rather than an image marker: it carries the price, which is what
         // makes a map worth using over a list, and it sidesteps Leaflet's default icon
         // paths breaking under a bundler.
+        //
+        // aria-hidden on the label, in both shapes. For a marker, name-from-content beats
+        // the title attribute, so a visible "THB 3,400" *was* the accessible name and the
+        // property's own name never reached anyone listening. Hidden, the title below is
+        // what is left, which is the name.
         const html = pin.icon
           ? `<span class="as-pin-dot${pin.highlight ? " is-pick" : ""}" aria-hidden="true">${pin.icon}</span>`
-          : `<span class="as-pin">${
+          : `<span class="as-pin" aria-hidden="true">${
               pin.price !== null
-                ? `${pin.currency} ${pin.price.toLocaleString("en-US")}`
+                ? `${escapeHtml(pin.currency)} ${money.format(pin.price)}`
                 : escapeHtml(pin.title)
             }</span>`;
 
@@ -170,6 +203,10 @@ export function ResultsMap({
           // Leaflet renders this as a native title attribute, which is also the accessible
           // name, so the pin is never an unlabelled dot to a screen reader.
           title: pin.title,
+          // Not in the tab order. The guide puts 109 of these inside one container with no
+          // way past them, and every one of them repeats a place that is already in the
+          // list beside the map, in reading order, as real focusable content.
+          keyboard: false,
           icon: L.divIcon({ className: "", html, iconSize: [0, 0] }),
         });
 
@@ -183,7 +220,10 @@ export function ResultsMap({
           const tile = document.querySelector<HTMLElement>(
             `[data-map-key="${pin.slug}"]`,
           );
-          tile?.scrollIntoView({ behavior: "smooth", block: "center" });
+          tile?.scrollIntoView({
+            behavior: prefersReducedMotion() ? "auto" : "smooth",
+            block: "center",
+          });
           tile?.classList.add("ring-2", "ring-ink");
           window.setTimeout(() => tile?.classList.remove("ring-2", "ring-ink"), 1600);
         });
@@ -194,6 +234,9 @@ export function ResultsMap({
       if (home) {
         L.marker([home.lat, home.lng], {
           title: home.label,
+          // Out of the tab order for the same reason as the rest: it is a label, not a
+          // control, and the page it marks is the one the guest is already on.
+          keyboard: false,
           zIndexOffset: 1000,
           icon: L.divIcon({
             className: "",
@@ -236,9 +279,15 @@ export function ResultsMap({
                 marker.getElement()?.classList.add("as-pin-active");
               });
             } else {
-              instance.flyTo(marker.getLatLng(), Math.max(instance.getZoom(), 16), {
-                duration: 0.6,
-              });
+              const zoom = Math.max(instance.getZoom(), 16);
+              // Same destination either way. Reduced motion gets there without the flight:
+              // flyTo animates the zoom as well as the pan, which is the whole screen
+              // moving under someone who asked for that not to happen.
+              if (prefersReducedMotion()) {
+                instance.setView(marker.getLatLng(), zoom, { animate: false });
+              } else {
+                instance.flyTo(marker.getLatLng(), zoom, { duration: 0.6 });
+              }
               marker.getElement()?.classList.add("as-pin-active");
             }
           };
@@ -289,7 +338,7 @@ export function ResultsMap({
       cleanup();
     };
     // Re-drawn whenever the result set changes, which on this page means a new URL.
-  }, [pins, panOnCardClick, cluster, home, frameOn]);
+  }, [pins, panOnCardClick, cluster, home, frameOn, locale]);
 
   if (pins.length === 0) return null;
 
@@ -301,7 +350,12 @@ export function ResultsMap({
     >
       <div
         ref={container}
-        role="application"
+        /* region, not application. `application` drops a screen reader out of browse mode
+           for everything inside it, and it is only worth that when the element implements
+           its own key bindings that the reader would otherwise swallow. This one does not:
+           the markers are out of the tab order and Leaflet's own controls are ordinary
+           buttons. */
+        role="region"
         aria-label={t.mapLabel}
         className={`h-[360px] w-full overflow-hidden rounded-panel border border-hairline ${mapHeightClass}`}
       />

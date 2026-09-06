@@ -7,6 +7,7 @@ import {
   getQuote,
   HOLD_MINUTES,
   isValidDate,
+  MAX_MONTHS_AHEAD,
   nightsBetween,
   stayWindowError,
   today,
@@ -34,6 +35,14 @@ export const runtime = "nodejs";
  * placed, the hold is released before answering -- an error must not leave nights blocked.
  */
 
+/**
+ * The throttle window, written down once so the Retry-After we send back is the same
+ * number the bucket actually uses. Every retry inside it pushes another timestamp into
+ * the bucket and extends the lockout, so the browser is told to wait rather than left to
+ * hammer the button.
+ */
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+
 const MAX = { firstName: 100, lastName: 100, email: 100, phone: 100, message: 1000, locale: 8 };
 type Field = keyof typeof MAX;
 
@@ -45,7 +54,10 @@ export async function POST(request: Request) {
   if (!BEDS24_READY || !STRIPE_READY) {
     console.error("[booking/checkout] not configured", { BEDS24_READY, STRIPE_READY });
     return NextResponse.json(
-      { error: `Online booking is unavailable. Please email us at ${CONTACT_EMAIL}.` },
+      {
+        error: `Online booking is unavailable. Please email us at ${CONTACT_EMAIL}.`,
+        code: "not_configured",
+      },
       { status: 503 },
     );
   }
@@ -54,17 +66,22 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Malformed request." }, { status: 400 });
+    return NextResponse.json({ error: "Malformed request.", code: "malformed" }, { status: 400 });
   }
 
   if (clean(body.company, "firstName")) {
     return NextResponse.json({ ok: true });
   }
 
-  if (rateLimit("booking-checkout", callerIp(request), { max: 5, windowMs: 10 * 60 * 1000 })) {
+  if (rateLimit("booking-checkout", callerIp(request), { max: 5, windowMs: RATE_WINDOW_MS })) {
+    const retryAfter = Math.ceil(RATE_WINDOW_MS / 1000);
     return NextResponse.json(
-      { error: `Too many attempts. Please email us at ${CONTACT_EMAIL}.` },
-      { status: 429 },
+      {
+        error: `Too many attempts. Please email us at ${CONTACT_EMAIL}.`,
+        code: "rate_limited",
+        retryAfter,
+      },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } },
     );
   }
 
@@ -81,14 +98,18 @@ export async function POST(request: Request) {
   const locale = clean(body.locale, "locale") || "en";
 
   if (!isValidDate(arrival) || !isValidDate(departure) || departure <= arrival) {
-    return NextResponse.json({ error: "Please choose your dates again." }, { status: 400 });
+    return NextResponse.json({ error: "Please choose your dates again.", code: "bad_dates" }, { status: 400 });
   }
   if (arrival < today()) {
-    return NextResponse.json({ error: "That arrival date has passed." }, { status: 400 });
+    return NextResponse.json({ error: "That arrival date has passed.", code: "past_arrival" }, { status: 400 });
   }
   if (nightsBetween(arrival, departure) < LOTUS_HOUSE.minStay) {
     return NextResponse.json(
-      { error: `The minimum stay is ${LOTUS_HOUSE.minStay} nights.` },
+      {
+        error: `The minimum stay is ${LOTUS_HOUSE.minStay} nights.`,
+        code: "min_stay",
+        minNights: LOTUS_HOUSE.minStay,
+      },
       { status: 400 },
     );
   }
@@ -98,7 +119,13 @@ export async function POST(request: Request) {
   // real on every channel either way.
   const outsideWindow = stayWindowError(arrival, departure, LOTUS_HOUSE.maxStay);
   if (outsideWindow) {
-    return NextResponse.json({ error: outsideWindow }, { status: 400 });
+    return NextResponse.json({
+        error: outsideWindow,
+        code: nightsBetween(arrival, departure) > LOTUS_HOUSE.maxStay ? "max_stay" : "too_far_ahead",
+        maxNights: LOTUS_HOUSE.maxStay,
+        maxMonthsAhead: MAX_MONTHS_AHEAD,
+      },
+      { status: 400 },);
   }
   if (
     !Number.isInteger(adults) ||
@@ -108,13 +135,17 @@ export async function POST(request: Request) {
     adults + children > LOTUS_HOUSE.maxGuests
   ) {
     return NextResponse.json(
-      { error: `Lotus House sleeps up to ${LOTUS_HOUSE.maxGuests} guests.` },
+      {
+        error: `Lotus House sleeps up to ${LOTUS_HOUSE.maxGuests} guests.`,
+        code: "max_guests",
+        maxGuests: LOTUS_HOUSE.maxGuests,
+      },
       { status: 400 },
     );
   }
 
   if (!firstName || !lastName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "Please check the name and email fields." }, { status: 400 });
+    return NextResponse.json({ error: "Please check the name and email fields.", code: "bad_contact" }, { status: 400 });
   }
 
   // 1. Price it. Authoritative, and the last look at availability before the hold.
@@ -124,7 +155,10 @@ export async function POST(request: Request) {
     const quote = await getQuote(arrival, departure, adults, children, true);
     if (!quote.available || quote.total === null || quote.total <= 0) {
       return NextResponse.json(
-        { error: "Those dates are no longer available. Please pick again." },
+        {
+          error: "Those dates are no longer available. Please pick again.",
+          code: "unavailable",
+        },
         { status: 409 },
       );
     }
@@ -132,7 +166,10 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[booking/checkout] quote failed", error);
     return NextResponse.json(
-      { error: `Could not price those dates. Please email us at ${CONTACT_EMAIL}.` },
+      {
+        error: `Could not price those dates. Please email us at ${CONTACT_EMAIL}.`,
+        code: "quote_failed",
+      },
       { status: 502 },
     );
   }
@@ -156,7 +193,10 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[booking/checkout] Beds24 refused the hold", error);
     return NextResponse.json(
-      { error: "Those dates were taken while you were filling this in. Please pick again." },
+      {
+        error: "Those dates were taken while you were filling this in. Please pick again.",
+        code: "dates_taken",
+      },
       { status: 409 },
     );
   }
@@ -164,7 +204,10 @@ export async function POST(request: Request) {
   if (!bookingId) {
     console.error("[booking/checkout] Beds24 accepted the hold but returned no id");
     return NextResponse.json(
-      { error: `Something went wrong. Please email us at ${CONTACT_EMAIL}.` },
+      {
+        error: `Something went wrong. Please email us at ${CONTACT_EMAIL}.`,
+        code: "hold_no_id",
+      },
       { status: 502 },
     );
   }
@@ -217,7 +260,10 @@ export async function POST(request: Request) {
       console.error("[booking/checkout] could not release hold", bookingId, releaseError);
     }
     return NextResponse.json(
-      { error: `Could not start the payment. Please email us at ${CONTACT_EMAIL}.` },
+      {
+        error: `Could not start the payment. Please email us at ${CONTACT_EMAIL}.`,
+        code: "payment_start_failed",
+      },
       { status: 502 },
     );
   }

@@ -24,7 +24,11 @@ export function LanguageSwitcher({
   const route = stripLocale(pathname ?? "/");
 
   return (
+    // role="group", because an aria-label on a plain div is ignored: without a role
+    // there is nothing for the name to name, so the control announced as three unrelated
+    // links with no indication they were a language choice.
     <div
+      role="group"
       aria-label={label}
       className="flex items-center overflow-hidden rounded-full border border-hairline"
     >
@@ -35,8 +39,8 @@ export function LanguageSwitcher({
             key={code}
             href={localePath(code, route)}
             hrefLang={code}
-            aria-current={active ? "true" : undefined}
-            className={`px-2.5 py-[7px] text-xs font-semibold ${
+            aria-current={active ? "page" : undefined}
+            className={`px-3 py-2.5 text-xs font-semibold ${
               active ? "bg-ink text-white" : "text-muted hover:text-text"
             }`}
           >

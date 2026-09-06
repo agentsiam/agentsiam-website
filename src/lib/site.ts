@@ -50,7 +50,19 @@ export const WHATSAPP_NUMBER = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").r
 
 // Shown as "Last updated" on the privacy policy and the terms. Bump by hand when the
 // text of either page materially changes, not on every deploy.
-export const POLICY_UPDATED = "14 August 2026";
+//
+// ISO, not prose. It was the literal string "14 August 2026" until 06/09/2026, which
+// rendered as "ปรับปรุงล่าสุด 14 August 2026" and "最后更新 14 August 2026" -- an English
+// date inside a Thai and a Chinese sentence. Kept as a date so each locale formats it.
+export const POLICY_UPDATED = "2026-08-14";
+
+/** The policy date written the way the reader's own locale writes dates. */
+export function policyUpdated(locale: string): string {
+  const tag = locale === "th" ? "th-TH-u-ca-gregory" : locale === "zh" ? "zh-Hans" : "en-GB";
+  return new Intl.DateTimeFormat(tag, { dateStyle: "long", timeZone: "UTC" }).format(
+    new Date(POLICY_UPDATED + "T00:00:00Z"),
+  );
+}
 
 // No Beds24 booking-page URL here on purpose. Payment is taken by Stripe on this site's
 // own domain (see src/lib/stripe.ts and /api/booking/checkout), so a guest is never sent
@@ -122,7 +134,7 @@ export const NOINDEX = {
 // og:locale wants a language_TERRITORY pair, which is a different vocabulary from the
 // hreflang codes in HTML_LANG. Written out rather than derived, because the mapping is a
 // judgement call: zh-Hans is served to a mainland-Chinese audience here.
-const OG_LOCALE: Record<Locale, string> = {
+export const OG_LOCALE: Record<Locale, string> = {
   en: "en_US",
   th: "th_TH",
   zh: "zh_CN",

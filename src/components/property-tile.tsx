@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Dictionary } from "@/i18n";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { propertyArea, type Property } from "@/lib/property";
 import { PHOTOS } from "@/lib/photos.generated";
 import { distanceToCentre } from "@/lib/search";
@@ -19,23 +20,58 @@ import { distanceToCentre } from "@/lib/search";
  * Prices are "from ฿x per night" and nothing more. The real number for real dates comes
  * from Beds24 on the property page, and a tile is not a quote.
  */
+
+/**
+ * Intl locale for each of our three. Copied from the booking panel rather than imported:
+ * that module is a client component with a Stripe dependency, and a server-rendered tile
+ * has no business pulling it in for a number format.
+ *
+ * Thai is pinned to the Gregorian calendar there for date reasons; it is kept identical
+ * here so the two never disagree about what "th" means.
+ */
+const INTL_LOCALE: Record<Locale, string> = {
+  en: "en-GB",
+  th: "th-TH-u-ca-gregory",
+  zh: "zh-Hans",
+};
+
 export function PropertyTile({
   property,
   t,
   href,
   /** Horizontal on the homepage's single featured tile, stacked in a results grid. */
   layout = "stacked",
+  /**
+   * The tile's heading element.
+   *
+   * h3 is right where the tile sits under an h2 section heading, which is every call site
+   * except the results page -- there the page's h1 is the result count and the tiles follow
+   * it directly, so an h3 skips a level. The default stays h3 so no existing call site
+   * changes behaviour by having this added.
+   */
+  headingLevel = 3,
+  /** Decides the thousands separator on the price. Defaults to English. */
+  locale = DEFAULT_LOCALE,
 }: {
   property: Property;
   t: Dictionary;
   href: string;
   layout?: "stacked" | "wide";
+  headingLevel?: 2 | 3 | 4;
+  locale?: Locale;
 }) {
   const area = propertyArea(property);
   const photo = (PHOTOS[property.slug] ?? [])[0];
   const km = distanceToCentre(property);
 
   const wide = layout === "wide";
+  const Heading = `h${headingLevel}` as "h2" | "h3" | "h4";
+  const price =
+    property.fromPrice === null
+      ? null
+      : new Intl.NumberFormat(INTL_LOCALE[locale], { maximumFractionDigits: 0 }).format(
+          property.fromPrice,
+        );
 
   return (
     <Link
@@ -81,7 +117,9 @@ export function PropertyTile({
       </div>
 
       <div className={wide ? "px-1 pb-3 sm:pb-0 sm:pr-5" : "px-1 pb-2"}>
-        <h3 className="font-display text-lg font-bold tracking-[-0.015em]">{property.title}</h3>
+        <Heading className="font-display text-lg font-bold tracking-[-0.015em]">
+          {property.title}
+        </Heading>
         <span className="eyebrow mt-1 block">{area?.name}</span>
 
         <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-muted">
@@ -105,11 +143,11 @@ export function PropertyTile({
           </div>
         </dl>
 
-        {property.fromPrice !== null ? (
+        {price !== null ? (
           <p className="mt-3 text-[15px]">
             <span className="text-muted">{t.fromPrice} </span>
             <span className="font-display font-bold">
-              {property.currency}&nbsp;{property.fromPrice.toLocaleString("en-US")}
+              {property.currency}&nbsp;{price}
             </span>
             <span className="text-muted"> {t.perNight}</span>
           </p>
