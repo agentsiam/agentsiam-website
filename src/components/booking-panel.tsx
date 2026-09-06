@@ -1499,7 +1499,7 @@ function MonthGrid({
                       // A chosen date is a current value, not a pressed switch.
                       aria-current={isArrival || isDeparture ? "date" : undefined}
                       className={[
-                        "min-h-11 w-full cursor-pointer rounded-md py-1.5 text-[13px] leading-tight",
+                        "min-h-11 w-full cursor-pointer rounded-lg py-1.5 text-[13px] leading-tight",
                         isArrival || isDeparture
                           ? "bg-ink font-semibold text-white"
                           : inRange

@@ -998,6 +998,12 @@ export const en = {
   // -- footer --------------------------------------------------------------
   // Every page's footer published a Bangkok registered address and nothing else, while three pages claim a Chiang Mai team on the ground. Stated separately from the postal block, which has to match the Google Business Profile character for character and is not touched.
   footWhereWeWork: "Operating in Chiang Mai. The address above is the registered office.",
+
+  // -- homepage neighbourhood strip ----------------------------------------
+  // The eight neighbourhood pages became substantial on 06/09/2026 and the homepage pointed at none of them: they were reachable from the nav and the footer only. This is the third route the spec names.
+  homeAreasTitle: "Where in Chiang Mai",
+  homeAreasSub: "The neighbourhood decides the holiday more than the house does. Eight of them, described as they actually are, including the ones we manage nothing in.",
+  homeAreasLink: "All eight neighbourhoods",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

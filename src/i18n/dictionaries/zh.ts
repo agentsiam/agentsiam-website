@@ -853,4 +853,9 @@ export const zh: Dictionary = {
 
   // -- footer --------------------------------------------------------------
   footWhereWeWork: "团队常驻清迈。上方地址为公司注册地址。",
+
+  // -- homepage neighbourhood strip ----------------------------------------
+  homeAreasTitle: "清迈的哪一区",
+  homeAreasSub: "决定这趟旅行的，往往是所在的区域而不是房子本身。八个区域，如实描述，包括我们目前一处都没有管理的那些。",
+  homeAreasLink: "查看全部八个区域",
 };

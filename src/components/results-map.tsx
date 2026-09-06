@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import type { Dictionary } from "@/i18n";
+import { useEffect, useRef, useState } from "react";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 
 /**
@@ -77,7 +76,7 @@ function prefersReducedMotion(): boolean {
 
 export function ResultsMap({
   pins,
-  t,
+  mapLabel,
   /**
    * Clicking a card flies the map to its pin.
    *
@@ -123,7 +122,8 @@ export function ResultsMap({
   locale = DEFAULT_LOCALE,
 }: {
   pins: Pin[];
-  t: Dictionary;
+  /** The map's accessible name. One string, where the whole dictionary used to arrive. */
+  mapLabel: string;
   panOnCardClick?: boolean;
   collapsible?: boolean;
   cluster?: boolean;
@@ -135,9 +135,43 @@ export function ResultsMap({
 }) {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<import("leaflet").Map | null>(null);
+  /**
+   * Whether the map has come near the viewport yet.
+   *
+   * Leaflet and leaflet.markercluster are 51KB gzipped and cost about 430ms of main
+   * thread on a throttled phone, and on the local guide the map sits at y=27,946 of a
+   * 29,694px page: 94% of the way down, past roughly 35 screens of scrolling. It was
+   * being fetched and executed on mount regardless, competing with the LCP image for a
+   * component almost nobody scrolls to.
+   *
+   * The container itself already has a fixed height, so nothing shifts when the map
+   * finally mounts into it. 400px of rootMargin means it is drawn before the reader
+   * arrives rather than after.
+   */
+  const [near, setNear] = useState(false);
 
   useEffect(() => {
-    if (!container.current) return;
+    const node = container.current;
+    if (!node) return;
+    // No feature test. IntersectionObserver has been in every shipping browser since
+    // 2019 and this application's own baseline (React 19, Next 16) is years past that, so
+    // a fallback here would be dead code that also trips the lint rule against setting
+    // state synchronously in an effect.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setNear(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "400px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!near || !container.current) return;
     let cleanup = () => {};
     let cancelled = false;
 
@@ -337,8 +371,9 @@ export function ResultsMap({
       window.removeEventListener("as:map-toggle", onToggle);
       cleanup();
     };
-    // Re-drawn whenever the result set changes, which on this page means a new URL.
-  }, [pins, panOnCardClick, cluster, home, frameOn, locale]);
+    // Re-drawn whenever the result set changes, which on this page means a new URL, and
+    // once when the container first comes near the viewport.
+  }, [near, pins, panOnCardClick, cluster, home, frameOn, locale]);
 
   if (pins.length === 0) return null;
 
@@ -356,7 +391,7 @@ export function ResultsMap({
            the markers are out of the tab order and Leaflet's own controls are ordinary
            buttons. */
         role="region"
-        aria-label={t.mapLabel}
+        aria-label={mapLabel}
         className={`h-[360px] w-full overflow-hidden rounded-panel border border-hairline ${mapHeightClass}`}
       />
     </div>

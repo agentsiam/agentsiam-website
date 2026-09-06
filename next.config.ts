@@ -2,6 +2,14 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  images: {
+    // AVIF ahead of WebP. Without this block `formats` defaults to WebP only, and the
+    // optimizer was answering an AVIF-only Accept header with a JPEG. AVIF is 20 to 30%
+    // smaller than WebP at the same quality on these photographs, and every browser that
+    // matters has supported it for years; a browser that does not simply gets the WebP
+    // that was being served before.
+    formats: ["image/avif", "image/webp"],
+  },
   // Pins the workspace root to this project, since a stray package-lock.json in
   // the parent home directory otherwise gets picked up by Turbopack's inference.
   turbopack: {

@@ -521,7 +521,7 @@ export function PropertyFilters({
               <button
                 type="button"
                 onClick={apply}
-                className="min-h-11 cursor-pointer rounded-full bg-ink px-6 py-2.5 text-[13px] font-semibold text-white hover:bg-primary"
+                className="pill-compact cursor-pointer"
               >
                 {t.applyFilters}
               </button>

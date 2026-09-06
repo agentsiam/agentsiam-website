@@ -52,6 +52,7 @@ export function PropertyTile({
   headingLevel = 3,
   /** Decides the thousands separator on the price. Defaults to English. */
   locale = DEFAULT_LOCALE,
+  priority = false,
 }: {
   property: Property;
   t: Dictionary;
@@ -59,6 +60,13 @@ export function PropertyTile({
   layout?: "stacked" | "wide";
   headingLevel?: 2 | 3 | 4;
   locale?: Locale;
+  /**
+   * The first tile in a results grid only. On /properties the tile photo is the page's
+   * largest paint candidate and was loading lazily, so the LCP Chrome recorded was the
+   * blur placeholder rather than the photograph. Never pass it to more than one tile: a
+   * grid of eager images is worse than a grid of lazy ones.
+   */
+  priority?: boolean;
 }) {
   const area = propertyArea(property);
   const photo = (PHOTOS[property.slug] ?? [])[0];
@@ -89,7 +97,9 @@ export function PropertyTile({
             <Image
               src={photo.src}
               alt={photo.alt || property.title}
+              lang="en"
               placeholder="blur"
+              priority={priority}
               fill
               sizes={wide ? "(min-width: 640px) 320px, 100vw" : "(min-width: 900px) 380px, 100vw"}
               className="object-cover"

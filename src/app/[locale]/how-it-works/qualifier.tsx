@@ -54,7 +54,7 @@ const THIN_DATA = ["Riverside"];
 const TONE: Record<Tone, { panel: string; accent: string }> = {
   yes: { panel: "bg-wash-green border-teal/50", accent: "text-deep-green" },
   no: { panel: "bg-wash-red border-secondary/50", accent: "text-deep-red" },
-  maybe: { panel: "bg-wash-gold border-sand/70", accent: "text-[#8a6a2f]" },
+  maybe: { panel: "bg-wash-gold border-sand/70", accent: "text-deep-gold" },
   neutral: { panel: "bg-surface border-hairline", accent: "text-muted" },
 };
 

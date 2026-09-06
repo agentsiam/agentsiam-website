@@ -146,6 +146,25 @@ export default async function LocalGuidePage({
     return href(`/lotushouse/local-guide${qs ? `?${qs}` : ""}`);
   };
 
+  // Narrow label objects rather than the whole dictionary. React dedupes a prop object to
+  // one copy per document, so passing `t` to three components cost one serialized
+  // dictionary -- 778 keys, about 21KB gzipped, on the heaviest page of the site, for
+  // eleven strings between them. The pattern is PhotoGallery's, which already did this.
+  const directionsLabels = {
+    directions: t.guideDirections,
+    google: t.guideDirectionsGoogle,
+    apple: t.guideDirectionsApple,
+    directionsTo: t.directionsTo,
+    newTab: t.newTab,
+  };
+  const askLabels = {
+    title: t.guideAskTitle,
+    body: t.guideAskBody,
+    cta: t.guideAskCta,
+    dismiss: t.guideAskDismiss,
+    prefill: t.guideAskPrefill,
+  };
+
   const chip = (active: boolean) =>
     `inline-flex min-h-11 items-center rounded-full border px-3.5 py-1.5 text-[13px] transition-colors ${
       active ? "border-ink bg-ink text-bg font-semibold" : "border-hairline hover:border-ink"
@@ -321,7 +340,7 @@ export default async function LocalGuidePage({
                       to={{ lat: place.lat, lng: place.lng }}
                       mode={d?.walk != null ? "walking" : "driving"}
                       place={place.name}
-                      t={t}
+                      labels={directionsLabels}
                     />
                   </div>
                 </li>
@@ -344,6 +363,7 @@ export default async function LocalGuidePage({
                   <Image
                     src={propertyPhoto.src}
                     alt={propertyPhoto.alt || LOTUS_HOUSE.title}
+                    lang="en"
                     placeholder="blur"
                     fill
                     sizes="76px"
@@ -366,7 +386,7 @@ export default async function LocalGuidePage({
 
             <ResultsMap
               pins={pins}
-              t={t}
+              mapLabel={t.mapLabel}
               locale={locale}
               panOnCardClick
               collapsible={false}
@@ -381,21 +401,21 @@ export default async function LocalGuidePage({
       )}
 
       {places.length > 0 ? (
-        <div className="mt-10 rounded-panel border border-hairline bg-surface p-6 text-center">
-          <p className="font-display text-lg font-bold tracking-[-0.015em]">
+        <div className="mt-10 rounded-panel bg-surface px-7 py-9">
+          <p className="font-display text-xl font-bold tracking-[-0.015em]">
             {t.guideBookDirect}
           </p>
           <p className="mt-1 text-[14px] text-muted">{t.guideBookDirectSub}</p>
           <Link
             href={href("/lotushouse")}
-            className="mt-4 inline-block rounded-full bg-ink px-5 py-2.5 text-[14px] font-semibold text-bg transition-opacity hover:opacity-85"
+            className="pill-primary mt-4"
           >
             {LOTUS_HOUSE.title}
           </Link>
         </div>
       ) : null}
 
-      <WhatsAppCta number={WHATSAPP_NUMBER} t={t} context={LOTUS_HOUSE.title} />
+      <WhatsAppCta number={WHATSAPP_NUMBER} labels={askLabels} context={LOTUS_HOUSE.title} />
     </div>
   );
 }

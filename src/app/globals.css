@@ -39,6 +39,17 @@
   --color-wash-gold: #fdf8ee;
   --color-deep-green: #00745f;
   --color-deep-red: #b93b18;
+  /* The gold that carries text on the wash. The green and the red above had tokens and
+     this one did not, so the "maybe" verdict in the owner qualifier was the only tone of
+     the three written as a hex at the call site. */
+  --color-deep-gold: #8a6a2f;
+  /* The redaction bar in the sample report, and any other placeholder standing in for a
+     figure that is withheld. Deliberately a shade of the surface family rather than a grey:
+     it should read as a panel with something missing, not as a disabled control. */
+  --color-skeleton: #d7d8e2;
+  /* The lightbox ground. A near-black with the brand's blue-violet cast rather than pure
+     black, so a photograph does not sit on a colour the palette never uses. */
+  --color-scrim: #0e0e14;
 
   /* one hairline value, used for every border and divider in the design */
   --color-hairline: rgba(24, 24, 24, 0.12);
@@ -68,16 +79,19 @@
   --color-wash-gold: var(--color-wash-gold);
   --color-deep-green: var(--color-deep-green);
   --color-deep-red: var(--color-deep-red);
+  --color-deep-gold: var(--color-deep-gold);
+  --color-skeleton: var(--color-skeleton);
+  --color-scrim: var(--color-scrim);
 
   /* Unbounded 800 for hero headlines, Poppins 700 for section headings, Plex Sans for
      body, Plex Mono for eyebrows and labels. Noto Thai and Noto SC are stacked behind
      the Latin faces so Thai and Chinese pages do not fall back to a system default. */
-  --font-body: var(--font-plex-sans), var(--font-noto-thai), var(--font-noto-sc),
+  --font-body: var(--font-plex-sans), var(--font-noto-thai), var(--font-noto-sc, sans-serif),
     system-ui, sans-serif;
-  --font-display: var(--font-poppins), var(--font-noto-thai), var(--font-noto-sc),
+  --font-display: var(--font-poppins), var(--font-noto-thai), var(--font-noto-sc, sans-serif),
     system-ui, sans-serif;
   --font-headline: var(--font-unbounded), var(--font-poppins), var(--font-noto-thai),
-    var(--font-noto-sc), sans-serif;
+    var(--font-noto-sc, sans-serif), sans-serif;
   /* Noto Thai and Noto SC sit behind Plex Mono for the same reason they sit behind the
      Latin faces above, and it was missed here. Plex Mono carries no Thai and no Han
      glyphs, so every eyebrow, field label, price and step code on /th and /zh fell
@@ -85,16 +99,21 @@
      from the rest of the page, on 52 elements per locale. Neither Noto face is
      monospaced, which is the right trade -- a label that matches the page beats a label
      that matches a grid nothing else on the page sits on. */
-  --font-mono: var(--font-plex-mono), var(--font-noto-thai), var(--font-noto-sc),
+  --font-mono: var(--font-plex-mono), var(--font-noto-thai), var(--font-noto-sc, sans-serif),
     ui-monospace, Menlo, monospace;
 
   /* 16px cards and panels, 12px inner boxes, 999px pills. */
   --radius-panel: 16px;
   --radius-box: 12px;
 
-  /* Content max-widths: 1440px for chrome and full-bleed sections, 1080px for prose. */
+  /* Content max-widths: 1440px for chrome and full-bleed sections, 1080px for prose.
+     820px is the reading measure, for a page that is one column of running text the whole
+     way down: at the body size that is roughly 70 characters a line, and prose set to the
+     full 1080px is measurably harder to read. It was a bare max-w-[820px] on the two legal
+     pages until 06/09/2026, which is the same value with nothing saying what it is for. */
   --container-chrome: 1440px;
   --container-prose: 1080px;
+  --container-read: 820px;
 }
 
 /* The sticky header's height, published so the sticky filter bar can sit under it rather
@@ -180,6 +199,12 @@ button {
     background: rgb(255 255 255 / 0.1);
     color: var(--color-gold-on-ink);
   }
+  /* The gold chip, for the route cards on /how-it-works. Those sit on plain ground with no
+     card and no border, and the fill is what separates the glyph from the page. It was
+     written as utilities at a third size; this is the same chip in a different fill. */
+  .icon-chip-sand {
+    background: var(--color-sand);
+  }
 
   /* Grows a text link's hit area to the 24px AA minimum without moving it. Applied to the
      footer, header and breadcrumb links, which rendered 14-20px tall with 10px between
@@ -232,6 +257,60 @@ button {
     background: var(--color-primary);
   }
 
+  /* The same pill on a dark ground, where an ink fill would disappear. It existed as
+     hand-written utilities in two places at two different sizes -- 14.5px with 26px of
+     side padding on the home owner band, 15px with 28px on the /how-it-works closing band
+     -- which is one component drawn twice, slightly wrong, on two pages a reader sees in
+     the same session. Sand on hover rather than blue: blue on ink is the same value
+     against the same ground and the hover reads as nothing happening. */
+  .pill-light {
+    display: inline-block;
+    border-radius: 999px;
+    background: #fff;
+    padding: 0.875rem 1.625rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .pill-light:hover {
+    background: var(--color-sand);
+  }
+
+  /* The compact pill, for a control bar rather than a page: the header's Contact, the
+     filter row's Apply. Same fill, same radius, smaller type and padding, and a 44px
+     minimum so it stays a real target on a phone. Named rather than retyped, because it
+     had drifted to three sizes across the header, the filter row and the guide. */
+  .pill-compact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    border-radius: 999px;
+    background: var(--color-ink);
+    padding: 0.5rem 1.125rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .pill-compact:hover {
+    background: var(--color-primary);
+  }
+
+  /* The outlined compact pill. The header's owner CTA was drawn in blue on blue, which is
+     a third button tier the system does not define -- it defines two, a solid fill and a
+     lower-weight secondary -- and it repeated on every route. This is the secondary tier at
+     the header's size: the same hairline and ink the full-size .pill-outline uses. */
+  .pill-compact-outline {
+    background: transparent;
+    border: 1.5px solid var(--color-hairline);
+    color: var(--color-text);
+  }
+  .pill-compact-outline:hover {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: #fff;
+  }
+
   /* The outlined pill: same-audience secondary, never a cross-audience link. */
   .pill-outline {
     display: inline-block;
@@ -247,6 +326,25 @@ button {
     background: var(--color-ink);
     color: #fff;
   }
+}
+
+/* Thai headings need more room between lines than Latin ones, and this rule is
+   deliberately unlayered. The headline recipes run at 1.08 to 1.14, which is right for
+   Unbounded and wrong for Thai: the script hangs vowels and tone marks above and below the
+   base line, so at that leading the marks on the second line of a two-line Thai heading
+   touch the glyph bottoms of the first. Confirmed at 3x on /th/how-it-works, where the
+   marks on ก็, ไม่ and ต้อง collide.
+
+   Unlayered because every heading on this site carries a `leading-*` utility, and a
+   utility beats anything inside @layer components no matter how specific. An unlayered
+   rule beats both, which is the only place this can sit and still take effect.
+
+   Thai only. Chinese has no ascending or descending marks and reads correctly at the Latin
+   leading; applying this to it would just push the headings apart for nothing. */
+:lang(th) h1,
+:lang(th) h2,
+:lang(th) h3 {
+  line-height: 1.4;
 }
 
 /* -- Map pins ---------------------------------------------------------------

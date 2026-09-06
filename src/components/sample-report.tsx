@@ -54,7 +54,7 @@ function Redacted({ label }: { label: string }) {
     <span
       role="img"
       aria-label={label}
-      className="inline-block h-2.5 w-14 rounded-[3px] bg-[#d7d8e2] align-middle"
+      className="inline-block h-2.5 w-14 rounded-sm bg-skeleton align-middle"
     />
   );
 }

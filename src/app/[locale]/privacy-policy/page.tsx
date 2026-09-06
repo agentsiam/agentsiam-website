@@ -39,7 +39,7 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
       <TranslationNote locale={locale} />
 
       {/* shape: legal-prose -- The policy in full. A legal document, where the narrative system has no business. */}
-      <div className="mx-auto w-full max-w-[820px] px-5 pb-22 pt-14">
+      <div className="mx-auto w-full max-w-(--container-read) px-5 pb-22 pt-14">
         <span className="eyebrow">{t.legalEyebrow}</span>
         <h1 className="mt-3.5 font-headline text-[clamp(24px,4vw,32px)] font-extrabold leading-[1.14] tracking-[-0.03em]">
           {t.privacy}

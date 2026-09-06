@@ -1,7 +1,13 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { Dictionary } from "@/i18n";
+export type DirectionsLabels = {
+  directions: string;
+  google: string;
+  apple: string;
+  directionsTo: string;
+  newTab: string;
+};
 import { appleDirections, googleDirections, prefersAppleMaps, type Point, type TravelMode } from "@/lib/directions";
 
 /**
@@ -24,7 +30,7 @@ export function DirectionsLinks({
   from,
   to,
   mode,
-  t,
+  labels,
   /**
    * Where the link goes, for the accessible name.
    *
@@ -41,7 +47,7 @@ export function DirectionsLinks({
   from: Point;
   to: Point;
   mode: TravelMode;
-  t: Dictionary;
+  labels: DirectionsLabels;
   place?: string;
 }) {
   // Which maps app the device prefers is external state that never changes, so it is read
@@ -55,8 +61,8 @@ export function DirectionsLinks({
   );
 
   const links = [
-    { href: googleDirections(from, to, mode), label: t.guideDirectionsGoogle, key: "google" },
-    { href: appleDirections(from, to, mode), label: t.guideDirectionsApple, key: "apple" },
+    { href: googleDirections(from, to, mode), label: labels.google, key: "google" },
+    { href: appleDirections(from, to, mode), label: labels.apple, key: "apple" },
   ];
   if (apple) links.reverse();
 
@@ -73,7 +79,7 @@ export function DirectionsLinks({
           // the guide, and the people it is a warning for are the ones this reaches.
           aria-label={
             place
-              ? `${t.directionsTo.replace("{app}", link.label).replace("{place}", place)}, ${t.newTab}`
+              ? `${labels.directionsTo.replace("{app}", link.label).replace("{place}", place)}, ${labels.newTab}`
               : undefined
           }
           className={
@@ -82,7 +88,7 @@ export function DirectionsLinks({
               : "inline-flex min-h-9 items-center rounded-full border border-hairline px-3.5 py-1.5 text-[12px] font-semibold transition-colors hover:border-ink"
           }
         >
-          {i === 0 ? `${t.guideDirections} · ${link.label}` : link.label}
+          {i === 0 ? `${labels.directions} · ${link.label}` : link.label}
         </a>
       ))}
     </span>

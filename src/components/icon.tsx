@@ -284,14 +284,12 @@ export function IconChip({
   className = "",
 }: {
   name: string;
-  tone?: "surface" | "ink";
+  tone?: "surface" | "ink" | "sand";
   className?: string;
 }) {
+  const TONES = { surface: "", ink: "icon-chip-ink", sand: "icon-chip-sand" };
   return (
-    <span
-      aria-hidden="true"
-      className={`icon-chip ${tone === "ink" ? "icon-chip-ink" : ""} ${className}`}
-    >
+    <span aria-hidden="true" className={`icon-chip ${TONES[tone]} ${className}`}>
       <Icon name={name} />
     </span>
   );

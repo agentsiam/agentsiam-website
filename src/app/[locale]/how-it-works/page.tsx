@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
-import { Icon } from "@/components/icon";
+import { IconChip } from "@/components/icon";
 import { JsonLd } from "@/components/json-ld";
 import { SampleReport } from "@/components/sample-report";
 import { TeamRow } from "@/components/team-row";
@@ -95,10 +95,10 @@ const EXTRAS = [
  * Ordered by how often we see them, not by service number.
  */
 const ROUTES = [
-  { icon: "trend", grad: "grad-sand" },
-  { icon: "search", grad: "grad-blue" },
-  { icon: "house", grad: "grad-teal" },
-  { icon: "transfer", grad: "grad-vermilion" },
+  { icon: "trend", grad: "grad-blue" },
+  { icon: "search", grad: "grad-sand" },
+  { icon: "house", grad: "grad-pink" },
+  { icon: "transfer", grad: "grad-blue" },
 ];
 
 /**
@@ -292,7 +292,7 @@ export default async function HowItWorksPage({
             <div className="mt-7 flex flex-wrap items-center gap-5.5">
               <Link
                 href={href("/contact")}
-                className="rounded-full bg-ink px-6.5 py-3.5 text-[14.5px] font-semibold text-white hover:bg-white hover:text-ink"
+                className="pill-primary"
               >
                 {t.talkToUs}
               </Link>
@@ -326,12 +326,7 @@ export default async function HowItWorksPage({
             >
               <div className="flex h-full flex-col overflow-hidden rounded-box bg-bg">
                 <div className="flex items-center gap-3 px-5 pt-5">
-                  <span
-                    aria-hidden="true"
-                    className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sand text-ink"
-                  >
-                    <Icon name={route.icon} className="size-[18px]" />
-                  </span>
+                  <IconChip name={route.icon} tone="sand" />
                   <h3 className="font-display text-[16px] font-bold leading-snug tracking-[-0.015em]">
                     {route.when}
                   </h3>
@@ -342,10 +337,17 @@ export default async function HowItWorksPage({
                     forbid dropping in stock "just for now". Swap for real photography
                     once something clears intake.
 
-                    The hue per route is deliberately NOT matched to its sentiment. Teal is
-                    the positive-verdict token here and vermilion the negative one, so the
-                    obvious assignment -- teal on "doing well", vermilion on "not coming" --
-                    reads as a good/bad rating of the owner's situation. It is not one. */}
+                    The hue per route is deliberately NOT matched to its sentiment, and as
+                    of 06/09/2026 the two verdict hues are off these cards entirely. Teal is
+                    the positive-verdict token and vermilion the negative one, and they were
+                    landing on "Not listed yet" and "Already with another manager" -- which
+                    reads as a rating of the owner's situation, and of their current manager,
+                    that the copy never made. Avoiding the correlation by shuffling the two
+                    hues is fragile: any reorder brings it back. Blue, sand and pink carry no
+                    verdict meaning anywhere on the site, so they are the only three that can
+                    sit on a card whose copy could be read as good or bad news. Four cards
+                    from three hues means one repeats, on the diagonal of the 2x2, which
+                    reads as a pattern rather than as a mistake. */}
                 <div
                   aria-hidden="true"
                   className={`mx-5 mt-4 h-[156px] rounded-lg ${route.grad}`}
@@ -620,7 +622,7 @@ export default async function HowItWorksPage({
 
       {/* shape: highlight-panel -- TM30. Gold panel: the obligation most contracts hand back to the owner. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-14">
-        <div className="rounded-panel bg-linear-to-b from-sand from-20% to-white to-62% px-6 py-8 sm:px-8.5">
+        <div className="grad-sand rounded-panel px-6 py-8 sm:px-8.5">
           <h2 className="eyebrow text-ink/65">{t.hwTm30Eyebrow}</h2>
           <p className="mt-2 font-display text-[23px] font-bold tracking-[-0.02em] text-ink">
             {t.hwTm30Title}
@@ -665,6 +667,7 @@ export default async function HowItWorksPage({
                 <Image
                   src={photo.src}
                   alt={photo.alt || LOTUS_HOUSE.title}
+                  lang="en"
                   placeholder="blur"
                   fill
                   sizes="(min-width: 640px) 340px, 100vw"
@@ -695,7 +698,7 @@ export default async function HowItWorksPage({
           </div>
           <Link
             href={href("/contact")}
-            className="whitespace-nowrap rounded-full bg-white px-7 py-3.5 text-[15px] font-semibold text-ink hover:bg-sand"
+            className="pill-light whitespace-nowrap"
           >
             {t.bookStudy}
           </Link>

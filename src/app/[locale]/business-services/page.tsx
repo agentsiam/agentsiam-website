@@ -154,7 +154,7 @@ export default async function BusinessServicesPage({ params }: PageProps<"/[loca
           {t.bsPillarsIntro}
         </p>
 
-        <div className="mt-8 grid max-w-(--container-prose) gap-4.5 min-[820px]:grid-cols-2">
+        <div className="mx-auto mt-8 grid max-w-(--container-prose) gap-4.5 min-[820px]:grid-cols-2">
           {pillars.map((pillar) => (
             <article
               key={pillar.name}
@@ -252,8 +252,8 @@ export default async function BusinessServicesPage({ params }: PageProps<"/[loca
 
       {/* shape: closing-cta -- The ask, as a pair rather than a lone pill. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-14 pb-20">
-        <div className="max-w-(--container-prose) rounded-panel bg-surface px-6 py-9 sm:px-10">
-          <h2 className="font-display text-2xl font-bold tracking-[-0.02em]">
+        <div className="mx-auto max-w-(--container-prose) rounded-panel bg-surface px-7 py-9">
+          <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
             {t.bsCloseTitle}
           </h2>
           <p className="mt-2.5 max-w-[620px] text-[15px] leading-relaxed text-body">

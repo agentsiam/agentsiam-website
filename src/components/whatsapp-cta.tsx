@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import type { Dictionary } from "@/i18n";
+export type AskLabels = {
+  title: string;
+  body: string;
+  cta: string;
+  dismiss: string;
+  prefill: string;
+};
 
 /**
  * The floating "talk to us" prompt on the guide.
@@ -43,12 +49,12 @@ const dismissedOnServer = () => false;
 
 export function WhatsAppCta({
   number,
-  t,
+  labels,
   context,
 }: {
   /** Digits only, country code, no plus. Empty renders nothing at all. */
   number: string;
-  t: Dictionary;
+  labels: AskLabels;
   /** Appended to the prefilled message so a reply arrives with the page already known. */
   context?: string;
 }) {
@@ -65,7 +71,7 @@ export function WhatsAppCta({
 
   if (!number) return null;
 
-  const message = context ? `${t.guideAskPrefill} (${context})` : t.guideAskPrefill;
+  const message = context ? `${labels.prefill} (${context})` : labels.prefill;
   const href = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 
   const close = () => {
@@ -79,9 +85,9 @@ export function WhatsAppCta({
       {expanded && !dismissed ? (
         <div className="w-72 rounded-panel border border-hairline bg-bg p-4 shadow-lg">
           <p className="font-display text-[15px] font-bold tracking-[-0.015em]">
-            {t.guideAskTitle}
+            {labels.title}
           </p>
-          <p className="mt-1 text-[13px] text-muted">{t.guideAskBody}</p>
+          <p className="mt-1 text-[13px] text-muted">{labels.body}</p>
           <div className="mt-3 flex items-center gap-3">
             <a
               href={href}
@@ -89,10 +95,10 @@ export function WhatsAppCta({
               rel="noreferrer"
               className="rounded-full bg-ink px-3.5 py-2 text-[13px] font-semibold text-bg transition-opacity hover:opacity-85"
             >
-              {t.guideAskCta}
+              {labels.cta}
             </a>
             <button type="button" onClick={close} className="text-[13px] text-muted underline">
-              {t.guideAskDismiss}
+              {labels.dismiss}
             </button>
           </div>
         </div>
@@ -104,7 +110,7 @@ export function WhatsAppCta({
         rel="noreferrer"
         className="rounded-full border border-hairline bg-bg px-4 py-2.5 text-[13px] font-semibold shadow-lg transition-colors hover:border-ink"
       >
-        <span aria-hidden="true">💬</span> {t.guideAskTitle}
+        <span aria-hidden="true">💬</span> {labels.title}
       </a>
     </div>
   );

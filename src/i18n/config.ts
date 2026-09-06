@@ -11,6 +11,7 @@ export type Locale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = "en";
 
+
 /** The `lang` attribute and the hreflang code published for each locale. */
 export const HTML_LANG: Record<Locale, string> = {
   en: "en",

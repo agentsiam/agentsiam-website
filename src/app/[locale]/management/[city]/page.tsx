@@ -110,7 +110,7 @@ export default async function ManagementCityPage({
             <div className="mt-7 flex flex-wrap items-center gap-5.5">
               <Link
                 href={href("/contact")}
-                className="rounded-full bg-ink px-6.5 py-3.5 text-[14.5px] font-semibold text-white hover:bg-white hover:text-ink"
+                className="pill-primary"
               >
                 {t.talkToUs}
               </Link>
@@ -226,7 +226,7 @@ export default async function ManagementCityPage({
         </p>
         <Link
           href={href("/contact")}
-          className="mt-6 inline-block rounded-full bg-ink px-6.5 py-3.5 text-[14.5px] font-semibold text-white hover:bg-primary"
+          className="pill-primary mt-6"
         >
           {t.talkToUs}
         </Link>

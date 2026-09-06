@@ -2,7 +2,27 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import type { Dictionary } from "@/i18n";
+/**
+ * The twelve strings this control needs, rather than the dictionary it used to take.
+ *
+ * React serializes a client component's props into the RSC payload. Passing `t` put all
+ * 778 keys into the homepage document -- about 21KB gzipped, 44% of the page -- so that a
+ * search bar could read twelve of them. Same pattern as PhotoGallery's `labels`.
+ */
+export type SearchLabels = {
+  where: string;
+  checkIn: string;
+  checkOut: string;
+  guests: string;
+  search: string;
+  launchingSoon: string;
+  bkPastCheckIn: string;
+  bkCheckOutAfter: string;
+  bkFewerGuests: string;
+  bkMoreGuests: string;
+  bkOneGuestSelected: string;
+  bkGuestsSelected: string;
+};
 import { localePath, type Locale } from "@/i18n/config";
 import { CITIES, DEFAULT_CITY } from "@/lib/areas";
 import { PROPERTIES } from "@/lib/property";
@@ -42,7 +62,7 @@ function utcToday(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function HeroSearch({ t, locale }: { t: Dictionary; locale: Locale }) {
+export function HeroSearch({ t, locale }: { t: SearchLabels; locale: Locale }) {
   const router = useRouter();
   const [city, setCity] = useState(DEFAULT_CITY.slug);
   const [from, setFrom] = useState("");

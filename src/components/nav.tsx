@@ -67,14 +67,14 @@ export function Nav({ locale }: { locale: Locale }) {
               is how a header turns into two rows of clutter. */}
           <Link
             href={href("/contact")}
-            className="hidden rounded-full border-[1.5px] border-primary px-4 py-2.5 text-[13px] font-semibold text-primary hover:bg-primary hover:text-white min-[900px]:inline-block"
+            className="pill-compact pill-compact-outline hidden min-[900px]:inline-flex"
           >
             {t.navListProperty}
           </Link>
 
           <Link
             href={href("/contact")}
-            className="rounded-full bg-ink px-4 py-2.5 text-[13px] font-semibold text-white hover:bg-primary"
+            className="pill-compact"
           >
             {t.navContact}
           </Link>

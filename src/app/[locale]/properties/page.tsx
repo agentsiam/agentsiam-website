@@ -136,7 +136,7 @@ export default async function PropertiesPage({
       >
         <div>
         <p className="eyebrow">{t.psEyebrow}</p>
-        <h1 className="mt-2 font-display text-2xl font-bold tracking-[-0.015em]">
+        <h1 className="mt-2 font-headline text-[clamp(26px,4vw,34px)] font-extrabold leading-tight tracking-[-0.03em]">
           {results.length === 1
             ? t.oneProperty
             : t.nProperties.replace("{n}", String(results.length))}
@@ -167,12 +167,14 @@ export default async function PropertiesPage({
             width; the two behave identically once the grid is full. */}
         {results.length > 0 ? (
           <div className="mt-6 grid gap-6 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
-            {results.map((property) => (
+            {results.map((property, index) => (
               <PropertyTile
                 key={property.slug}
                 property={property}
                 t={t}
                 locale={locale}
+                // The first tile only. Its photo is the page's largest paint candidate.
+                priority={index === 0}
                 // The h1 here is the result count, and the tiles follow it directly. Every
                 // other call site sits under an h2 and keeps the default h3.
                 headingLevel={2}
@@ -213,7 +215,7 @@ export default async function PropertiesPage({
             neighbourhood and the distance the tile already carries, and charges a mapping
             library and an external tile host for the repetition. The "Show map" toggle in
             the bar is gated on the same constant, so it never survives the map. */}
-        {showMap ? <ResultsMap pins={pins} t={t} locale={locale} /> : null}
+        {showMap ? <ResultsMap pins={pins} mapLabel={t.mapLabel} locale={locale} /> : null}
       </div>
 
       <div className="mx-auto max-w-(--container-chrome) px-5 pb-18">
@@ -244,11 +246,11 @@ export default async function PropertiesPage({
             -- The page's one CTA pair, and it belongs at the foot. The header's job is to
             get someone into the grid; asking them to write to us before they have looked at
             anything is asking at the wrong end. */}
-        <section className="mt-12 rounded-panel bg-wash-gold px-8 py-10 text-center">
-          <h2 className="font-headline text-[clamp(22px,3.2vw,28px)] font-extrabold leading-tight tracking-[-0.03em]">
+        <section className="mt-12 rounded-panel bg-surface px-7 py-9">
+          <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
             {t.psCtaTitle}
           </h2>
-          <p className="mx-auto mt-3 max-w-[460px] text-[15px] leading-relaxed text-body">
+          <p className="mt-2.5 max-w-[560px] text-[15px] leading-relaxed text-body">
             {t.psCtaBody}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">

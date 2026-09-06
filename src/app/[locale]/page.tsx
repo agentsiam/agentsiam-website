@@ -8,6 +8,8 @@ import { heroPhoto, pickPhoto } from "@/lib/photos";
 import { HeroSearch } from "@/components/hero-search";
 import { LOTUS_HOUSE, propertyArea, propertyFacts } from "@/lib/property";
 import { areaVibe } from "@/i18n/area-vibe";
+import { AREAS } from "@/lib/areas";
+import { areaGradient, areaName } from "@/lib/area-content";
 import {
   OG_IMAGE,
   OG_LOCALE,
@@ -117,6 +119,12 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   //
   // Ink text throughout is part of the variant, not a choice: the lower half of each card
   // is near-white, so white text would vanish there.
+  //
+  // Sand, blue and pink, and no teal or vermilion: those two are the verdict tokens, and
+  // they were sitting on Permission ("Thailand's rules on short stays are specific and
+  // often misread") and on Feasibility. A vermilion ground under a sentence about rules
+  // being misread is a warning the copy did not write. The three remaining hues carry no
+  // verdict meaning anywhere on the site.
   const leadServices = [
     {
       k: "management",
@@ -128,13 +136,13 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       k: "permission",
       title: t.svcPermissionTitle,
       body: t.svcPermissionBody,
-      fill: "grad-vermilion",
+      fill: "grad-blue",
     },
     {
       k: "study",
       title: t.svcStudyTitle,
       body: t.svcStudyBody,
-      fill: "grad-teal",
+      fill: "grad-pink",
     },
   ];
 
@@ -213,7 +221,24 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           </div>
 
           <div className="relative mt-8">
-            <HeroSearch t={t} locale={locale} />
+            <HeroSearch
+              // Twelve strings, not the dictionary. See src/components/hero-search.tsx.
+              t={{
+                where: t.where,
+                checkIn: t.checkIn,
+                checkOut: t.checkOut,
+                guests: t.guests,
+                search: t.search,
+                launchingSoon: t.launchingSoon,
+                bkPastCheckIn: t.bkPastCheckIn,
+                bkCheckOutAfter: t.bkCheckOutAfter,
+                bkFewerGuests: t.bkFewerGuests,
+                bkMoreGuests: t.bkMoreGuests,
+                bkOneGuestSelected: t.bkOneGuestSelected,
+                bkGuestsSelected: t.bkGuestsSelected,
+              }}
+              locale={locale}
+            />
           </div>
         </div>
       </section>
@@ -275,6 +300,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
                   <Image
                     src={panel.photo.src}
                     alt={panel.photo.alt}
+                    lang="en"
                     placeholder="blur"
                     fill
                     sizes="(min-width: 640px) 50vw, 100vw"
@@ -325,6 +351,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               <Image
                 src={cardPhoto.src}
                 alt={cardPhoto.alt || property.title}
+                lang="en"
                 placeholder="blur"
                 fill
                 sizes="(min-width: 640px) 320px, 100vw"
@@ -384,6 +411,62 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             </div>
           ))}
         </div>
+      </section>
+
+
+      {/* shape: value-glyph-grid
+          -- Where in Chiang Mai. The eight neighbourhood pages carry real content as of
+             06/09/2026 and the homepage pointed at none of them: they were reachable from
+             the nav and the footer and from nothing in the body of any page. The spec names
+             three routes into them and this is the missing one.
+
+             The gradient block is decorative, so it is aria-hidden, and the hue is assigned
+             by position rather than by anything about the place. That is the rule: teal is
+             the positive-verdict token and vermilion the negative one, so a hue that tracks
+             the sentiment of the copy above it turns a decorative ground into a rating
+             nobody wrote. */}
+      <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
+        <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
+          {t.homeAreasTitle}
+        </h2>
+        <p className="mt-1.5 max-w-[620px] text-sm leading-relaxed text-muted">
+          {t.homeAreasSub}
+        </p>
+
+        {/* Four across, not auto-fit. Eight cards into an auto-fit grid at 1440px gives
+            six and then two, and a row of two under a row of six reads as a grid that ran
+            out rather than as eight neighbourhoods. Four and four is the only split of
+            eight that stays even at every width this grid has. */}
+        <ul className="mt-5.5 grid gap-3.5 grid-cols-2 min-[900px]:grid-cols-4">
+          {AREAS.map((area, index) => (
+            <li key={area.slug}>
+              <Link
+                href={href(`/destinations/${area.slug}`)}
+                className="group flex h-full flex-col overflow-hidden rounded-panel border border-hairline transition-colors hover:border-ink"
+              >
+                <span
+                  aria-hidden="true"
+                  className={`block h-14 ${areaGradient(index)}`}
+                />
+                <span className="flex flex-1 flex-col gap-1 px-4 pb-4 pt-3">
+                  <span className="font-display text-[15px] font-bold tracking-[-0.015em] group-hover:text-primary">
+                    {areaName(t, area.slug)}
+                  </span>
+                  <span className="text-[13px] leading-normal text-muted">
+                    {areaVibe(t, area)}
+                  </span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <Link
+          href={href("/destinations")}
+          className="hit mt-5 inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
+        >
+          {t.homeAreasLink}
+        </Link>
       </section>
 
       {/* shape: proof-block
@@ -455,7 +538,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             </div>
             <Link
               href={href("/contact")}
-              className="whitespace-nowrap rounded-full bg-white px-6.5 py-3.5 text-[14.5px] font-semibold text-ink hover:bg-sand"
+              className="pill-light whitespace-nowrap"
             >
               {t.talkToUs}
             </Link>

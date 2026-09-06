@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookingPanel } from "@/components/booking-panel";
 import { Faq } from "@/components/faq";
-import { Icon, IconChip } from "@/components/icon";
+import { IconChip } from "@/components/icon";
 import { JsonLd } from "@/components/json-ld";
 import { PhotoGallery } from "@/components/photo-gallery";
 import { TranslationNote } from "@/components/translation-note";
@@ -340,12 +340,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
                     key={anchor.place}
                     className="flex items-center gap-3.5 py-3"
                   >
-                    <span
-                      aria-hidden="true"
-                      className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface text-ink"
-                    >
-                      <Icon name={anchor.icon} className="size-[17px]" />
-                    </span>
+                    <IconChip name={anchor.icon} />
                     <span className="flex-1 text-[15px] text-body">{anchor.text}</span>
                     <span className="shrink-0 text-right text-[13px] text-muted">
                       {[

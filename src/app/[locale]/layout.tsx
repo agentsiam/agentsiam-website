@@ -16,6 +16,7 @@ import "../globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
+import { NotFoundStringsProvider } from "@/components/not-found-strings";
 import { getDictionary } from "@/i18n";
 import { HTML_LANG, LOCALES, isLocale } from "@/i18n/config";
 import { OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL, languageAlternates } from "@/lib/site";
@@ -43,9 +44,12 @@ const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
 });
 
+// 800 only. 900 was declared and never asked for: --font-headline resolves at 800
+// everywhere, there is no font-black and no font-weight:900 anywhere in src/, and the
+// unused face was 20.6KB fetched at highest priority on every page in every language.
 const unbounded = Unbounded({
   variable: "--font-unbounded",
-  weight: ["800", "900"],
+  weight: ["800"],
   subsets: ["latin"],
 });
 
@@ -58,12 +62,32 @@ const notoThai = Noto_Sans_Thai({
   subsets: ["thai"],
 });
 
-// No `subsets` and no preload: the simplified-Chinese face is megabytes split across
-// dozens of unicode-range slices, and preloading it would cost every English visitor.
-// The browser fetches only the slices a Chinese page actually uses.
+// The simplified-Chinese face, and the most expensive thing on this site by an order of
+// magnitude. Three things about it were wrong until 06/09/2026 and the comment that used
+// to sit here asserted the opposite of what the build produced.
+//
+// It said the face arrives "split across dozens of unicode-range slices" so the browser
+// fetches only what a Chinese page uses. Google's own css2 output is sliced; what
+// next/font emits is not. Every @font-face in the built stylesheet carries no
+// unicode-range at all, so each weight is one file of roughly 1.1MB and the browser has
+// to fetch the whole thing to draw a single character.
+//
+// Which it was doing on every page in every language, because the language switcher
+// renders the label 中文, no Latin or Thai face carries those two glyphs, and the four
+// font stacks in globals.css all end in var(--font-noto-sc). An English visitor to
+// /destinations was downloading 1.14MB of Chinese webfont to draw two characters in the
+// header. Measured, not inferred: the same page with the label written "ZH" fetches 40KB
+// instead of 1.17MB.
+//
+// Three changes. The variable is applied to <html> only on the Chinese locale, so the
+// stacks fall through to the system CJK face elsewhere and 中文 still renders. The weight
+// list drops to 400 and 700: 500 and 900 were reached only by CSS weight matching from
+// font-medium and font-extrabold, and cost 2.28MB between them, so a Chinese page goes
+// from 4.6MB of webfont to 2.3MB. preload stays false, and is load-bearing -- it is what
+// keeps even the Chinese pages from fetching this before first paint.
 const notoSC = Noto_Sans_SC({
   variable: "--font-noto-sc",
-  weight: ["400", "500", "700", "900"],
+  weight: ["400", "700"],
   preload: false,
 });
 
@@ -125,7 +149,13 @@ export default async function RootLayout({
     <html
       lang={HTML_LANG[locale]}
       suppressHydrationWarning
-      className={`${poppins.variable} ${plexSans.variable} ${plexMono.variable} ${unbounded.variable} ${notoThai.variable} ${notoSC.variable} h-full antialiased`}
+      // The Chinese face is applied on the Chinese locale only. On en and th the
+      // --font-noto-sc variable is simply absent, and the stacks in globals.css read it
+      // through var(--font-noto-sc, sans-serif) so the declaration stays valid and CJK
+      // characters fall through to whatever the system provides.
+      className={`${poppins.variable} ${plexSans.variable} ${plexMono.variable} ${unbounded.variable} ${notoThai.variable} ${
+        locale === "zh" ? notoSC.variable : ""
+      } h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-bg text-text">
         <a
@@ -135,13 +165,29 @@ export default async function RootLayout({
           {t.skipToContent}
         </a>
         <Nav locale={locale} />
-        {/* tabIndex -1 so the skip link actually moves focus. Without it Chrome moves
-            only the sequential-focus starting point, so the next Tab lands in the content
-            but the screen reader's reading cursor stays at the top of the page, which is
-            the half of the job that matters. */}
-        <main id="main" tabIndex={-1} className="flex-1 outline-none">
-          {children}
-        </main>
+        {/* The 404 boundary's strings, passed down rather than looked up. See
+            src/components/not-found-strings.tsx: the boundary receives no params, and
+            the alternative was a client component importing getDictionary, which put
+            all three dictionaries into the chunk every route on this site loads. */}
+        <NotFoundStringsProvider
+          value={{
+            locale,
+            eyebrow: t.notFoundEyebrow,
+            title: t.notFoundTitle,
+            body: t.notFoundBody,
+            cta: t.notFoundCta,
+            howItWorks: t.footHow,
+            contact: t.navContact,
+          }}
+        >
+          {/* tabIndex -1 so the skip link actually moves focus. Without it Chrome moves
+              only the sequential-focus starting point, so the next Tab lands in the content
+              but the screen reader's reading cursor stays at the top of the page, which is
+              the half of the job that matters. */}
+          <main id="main" tabIndex={-1} className="flex-1 outline-none">
+            {children}
+          </main>
+        </NotFoundStringsProvider>
         <Footer locale={locale} />
         {/* The company and the site, declared once per page with stable @id values so
             every other block on the page can point at them instead of repeating them. */}

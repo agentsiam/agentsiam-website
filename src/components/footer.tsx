@@ -89,7 +89,7 @@ export function Footer({ locale }: { locale: Locale }) {
         <div className="grid gap-7 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
           {columns.map((column) => (
             <div key={column.heading} className="flex flex-col gap-2.5">
-              <h2 className="eyebrow text-gold-on-ink tracking-[0.1em]">
+              <h2 className="eyebrow text-gold-on-ink">
                 {column.heading}
               </h2>
               {column.links.map((link) => (
@@ -105,7 +105,7 @@ export function Footer({ locale }: { locale: Locale }) {
           ))}
 
           <div className="flex flex-col gap-2.5">
-            <h2 className="eyebrow text-gold-on-ink tracking-[0.1em]">
+            <h2 className="eyebrow text-gold-on-ink">
               {t.footContact}
             </h2>
             {/* Name and address must match the Google Business Profile character for

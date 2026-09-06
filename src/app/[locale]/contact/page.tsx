@@ -33,7 +33,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
   const steps = [t.nextStep1, t.nextStep2, t.nextStep3];
 
   return (
-    <div className="mx-auto w-full max-w-[1000px] px-5 pb-20 pt-14">
+    <div className="mx-auto w-full max-w-(--container-prose) px-5 pb-20 pt-14">
       {/* shape: page-header -- Eyebrow, title and the four-things line. */}
       <span className="eyebrow">{t.contactEyebrow}</span>
       <h1 className="mt-3.5 max-w-[640px] font-headline text-[clamp(26px,4.5vw,36px)] font-extrabold leading-[1.12] tracking-[-0.03em]">
@@ -60,6 +60,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
               <Image
                 src={asidePhoto.src}
                 alt={asidePhoto.alt || LOTUS_HOUSE.title}
+                lang="en"
                 placeholder="blur"
                 fill
                 sizes="(min-width: 900px) 340px, 100vw"

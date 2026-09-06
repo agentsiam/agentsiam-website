@@ -40,6 +40,7 @@ export function TeamRow({ t, heading }: { t: Dictionary; heading: string }) {
               <Image
                 src={member.photo!.src}
                 alt={member.photo!.alt}
+                lang="en"
                 placeholder="blur"
                 fill
                 sizes="(min-width: 1024px) 200px, (min-width: 640px) 320px, 45vw"

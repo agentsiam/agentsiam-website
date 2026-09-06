@@ -119,7 +119,7 @@ export default async function DestinationsPage({ params }: PageProps<"/[locale]"
       </ul>
 
       {/* shape: closing-cta -- The guest ask, for the reader none of the eight fitted. */}
-      <section className="mt-12 rounded-panel border border-hairline px-7 py-9">
+      <section className="mt-12 rounded-panel bg-surface px-7 py-9">
         <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
           {t.areaIndexCloseTitle}
         </h2>

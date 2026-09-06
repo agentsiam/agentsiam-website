@@ -56,6 +56,7 @@ export function PhotoGallery({
             <Image
               src={hero.src}
               alt={hero.alt || labels.propertyName}
+              lang="en"
               placeholder="blur"
               priority
               fill
@@ -77,6 +78,7 @@ export function PhotoGallery({
               <Image
                 src={photo.src}
                 alt={photo.alt || labels.propertyName}
+                lang="en"
                 placeholder="blur"
                 fill
                 sizes="(min-width: 900px) 350px, 50vw"
@@ -200,7 +202,7 @@ function Lightbox({
       role="dialog"
       aria-modal="true"
       aria-label={labels.photosOf.replace("{property}", labels.propertyName)}
-      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-[#0e0e14]/95 p-6 sm:p-10"
+      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-scrim/95 p-6 sm:p-10"
       onClick={onClose}
     >
       <button
@@ -230,7 +232,10 @@ function Lightbox({
               className="h-auto w-full rounded-box"
             />
             {photo.alt ? (
-              <figcaption className="mt-1.5 text-xs leading-relaxed text-white/60">
+              <figcaption
+                lang="en"
+                className="mt-1.5 text-xs leading-relaxed text-white/60"
+              >
                 {photo.alt}
               </figcaption>
             ) : null}
