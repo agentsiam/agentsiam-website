@@ -253,7 +253,7 @@ export default async function PropertiesPage({
           <p className="mt-2.5 max-w-[560px] text-[15px] leading-relaxed text-body">
             {t.psCtaBody}
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <div className="mt-6 flex flex-wrap gap-3">
             <Link href={href("/contact")} className="pill-primary">
               {t.tellUsWhatYouNeed}
             </Link>
