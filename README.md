@@ -349,10 +349,8 @@ The pipeline, so nobody has to think about image formats:
   authorised on 25/08/2026: stroke only, `currentColor`, 24x24, always in a chip, chip
   `aria-hidden`, literal rather than metaphorical. `design-guardrails.md` in the consulting
   repo still says the design system carries no icons and is stale on this point.
-- **No phone number or LINE ID published.** The footer carries name, address and email only;
-  all three have to match the Google Business Profile character for character. Note that
-  `whyC` on the homepage says "Phone or LINE, 24/7, for the whole time you are here", which
-  is a route the site does not publish. Either the number goes up or that line changes.
+- **No phone number or LINE ID published.** The footer carries name, address and email
+  only; all three have to match the Google Business Profile character for character.
 - **The company address in the footer is the Bangkok registered office.** Since 06/09/2026 a
   second line says so and names Chiang Mai as where the work happens, which is what four
   pages already claim. The postal block itself is untouched, because it has to match the
@@ -400,6 +398,33 @@ The pipeline, so nobody has to think about image formats:
   and is there for the other engines and the language models. Nothing to fix, and no FAQ
   snippets to expect. Since 06/09/2026 `/lotushouse` carries a second, separate `FAQPage` for
   the seven guest questions, which is subject to the same limit.
+
+- ~~The Chinese webfont loaded on every page in every language.~~ Resolved 06/09/2026. The
+  language switcher's 中文 label pulled 1.14MB of Noto Sans SC onto every route, because no
+  Latin or Thai face carries those glyphs and all four font stacks ended in the SC variable.
+  The variable is applied on `zh` only, the stacks read it as `var(--font-noto-sc,
+  sans-serif)` so they stay valid without it, and the weight list dropped from four to two.
+  A Chinese page went from 4.6MB of webfont to 2.3MB. `preload: false` on that face is
+  load-bearing and must stay.
+- ~~All three dictionaries shipped in the shared client chunk.~~ Resolved 06/09/2026. The
+  404 boundary was a client component, which made `getDictionary` a client import. The
+  layout passes it six strings through a context instead. Two other approaches were tried
+  and are recorded in `src/components/not-found-strings.tsx`.
+- ~~The whole dictionary was serialised as a client prop.~~ Resolved 06/09/2026 on the home
+  page and the local guide, which were shipping 778 keys so that a search bar could read
+  twelve and a map could read one. `PropertyFilters` (23 keys), `ContactForm` (31),
+  `Qualifier` (52) and `BookingPanel` (89) still take the whole dictionary; each is a
+  genuinely wide consumer and the same narrowing would be worth doing if `/properties` or
+  `/contact` ever matters as much as the home page.
+- **Photo `alt` text is English on every locale.** It comes from
+  `src/lib/photos.generated.ts`, which reads the image files' own metadata, so it cannot be
+  fixed in the dictionaries. Every `<img>` carrying it now declares `lang="en"`, which stops
+  a Thai or Chinese voice engine reading an English sentence in the wrong language, but the
+  text itself is still English. The real fix is captions in the file metadata, or a
+  translated layer over the manifest.
+- **`whyC` on the homepage promises "Phone or LINE, 24/7"** and the site publishes neither a
+  number nor a LINE ID. Either the route goes up or the line changes. This is the only claim
+  on the site with no way for a reader to act on it.
 
 ## Getting started
 
