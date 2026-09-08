@@ -11,15 +11,30 @@ import {
 // Vercel Analytics is cookieless and stores no persistent identifier, which is why
 // this site needs no cookie banner and no consent log. Keep it that way: adding a
 // cookie-setting analytics or ads tag changes the legal position of every page.
+//
+// The live chat added on 06/09/2026 is the first tag that came close, and it is allowed
+// through on one condition rather than in general. Crisp's Total Privacy Mode means no
+// storage exists until the visitor opens the chatbox themselves, which puts it where the
+// payment provider's cookies already sit: set because someone asked for something, not
+// because they arrived. That is the test any future tag has to pass. A tag that writes on
+// page view does not pass it, however useful it is.
 import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
+import { CrispChat } from "@/components/crisp-chat";
 import { NotFoundStringsProvider } from "@/components/not-found-strings";
 import { getDictionary } from "@/i18n";
 import { HTML_LANG, LOCALES, isLocale } from "@/i18n/config";
-import { OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL, languageAlternates } from "@/lib/site";
+import {
+  CRISP_WEBSITE_ID,
+  OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+  languageAlternates,
+} from "@/lib/site";
 import { organizationSchema, websiteSchema } from "@/lib/structured-data";
 
 // This is the root layout. It sits under a dynamic segment rather than at src/app/layout.tsx
@@ -194,6 +209,11 @@ export default async function RootLayout({
         <JsonLd data={organizationSchema()} />
         <JsonLd data={websiteSchema()} />
         <Analytics />
+        {/* Renders nothing until NEXT_PUBLIC_CRISP_WEBSITE_ID is set. It is the one
+            third-party tag on this site besides analytics and the payment provider, and
+            it keeps the no-cookie-banner position only because Crisp's Total Privacy Mode
+            is on: see src/components/crisp-chat.tsx, which is where that is written down. */}
+        <CrispChat locale={locale} websiteId={CRISP_WEBSITE_ID} />
       </body>
     </html>
   );

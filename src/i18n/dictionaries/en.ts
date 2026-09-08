@@ -995,15 +995,15 @@ export const en = {
   hwRoleDigital: "Digital & creative",
   hwRoleCoordination: "Project coordination",
 
-  // -- footer --------------------------------------------------------------
-  // Every page's footer published a Bangkok registered address and nothing else, while three pages claim a Chiang Mai team on the ground. Stated separately from the postal block, which has to match the Google Business Profile character for character and is not touched.
-  footWhereWeWork: "Operating in Chiang Mai. The address above is the registered office.",
-
   // -- homepage neighbourhood strip ----------------------------------------
   // The eight neighbourhood pages became substantial on 06/09/2026 and the homepage pointed at none of them: they were reachable from the nav and the footer only. This is the third route the spec names.
   homeAreasTitle: "Where in Chiang Mai",
   homeAreasSub: "The neighbourhood decides the holiday more than the house does. Eight of them, described as they actually are, including the ones we manage nothing in.",
   homeAreasLink: "All eight neighbourhoods",
+
+  // -- live chat, privacy policy sentence ----------------------------------
+  // Rendered only when NEXT_PUBLIC_CRISP_WEBSITE_ID is set, so the policy cannot describe a chat provider the site is not running and cannot stay silent about one it is. Same shape as the payment-provider sentence above it, because it is the same legal argument: storage set because the visitor asked for something.
+  privacyChatCookie: "Our chat provider sets its own cookie when you open the chat, so a reply reaches the conversation you started. It appears only once you open the chat, not while you are browsing, and it is not used for advertising.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

@@ -49,11 +49,17 @@ const dismissedOnServer = () => false;
 
 export function WhatsAppCta({
   number,
+  chatConfigured = false,
   labels,
   context,
 }: {
   /** Digits only, country code, no plus. Empty renders nothing at all. */
   number: string;
+  /**
+   * Whether the live chat launcher is on the page. Passed rather than read here, because
+   * this is a client component and the env var belongs on the server side of the boundary.
+   */
+  chatConfigured?: boolean;
   labels: AskLabels;
   /** Appended to the prefilled message so a reply arrives with the page already known. */
   context?: string;
@@ -81,7 +87,17 @@ export function WhatsAppCta({
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-500 flex max-w-[calc(100vw-2rem)] flex-col items-end gap-2 print:hidden">
+    // bottom-24 rather than bottom-4 when the chat widget is configured: Crisp renders
+    // its own launcher in this exact corner, and two floating buttons stacked on one
+    // another is not a choice, it is a collision. Offset rather than removed, because
+    // WhatsApp reaches a phone and the chat reaches a desk, and they are not the same
+    // channel. The property page's sticky booking bar sits at bottom-0 below 900px and is
+    // a full-width band, so it clears both.
+    <div
+      className={`fixed right-4 z-500 flex max-w-[calc(100vw-2rem)] flex-col items-end gap-2 print:hidden ${
+        chatConfigured ? "bottom-24" : "bottom-4"
+      }`}
+    >
       {expanded && !dismissed ? (
         <div className="w-72 rounded-panel border border-hairline bg-bg p-4 shadow-lg">
           <p className="font-display text-[15px] font-bold tracking-[-0.015em]">

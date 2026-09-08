@@ -53,11 +53,25 @@ const SCHEMA_CONTEXT = "https://schema.org";
  * The postal address is the one in the footer, from the same constant, because it has to
  * match the Google Business Profile character for character or the two records compete in
  * local search.
+ *
+ * `LocalBusiness` since 06/09/2026, and only since then. It is the type local search reads
+ * and `Organization` is not, but publishing it was wrong while the only address on file
+ * was a Bangkok one: a LocalBusiness node is a claim about where a business physically is,
+ * and pointing it at the wrong city is worse for local search than not competing. The
+ * registered office was corrected to Chiang Mai on the same day, which is what makes the
+ * type honest. `Organization` remains in the type array so anything reading for the more
+ * general type still resolves.
+ *
+ * Still absent, and each is a one-line addition on the day it becomes true: `telephone`,
+ * because no number is published anywhere on the site; `sameAs`, because no social profile
+ * is confirmed; `logo`, because there is no logo file under public/; `geo` and
+ * `openingHours`, which are the two fields a LocalBusiness rich result most wants and
+ * neither of which has a verified value yet.
  */
 export function organizationSchema(): Record<string, unknown> {
   return {
     "@context": SCHEMA_CONTEXT,
-    "@type": "Organization",
+    "@type": ["LocalBusiness", "Organization"],
     "@id": ORGANIZATION_ID,
     name: SITE_NAME,
     legalName: POSTAL_ADDRESS.legalName,

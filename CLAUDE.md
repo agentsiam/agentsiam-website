@@ -180,6 +180,14 @@ because C29 requires each repo to state its own.
 - Editing the dictionaries string by string during a review is how the register split gets broken:
   owner strings take ท่าน, guest strings take คุณ, and swapping them costs more credibility than a
   clumsy sentence.
+- `POSTAL_ADDRESS` in `src/lib/site.ts` is published in three places that must not drift: the
+  footer, the `LocalBusiness` node, and the Google Business Profile, which is outside this repo
+  and is currently the one that disagrees. Changing the constant is half the job.
+- `NEXT_PUBLIC_CRISP_WEBSITE_ID` gates three things at once, not one: the chat widget, the
+  `privacyChatCookie` paragraph in the privacy policy, and the WhatsApp launcher's vertical
+  offset. Anything that reads it on the client has to receive it as a prop, because
+  `whatsapp-cta.tsx` is a client component and the value belongs on the server side of the
+  boundary.
 
 ## 8. Cadence
 

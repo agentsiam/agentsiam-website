@@ -25,15 +25,29 @@ export const CONTACT_EMAIL = "hi@agentsiam.com";
  * The registered postal address, as published.
  *
  * Written down once because two places publish it and they must not drift: the footer
- * renders it, and the Organization node in src/lib/structured-data.ts declares it. It has
+ * renders it, and the LocalBusiness node in src/lib/structured-data.ts declares it. It has
  * to match the Google Business Profile character for character, or the two records compete
  * in local search.
+ *
+ * Chiang Mai, corrected 06/09/2026 on Paul's instruction. The site published a Bangkok
+ * address until then and the registered office was never in Bangkok: the DBD certificate
+ * records it as เลขที่ 42 ซอย 1 ถนนเวียงพิงค์ ตำบลช้างคลาน อำเภอเมืองเชียงใหม่ จังหวัดเชียงใหม่,
+ * mirrored in agentsiam-consulting's `as-context/00-company/company-identity.md`. The
+ * mismatch was raised as an open decision on 27/08/2026 and this closes it.
+ *
+ * Know what this publishes. The registered office is the Lotus House building, so the
+ * property's street address is now on every page of the site rather than released at
+ * booking confirmation. That is a deliberate trade and not an accident: a registered
+ * office is public record at the DBD either way, and a Chiang Mai business whose only
+ * published address is in Bangkok cannot win a local search it is entitled to. The
+ * property page still shows the neighbourhood only and still says the exact address
+ * follows confirmation, because that is true of what the listing itself states.
  */
 export const POSTAL_ADDRESS = {
   legalName: "AgentSiam Co., Ltd.",
-  street: "922/11 Rama 9 Road, Huaykwang",
-  locality: "Bangkok",
-  postalCode: "10310",
+  street: "42 Soi 1, Wiang Ping Road, Chang Khlan",
+  locality: "Chiang Mai",
+  postalCode: "50100",
   country: "Thailand",
   /** ISO 3166-1 alpha-2, for schema.org's addressCountry. */
   countryCode: "TH",
@@ -47,6 +61,20 @@ export const POSTAL_ADDRESS = {
  * Public by nature: it ends up in a wa.me link either way, which is why it is NEXT_PUBLIC_.
  */
 export const WHATSAPP_NUMBER = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").replace(/[^\d]/g, "");
+
+/**
+ * Crisp website ID, for the live chat launcher. Public by nature: it identifies the
+ * chatbox to Crisp's own script and ends up in the page either way.
+ *
+ * Unset renders no widget at all, which is the state the site ships in. Setting it turns
+ * the chat on AND turns on a sentence in the privacy policy, so the policy cannot describe
+ * a chat provider the site is not using, and cannot stay silent about one it is.
+ *
+ * Total Privacy Mode has to be enabled in the Crisp dashboard before this is set. See
+ * src/components/crisp-chat.tsx: with it off the widget writes a six-month cookie for
+ * every passive visitor and this site needs a cookie banner it has never needed.
+ */
+export const CRISP_WEBSITE_ID = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID ?? "";
 
 // Shown as "Last updated" on the privacy policy and the terms. Bump by hand when the
 // text of either page materially changes, not on every deploy.

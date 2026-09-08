@@ -351,19 +351,40 @@ The pipeline, so nobody has to think about image formats:
   repo still says the design system carries no icons and is stale on this point.
 - **No phone number or LINE ID published.** The footer carries name, address and email
   only; all three have to match the Google Business Profile character for character.
-- **The company address in the footer is the Bangkok registered office.** Since 06/09/2026 a
-  second line says so and names Chiang Mai as where the work happens, which is what four
-  pages already claim. The postal block itself is untouched, because it has to match the
-  Google Business Profile. `organizationSchema()` is still `Organization` rather than
-  `LocalBusiness`: `LocalBusiness` is the type local search reads, but publishing it against
-  a Bangkok address on a Chiang Mai business would point local search at the wrong city.
-  Open, and a decision rather than a bug.
+- ~~The company address in the footer is the Bangkok registered office.~~ Resolved
+  06/09/2026 on Paul's instruction: the registered office is and always was Chiang Mai, and
+  the Bangkok block was simply wrong. `POSTAL_ADDRESS` now reads 42 Soi 1, Wiang Ping Road,
+  Chang Khlan, Chiang Mai 50100, which is the DBD record mirrored in the consulting repo's
+  `as-context/00-company/company-identity.md`. The footer's "where we work" line went with
+  it, because the mismatch it existed to explain no longer exists, and `footWhereWeWork` was
+  deleted from all three dictionaries. `organizationSchema()` became
+  `["LocalBusiness", "Organization"]` in the same change: the type local search actually
+  reads, honest only now that the address points at the right city.
+  **Two things follow and neither is done.** The Google Business Profile still carries the
+  old address and has to be corrected to match this one character for character, or the two
+  records compete. And the registered office is the Lotus House building, so the property's
+  street address is now published on every page rather than released at booking
+  confirmation. That is a deliberate trade, written up in `src/lib/site.ts`.
+- **The `LocalBusiness` node has no `telephone`, `geo`, `openingHours`, `sameAs` or
+  `logo`.** Each is a one-line addition on the day it has a verified value. `geo` and
+  `openingHours` are the two a LocalBusiness rich result most wants.
 - **No cancellation policy exists anywhere on the site.** Not in the booking panel, not in
   the guest FAQ, and `/terms-and-conditions` contains no occurrence of *cancel*, *refund* or
   *deposit*. The guest FAQ added 06/09/2026 says so plainly rather than inventing terms, and
   the booking flow asks for the full amount of a stay up front with nothing stated about
   what happens if the guest cannot travel. This is the largest remaining hole on the booking
-  path and it is a decision, not a build task.
+  path and it is a decision, not a build task. The market research and a draft policy are in
+  the consulting repo at
+  `as-work/2026-09-06-website-ui-ux-audit/cancellation-policy.md`, written 06/09/2026 and
+  waiting on five numbers only Paul can set. Nothing from it is on the site.
+- **The live chat is built and switched off.** `src/components/crisp-chat.tsx` renders
+  nothing until `NEXT_PUBLIC_CRISP_WEBSITE_ID` is set, which needs a Crisp account that does
+  not exist yet. Two things have to be true before it is set: Total Privacy Mode enabled in
+  the Crisp dashboard, or the site needs the cookie banner it has never needed, and the
+  desktop app installed on the laptop that answers. Setting the variable also turns on
+  `privacyChatCookie` in the privacy policy and shifts the WhatsApp launcher up to
+  `bottom-24` so the two floating buttons do not collide. `.env.example` carries the full
+  warning.
 - **No aggregate rating and no review count.** One quoted Airbnb review, no verified figure
   behind it. The homepage and the property page both render a single review as a quote
   rather than as a rail of one, and neither states a count. The figure has to come off the

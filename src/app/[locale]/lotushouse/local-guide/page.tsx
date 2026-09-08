@@ -12,7 +12,7 @@ import { categoryIcon } from "@/lib/guide-icons";
 import { PHOTOS } from "@/lib/photos.generated";
 import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
 import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
-import { pageMeta, WHATSAPP_NUMBER } from "@/lib/site";
+import { CRISP_WEBSITE_ID, pageMeta, WHATSAPP_NUMBER } from "@/lib/site";
 
 /**
  * The guest local guide.
@@ -415,7 +415,12 @@ export default async function LocalGuidePage({
         </div>
       ) : null}
 
-      <WhatsAppCta number={WHATSAPP_NUMBER} labels={askLabels} context={LOTUS_HOUSE.title} />
+      <WhatsAppCta
+        number={WHATSAPP_NUMBER}
+        chatConfigured={Boolean(CRISP_WEBSITE_ID)}
+        labels={askLabels}
+        context={LOTUS_HOUSE.title}
+      />
     </div>
   );
 }

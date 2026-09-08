@@ -851,11 +851,11 @@ export const zh: Dictionary = {
   hwRoleDigital: "数字与创意",
   hwRoleCoordination: "项目协调",
 
-  // -- footer --------------------------------------------------------------
-  footWhereWeWork: "团队常驻清迈。上方地址为公司注册地址。",
-
   // -- homepage neighbourhood strip ----------------------------------------
   homeAreasTitle: "清迈的哪一区",
   homeAreasSub: "决定这趟旅行的，往往是所在的区域而不是房子本身。八个区域，如实描述，包括我们目前一处都没有管理的那些。",
   homeAreasLink: "查看全部八个区域",
+
+  // -- live chat, privacy policy sentence ----------------------------------
+  privacyChatCookie: "当您打开聊天窗口时，我们的聊天服务商会设置自己的 cookie，以便回复能回到您发起的那段对话。它只在您打开聊天时出现，浏览网站时不会，也不用于广告。",
 };

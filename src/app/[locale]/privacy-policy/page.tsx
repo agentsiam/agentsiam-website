@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
 import { isLocale } from "@/i18n/config";
-import { CONTACT_EMAIL, policyUpdated, pageMeta } from "@/lib/site";
+import { CONTACT_EMAIL, CRISP_WEBSITE_ID, policyUpdated, pageMeta } from "@/lib/site";
 
 /**
  * Existing policy text, kept verbatim apart from one sentence: the enquiry paragraph now
@@ -130,6 +130,12 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             not while you are browsing, they are necessary for a payment to be taken, and
             they are not used for advertising.
           </p>
+          {/* Only when the chat is actually configured. A privacy policy describing a
+              provider the site is not running is as wrong as one that stays silent about a
+              provider it is. */}
+          {CRISP_WEBSITE_ID ? (
+            <p>{t.privacyChatCookie}</p>
+          ) : null}
 
           <h2>Who else sees it</h2>
           <p>

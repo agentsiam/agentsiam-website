@@ -117,14 +117,6 @@ export function Footer({ locale }: { locale: Locale }) {
               <br />
               {`${POSTAL_ADDRESS.locality} ${POSTAL_ADDRESS.postalCode}, ${POSTAL_ADDRESS.country}`}
             </address>
-            {/* Where the work happens, said separately from where the company is
-                registered. The postal block above has to match the Google Business
-                Profile character for character, so it is not touched; without this line
-                the only place named in any footer was Bangkok, on a site whose homepage,
-                owner page and both city pages claim a team on the ground in Chiang Mai. */}
-            <p className="text-[12.5px] leading-relaxed text-white/60">
-              {t.footWhereWeWork}
-            </p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
               className="hit text-[13.5px] text-white/80 hover:text-white"
