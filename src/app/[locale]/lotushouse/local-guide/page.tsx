@@ -11,7 +11,7 @@ import { areaBySlug } from "@/lib/areas";
 import { categoryIcon } from "@/lib/guide-icons";
 import { PHOTOS } from "@/lib/photos.generated";
 import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
-import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
+import { LOTUS_HOUSE } from "@/lib/property";
 import { CRISP_WEBSITE_ID, pageMeta, routeOgImage, WHATSAPP_NUMBER } from "@/lib/site";
 import { alt as ogAlt } from "./opengraph-image";
 
@@ -33,6 +33,20 @@ import { alt as ogAlt } from "./opengraph-image";
  */
 
 const NEARBY_MINUTES = 20;
+
+/**
+ * Beyond this, a place stops reading as "local". Paul's call, 11/09/2026: Ferment Space
+ * came in at roughly 12km via the massage and wellness sheet rows, which is honest data but
+ * not a "local guide" claim, so places past this radius are dropped from the guide entirely
+ * rather than sorted into an "outside" filter the way the sheet's own neighbourhood-area cap
+ * already handles the nearer case. Measured from GUIDE_DISTANCES' routed metres, so it is
+ * per property once a second one exists, same as the walk and drive times themselves.
+ */
+const MAX_DISTANCE_M = 12_000;
+
+/** How many cards render before "Show more". Keeps the default view from reading as one
+ * endless list; the map still gets every filtered pin regardless, only the text list pages. */
+const PAGE_SIZE = 24;
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
@@ -77,10 +91,10 @@ export default async function LocalGuidePage({
   const picks = one(query.picks) === "1";
 
   const distances = GUIDE_DISTANCES[LOTUS_HOUSE.slug] ?? {};
-  const guideArea = propertyArea(LOTUS_HOUSE);
 
   const places = GUIDE_PLACES.filter((place) => {
     const d = distances[place.name];
+    if (d?.metres != null && d.metres > MAX_DISTANCE_M) return false;
     if (category && place.category !== category) return false;
     if (area && (area === "outside" ? place.area !== null : place.area !== area)) return false;
     if (nearby && !(d?.walk !== null && d?.walk !== undefined && d.walk <= NEARBY_MINUTES)) return false;
@@ -113,21 +127,13 @@ export default async function LocalGuidePage({
     highlight: place.highlight,
   }));
 
-  // Opens at the scale a guest is standing in. Framing on all 109 would include Doi
-  // Inthanon 86km away and crush the fifty-odd places around the house into a smudge.
-  // The neighbourhood centre, NOT the house.
-  //
-  // This page is public, indexed, and never shared with a booked guest, so nobody who
-  // needs door-to-door routing ever sees it. Marking the house here published where it is
-  // to everyone and served no one. The walk and drive times are still measured from the
-  // house, which is the useful part and gives away nothing: how far a place is does not
-  // say where you started. Same position Airbnb takes.
-  //
-  // Exact address and coordinates are booking-confirmation material. See the `visibility`
-  // rule in as-context/03-systems/property-profile-schema.md.
-  const origin = guideArea
-    ? { lat: guideArea.lat, lng: guideArea.lng, label: guideArea.name }
-    : { lat: LOTUS_HOUSE.lat, lng: LOTUS_HOUSE.lng, label: LOTUS_HOUSE.title };
+  // The house itself, not the neighbourhood centre. Paul's call, 11/09/2026, reversing the
+  // page's earlier position: the pin here used to be the area centroid, roughly 1.4km from
+  // the real house for Lotus House's own area, which read as a broken pin rather than a
+  // deliberately fuzzed one. Exact street address still stays booking-confirmation-only
+  // (property.ts, `address`) -- only the coordinate is published here, same as the plain
+  // lat/lng pair a Google Maps link already carries.
+  const origin = { lat: LOTUS_HOUSE.lat, lng: LOTUS_HOUSE.lng, label: LOTUS_HOUSE.title };
   const home = origin;
   const propertyPhoto = (PHOTOS[LOTUS_HOUSE.slug] ?? [])[0];
   const walkable = places.filter((place) => {
@@ -149,6 +155,27 @@ export default async function LocalGuidePage({
     const qs = next.toString();
     return href(`/lotushouse/local-guide${qs ? `?${qs}` : ""}`);
   };
+
+  // How many cards are on the page right now. `n` rides the same URL-state pattern as
+  // every filter here (filterHref above already forwards an arbitrary patch, `n` included,
+  // so this needed no new plumbing) -- which also means changing a filter chip drops back
+  // to PAGE_SIZE for free, since filterHref only ever sets the four filter keys it knows
+  // about and never carries `n` over from the current URL. A guest who pastes a guide link
+  // mid-scroll still gets the fuller list back, because the count travels in the URL too.
+  const requestedCount = Number(one(query.n));
+  const shown = Number.isFinite(requestedCount) && requestedCount > PAGE_SIZE
+    ? Math.min(Math.floor(requestedCount), places.length)
+    : Math.min(PAGE_SIZE, places.length);
+  const visiblePlaces = places.slice(0, shown);
+  const moreCount = Math.min(PAGE_SIZE, places.length - shown);
+  const showMoreHref = filterHref({ n: String(shown + PAGE_SIZE) });
+
+  // Where this batch's new cards start, so the "show more" anchor lands on the first one
+  // rather than the list's end. The right column is short and sticky, so by the time a
+  // guest has scrolled through a long list it has long since scrolled out of its own sticky
+  // range -- an anchor at the very bottom of the list lands past it, on the CTA and footer,
+  // with the cards that just loaded sitting above the viewport instead of in it.
+  const newBatchIndex = shown > PAGE_SIZE ? shown - PAGE_SIZE : null;
 
   // Narrow label objects rather than the whole dictionary. React dedupes a prop object to
   // one copy per document, so passing `t` to three components cost one serialized
@@ -294,63 +321,75 @@ export default async function LocalGuidePage({
         </div>
       ) : (
         <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-start">
-          <ul className="grid gap-3">
-            {places.map((place) => {
-              const d = distances[place.name];
-              const areaName = place.area ? areaBySlug(place.area)?.name : null;
-              return (
-                <li
-                  key={place.name}
-                  data-map-key={place.name}
-                  className="rounded-panel border border-hairline p-4 transition-colors hover:border-ink"
-                >
-                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <h2 className="font-display text-[17px] font-bold tracking-[-0.015em]">
-                      {/* Decorative: the category is written out immediately below, so a
-                          screen reader announcing the emoji would just repeat it. */}
-                      <span aria-hidden="true" className="mr-1.5">
-                        {categoryIcon(place.category)}
-                      </span>
-                      {place.name}
-                    </h2>
-                    {place.highlight ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-deep-red px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.04em] text-white">
-                        <span aria-hidden="true">★</span>
-                        {t.guidePicks}
-                      </span>
+          <div className="grid gap-6">
+            <ul className="grid gap-3">
+              {visiblePlaces.map((place, index) => {
+                const d = distances[place.name];
+                const areaName = place.area ? areaBySlug(place.area)?.name : null;
+                return (
+                  <li
+                    key={place.name}
+                    id={index === newBatchIndex ? "guide-list-more" : undefined}
+                    data-map-key={place.name}
+                    className="rounded-panel border border-hairline p-4 transition-colors hover:border-ink"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <h2 className="font-display text-[17px] font-bold tracking-[-0.015em]">
+                        {/* Decorative: the category is written out immediately below, so a
+                            screen reader announcing the emoji would just repeat it. */}
+                        <span aria-hidden="true" className="mr-1.5">
+                          {categoryIcon(place.category)}
+                        </span>
+                        {place.name}
+                      </h2>
+                      {place.highlight ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-deep-red px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.04em] text-white">
+                          <span aria-hidden="true">★</span>
+                          {t.guidePicks}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <p className="eyebrow mt-1">
+                      {place.category}
+                      {areaName ? ` · ${areaName}` : ` · ${t.guideOutsideAreas}`}
+                    </p>
+
+                    {place.comment ? (
+                      <p className="mt-2 text-[14px] text-body">{place.comment}</p>
                     ) : null}
-                  </div>
 
-                  <p className="eyebrow mt-1">
-                    {place.category}
-                    {areaName ? ` · ${areaName}` : ` · ${t.guideOutsideAreas}`}
-                  </p>
+                    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted">
+                      <span>
+                        {d?.walk != null
+                          ? t.guideWalk.replace("{n}", String(d.walk))
+                          : t.guideNoWalk}
+                        {d?.drive != null
+                          ? ` · ${t.guideDrive.replace("{n}", String(d.drive))}`
+                          : ""}
+                      </span>
+                      <DirectionsLinks
+                        from={{ lat: origin.lat, lng: origin.lng }}
+                        to={{ lat: place.lat, lng: place.lng }}
+                        mode={d?.walk != null ? "walking" : "driving"}
+                        place={place.name}
+                        labels={directionsLabels}
+                      />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
 
-                  {place.comment ? (
-                    <p className="mt-2 text-[14px] text-body">{place.comment}</p>
-                  ) : null}
-
-                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted">
-                    <span>
-                      {d?.walk != null
-                        ? t.guideWalk.replace("{n}", String(d.walk))
-                        : t.guideNoWalk}
-                      {d?.drive != null
-                        ? ` · ${t.guideDrive.replace("{n}", String(d.drive))}`
-                        : ""}
-                    </span>
-                    <DirectionsLinks
-                      from={{ lat: origin.lat, lng: origin.lng }}
-                      to={{ lat: place.lat, lng: place.lng }}
-                      mode={d?.walk != null ? "walking" : "driving"}
-                      place={place.name}
-                      labels={directionsLabels}
-                    />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+            {moreCount > 0 ? (
+              <Link
+                href={`${showMoreHref}#guide-list-more`}
+                className="justify-self-start rounded-full border border-hairline px-4 py-2 text-[13px] font-semibold transition-colors hover:border-ink"
+              >
+                {t.guideShowMore.replace("{n}", String(moreCount))}
+              </Link>
+            ) : null}
+          </div>
 
           {/* The property, as context rather than as an interruption.
               It sat above the title before, where it competed with the filters, which are

@@ -360,6 +360,7 @@ export const en = {
   guideOutsideAreas: "Further out",
   guideEmpty: "Nothing matches that combination.",
   guideClear: "Clear filters",
+  guideShowMore: "Show {n} more",
   guideFrom: "Times are from {property}.",
   guideBookDirect: "Book direct with us",
   guideBookDirectSub: "Same hosts who wrote this guide.",

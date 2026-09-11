@@ -325,6 +325,7 @@ export const th: Dictionary = {
   guideOutsideAreas: "ไกลออกไป",
   guideEmpty: "ไม่พบสถานที่ตามที่เลือก",
   guideClear: "ล้างตัวกรอง",
+  guideShowMore: "แสดงเพิ่มอีก {n} แห่ง",
   guideFrom: "เวลาเดินทางเริ่มจาก {property}",
   guideBookDirect: "จองตรงกับเรา",
   guideBookDirectSub: "ทีมเจ้าบ้านที่เขียนคู่มือนี้จะดูแลคุณเอง",

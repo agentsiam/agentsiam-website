@@ -412,10 +412,34 @@ The pipeline, so nobody has to think about image formats:
   alongside it. `approxLocation()` already publishes an offset point for public maps and
   would satisfy the field, but it would hand a booking product a location that is
   deliberately wrong. Open, and a decision rather than a bug.
+- **`/lotushouse/local-guide` now plots the house at its real coordinate, not the
+  neighbourhood centroid.** Paul's decision, 11/09/2026, reversing the page's earlier
+  position. Before this the map pin used the area centroid from `src/lib/areas.ts`, about
+  1.4km from the real house for Chang Khlan specifically, labelled with the area name rather
+  than "Lotus House". That read as a broken pin on a page meant to orient a guest, not as a
+  deliberately fuzzed one. The street address in `property.ts` (`address`) stays
+  booking-confirmation-only; only the lat/lng pair is now published, which changes nothing
+  the `VacationRental` `geo` gap above does not already weigh, since that item is about a
+  different node (`propertySchema()` on `/lotushouse`) and is still open on its own terms.
 - **The share cards for `/lotushouse/local-guide` and `/destinations/*` used to fall back to
   the site-wide owner pitch.** Resolved for the guide 11/09/2026: it has its own
   `opengraph-image.tsx` now, wired through `pageMeta`'s `image` argument the same way
   `/lotushouse` already was. `/destinations/*` has the same gap and is not yet fixed.
+- **The `Massage/Spa` category and the rest of the guide are missing places that exist in a
+  separate, unmerged spreadsheet.** `scripts/build-guide.mjs` reads the "Lotus House Sites &
+  Tips" sheet only. A second document (raw restaurant and wellness lists, different column
+  schema, no `Category`/`Area`/`Comment` fields) has entries that were never transcribed in.
+  Noticed 11/09/2026 after a WhatsApp broadcast promised "+20 more places" that the live site
+  does not yet carry.
+- **`/lotushouse/local-guide` drops any place more than 12km away, and paginates the rest.**
+  Both Paul's decisions, 11/09/2026. Before this the guide showed every place in
+  `GUIDE_PLACES` regardless of distance, sorted into the "Further out" filter rather than
+  excluded, and rendered the entire filtered list in one `<ul>`, which read as an endless
+  scroll on the default "Everything" view. `MAX_DISTANCE_M` in
+  `local-guide/page.tsx` now drops anything past 12km using `GUIDE_DISTANCES`' routed
+  `metres`, and the list renders `PAGE_SIZE` (24) cards at a time behind a "Show more" link
+  that carries the count in the URL (`?n=`), the same URL-state pattern as every other
+  filter on the page.
 - **The `FAQPage` block on `/how-it-works` produces no rich result.** The markup is correct:
   zero errors and zero warnings at validator.schema.org on 01/09/2026, and all eight questions
   and answers appear verbatim in the rendered page, so markup and visible text agree. Google no

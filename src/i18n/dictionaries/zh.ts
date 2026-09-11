@@ -327,6 +327,7 @@ export const zh: Dictionary = {
   guideOutsideAreas: "更远区域",
   guideEmpty: "没有符合条件的地点。",
   guideClear: "清除筛选",
+  guideShowMore: "再显示{n}个",
   guideFrom: "从{property}出发的时间。",
   guideBookDirect: "官网直订",
   guideBookDirectSub: "由撰写本指南的同一团队接待。",
