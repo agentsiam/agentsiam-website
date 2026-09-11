@@ -12,7 +12,8 @@ import { categoryIcon } from "@/lib/guide-icons";
 import { PHOTOS } from "@/lib/photos.generated";
 import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
 import { LOTUS_HOUSE, propertyArea } from "@/lib/property";
-import { CRISP_WEBSITE_ID, pageMeta, WHATSAPP_NUMBER } from "@/lib/site";
+import { CRISP_WEBSITE_ID, pageMeta, routeOgImage, WHATSAPP_NUMBER } from "@/lib/site";
+import { alt as ogAlt } from "./opengraph-image";
 
 /**
  * The guest local guide.
@@ -51,6 +52,9 @@ export async function generateMetadata({
       .replace("{property}", LOTUS_HOUSE.title),
     path: "/lotushouse/local-guide",
     locale,
+    // The guide's own card, not the site-wide owner pitch. See
+    // src/app/[locale]/lotushouse/local-guide/opengraph-image.tsx for why.
+    image: routeOgImage(locale, "/lotushouse/local-guide", ogAlt),
   });
 }
 
