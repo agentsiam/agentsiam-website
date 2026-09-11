@@ -17,10 +17,15 @@
  *
  * WHAT THE SHEET IS AND IS NOT
  *
- * The sheet is the editing surface, and it stays that way: Nils adds a row with a
- * Google Maps link exactly as he does today. He never types a coordinate. This script
- * resolves the link once and remembers it in scripts/guide-cache.json, keyed by link,
- * so a rerun only touches rows that are actually new.
+ * The sheet is today's input, not infrastructure this repo commits to. src/lib/guide.
+ * generated.ts is the guide's source of truth (CLAUDE.md R11); the sheet is a free
+ * resource Paul happens to share to enrich it, spent once its rows are merged in and
+ * the guide is regenerated. Nothing here re-fetches it on a schedule or expects it to
+ * stay in sync -- the next enrichment may be a different sheet entirely, a different
+ * kind of source, or a direct edit to this file's own inputs. A row still never carries
+ * a hand-typed coordinate; this script resolves the Google Maps link once and remembers
+ * it in scripts/guide-cache.json, keyed by link, so a rerun only touches rows that are
+ * actually new.
  *
  * The sheet stores distances hardcoded to Lotus House. Those columns are deliberately
  * NOT imported. Distance belongs to the pairing of a place and a property, not to the

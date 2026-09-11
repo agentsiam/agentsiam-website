@@ -68,7 +68,7 @@ Every value below is written in exactly one place. This is what C20 points at.
 | Locales, paths and hreflang | `src/i18n/config.ts` | en is the bare path, th is `/th`, zh is `/zh` Simplified |
 | The site's own URL | `src/lib/site.ts` | See the trap in section 7 |
 | The photo manifest | `src/lib/photos.generated.ts` | GENERATED from `src/photos/` |
-| The guide library | `src/lib/guide.generated.ts` | GENERATED from the guide sheet |
+| The guide library | `src/lib/guide.generated.ts` | GENERATED. The sheet that fed it is disposable input, not a second source of truth (R11) |
 | Scheduled jobs in production | `vercel.json` | |
 | DNS and mail records | The live zone, read on the day | Never this repo. `DNS-EMAIL-RUNBOOK.md` says why |
 | Availability, rates, bookings, guest messages | Beds24 | Never a file here |
@@ -124,6 +124,13 @@ three in one pass, then `npm run typecheck`.
 dash ban (C29). Everywhere else in this repo, and in anything written to Paul, the ban holds. This
 is the same exemption as R21 in `/Users/paulb/code/agentsiam/agentsiam-consulting`, stated here
 because C29 requires each repo to state its own.
+
+**R11.** The guide's source of truth is `src/lib/guide.generated.ts` (GENERATED, R5), never a
+spreadsheet. A Google Sheet that feeds `npm run guide` is a free resource Paul happens to share to
+enrich the guide, not a system this repo maintains. Once a sheet's rows are merged and the guide is
+regenerated, the sheet is spent: nothing here re-fetches it on a schedule, links to it as a live
+reference, or expects it to stay in sync going forward. The next enrichment may be a different sheet
+entirely, or no sheet at all.
 
 ## 6. Tooling and commands
 
