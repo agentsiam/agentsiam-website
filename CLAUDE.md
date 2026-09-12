@@ -53,8 +53,9 @@ duplicate one into the other.
 | What is unbuilt or unreviewed right now | `README.md`, "Known gaps" |
 
 Two files are **GENERATED** and are never hand-edited (R5): `src/lib/photos.generated.ts` from
-`src/photos/` via `npm run photos`, and `src/lib/guide.generated.ts` from the guide sheet via
-`npm run guide`. Edit the source and rerun the script.
+`src/photos/` via `npm run photos`, and `src/lib/guide.generated.ts` from whatever sheet or
+resource is current plus `scripts/guide-extra.csv` (R11), via `npm run guide`. Edit the source
+and rerun the script.
 
 `src/photos/` and `public/` are binary-heavy. Do not glob them.
 
@@ -130,7 +131,9 @@ spreadsheet. A Google Sheet that feeds `npm run guide` is a free resource Paul h
 enrich the guide, not a system this repo maintains. Once a sheet's rows are merged and the guide is
 regenerated, the sheet is spent: nothing here re-fetches it on a schedule, links to it as a live
 reference, or expects it to stay in sync going forward. The next enrichment may be a different sheet
-entirely, or no sheet at all.
+entirely, or no sheet at all: `scripts/guide-extra.csv`, git-tracked and in the same column shape,
+is where a place found some other way goes, and `build-guide.mjs` merges it in before resolution and
+routing run, so it gets the same coordinate lookup and duplicate check as a sheet row would.
 
 ## 6. Tooling and commands
 

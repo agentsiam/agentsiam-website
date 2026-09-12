@@ -217,32 +217,57 @@ if (!PROPERTIES.length) throw new Error("Could not read any property coordinates
 
 console.log(`${AREAS.length} areas, ${PROPERTIES.length} propert${PROPERTIES.length === 1 ? "y" : "ies"}`);
 
+/**
+ * Turns one CSV's text into place rows, same shape regardless of where the CSV came from.
+ * Pulled out so a local, git-tracked file can feed the exact same resolution, dedup and
+ * routing pipeline as the sheet, per CLAUDE.md R11: the sheet is disposable input, not the
+ * only kind. Row shape is unforgiving on purpose -- Site and Google Maps have to be named
+ * columns -- so a malformed local file fails loudly instead of silently dropping places.
+ */
+function rowsFromCsv(csv, source) {
+  const rows = parseCsv(csv);
+  const head = rows[0].map((h) => h.trim());
+  const idx = (n) => head.indexOf(n);
+  const iSite = idx("Site"), iCat = idx("Category"), iArea = idx("Area");
+  const iG = idx("Google Maps"), iA = idx("Apple Maps"), iC = idx("Comment");
+  if (iSite < 0 || iG < 0) throw new Error(`Unexpected columns in ${source}: ${head.join(", ")}`);
+
+  return rows.slice(1)
+    .filter((r) => r.some((c) => c.trim()))
+    .map((r) => {
+      const raw = (r[iSite] || "").replace(ZERO_WIDTH, "");
+      return {
+        name: raw.replace(HIGHLIGHT, "").replace(/\s+/g, " ").trim(),
+        highlight: raw.includes(HIGHLIGHT),
+        category: (r[iCat] || "").trim(),
+        sheetArea: (r[iArea] || "").trim(),
+        google: (r[iG] || "").trim(),
+        apple: (r[iA] || "").trim(),
+        comment: (r[iC] || "").trim(),
+      };
+    });
+}
+
 const csv = await fetch(SHEET_CSV).then((r) => {
   if (!r.ok) throw new Error(`Sheet fetch failed (${r.status}). Still shared to anyone with the link?`);
   return r.text();
 });
 
-const rows = parseCsv(csv);
-const head = rows[0].map((h) => h.trim());
-const idx = (n) => head.indexOf(n);
-const iSite = idx("Site"), iCat = idx("Category"), iArea = idx("Area");
-const iG = idx("Google Maps"), iA = idx("Apple Maps"), iC = idx("Comment");
-if (iSite < 0 || iG < 0) throw new Error(`Unexpected columns: ${head.join(", ")}`);
+let places = rowsFromCsv(csv, "the sheet");
 
-let places = rows.slice(1)
-  .filter((r) => r.some((c) => c.trim()))
-  .map((r) => {
-    const raw = (r[iSite] || "").replace(ZERO_WIDTH, "");
-    return {
-      name: raw.replace(HIGHLIGHT, "").replace(/\s+/g, " ").trim(),
-      highlight: raw.includes(HIGHLIGHT),
-      category: (r[iCat] || "").trim(),
-      sheetArea: (r[iArea] || "").trim(),
-      google: (r[iG] || "").trim(),
-      apple: (r[iA] || "").trim(),
-      comment: (r[iC] || "").trim(),
-    };
-  });
+/**
+ * Local, git-tracked enrichment, same column shape as the sheet. This is what R11 means by
+ * "a direct edit to this file's own inputs": a place someone found and shared, added here
+ * instead of into a spreadsheet nobody commits to keeping. Runs through the identical
+ * resolution, dedup, area-assignment and routing logic below as every sheet row does, so a
+ * duplicate or a bad link is caught the same way either source made it.
+ */
+const EXTRA_PATH = join(HERE, "guide-extra.csv");
+if (existsSync(EXTRA_PATH)) {
+  const extra = rowsFromCsv(readFileSync(EXTRA_PATH, "utf8"), "guide-extra.csv");
+  places = places.concat(extra);
+  console.log(`guide-extra.csv: ${extra.length} place(s) added to the sheet's ${places.length - extra.length}`);
+}
 
 for (const rule of RENAME) {
   for (const p of places) if (rule.match(p)) p.name = rule.to;

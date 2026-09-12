@@ -425,12 +425,16 @@ The pipeline, so nobody has to think about image formats:
   the site-wide owner pitch.** Resolved for the guide 11/09/2026: it has its own
   `opengraph-image.tsx` now, wired through `pageMeta`'s `image` argument the same way
   `/lotushouse` already was. `/destinations/*` has the same gap and is not yet fixed.
-- **The `Massage/Spa` category and the rest of the guide are missing places that exist in a
-  separate, unmerged spreadsheet.** `scripts/build-guide.mjs` reads the "Lotus House Sites &
-  Tips" sheet only. A second document (raw restaurant and wellness lists, different column
-  schema, no `Category`/`Area`/`Comment` fields) has entries that were never transcribed in.
-  Noticed 11/09/2026 after a WhatsApp broadcast promised "+20 more places" that the live site
-  does not yet carry.
+- ~~The `Massage/Spa` category was missing places that existed in a separate, unmerged
+  spreadsheet.~~ Resolved 12/09/2026. Ten massage and wellness places (Calm Massage's four
+  branches, Sense Garden, Sense Massage Nimman, Sense Onsen Suandok, Lila Thai Massage,
+  Daydream Sleep Salon, Everyday Nails) are in the guide, 120 places total. Not by editing
+  the sheet: `scripts/guide-extra.csv` is new, a local, git-tracked file in the sheet's own
+  column shape that `build-guide.mjs` now merges in before the coordinate-resolution and
+  routing pipeline runs, per CLAUDE.md R11. Ferment Space, the eleventh candidate, resolved
+  correctly but routes 16.7km from the house and is excluded by the guide's own 12km cutoff,
+  not an error. The spreadsheet's default tab, a separate raw restaurant list (~30 rows,
+  different column schema entirely), is still unmerged.
 - **`/lotushouse/local-guide` drops any place more than 12km away, and paginates the rest.**
   Both Paul's decisions, 11/09/2026. Before this the guide showed every place in
   `GUIDE_PLACES` regardless of distance, sorted into the "Further out" filter rather than
