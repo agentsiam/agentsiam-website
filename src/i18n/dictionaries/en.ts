@@ -64,7 +64,11 @@ export const en = {
   whyB: "A team actually in Chiang Mai",
   whyBBody: "Not a call centre in another timezone. We can be at the property.",
   whyC: "Reachable through your stay",
-  whyCBody: "Phone or LINE, 24/7, for the whole time you are here.",
+  // Was "Phone or LINE, 24/7": neither is published anywhere on the site, and the
+  // WhatsApp CTA that was meant to carry this is dark in production, NEXT_PUBLIC_WHATSAPP_NUMBER
+  // unset. Email is the one channel actually live, verified against the running site
+  // 12/09/2026. Revisit once WhatsApp is confirmed on.
+  whyCBody: "Email us any time during your stay. We answer it ourselves, not a support queue.",
 
   guestReviews: "What guests said",
   guestReviewSource: "Airbnb guest review",

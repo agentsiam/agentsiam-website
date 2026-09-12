@@ -52,7 +52,7 @@ export const zh: Dictionary = {
   whyB: "团队真的在清迈",
   whyBBody: "不是其他时区的客服中心。需要时，本地团队能到房源现场处理。",
   whyC: "入住期间随时联系",
-  whyCBody: "入住全程可通过电话或LINE联系我们，24小时有人回应。",
+  whyCBody: "入住期间随时发邮件给我们，我们亲自回复，而不是客服团队。",
 
   guestReviews: "住客怎么说",
   guestReviewSource: "Airbnb住客评价",

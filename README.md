@@ -485,9 +485,16 @@ The pipeline, so nobody has to think about image formats:
   mark the join, the exact case the `lang="en"` fix elsewhere could not reach. Two `sr-only`
   spans and `aria-labelledby` now, one per language, same pattern as the visible figcaption
   a few lines below it already used.
-- **`whyC` on the homepage promises "Phone or LINE, 24/7"** and the site publishes neither a
-  number nor a LINE ID. Either the route goes up or the line changes. This is the only claim
-  on the site with no way for a reader to act on it.
+- ~~`whyC` on the homepage promised "Phone or LINE, 24/7"~~ and the site published neither a
+  number nor a LINE ID. Resolved 12/09/2026: reworded to name email, the one channel
+  verified live on the running site.
+- **`NEXT_PUBLIC_WHATSAPP_NUMBER` is unset in production**, found while fixing the item
+  above. `src/components/whatsapp-cta.tsx` is fully built and is the guide's primary
+  "talk to us" prompt, but checked directly against agentsiam.com on 12/09/2026: no `wa.me`
+  link anywhere on the page. Every WhatsApp call to action on the live site is currently
+  invisible by design, per the component's own comment ("Unset hides every WhatsApp call to
+  action"), not broken. Setting the env var is the fix, once a real number exists to put in
+  it.
 
 ## Getting started
 
