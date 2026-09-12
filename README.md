@@ -418,10 +418,13 @@ The pipeline, so nobody has to think about image formats:
   booking-confirmation-only; only the lat/lng pair is now published, which changes nothing
   the `VacationRental` `geo` gap above does not already weigh, since that item is about a
   different node (`propertySchema()` on `/lotushouse`) and is still open on its own terms.
-- **The share cards for `/lotushouse/local-guide` and `/destinations/*` used to fall back to
-  the site-wide owner pitch.** Resolved for the guide 11/09/2026: it has its own
-  `opengraph-image.tsx` now, wired through `pageMeta`'s `image` argument the same way
-  `/lotushouse` already was. `/destinations/*` has the same gap and is not yet fixed.
+- ~~The share cards for `/lotushouse/local-guide` and `/destinations/*` used to fall back to
+  the site-wide owner pitch.~~ Resolved. The guide, 11/09/2026; `/destinations` and
+  `/destinations/[area]`, 12/09/2026. Each has its own `opengraph-image.tsx`, wired through
+  `pageMeta`'s `image` argument the same way `/lotushouse` already was. The area cards have
+  no photo to lead with, unlike the property and guide cards, so they use the same flat
+  brand panel the property page itself falls back to when its own photo set is empty:
+  neighbourhood name, `vibe` line, and the guide place count for that area.
 - ~~The `Massage/Spa` category was missing places that existed in a separate, unmerged
   spreadsheet.~~ Resolved 12/09/2026. Ten massage and wellness places (Calm Massage's four
   branches, Sense Garden, Sense Massage Nimman, Sense Onsen Suandok, Lila Thai Massage,

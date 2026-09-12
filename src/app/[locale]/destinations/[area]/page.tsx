@@ -11,9 +11,10 @@ import { areaContent, areaLine, guidePlacesInArea } from "@/lib/area-content";
 import { categoryIcon } from "@/lib/guide-icons";
 import { propertiesInArea } from "@/lib/property";
 import { searchToQuery } from "@/lib/search";
-import { pageMeta } from "@/lib/site";
+import { pageMeta, routeOgImage } from "@/lib/site";
 import { breadcrumbSchema, type Crumb } from "@/lib/structured-data";
 import { areaVibe } from "@/i18n/area-vibe";
+import { alt as ogAlt } from "./opengraph-image";
 
 /**
  * One neighbourhood.
@@ -67,6 +68,7 @@ export async function generateMetadata({
     description: t.metaAreaDesc.replace("{area}", area.name).replace("{vibe}", areaVibe(t, area)),
     path: `/destinations/${area.slug}`,
     locale,
+    image: routeOgImage(locale, `/destinations/${area.slug}`, ogAlt),
   });
 }
 

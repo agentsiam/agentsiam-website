@@ -6,8 +6,9 @@ import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS, CITY_CENTRE, distanceKm } from "@/lib/areas";
 import { areaGradient, guidePlacesInArea } from "@/lib/area-content";
 import { propertiesInArea } from "@/lib/property";
-import { pageMeta } from "@/lib/site";
+import { pageMeta, routeOgImage } from "@/lib/site";
 import { areaVibe } from "@/i18n/area-vibe";
+import { alt as ogAlt } from "./opengraph-image";
 
 /**
  * The neighbourhoods index.
@@ -45,6 +46,7 @@ export async function generateMetadata({
     description: t.metaDestinationsDesc,
     path: "/destinations",
     locale,
+    image: routeOgImage(locale, "/destinations", ogAlt),
   });
 }
 
