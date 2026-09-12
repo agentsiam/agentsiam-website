@@ -425,16 +425,20 @@ The pipeline, so nobody has to think about image formats:
   no photo to lead with, unlike the property and guide cards, so they use the same flat
   brand panel the property page itself falls back to when its own photo set is empty:
   neighbourhood name, `vibe` line, and the guide place count for that area.
-- ~~The `Massage/Spa` category was missing places that existed in a separate, unmerged
-  spreadsheet.~~ Resolved 12/09/2026. Ten massage and wellness places (Calm Massage's four
-  branches, Sense Garden, Sense Massage Nimman, Sense Onsen Suandok, Lila Thai Massage,
-  Daydream Sleep Salon, Everyday Nails) are in the guide, 120 places total. Not by editing
-  the sheet: `scripts/guide-extra.csv` is new, a local, git-tracked file in the sheet's own
-  column shape that `build-guide.mjs` now merges in before the coordinate-resolution and
-  routing pipeline runs, per CLAUDE.md R11. Ferment Space, the eleventh candidate, resolved
-  correctly but routes 16.7km from the house and is excluded by the guide's own 12km cutoff,
-  not an error. The spreadsheet's default tab, a separate raw restaurant list (~30 rows,
-  different column schema entirely), is still unmerged.
+- ~~The guide was missing places that existed in two separate, unmerged spreadsheets.~~
+  Resolved. Massage and wellness, 12/09/2026: ten places (Calm Massage's four branches,
+  Sense Garden, Sense Massage Nimman, Sense Onsen Suandok, Lila Thai Massage, Daydream Sleep
+  Salon, Everyday Nails). Restaurants and cafes, 12/09/2026: twenty-eight places. 148 places
+  total, up from 110. Not by editing the sheet: `scripts/guide-extra.csv` is a local,
+  git-tracked file in the sheet's own column shape that `build-guide.mjs` merges in before
+  the coordinate-resolution and routing pipeline runs, per CLAUDE.md R11. Three restaurant
+  rows were dropped, not added: "Dash" and "B Sam Cook" were already in the guide under
+  their full names (`Dash Teak House`, `B Samcook Home16`, confirmed by matching
+  coordinates), and "San Mai" carried the same Google Maps link as "B Sam Cook", the same
+  copy-paste shape as the Sense Massage and Lila Thai mixup earlier, so its real location is
+  unknown and it was left out rather than guessed. Two candidates, Ferment Space and
+  Friend's Table, resolved correctly but route more than 12km from the house and are
+  excluded by the guide's own cutoff, not an error.
 - **`/lotushouse/local-guide` drops any place more than 12km away, and paginates the rest.**
   Both Paul's decisions, 11/09/2026. Before this the guide showed every place in
   `GUIDE_PLACES` regardless of distance, sorted into the "Further out" filter rather than

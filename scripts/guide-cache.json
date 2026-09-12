@@ -599,6 +599,146 @@
       "lat": 18.705758,
       "lng": 98.9024774,
       "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/cmJ1Rx2DDesFuiq59": {
+      "lat": 18.8091471,
+      "lng": 99.0047617,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/9Y6t2WKAnjV9eRK69": {
+      "lat": 18.7754659,
+      "lng": 98.9861968,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/AomGgvHBVnru1LG37": {
+      "lat": 18.7953284,
+      "lng": 98.9831449,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/cURpKfC9DWNYoFRX7": {
+      "lat": 18.7982612,
+      "lng": 98.970494,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/wuzSMpGNKUSRvvbG6": {
+      "lat": 18.780606,
+      "lng": 98.9991288,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/j8KaF5ecC2kZH19z7": {
+      "lat": 18.7987658,
+      "lng": 98.9675599,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/8jXV8Ua1MX7GuEQh8": {
+      "lat": 18.7865194,
+      "lng": 98.982125,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/mhHnRVV3PpGN6JeL7": {
+      "lat": 18.7753116,
+      "lng": 98.9820687,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/vdvfYKWcRHydxMQt7": {
+      "lat": 18.7950966,
+      "lng": 98.9822328,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/om4KZKzxBUcU7DvJ8": {
+      "lat": 18.7714506,
+      "lng": 98.9766882,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/uaJ9M2LFHP17Lyze9": {
+      "lat": 18.7713211,
+      "lng": 98.9765962,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/oYWmq1k9ndcJX81d8": {
+      "lat": 18.7962649,
+      "lng": 99.0079955,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/4qexdUqfgAiN3DwL7": {
+      "lat": 18.7981238,
+      "lng": 98.973738,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/RfbE7RyLRzWn35cc8": {
+      "lat": 18.7950345,
+      "lng": 98.967685,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/LQtFrj4YFb6heURY7": {
+      "lat": 18.7981431,
+      "lng": 98.9740941,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/jpytKyaYgFVuaTpF8": {
+      "lat": 18.785107,
+      "lng": 99.005124,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/a9YVTb6ejNYV2syw7": {
+      "lat": 18.7849858,
+      "lng": 99.0051158,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/vYvaDTyqX7vfZBYx6": {
+      "lat": 18.7843821,
+      "lng": 98.9998747,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/oD8eH3BJrLe1y5cXA": {
+      "lat": 18.778325,
+      "lng": 98.9500546,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/7y1jsdWJN3giLLY69": {
+      "lat": 18.801762,
+      "lng": 99.0045846,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/iUuiTZVDDUY7TNMR8": {
+      "lat": 18.7780361,
+      "lng": 99.1189877,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/ytfDR6tBWbP8xaqL9": {
+      "lat": 18.7034091,
+      "lng": 98.9091854,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/1Cxek6iwEMeKJJ6ZA": {
+      "lat": 18.7933635,
+      "lng": 98.982022,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/W7UkBzxGxrsjT7zz7": {
+      "lat": 18.760205,
+      "lng": 98.904868,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/a9Cyn9cBNchAUjBz8": {
+      "lat": 18.8061115,
+      "lng": 98.9614233,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/F1SXAq4mhnRSqVns9": {
+      "lat": 18.7977257,
+      "lng": 98.9749577,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/k27dBY9rEZarDSBn6": {
+      "lat": 18.8038339,
+      "lng": 98.8196672,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/zuvty3tjUZSQ8Xts8": {
+      "lat": 18.7943719,
+      "lng": 98.9689733,
+      "via": "google-pin"
     }
   },
   "routes": {
@@ -1196,6 +1336,146 @@
       "walk": null,
       "drive": 20,
       "metres": 16752
+    },
+    "lotushouse|https://maps.app.goo.gl/cmJ1Rx2DDesFuiq59": {
+      "walk": 70,
+      "drive": 8,
+      "metres": 5210
+    },
+    "lotushouse|https://maps.app.goo.gl/9Y6t2WKAnjV9eRK69": {
+      "walk": 22,
+      "drive": 3,
+      "metres": 1645
+    },
+    "lotushouse|https://maps.app.goo.gl/AomGgvHBVnru1LG37": {
+      "walk": 58,
+      "drive": 8,
+      "metres": 4358
+    },
+    "lotushouse|https://maps.app.goo.gl/cURpKfC9DWNYoFRX7": {
+      "walk": 78,
+      "drive": 10,
+      "metres": 5865
+    },
+    "lotushouse|https://maps.app.goo.gl/wuzSMpGNKUSRvvbG6": {
+      "walk": 21,
+      "drive": 4,
+      "metres": 1551
+    },
+    "lotushouse|https://maps.app.goo.gl/j8KaF5ecC2kZH19z7": {
+      "walk": 82,
+      "drive": 10,
+      "metres": 6172
+    },
+    "lotushouse|https://maps.app.goo.gl/8jXV8Ua1MX7GuEQh8": {
+      "walk": 44,
+      "drive": 7,
+      "metres": 3280
+    },
+    "lotushouse|https://maps.app.goo.gl/mhHnRVV3PpGN6JeL7": {
+      "walk": 28,
+      "drive": 4,
+      "metres": 2063
+    },
+    "lotushouse|https://maps.app.goo.gl/vdvfYKWcRHydxMQt7": {
+      "walk": 60,
+      "drive": 9,
+      "metres": 4475
+    },
+    "lotushouse|https://maps.app.goo.gl/om4KZKzxBUcU7DvJ8": {
+      "walk": 35,
+      "drive": 5,
+      "metres": 2620
+    },
+    "lotushouse|https://maps.app.goo.gl/uaJ9M2LFHP17Lyze9": {
+      "walk": 35,
+      "drive": 5,
+      "metres": 2629
+    },
+    "lotushouse|https://maps.app.goo.gl/oYWmq1k9ndcJX81d8": {
+      "walk": 56,
+      "drive": 8,
+      "metres": 4221
+    },
+    "lotushouse|https://maps.app.goo.gl/4qexdUqfgAiN3DwL7": {
+      "walk": 72,
+      "drive": 9,
+      "metres": 5375
+    },
+    "lotushouse|https://maps.app.goo.gl/RfbE7RyLRzWn35cc8": {
+      "walk": 77,
+      "drive": 10,
+      "metres": 5766
+    },
+    "lotushouse|https://maps.app.goo.gl/LQtFrj4YFb6heURY7": {
+      "walk": 71,
+      "drive": 10,
+      "metres": 5361
+    },
+    "lotushouse|https://maps.app.goo.gl/jpytKyaYgFVuaTpF8": {
+      "walk": 34,
+      "drive": 5,
+      "metres": 2557
+    },
+    "lotushouse|https://maps.app.goo.gl/a9YVTb6ejNYV2syw7": {
+      "walk": 34,
+      "drive": 5,
+      "metres": 2544
+    },
+    "lotushouse|https://maps.app.goo.gl/vYvaDTyqX7vfZBYx6": {
+      "walk": 27,
+      "drive": 5,
+      "metres": 1996
+    },
+    "lotushouse|https://maps.app.goo.gl/oD8eH3BJrLe1y5cXA": {
+      "walk": null,
+      "drive": 13,
+      "metres": 8062
+    },
+    "lotushouse|https://maps.app.goo.gl/7y1jsdWJN3giLLY69": {
+      "walk": 59,
+      "drive": 8,
+      "metres": 4426
+    },
+    "lotushouse|https://maps.app.goo.gl/iUuiTZVDDUY7TNMR8": {
+      "walk": null,
+      "drive": 28,
+      "metres": 17197
+    },
+    "lotushouse|https://maps.app.goo.gl/ytfDR6tBWbP8xaqL9": {
+      "walk": null,
+      "drive": 17,
+      "metres": 14678
+    },
+    "lotushouse|https://maps.app.goo.gl/1Cxek6iwEMeKJJ6ZA": {
+      "walk": 55,
+      "drive": 8,
+      "metres": 4088
+    },
+    "lotushouse|https://maps.app.goo.gl/W7UkBzxGxrsjT7zz7": {
+      "walk": null,
+      "drive": 25,
+      "metres": 15314
+    },
+    "lotushouse|https://maps.app.goo.gl/a9Cyn9cBNchAUjBz8": {
+      "walk": null,
+      "drive": 11,
+      "metres": 7102
+    },
+    "lotushouse|https://maps.app.goo.gl/F1SXAq4mhnRSqVns9": {
+      "walk": 70,
+      "drive": 10,
+      "metres": 5259
+    },
+    "lotushouse|https://maps.app.goo.gl/k27dBY9rEZarDSBn6": {
+      "walk": null,
+      "drive": 36,
+      "metres": 30487
+    },
+    "lotushouse|https://maps.app.goo.gl/zuvty3tjUZSQ8Xts8": {
+      "walk": 74,
+      "drive": 9,
+      "metres": 5579
     }
   }
 }
