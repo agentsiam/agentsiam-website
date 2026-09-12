@@ -379,7 +379,7 @@ export const th: Dictionary = {
   mainNav: "เมนูหลัก",
   homeLink: "AgentSiam — หน้าแรก",
   breadcrumbLabel: "เส้นทางหน้า",
-  openPhoto: "เปิดภาพ: {alt}",
+  openPhoto: "เปิดภาพ",
   newTab: "เปิดในแท็บใหม่",
   directionsTo: "เส้นทางไป {place} ด้วย {app}",
   filtersPanel: "ตัวกรองที่พัก",

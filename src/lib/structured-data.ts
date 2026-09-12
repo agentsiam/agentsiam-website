@@ -32,9 +32,11 @@ import {
  *   Test, which reports the listing invalid on the missing geo alone. The block is still
  *   correct for every other reader, and the property page earns a valid Local business
  *   result regardless.
- * - **No telephone, no sameAs, no logo on the organisation.** No phone number or LINE ID
- *   is published anywhere on the site yet, no social profile is confirmed, and there is no
- *   logo file under public/. Each is a one-line addition on the day it becomes true.
+ * - **No telephone and no sameAs on the organisation.** No phone number or LINE ID is
+ *   published anywhere on the site yet, and no social profile is confirmed. Each is a
+ *   one-line addition on the day it becomes true. `logo` is set: `public/agentsiam-logo.jpg`
+ *   is a copy of the asset named in the design system, `AS Brand Creative Assets/
+ *   agentsiam-logo.jpg`, which stays the source per that repo's R6.
  *
  * Blocks are attached with <JsonLd> from src/components/json-ld.tsx.
  */
@@ -64,9 +66,8 @@ const SCHEMA_CONTEXT = "https://schema.org";
  *
  * Still absent, and each is a one-line addition on the day it becomes true: `telephone`,
  * because no number is published anywhere on the site; `sameAs`, because no social profile
- * is confirmed; `logo`, because there is no logo file under public/; `geo` and
- * `openingHours`, which are the two fields a LocalBusiness rich result most wants and
- * neither of which has a verified value yet.
+ * is confirmed; `geo` and `openingHours`, which are the two fields a LocalBusiness rich
+ * result most wants and neither of which has a verified value yet.
  */
 export function organizationSchema(): Record<string, unknown> {
   return {
@@ -78,6 +79,7 @@ export function organizationSchema(): Record<string, unknown> {
     url: SITE_URL,
     email: CONTACT_EMAIL,
     description: SITE_DESCRIPTION,
+    logo: assetUrl("/agentsiam-logo.jpg"),
     address: {
       "@type": "PostalAddress",
       streetAddress: POSTAL_ADDRESS.street,

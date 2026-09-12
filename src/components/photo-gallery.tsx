@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { Photo } from "@/lib/photos.generated";
 
 /**
@@ -33,6 +33,7 @@ export function PhotoGallery({
   };
 }) {
   const [openAt, setOpenAt] = useState<number | null>(null);
+  const baseId = useId();
 
   if (photos.length === 0) return null;
 
@@ -46,13 +47,32 @@ export function PhotoGallery({
         <div className="grid grid-cols-2 gap-1.5 overflow-hidden rounded-panel min-[900px]:h-[400px] min-[900px]:grid-cols-[2fr_1fr_1fr] min-[900px]:grid-rows-2 min-[900px]:gap-2">
           {/* Named "Open photo: <description>". Named by the description alone, five
               buttons in a row announced as five paragraphs of prose with nothing saying
-              any of them opened anything. */}
+              any of them opened anything.
+
+              Two hidden spans rather than one aria-label string once a caption exists:
+              the caption is the photo's own English words (same source as the visible
+              lightbox figcaption below), and an aria-label is a flat string with no way
+              to mark part of it lang="en". A Thai or Chinese screen reader would otherwise
+              try to pronounce the caption in that voice. aria-labelledby lets each
+              fragment carry its own language. No caption, no mixed language, so the
+              fallback stays a plain aria-label. */}
           <button
             type="button"
             onClick={() => setOpenAt(0)}
-            aria-label={labels.openPhoto.replace("{alt}", hero.alt || labels.propertyName)}
+            aria-label={hero.alt ? undefined : labels.openPhoto}
+            aria-labelledby={hero.alt ? `${baseId}-hero-label ${baseId}-hero-alt` : undefined}
             className="relative col-span-2 aspect-16/10 cursor-pointer min-[900px]:col-span-1 min-[900px]:row-span-2 min-[900px]:aspect-auto"
           >
+            {hero.alt ? (
+              <>
+                <span id={`${baseId}-hero-label`} className="sr-only">
+                  {labels.openPhoto}
+                </span>
+                <span id={`${baseId}-hero-alt`} lang="en" className="sr-only">
+                  {hero.alt}
+                </span>
+              </>
+            ) : null}
             <Image
               src={hero.src}
               alt={hero.alt || labels.propertyName}
@@ -72,9 +92,22 @@ export function PhotoGallery({
               key={photo.src.src}
               type="button"
               onClick={() => setOpenAt(index + 1)}
-              aria-label={labels.openPhoto.replace("{alt}", photo.alt || labels.propertyName)}
+              aria-label={photo.alt ? undefined : labels.openPhoto}
+              aria-labelledby={
+                photo.alt ? `${baseId}-thumb-${index}-label ${baseId}-thumb-${index}-alt` : undefined
+              }
               className="relative aspect-4/3 cursor-pointer min-[900px]:aspect-auto"
             >
+              {photo.alt ? (
+                <>
+                  <span id={`${baseId}-thumb-${index}-label`} className="sr-only">
+                    {labels.openPhoto}
+                  </span>
+                  <span id={`${baseId}-thumb-${index}-alt`} lang="en" className="sr-only">
+                    {photo.alt}
+                  </span>
+                </>
+              ) : null}
               <Image
                 src={photo.src}
                 alt={photo.alt || labels.propertyName}

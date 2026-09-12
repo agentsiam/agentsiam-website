@@ -379,7 +379,7 @@ export const zh: Dictionary = {
   mainNav: "主导航",
   homeLink: "AgentSiam — 首页",
   breadcrumbLabel: "页面路径",
-  openPhoto: "打开照片：{alt}",
+  openPhoto: "打开照片",
   newTab: "在新标签页中打开",
   directionsTo: "用{app}导航至{place}",
   filtersPanel: "筛选房源",

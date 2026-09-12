@@ -401,9 +401,6 @@ The pipeline, so nobody has to think about image formats:
   06/09/2026 the guide carries its own note saying so, and the copies on `/destinations/*`
   are wrapped in `lang="en"` so a Thai voice engine does not read English aloud in Thai. The
   real fix is in the sheet.
-- **Photo `alt` text is English on every locale.** Same shape as the guide: it comes from the
-  generated manifest, which reads the files' own metadata. Eight images per page carry it,
-  and it is unmarked. Smaller than the guide problem and not yet addressed.
 - **The vacation rental rich result is forfeited, not broken.** Google requires `geo` on a
   `VacationRental`, and exact coordinates are booking-confirmation material under the same
   rule the property page and the results map already follow. Checked against the Rich Results
@@ -471,10 +468,16 @@ The pipeline, so nobody has to think about image formats:
   `/contact` ever matters as much as the home page.
 - **Photo `alt` text is English on every locale.** It comes from
   `src/lib/photos.generated.ts`, which reads the image files' own metadata, so it cannot be
-  fixed in the dictionaries. Every `<img>` carrying it now declares `lang="en"`, which stops
-  a Thai or Chinese voice engine reading an English sentence in the wrong language, but the
+  fixed in the dictionaries. Every `<img>` carrying it declares `lang="en"`, which stops a
+  Thai or Chinese voice engine reading an English sentence in the wrong language, but the
   text itself is still English. The real fix is captions in the file metadata, or a
   translated layer over the manifest.
+  ~~The gallery's own "Open photo" buttons in `photo-gallery.tsx` were the one path this
+  missed.~~ Resolved 12/09/2026: `aria-label` is a flat string, so `labels.openPhoto.replace(
+  "{alt}", ...)` spliced the English caption into a Thai or Chinese phrase with no way to
+  mark the join, the exact case the `lang="en"` fix elsewhere could not reach. Two `sr-only`
+  spans and `aria-labelledby` now, one per language, same pattern as the visible figcaption
+  a few lines below it already used.
 - **`whyC` on the homepage promises "Phone or LINE, 24/7"** and the site publishes neither a
   number nor a LINE ID. Either the route goes up or the line changes. This is the only claim
   on the site with no way for a reader to act on it.

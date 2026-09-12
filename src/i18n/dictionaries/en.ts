@@ -432,8 +432,9 @@ export const en = {
   // The wordmark's link. It went out as "AgentSiam — Guests" on every page, which named a different destination than the one it goes to.
   homeLink: "AgentSiam — home",
   breadcrumbLabel: "Breadcrumb",
-  // {alt} is the photo's own description. Without the verb the button is named by the description alone and nothing says it opens anything.
-  openPhoto: "Open photo: {alt}",
+  // The verb only. The photo's own description is a separate lang="en" span in photo-gallery.tsx,
+  // not spliced into this string, because an aria-label cannot mark part of itself as English.
+  openPhoto: "Open photo",
   newTab: "opens in a new tab",
   // {app} is Google Maps or Apple Maps, {place} the place name. Eighteen identical "Google Maps" links on one screen is a link list nobody can use.
   directionsTo: "{app} directions to {place}",
