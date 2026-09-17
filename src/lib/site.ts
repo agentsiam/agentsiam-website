@@ -76,6 +76,16 @@ export const WHATSAPP_NUMBER = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").r
  */
 export const CRISP_WEBSITE_ID = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID ?? "";
 
+/**
+ * Google Analytics 4 measurement ID. Public by nature: gtag.js is loaded with it in the URL.
+ *
+ * Unset renders no Analytics, no consent banner and no request to the region route, and
+ * the privacy policy keeps describing a site with cookieless analytics only. Setting it
+ * turns all of that on together, so the policy cannot drift from what the site runs. See
+ * src/components/analytics-consent.tsx for who is asked and who is not.
+ */
+export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "";
+
 // Shown as "Last updated" on the privacy policy and the terms. Bump by hand when the
 // text of either page materially changes, not on every deploy.
 //
@@ -84,11 +94,16 @@ export const CRISP_WEBSITE_ID = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID ?? "";
 // date inside a Thai and a Chinese sentence. Kept as a date so each locale formats it.
 export const POLICY_UPDATED = "2026-08-14";
 
+// The privacy policy's own date once Google Analytics is on, because that is when its
+// measurement and cookie sections change. The terms keep POLICY_UPDATED, since nothing in
+// them moved.
+export const PRIVACY_WITH_ANALYTICS_UPDATED = "2026-09-17";
+
 /** The policy date written the way the reader's own locale writes dates. */
-export function policyUpdated(locale: string): string {
+export function policyUpdated(locale: string, iso: string = POLICY_UPDATED): string {
   const tag = locale === "th" ? "th-TH-u-ca-gregory" : locale === "zh" ? "zh-Hans" : "en-GB";
   return new Intl.DateTimeFormat(tag, { dateStyle: "long", timeZone: "UTC" }).format(
-    new Date(POLICY_UPDATED + "T00:00:00Z"),
+    new Date(iso + "T00:00:00Z"),
   );
 }
 

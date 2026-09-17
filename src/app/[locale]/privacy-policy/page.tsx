@@ -3,7 +3,16 @@ import { notFound } from "next/navigation";
 import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
 import { isLocale } from "@/i18n/config";
-import { CONTACT_EMAIL, CRISP_WEBSITE_ID, policyUpdated, pageMeta } from "@/lib/site";
+import { AnalyticsChoice } from "@/components/analytics-consent";
+import {
+  CONTACT_EMAIL,
+  CRISP_WEBSITE_ID,
+  GA_MEASUREMENT_ID,
+  POLICY_UPDATED,
+  PRIVACY_WITH_ANALYTICS_UPDATED,
+  policyUpdated,
+  pageMeta,
+} from "@/lib/site";
 
 /**
  * Existing policy text, kept verbatim apart from one sentence: the enquiry paragraph now
@@ -11,6 +20,12 @@ import { CONTACT_EMAIL, CRISP_WEBSITE_ID, policyUpdated, pageMeta } from "@/lib/
  * property type, neighbourhood) instead of the old first name / last name / service set. A
  * privacy policy that describes the wrong fields is worse than a plain one, so the text
  * follows the form. Every other paragraph is unchanged.
+ *
+ * The one exception is Google Analytics. Its measurement paragraph, its cookie paragraph and
+ * its line under "Who else sees it" render only when NEXT_PUBLIC_GA_MEASUREMENT_ID is set,
+ * and the original cookieless wording renders when it is not, for the same reason the chat
+ * sentence is conditional. The retention periods in that text are the GA4 property's own
+ * data retention settings, read from its admin screen: change one there and this changes too.
  *
  * Not translated -- see the note on the terms page.
  */
@@ -45,7 +60,8 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
           {t.privacy}
         </h1>
         <p className="mt-2.5 text-sm text-muted">
-          {t.lastUpdated} {policyUpdated(locale)}
+          {t.lastUpdated}{" "}
+          {policyUpdated(locale, GA_MEASUREMENT_ID ? PRIVACY_WITH_ANALYTICS_UPDATED : POLICY_UPDATED)}
         </p>
 
         <div className="mt-8 text-[15px] leading-relaxed text-body [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:tracking-[-0.015em] [&_h2]:text-text [&_li]:mt-1 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-inside [&_ul]:list-disc"
@@ -114,22 +130,72 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             the stay and to keep the guest records Thai law requires of an accommodation
             operator.
           </p>
-          <p>
-            <strong>Site measurement.</strong> We use cookieless analytics. It records page
-            views and aggregate traffic patterns, without cookies, without a persistent
-            identifier and without profiling. It is not used to track you across other
-            websites.
-          </p>
+          {GA_MEASUREMENT_ID ? (
+            <>
+              <p>
+                <strong>Site measurement.</strong> We use two analytics services. The first,
+                provided by our hosting provider, is cookieless: it records page views and
+                aggregate traffic patterns without cookies, without a persistent identifier
+                and without profiling.
+              </p>
+              <p>
+                The second is Google Analytics, which shows us how visitors find this site
+                and which pages they use. It receives the pages you view, how you arrived,
+                your device and browser type, and an approximate location. Google works out
+                that location from your IP address and, by its own account, does not store
+                the address. We have not turned on Google&rsquo;s advertising features, so
+                this data is not used for advertising or to follow you across other
+                websites. Google Analytics keeps event-level data for two months and
+                user-level data for fourteen months; the aggregate reports built from it are
+                kept longer. We use it because knowing which pages help people is how we
+                decide what to improve.
+              </p>
+            </>
+          ) : (
+            <p>
+              <strong>Site measurement.</strong> We use cookieless analytics. It records page
+              views and aggregate traffic patterns, without cookies, without a persistent
+              identifier and without profiling. It is not used to track you across other
+              websites.
+            </p>
+          )}
 
           <h2>Cookies</h2>
-          <p>
-            This site sets no advertising, profiling or analytics cookies of its own, which
-            is why you are not asked to dismiss a cookie banner. Our payment provider sets
-            its own cookies when you begin a payment, to keep the payment session working and
-            to detect fraud, under its own policy. They appear only once you start paying,
-            not while you are browsing, they are necessary for a payment to be taken, and
-            they are not used for advertising.
-          </p>
+          {GA_MEASUREMENT_ID ? (
+            <>
+              <p>
+                Google Analytics sets two cookies of its own on this site: <code>_ga</code>,
+                which tells one visitor from another, and a second whose name begins with{" "}
+                <code>_ga_</code>, which keeps track of a visit. Each lasts up to two years,
+                and many browsers delete them sooner. If you visit from the European Economic
+                Area, the United Kingdom or Switzerland, we ask first, and neither cookie is
+                set unless you accept. Everywhere else they are set when a page loads.
+              </p>
+              <p>
+                Wherever you are, you can turn Google Analytics off for this browser here.
+                Your choice is kept in your browser&rsquo;s local storage rather than in a
+                cookie, so it lasts until you change it or clear your browser data.
+              </p>
+              <AnalyticsChoice />
+              <p>
+                Apart from those, this site sets no advertising, profiling or analytics
+                cookies of its own. Our payment provider sets its own cookies when you begin
+                a payment, to keep the payment session working and to detect fraud, under
+                its own policy. They appear only once you start paying, not while you are
+                browsing, they are necessary for a payment to be taken, and they are not
+                used for advertising.
+              </p>
+            </>
+          ) : (
+            <p>
+              This site sets no advertising, profiling or analytics cookies of its own, which
+              is why you are not asked to dismiss a cookie banner. Our payment provider sets
+              its own cookies when you begin a payment, to keep the payment session working and
+              to detect fraud, under its own policy. They appear only once you start paying,
+              not while you are browsing, they are necessary for a payment to be taken, and
+              they are not used for advertising.
+            </p>
+          )}
           {/* Only when the chat is actually configured. A privacy policy describing a
               provider the site is not running is as wrong as one that stays silent about a
               provider it is. */}
@@ -155,6 +221,12 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             <li>
               our payment provider, when you pay for a booking
             </li>
+            {GA_MEASUREMENT_ID ? (
+              <li>
+                Google, which provides the analytics service described above, for the
+                visitors it is switched on for
+              </li>
+            ) : null}
             <li>
               Thai government offices, where a filing we make for you requires it
             </li>

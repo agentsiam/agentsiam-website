@@ -1010,6 +1010,13 @@ export const en = {
   // -- live chat, privacy policy sentence ----------------------------------
   // Rendered only when NEXT_PUBLIC_CRISP_WEBSITE_ID is set, so the policy cannot describe a chat provider the site is not running and cannot stay silent about one it is. Same shape as the payment-provider sentence above it, because it is the same legal argument: storage set because the visitor asked for something.
   privacyChatCookie: "Our chat provider sets its own cookie when you open the chat, so a reply reaches the conversation you started. It appears only once you open the chat, not while you are browsing, and it is not used for advertising.",
+
+  // -- Google Analytics consent banner -------------------------------------
+  // Shown only to visitors from the EEA, UK and Switzerland, and only when NEXT_PUBLIC_GA_MEASUREMENT_ID is set. See src/components/analytics-consent.tsx. consentLabel is the landmark name a screen reader announces, not visible text. The link after consentBody reuses `privacy`.
+  consentLabel: "Analytics cookies",
+  consentBody: "May we use Google Analytics to see how this site is used? It sets cookies only if you accept.",
+  consentAccept: "Accept",
+  consentDecline: "Decline",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

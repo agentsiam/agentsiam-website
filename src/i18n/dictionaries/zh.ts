@@ -859,4 +859,10 @@ export const zh: Dictionary = {
 
   // -- live chat, privacy policy sentence ----------------------------------
   privacyChatCookie: "当您打开聊天窗口时，我们的聊天服务商会设置自己的 cookie，以便回复能回到您发起的那段对话。它只在您打开聊天时出现，浏览网站时不会，也不用于广告。",
+
+  // -- Google Analytics consent banner -------------------------------------
+  consentLabel: "分析 cookie",
+  consentBody: "我们可以使用 Google Analytics 了解本网站的使用情况吗？只有在您同意后才会设置 cookie。",
+  consentAccept: "同意",
+  consentDecline: "拒绝",
 };

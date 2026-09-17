@@ -385,6 +385,16 @@ The pipeline, so nobody has to think about image formats:
   `privacyChatCookie` in the privacy policy and shifts the WhatsApp launcher up to
   `bottom-24` so the two floating buttons do not collide. `.env.example` carries the full
   warning.
+- **Google Analytics 4 has two parts still unreviewed.** It runs only while
+  `NEXT_PUBLIC_GA_MEASUREMENT_ID` is set in Vercel: `src/components/analytics-consent.tsx`
+  loads it on page view outside the EEA, UK and Switzerland and asks first inside them, and
+  the privacy policy's GA paragraphs and on/off switch render only while the variable is set.
+  The property is agentsiam.com, on Thailand time and Thai baht; its data retention (2 months
+  event, 14 months user) is what the privacy policy states, so a change there is a change to
+  the policy. Unreviewed: the Thai and Chinese banner strings
+  (`consentLabel`, `consentBody`, `consentAccept`, `consentDecline`), and whether a visitor
+  outside Europe loads gtag correctly, which cannot be exercised locally because the country
+  header only exists on Vercel. Check it in the Network tab on the first production deploy.
 - **No aggregate rating and no review count.** One quoted Airbnb review, no verified figure
   behind it. The homepage and the property page both render a single review as a quote
   rather than as a rail of one, and neither states a count. The figure has to come off the

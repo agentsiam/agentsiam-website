@@ -8,27 +8,35 @@ import {
   Noto_Sans_Thai,
   Noto_Sans_SC,
 } from "next/font/google";
-// Vercel Analytics is cookieless and stores no persistent identifier, which is why
-// this site needs no cookie banner and no consent log. Keep it that way: adding a
-// cookie-setting analytics or ads tag changes the legal position of every page.
+// Vercel Analytics is cookieless and stores no persistent identifier, so it runs for
+// every visitor with no question asked.
 //
-// The live chat added on 06/09/2026 is the first tag that came close, and it is allowed
-// through on one condition rather than in general. Crisp's Total Privacy Mode means no
-// storage exists until the visitor opens the chatbox themselves, which puts it where the
-// payment provider's cookies already sit: set because someone asked for something, not
-// because they arrived. That is the test any future tag has to pass. A tag that writes on
-// page view does not pass it, however useful it is.
+// Google Analytics writes cookies on page view, and it is the one tag admitted anyway, on
+// fixed terms: visitors from the EEA, the UK and Switzerland are
+// asked before it loads, everyone else gets it on page view with a switch in the privacy
+// policy that turns it off, advertising storage is denied for all, and the policy describes
+// it only while it is configured. The terms are written down once, in
+// src/components/analytics-consent.tsx. They are not a precedent for the next tag.
+//
+// The live chat added on 06/09/2026 is allowed through on one condition rather than in
+// general. Crisp's Total Privacy Mode means no storage exists until the visitor opens the
+// chatbox themselves, which puts it where the payment provider's cookies already sit: set
+// because someone asked for something, not because they arrived. That is the test any
+// future tag has to pass. A tag that writes on page view does not pass it, however useful
+// it is.
 import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
 import { CrispChat } from "@/components/crisp-chat";
+import { AnalyticsConsent } from "@/components/analytics-consent";
 import { NotFoundStringsProvider } from "@/components/not-found-strings";
 import { getDictionary } from "@/i18n";
-import { HTML_LANG, LOCALES, isLocale } from "@/i18n/config";
+import { HTML_LANG, LOCALES, isLocale, localePath } from "@/i18n/config";
 import {
   CRISP_WEBSITE_ID,
+  GA_MEASUREMENT_ID,
   OG_IMAGE,
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -209,9 +217,22 @@ export default async function RootLayout({
         <JsonLd data={organizationSchema()} />
         <JsonLd data={websiteSchema()} />
         <Analytics />
+        {/* Renders nothing until NEXT_PUBLIC_GA_MEASUREMENT_ID is set. Four strings, not the
+            dictionary: this is a client component on every page. */}
+        <AnalyticsConsent
+          measurementId={GA_MEASUREMENT_ID}
+          policyHref={localePath(locale, "/privacy-policy")}
+          labels={{
+            label: t.consentLabel,
+            body: t.consentBody,
+            accept: t.consentAccept,
+            decline: t.consentDecline,
+            policy: t.privacy,
+          }}
+        />
         {/* Renders nothing until NEXT_PUBLIC_CRISP_WEBSITE_ID is set. It is the one
-            third-party tag on this site besides analytics and the payment provider, and
-            it keeps the no-cookie-banner position only because Crisp's Total Privacy Mode
+            third-party tag on this site besides the two analytics and the payment provider,
+            and it stays out of the consent banner only because Crisp's Total Privacy Mode
             is on: see src/components/crisp-chat.tsx, which is where that is written down. */}
         <CrispChat locale={locale} websiteId={CRISP_WEBSITE_ID} />
       </body>

@@ -21,9 +21,9 @@ export type AskLabels = {
  * reader has started reading. A prompt that arrives before anyone has seen the page is an
  * interruption; one that arrives after they have scrolled a bit is an offer.
  *
- * Dismissing collapses it for the rest of the session rather than forever. Forever needs a
- * cookie and a consent banner, and the analytics on this site are cookieless specifically
- * so there is neither.
+ * Dismissing collapses it for the rest of the session rather than forever. Forever needs
+ * persistent storage written on a click nobody asked to have remembered, and the only
+ * persistent storage this site writes for its own purposes is a visitor's analytics choice.
  */
 
 const EXPAND_AFTER_MS = 12_000;
