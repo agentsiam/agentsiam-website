@@ -146,10 +146,12 @@ export function AnalyticsConsent({
   // a reload. Next loads a Script with a given id once per page session, so turning
   // Analytics back on after turning it off cannot rely on the script running again.
   useEffect(() => {
+    // Clearing does not need gtag: a visitor can carry _ga cookies from an earlier
+    // session with no stored choice, so Analytics is not loaded when they decline.
+    if (choice === "denied") clearAnalyticsCookies();
     if (typeof window.gtag !== "function") return;
     if (choice === "denied") {
       window.gtag("consent", "update", { analytics_storage: "denied" });
-      clearAnalyticsCookies();
     } else if (choice === "granted") {
       window.gtag("consent", "update", { analytics_storage: "granted" });
     }
