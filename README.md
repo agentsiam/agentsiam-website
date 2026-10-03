@@ -391,10 +391,36 @@ The pipeline, so nobody has to think about image formats:
   the privacy policy's GA paragraphs and on/off switch render only while the variable is set.
   The property is agentsiam.com, on Thailand time and Thai baht; its data retention (2 months
   event, 14 months user) is what the privacy policy states, so a change there is a change to
-  the policy. Unreviewed: the Thai and Chinese banner strings
-  (`consentLabel`, `consentBody`, `consentAccept`, `consentDecline`), and whether a visitor
-  outside Europe loads gtag correctly, which cannot be exercised locally because the country
-  header only exists on Vercel. Check it in the Network tab on the first production deploy.
+  the policy. **Exercised 20/09/2026**, write-up in the consulting repo at
+  `as-work/2026-09-20-website-pre-merge-checks/findings.md`.
+
+  ~~Whether a visitor outside Europe loads gtag correctly cannot be exercised locally
+  because the country header only exists on Vercel.~~ It can. `x-vercel-ip-country` is a
+  request header, so `/api/consent-region` was driven locally with it set: no header, `TH`,
+  `US`, `DE`, `GB`, `CH`, `RE`, `AX` and a lowercase `th` all answered correctly, and a
+  missing header answers "ask". Pressing Accept in the browser then loaded gtag at the right
+  id with `ad_storage`, `ad_user_data` and `ad_personalization` denied in the Consent Mode
+  default, which is the same code path a non-European visitor takes. What is still untested
+  off Vercel is only whether Vercel sets the header at all; if it stops, the site over-asks
+  rather than over-tracks. Worth one look in the Network tab on the first production deploy
+  anyway.
+
+  The Thai and Chinese banner strings (`consentLabel`, `consentBody`, `consentAccept`,
+  `consentDecline`) were read for accuracy and rendered at 375px in both languages: accurate,
+  correct register against the strings around them, no truncation and no missing glyphs. That
+  was a non-native read and it missed one thing: the Chinese puts spaces around "Google
+  Analytics" and "cookie", against the spacing convention the first copy review settled. Both
+  are in the round two review brief in the consulting repo,
+  `as-work/2026-09-21-website-copy-review-delta/`, with 508 other values nobody native has read.
+
+  **One defect, reproduced, not fixed.** `analytics-consent.tsx` clears `_ga` cookies inside
+  an effect that returns early when `window.gtag` is not a function. A visitor who still has
+  `_ga` cookies from an earlier session but no stored choice sees the banner with nothing
+  loaded, so pressing Decline stores `denied` and leaves the cookies in place. It needs
+  localStorage to have been lost while cookies survived, which is uncommon but not exotic.
+  The fix is to clear unconditionally on `denied` and keep only the Consent Mode update
+  behind the gtag check. Left for Paul, since this is the component that carries the
+  compliance claim.
 - **No aggregate rating and no review count.** One quoted Airbnb review, no verified figure
   behind it. The homepage and the property page both render a single review as a quote
   rather than as a rail of one, and neither states a count. The figure has to come off the
