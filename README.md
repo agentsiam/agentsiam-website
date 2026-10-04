@@ -365,9 +365,11 @@ The pipeline, so nobody has to think about image formats:
   records compete. And the registered office is the Lotus House building, so the property's
   street address is now published on every page rather than released at booking
   confirmation. That is a deliberate trade, written up in `src/lib/site.ts`.
-- **The `LocalBusiness` node has no `telephone`, `geo`, `openingHours`, `sameAs` or
-  `logo`.** Each is a one-line addition on the day it has a verified value. `geo` and
-  `openingHours` are the two a LocalBusiness rich result most wants.
+- **The `LocalBusiness` node has no `telephone`, `geo`, `openingHours` or `sameAs`.** Each is
+  a one-line addition on the day it has a verified value. `geo` and `openingHours` are the two
+  a LocalBusiness rich result most wants. ~~`logo` is also absent.~~ Set 12/09/2026:
+  `public/agentsiam-logo.jpg`, wired into `organizationSchema()`, copied from the consulting
+  repo's brand assets, which stay the source.
 - **No cancellation policy exists anywhere on the site.** Not in the booking panel, not in
   the guest FAQ, and `/terms-and-conditions` contains no occurrence of *cancel*, *refund* or
   *deposit*. The guest FAQ added 06/09/2026 says so plainly rather than inventing terms, and
@@ -408,19 +410,17 @@ The pipeline, so nobody has to think about image formats:
   The Thai and Chinese banner strings (`consentLabel`, `consentBody`, `consentAccept`,
   `consentDecline`) were read for accuracy and rendered at 375px in both languages: accurate,
   correct register against the strings around them, no truncation and no missing glyphs. That
-  was a non-native read and it missed one thing: the Chinese puts spaces around "Google
-  Analytics" and "cookie", against the spacing convention the first copy review settled. Both
-  are in the round two review brief in the consulting repo,
+  was a non-native read and it missed one thing: ~~the Chinese puts spaces around "Google
+  Analytics" and "cookie", against the spacing convention the first copy review settled.~~
+  Fixed 03/10/2026: both strings now close the spaces. The four values are still in the round
+  two review brief in the consulting repo,
   `as-work/2026-09-21-website-copy-review-delta/`, with 508 other values nobody native has read.
 
-  **One defect, reproduced, not fixed.** `analytics-consent.tsx` clears `_ga` cookies inside
-  an effect that returns early when `window.gtag` is not a function. A visitor who still has
-  `_ga` cookies from an earlier session but no stored choice sees the banner with nothing
-  loaded, so pressing Decline stores `denied` and leaves the cookies in place. It needs
-  localStorage to have been lost while cookies survived, which is uncommon but not exotic.
-  The fix is to clear unconditionally on `denied` and keep only the Consent Mode update
-  behind the gtag check. Left for Paul, since this is the component that carries the
-  compliance claim.
+  ~~**One defect, reproduced, not fixed.** `analytics-consent.tsx` clears `_ga` cookies inside
+  an effect that returns early when `window.gtag` is not a function, so a visitor carrying
+  `_ga` cookies from an earlier session with no stored choice could press Decline and keep the
+  cookies.~~ Fixed 03/10/2026: `clearAnalyticsCookies()` now runs on `denied` before the gtag
+  check, and only the Consent Mode update sits behind it.
 - **No aggregate rating and no review count.** One quoted Airbnb review, no verified figure
   behind it. The homepage and the property page both render a single review as a quote
   rather than as a rail of one, and neither states a count. The figure has to come off the

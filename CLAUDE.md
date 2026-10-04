@@ -8,7 +8,7 @@ availability, rates and bookings.
 `README.md` is orientation. This file is what to do.
 
 Rule IDs R1 upward are stable and are cited from elsewhere in this repo. A retired rule keeps its
-number and is marked RETIRED. Numbers are never reused. Core rules C1 to C48 live in the core block
+number and is marked RETIRED. Numbers are never reused. Core rules C1 to C49 live in the core block
 at the foot of this file and are identical in every repo.
 
 No rule is marked LAW here. No rule carries the date it was added; provenance lives in the commit
@@ -28,7 +28,7 @@ duplicate one into the other.
 | File | Holds | Convention |
 |---|---|---|
 | `README.md`, "Known gaps" | What is unbuilt, unreviewed or deliberately held back right now | The live record. A struck item is resolved and dated; an unstruck one is open |
-| `src/i18n/dictionaries/en.ts` | All 296 keys and the `Dictionary` type the other two locales are checked against | Add a key here first, or `th.ts` and `zh.ts` stop compiling |
+| `src/i18n/dictionaries/en.ts` | Every translatable string and the `Dictionary` type the other two locales are checked against | Add a key here first, or `th.ts` and `zh.ts` stop compiling |
 | `node_modules/next/dist/docs/` | This Next version's real APIs, conventions and file structure | Vendored with the install, so it moves when the dependency does |
 
 **Never answer from memory, from this file, or from `README.md`'s prose. Open the file.**
@@ -210,7 +210,7 @@ runs is a copy review across all three languages, per R9.
 
 # CLAUDE core rules
 
-Version 3.9. This line is bumped on every edit to this file, no exceptions, and it travels inside
+Version 3.10. This line is bumped on every edit to this file, no exceptions, and it travels inside
 every pasted block, so any repo's copy says which core it came from. Byte-identity against the
 canonical file is verified by diffing the pasted block against
 `/Users/paulb/Documents/LTD OS/_standards/CLAUDE-core.md` directly; no hash is needed.
@@ -218,7 +218,7 @@ canonical file is verified by diffing the pasted block against
 Identical in every one of Paul's repositories. Do not edit this block inside a repo. Edit the
 canonical copy and re-sync, so the same rule cannot say two things in two places.
 
-Rule IDs are stable, currently C1 to C48. A new rule takes the next free number and sits in the
+Rule IDs are stable, currently C1 to C49. A new rule takes the next free number and sits in the
 section it belongs to, so numbers are unique but not strictly ordered within a section. A retired
 rule keeps its number and is marked RETIRED. Numbers are never reused. Repo-specific rules are
 numbered R1 upward in the repo's own file and never collide with these.
@@ -441,6 +441,13 @@ not memory of an earlier read.
 
 **C46. Say what is verified, what is inferred and what is opinion.** Every substantive claim carries
 which of the three it is, and the boundaries are not blurred to make an answer read more confident.
+
+**C49. Paul outranks the record.** The repo's documents are the history of decisions made, never an
+authority over new ones. When he states a new fact or a change of direction, flag any conflict with
+the record once, with its cost, then update the record through the normal approval flow and
+execute. Never audit his statement against the docs to argue it away, never present his stated
+direction as the option being recommended against, and never require him to state a decision twice.
+"The docs say otherwise" is a reason to update the docs.
 
 **C48. Flag contradictions and risks rather than smoothing them.** Two sources that disagree, a
 listing that markets what the rules forbid, a policy the practice breaches: surface it, do not
