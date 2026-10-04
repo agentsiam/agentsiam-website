@@ -35,8 +35,10 @@ import { NotFoundStringsProvider } from "@/components/not-found-strings";
 import { getDictionary } from "@/i18n";
 import { HTML_LANG, LOCALES, isLocale, localePath } from "@/i18n/config";
 import {
+  BING_SITE_VERIFICATION,
   CRISP_WEBSITE_ID,
   GA_MEASUREMENT_ID,
+  GOOGLE_SITE_VERIFICATION,
   OG_IMAGE,
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -129,6 +131,21 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  // Search-engine ownership tokens, both optional and both unset by default, so the tag is
+  // absent rather than empty until there is a real token. A property can be verified by DNS
+  // TXT instead, in which case these stay unset and nothing here changes. Google Search
+  // Console is what submits the sitemap, surfaces coverage errors and reports queries; Bing
+  // Webmaster Tools is the same for Bing and, through it, for several assistants.
+  ...(GOOGLE_SITE_VERIFICATION || BING_SITE_VERIFICATION
+    ? {
+        verification: {
+          ...(GOOGLE_SITE_VERIFICATION ? { google: GOOGLE_SITE_VERIFICATION } : {}),
+          ...(BING_SITE_VERIFICATION
+            ? { other: { "msvalidate.01": BING_SITE_VERIFICATION } }
+            : {}),
+        },
+      }
+    : {}),
   applicationName: SITE_NAME,
   authors: [{ name: SITE_NAME, url: SITE_URL }],
   keywords: [

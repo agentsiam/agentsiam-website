@@ -12,7 +12,15 @@ import { categoryIcon } from "@/lib/guide-icons";
 import { PHOTOS } from "@/lib/photos.generated";
 import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
 import { LOTUS_HOUSE } from "@/lib/property";
-import { CRISP_WEBSITE_ID, pageMeta, routeOgImage, WHATSAPP_NUMBER } from "@/lib/site";
+import { JsonLd } from "@/components/json-ld";
+import {
+  CRISP_WEBSITE_ID,
+  pageMeta,
+  routeOgImage,
+  SITE_NAME,
+  WHATSAPP_NUMBER,
+} from "@/lib/site";
+import { breadcrumbSchema, type Crumb } from "@/lib/structured-data";
 import { alt as ogAlt } from "./opengraph-image";
 
 /**
@@ -206,6 +214,12 @@ export default async function LocalGuidePage({
   // is the right word for the one whose destination is the page you are on.
   const chipCurrent = (active: boolean) => (active ? ("true" as const) : undefined);
 
+  const crumbs: Crumb[] = [
+    { name: SITE_NAME, path: "/" },
+    { name: LOTUS_HOUSE.title, path: "/lotushouse" },
+    { name: t.guideTitle },
+  ];
+
 
   return (
     <div className="mx-auto max-w-(--container-chrome) px-5 pb-18 pt-9">
@@ -214,11 +228,23 @@ export default async function LocalGuidePage({
           {t.guidePendingNote}
         </p>
       ) : null}
-      <p className="eyebrow">
+      {/* One trail, rendered twice from the same array: the nav a reader sees and the
+          BreadcrumbList a crawler reads. The page already carried the Lotus House link as a
+          bare eyebrow paragraph, which gave the trail no landmark role and no markup, so a
+          valid breadcrumb result on a page two levels deep was being left on the table. The
+          final crumb is this page and carries no URL. Every name here already exists:
+          nothing new was written for it. */}
+      <JsonLd data={breadcrumbSchema(locale, crumbs)} />
+      <nav aria-label={t.breadcrumbLabel} className="eyebrow">
+        <Link href={href("/")} className="hit hover:underline">
+          {SITE_NAME}
+        </Link>{" "}
+        ·{" "}
         <Link href={href("/lotushouse")} className="hit hover:underline">
           {LOTUS_HOUSE.title}
-        </Link>
-      </p>
+        </Link>{" "}
+        · {t.guideTitle}
+      </nav>
       <h1 className="mt-2 font-headline text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
         {t.guideTitle}
       </h1>

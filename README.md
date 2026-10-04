@@ -421,6 +421,13 @@ The pipeline, so nobody has to think about image formats:
   `_ga` cookies from an earlier session with no stored choice could press Decline and keep the
   cookies.~~ Fixed 03/10/2026: `clearAnalyticsCookies()` now runs on `denied` before the gtag
   check, and only the Consent Mode update sits behind it.
+- **No Search Console or Bing Webmaster property is verified.** Nothing stops the site being
+  crawled, but nobody can submit `sitemap.xml`, read the coverage report, see which queries
+  the site already appears for, or ask for a URL to be recrawled. The tags are wired and
+  waiting: `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` and `NEXT_PUBLIC_BING_SITE_VERIFICATION`
+  render nothing while unset, and `.env.example` carries both. A DNS TXT record verifies the
+  same property without the tag, in which case they stay unset. Bing can import a verified
+  Google property rather than being verified separately.
 - **No aggregate rating and no review count.** One quoted Airbnb review, no verified figure
   behind it. The homepage and the property page both render a single review as a quote
   rather than as a rail of one, and neither states a count. The figure has to come off the

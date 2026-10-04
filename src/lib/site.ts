@@ -77,6 +77,24 @@ export const WHATSAPP_NUMBER = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").r
 export const CRISP_WEBSITE_ID = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID ?? "";
 
 /**
+ * Search-engine ownership tokens. Both optional, both empty by default.
+ *
+ * `GOOGLE_SITE_VERIFICATION` is the content value of the `google-site-verification` meta
+ * tag Google Search Console offers under the HTML tag method; `BING_SITE_VERIFICATION` is
+ * the `msvalidate.01` value from Bing Webmaster Tools. Empty means the tag is not rendered
+ * at all, which is the right state while there is no token: an empty token is a claim that
+ * fails verification rather than one that is absent.
+ *
+ * Neither is required to be indexed. A property can be verified by DNS TXT instead, and
+ * verification is about who can read the reports, not about whether a crawler is allowed in.
+ * What it unlocks is the sitemap submission, the coverage and query reports, and the ability
+ * to ask for a URL to be recrawled.
+ */
+export const GOOGLE_SITE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? "";
+
+export const BING_SITE_VERIFICATION = process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ?? "";
+
+/**
  * Google Analytics 4 measurement ID. Public by nature: gtag.js is loaded with it in the URL.
  *
  * Unset renders no Analytics, no consent banner and no request to the region route, and
