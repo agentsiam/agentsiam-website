@@ -155,10 +155,34 @@ export const COSMOS_HOUSE_PREVIEW = {
   slug: "cosmoshouse",
   title: "Cosmos House",
   areaSlug: "chang-khlan",
+  // The profile's maps_url pin. Routing input for the guide's walking and driving times
+  // only; never rendered, for the same reason as the street address.
+  lat: 18.7700888,
+  lng: 98.9927484,
+  type: "townhouse",
   bedrooms: 2,
   bathrooms: 2,
   maxGuests: 4,
-} as const;
+  minStay: 2,
+  features: ["rooftop", "kitchen", "wifi", "smart-tv", "workspace", "washer", "parking", "safe", "soaking-tub"],
+  facts: [
+    { labelKey: "guests", value: "4" },
+    { labelKey: "bedrooms", value: "2" },
+    { labelKey: "beds", valueKey: "twoKingBeds" },
+    { labelKey: "bathrooms", value: "2" },
+    { labelKey: "factKitchen", value: "1" },
+    { labelKey: "factRooftop", value: "1" },
+  ],
+  descriptionKeys: ["cosmosDesc1", "cosmosDesc2"],
+  checkIn: "15:00",
+  checkOut: "12:00",
+  houseRuleKeys: ["ruleNoPets", "ruleNoSmokingIndoors", "ruleNoEvents"],
+} satisfies Pick<
+  Property,
+  | "slug" | "title" | "areaSlug" | "lat" | "lng" | "type" | "bedrooms" | "bathrooms"
+  | "maxGuests" | "minStay" | "features" | "facts" | "descriptionKeys" | "checkIn"
+  | "checkOut" | "houseRuleKeys"
+>;
 
 /**
  * An approximate point for a property, for any public map.

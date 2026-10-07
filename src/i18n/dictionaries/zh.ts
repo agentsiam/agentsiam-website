@@ -873,4 +873,10 @@ export const zh: Dictionary = {
   consentBody: "我们可以使用Google Analytics了解本网站的使用情况吗？只有在您同意后才会设置cookie。",
   consentAccept: "同意",
   consentDecline: "拒绝",
+
+  // -- cosmos house: description and house rules ---------------------------
+  cosmosDesc1: "Cosmos House 是位于 Chang Khlan 的一栋三层联排别墅。顶层是屋顶露台，设有独立式浴缸、户外淋浴和桌椅；另有一个铺砌的小庭院，也摆有桌子。",
+  cosmosDesc2: "室内有两间特大床卧室、两间卫浴、带早餐吧台的全套厨房、一张餐桌，以及一间通向阳台的第二起居室。另配两张工作桌、智能电视、空调、Wi-Fi、洗衣机和保险箱。",
+  ruleNoSmokingIndoors: "室内禁止吸烟",
+  ruleNoEvents: "不得举办派对或活动",
 };

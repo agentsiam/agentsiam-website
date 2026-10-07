@@ -1025,6 +1025,12 @@ export const en = {
   consentBody: "May we use Google Analytics to see how this site is used? It sets cookies only if you accept.",
   consentAccept: "Accept",
   consentDecline: "Decline",
+
+  // -- cosmos house: description and house rules ---------------------------
+  cosmosDesc1: "Cosmos House is a townhouse over three levels in Chang Khlan. The top level is a roof terrace with a freestanding bathtub, an outdoor shower and a table with chairs, and there is a small paved courtyard with a table as well.",
+  cosmosDesc2: "Inside are two king bedrooms, two bathrooms, a full kitchen with a breakfast bar, a dining table, and a second lounge that opens onto a balcony. Two work desks, a smart TV, air conditioning, Wi-Fi, a washing machine and a safety box are included.",
+  ruleNoSmokingIndoors: "No smoking indoors",
+  ruleNoEvents: "No parties or events",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
