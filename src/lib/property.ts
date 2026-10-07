@@ -146,6 +146,21 @@ export const LOTUS_HOUSE: Property = {
 export const PROPERTIES: Property[] = [LOTUS_HOUSE];
 
 /**
+ * A unit being set up with no allotment: not in Beds24, so no IDs, no price, no booking
+ * panel, and deliberately not in PROPERTIES, which feeds search, the map, the homepage
+ * rail and the sitemap. Every value here is a field the property profile asserts; the
+ * rest of a Property's shape waits for the walkthrough rather than being filled.
+ */
+export const COSMOS_HOUSE_PREVIEW = {
+  slug: "cosmoshouse",
+  title: "Cosmos House",
+  areaSlug: "chang-khlan",
+  bedrooms: 2,
+  bathrooms: 2,
+  maxGuests: 4,
+} as const;
+
+/**
  * An approximate point for a property, for any public map.
  *
  * Exact coordinates are `booking-confirmation` material under the visibility rule in

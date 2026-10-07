@@ -7,6 +7,27 @@
 
 import type { StaticImageData } from "next/image";
 
+import cosmoshouse_0 from "@/photos/cosmoshouse/01-b14bc0ac-4aec-4214-98a0-ce08ad9c2105.jpeg";
+import cosmoshouse_1 from "@/photos/cosmoshouse/02-71e0c6ce-f7fa-49bf-afdb-cec4ff45708d.jpeg";
+import cosmoshouse_2 from "@/photos/cosmoshouse/03-71082491-40a0-4736-9372-9dbe57e0dc17.jpeg";
+import cosmoshouse_3 from "@/photos/cosmoshouse/181e3121-41ec-4538-b14f-ac745551af6e.jpeg";
+import cosmoshouse_4 from "@/photos/cosmoshouse/25df920e-4bf6-4b0c-875d-56ec4fe36cf9.jpeg";
+import cosmoshouse_5 from "@/photos/cosmoshouse/321fd5f4-503f-4403-8326-3e364231d10e.jpeg";
+import cosmoshouse_6 from "@/photos/cosmoshouse/385c3898-1c58-4a34-867b-e4ff8cf6fbc5.jpeg";
+import cosmoshouse_7 from "@/photos/cosmoshouse/43d65924-7715-40a2-a6c7-3199f50d1df2.jpeg";
+import cosmoshouse_8 from "@/photos/cosmoshouse/478214d7-df8b-4e8a-abde-ce600bb9b582.jpeg";
+import cosmoshouse_9 from "@/photos/cosmoshouse/5cc82dc6-98bb-4fd0-a9c3-55a9f4327943.jpeg";
+import cosmoshouse_10 from "@/photos/cosmoshouse/6ed88f3c-599a-46f7-82ff-a5fd665ba942.jpeg";
+import cosmoshouse_11 from "@/photos/cosmoshouse/854db845-6f16-40ba-a5a1-1fdc492a2029.jpeg";
+import cosmoshouse_12 from "@/photos/cosmoshouse/89361b8a-44f9-47fa-b157-b53475ec87e8.jpeg";
+import cosmoshouse_13 from "@/photos/cosmoshouse/8c12cd44-d4ac-4cde-b61b-6eaa4a9808ff.jpeg";
+import cosmoshouse_14 from "@/photos/cosmoshouse/93d10725-1d8b-44e7-b2ed-1691764e5dda.jpeg";
+import cosmoshouse_15 from "@/photos/cosmoshouse/b3cfd890-daa7-4321-b6c2-19ce094e435b.jpeg";
+import cosmoshouse_16 from "@/photos/cosmoshouse/d38aa7c3-0e16-4f4f-96b8-78e9b3c39cbf.jpeg";
+import cosmoshouse_17 from "@/photos/cosmoshouse/e819da08-d32d-4619-8ef0-41605af0cc31.jpeg";
+import cosmoshouse_18 from "@/photos/cosmoshouse/e9988d8c-b136-4a22-9a6f-73d3e172d0d6.jpeg";
+import cosmoshouse_19 from "@/photos/cosmoshouse/ed79a427-347e-4c77-9857-9519c875c4da.jpeg";
+import cosmoshouse_20 from "@/photos/cosmoshouse/fd440265-075c-4624-9ab9-04345fac693f.jpeg";
 import lotushouse_0 from "@/photos/lotushouse/Terrace/IMG_4991_editedfinal.jpg";
 import lotushouse_1 from "@/photos/lotushouse/Bed - 1st Floor/IMG_5578_edited.jpg";
 import lotushouse_2 from "@/photos/lotushouse/Bed - 2nd Floor/IMG_5687_edited.jpg";
@@ -73,6 +94,29 @@ export type Photo = {
 
 /** Keyed by set name -- the folder under src/photos. An empty set is simply absent. */
 export const PHOTOS: Record<string, Photo[]> = {
+  "cosmoshouse": [
+    { src: cosmoshouse_0, file: "01-b14bc0ac-4aec-4214-98a0-ce08ad9c2105.jpeg", alt: "" },
+    { src: cosmoshouse_1, file: "02-71e0c6ce-f7fa-49bf-afdb-cec4ff45708d.jpeg", alt: "" },
+    { src: cosmoshouse_2, file: "03-71082491-40a0-4736-9372-9dbe57e0dc17.jpeg", alt: "" },
+    { src: cosmoshouse_3, file: "181e3121-41ec-4538-b14f-ac745551af6e.jpeg", alt: "" },
+    { src: cosmoshouse_4, file: "25df920e-4bf6-4b0c-875d-56ec4fe36cf9.jpeg", alt: "" },
+    { src: cosmoshouse_5, file: "321fd5f4-503f-4403-8326-3e364231d10e.jpeg", alt: "" },
+    { src: cosmoshouse_6, file: "385c3898-1c58-4a34-867b-e4ff8cf6fbc5.jpeg", alt: "" },
+    { src: cosmoshouse_7, file: "43d65924-7715-40a2-a6c7-3199f50d1df2.jpeg", alt: "" },
+    { src: cosmoshouse_8, file: "478214d7-df8b-4e8a-abde-ce600bb9b582.jpeg", alt: "" },
+    { src: cosmoshouse_9, file: "5cc82dc6-98bb-4fd0-a9c3-55a9f4327943.jpeg", alt: "" },
+    { src: cosmoshouse_10, file: "6ed88f3c-599a-46f7-82ff-a5fd665ba942.jpeg", alt: "" },
+    { src: cosmoshouse_11, file: "854db845-6f16-40ba-a5a1-1fdc492a2029.jpeg", alt: "" },
+    { src: cosmoshouse_12, file: "89361b8a-44f9-47fa-b157-b53475ec87e8.jpeg", alt: "" },
+    { src: cosmoshouse_13, file: "8c12cd44-d4ac-4cde-b61b-6eaa4a9808ff.jpeg", alt: "" },
+    { src: cosmoshouse_14, file: "93d10725-1d8b-44e7-b2ed-1691764e5dda.jpeg", alt: "" },
+    { src: cosmoshouse_15, file: "b3cfd890-daa7-4321-b6c2-19ce094e435b.jpeg", alt: "" },
+    { src: cosmoshouse_16, file: "d38aa7c3-0e16-4f4f-96b8-78e9b3c39cbf.jpeg", alt: "" },
+    { src: cosmoshouse_17, file: "e819da08-d32d-4619-8ef0-41605af0cc31.jpeg", alt: "" },
+    { src: cosmoshouse_18, file: "e9988d8c-b136-4a22-9a6f-73d3e172d0d6.jpeg", alt: "" },
+    { src: cosmoshouse_19, file: "ed79a427-347e-4c77-9857-9519c875c4da.jpeg", alt: "" },
+    { src: cosmoshouse_20, file: "fd440265-075c-4624-9ab9-04345fac693f.jpeg", alt: "" },
+  ],
   "lotushouse": [
     { src: lotushouse_0, file: "Terrace/IMG_4991_editedfinal.jpg", alt: "The soaking tub and a wicker lounger on the roof terrace at sunset", room: "Terrace" },
     { src: lotushouse_1, file: "Bed - 1st Floor/IMG_5578_edited.jpg", alt: "King bed in the first-floor bedroom, under a framed bonsai painting, with tree-stump bedside tables", room: "Bed - 1st Floor" },

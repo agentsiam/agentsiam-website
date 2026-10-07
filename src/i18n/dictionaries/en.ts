@@ -781,6 +781,14 @@ export const en = {
 
   // -- Lotus House copy, moved out of the data layer -----------------------
   // The property's tagline, description, fact labels and house rules were literals in src/lib/property.ts and rendered in English on /th and /zh, on the homepage and the property page both. The guest review quote stays English, because a guest's own words translated are no longer the guest's words; it is marked lang=en instead.
+  // -- Cosmos House preview copy. Facts only from fields the property profile asserts.
+  metaCosmosTitle: "Cosmos House, Chang Khlan, Chiang Mai",
+  metaCosmosDesc: "Two bedrooms, two bathrooms and space for four guests in Chang Khlan, Chiang Mai. Not open for booking yet; write to us and hear first when it is.",
+  cosmosTagline: "Two bedrooms and two bathrooms for up to four guests, in Chang Khlan, Chiang Mai",
+  cosmosNotOpenTitle: "Not open for booking yet",
+  cosmosNotOpenBody: "Dates for Cosmos House are not open yet. Write to us and we will tell you the day they are, and answer any question about the house in the meantime.",
+  cosmosEnquire: "Email us about Cosmos House",
+
   lotusTagline: "Your base for adventure and local living in Chiang Mai",
   lotusDesc1: "Lotus House is your base for adventure and local living in Chiang Mai. Tucked on a quiet street among friendly neighbours, this three-storey home blends comfort with character, offering spacious rooms and a rooftop terrace to relax after exploring the city's vibrant markets, temples, and nightlife.",
   lotusDesc2: "Lotus House features two king bedrooms, three dining spaces (indoor table, kitchen island, and rooftop terrace), a fully equipped kitchen, and a rooftop soaking tub. Fast Wi-Fi, smart TV, and a safety box are included. Gated parking for one car and motorbike rental are available, with a 7-Eleven a 4-minute walk away.",

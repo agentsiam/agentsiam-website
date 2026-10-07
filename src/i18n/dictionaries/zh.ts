@@ -667,6 +667,14 @@ export const zh: Dictionary = {
   ctRequired: "必填",
 
   // -- Lotus House copy, moved out of the data layer -----------------------
+  // -- Cosmos House preview copy. Facts only from fields the property profile asserts.
+  metaCosmosTitle: "Cosmos House，清迈 Chang Khlan",
+  metaCosmosDesc: "位于清迈 Chang Khlan，两间卧室、两间卫浴，可住四人。尚未开放预订，写信给我们，开放时第一时间通知您。",
+  cosmosTagline: "清迈 Chang Khlan，两间卧室、两间卫浴，最多可住四人",
+  cosmosNotOpenTitle: "尚未开放预订",
+  cosmosNotOpenBody: "Cosmos House 暂未开放可订日期。写信给我们，开放当天我们会通知您；在此之前，有关这栋房子的问题也欢迎来问。",
+  cosmosEnquire: "写邮件问 Cosmos House",
+
   lotusTagline: "在清迈探索与生活的落脚点",
   lotusDesc1: "Lotus House 是您在清迈探索与生活的落脚点。它坐落在一条安静的街道上，邻里友善；这栋三层住宅兼顾舒适与个性，房间宽敞，还有一个屋顶露台，可以在逛完市场、寺庙和夜生活之后回来休息。",
   lotusDesc2: "Lotus House 有两间特大床卧室、三处用餐空间（室内餐桌、厨房中岛和屋顶露台）、一间设备齐全的厨房，以及一个屋顶泡池。高速 Wi-Fi、智能电视和保险箱一应俱全。院内可停一辆车，也可租摩托车，步行 4 分钟即有 7-Eleven。",
