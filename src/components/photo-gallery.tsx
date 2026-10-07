@@ -13,11 +13,45 @@ import type { Photo } from "@/lib/photos.generated";
  * Nothing here has to know a pixel dimension -- `sizes` tells the browser how wide the slot
  * will be at each breakpoint and it picks from the generated set.
  *
- * Cropping is object-cover from the centre. If a particular photo crops badly, give it an
+ * Every photo shows in one of two shapes, whatever property it belongs to: landscape 3:2
+ * or portrait 3:4, chosen by the file's own orientation. The two tile exactly, because two
+ * 3:2 landscapes stacked are one 3:4 portrait, so any mix of photos fills the grid with no
+ * holes and no per-property layout. Cropping is object-cover from the centre, at render;
+ * the originals are never cut. If a particular photo crops badly, give it an
  * `objectPosition` in the manifest rather than re-cropping the original by hand.
  */
 
-const GRID_SLOTS = 5; // 1 hero + 4 thumbs, per the design
+const isPortrait = (photo: Photo) => photo.src.height > photo.src.width;
+
+/**
+ * The block beside the hero: two columns, each holding one portrait or two landscapes, in
+ * the set's running order. A photo that no longer fits is skipped for the next one that
+ * does, and the lightbox still shows it. A column left with a single landscape stretches
+ * it, which only happens when a set runs out of landscapes.
+ */
+function fillBlock(photos: Photo[]) {
+  const columns: Photo[][] = [[], []];
+  for (const photo of photos) {
+    if (isPortrait(photo)) {
+      const empty = columns.find((column) => column.length === 0);
+      if (empty) empty.push(photo);
+    } else {
+      const open = columns.find(
+        (column) => column.length < 2 && (column.length === 0 || !isPortrait(column[0])),
+      );
+      if (open) open.push(photo);
+    }
+    if (columns.every((column) => column.length === 2 || column.some(isPortrait))) break;
+  }
+  return columns.flatMap((column, col) =>
+    column.map((photo, row) => ({
+      photo,
+      col,
+      row,
+      tall: column.length === 1,
+    })),
+  );
+}
 
 export function PhotoGallery({
   photos,
@@ -37,14 +71,15 @@ export function PhotoGallery({
 
   if (photos.length === 0) return null;
 
-  const hero = photos[0];
-  const thumbs = photos.slice(1, GRID_SLOTS);
-  const remaining = photos.length - GRID_SLOTS;
+  // The hero slot is landscape, so it takes the first landscape in running order.
+  const hero = photos.find((photo) => !isPortrait(photo)) ?? photos[0];
+  const tiles = fillBlock(photos.filter((photo) => photo !== hero));
+  const remaining = photos.length - 1 - tiles.length;
 
   return (
     <>
       <div className="relative">
-        <div className="grid grid-cols-2 gap-1.5 overflow-hidden rounded-panel min-[900px]:h-[400px] min-[900px]:grid-cols-[2fr_1fr_1fr] min-[900px]:grid-rows-2 min-[900px]:gap-2">
+        <div className="grid gap-1.5 overflow-hidden rounded-panel min-[900px]:grid-cols-2 min-[900px]:gap-2">
           {/* Named "Open photo: <description>". Named by the description alone, five
               buttons in a row announced as five paragraphs of prose with nothing saying
               any of them opened anything.
@@ -58,10 +93,10 @@ export function PhotoGallery({
               fallback stays a plain aria-label. */}
           <button
             type="button"
-            onClick={() => setOpenAt(0)}
+            onClick={() => setOpenAt(photos.indexOf(hero))}
             aria-label={hero.alt ? undefined : labels.openPhoto}
             aria-labelledby={hero.alt ? `${baseId}-hero-label ${baseId}-hero-alt` : undefined}
-            className="relative col-span-2 aspect-16/10 cursor-pointer min-[900px]:col-span-1 min-[900px]:row-span-2 min-[900px]:aspect-auto"
+            className="relative aspect-3/2 cursor-pointer"
           >
             {hero.alt ? (
               <>
@@ -87,38 +122,48 @@ export function PhotoGallery({
             />
           </button>
 
-          {thumbs.map((photo, index) => (
-            <button
-              key={photo.src.src}
-              type="button"
-              onClick={() => setOpenAt(index + 1)}
-              aria-label={photo.alt ? undefined : labels.openPhoto}
-              aria-labelledby={
-                photo.alt ? `${baseId}-thumb-${index}-label ${baseId}-thumb-${index}-alt` : undefined
-              }
-              className="relative aspect-4/3 cursor-pointer min-[900px]:aspect-auto"
-            >
-              {photo.alt ? (
-                <>
-                  <span id={`${baseId}-thumb-${index}-label`} className="sr-only">
-                    {labels.openPhoto}
-                  </span>
-                  <span id={`${baseId}-thumb-${index}-alt`} lang="en" className="sr-only">
-                    {photo.alt}
-                  </span>
-                </>
-              ) : null}
-              <Image
-                src={photo.src}
-                alt={photo.alt || labels.propertyName}
-                lang="en"
-                placeholder="blur"
-                fill
-                sizes="(min-width: 900px) 350px, 50vw"
-                className="object-cover"
-              />
-            </button>
-          ))}
+          {/* Two columns by two rows at 3:2 overall, the same shape as the hero, so each
+              cell is 3:2 and a cell pair stacked is 3:4. */}
+          {tiles.length > 0 ? (
+            <div className="grid aspect-3/2 grid-cols-2 grid-rows-2 gap-1.5 min-[900px]:gap-2">
+              {tiles.map(({ photo, col, row, tall }, index) => (
+                <button
+                  key={photo.src.src}
+                  type="button"
+                  onClick={() => setOpenAt(photos.indexOf(photo))}
+                  aria-label={photo.alt ? undefined : labels.openPhoto}
+                  aria-labelledby={
+                    photo.alt ? `${baseId}-thumb-${index}-label ${baseId}-thumb-${index}-alt` : undefined
+                  }
+                  style={{
+                    gridColumn: col + 1,
+                    gridRow: tall ? "1 / span 2" : row + 1,
+                  }}
+                  className="relative cursor-pointer"
+                >
+                  {photo.alt ? (
+                    <>
+                      <span id={`${baseId}-thumb-${index}-label`} className="sr-only">
+                        {labels.openPhoto}
+                      </span>
+                      <span id={`${baseId}-thumb-${index}-alt`} lang="en" className="sr-only">
+                        {photo.alt}
+                      </span>
+                    </>
+                  ) : null}
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt || labels.propertyName}
+                    lang="en"
+                    placeholder="blur"
+                    fill
+                    sizes="(min-width: 900px) 350px, 50vw"
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         {remaining > 0 ? (
@@ -248,22 +293,32 @@ function Lightbox({
         ×
       </button>
 
-      {/* Clicks inside the grid should not close it; only the backdrop and × do. */}
+      {/* Clicks inside the grid should not close it; only the backdrop and × do.
+          Columns rather than a grid, so 3:2 and 3:4 photos pack without ragged rows. */}
       <div
-        className="grid w-full max-w-[1000px] gap-2.5 sm:grid-cols-2 lg:grid-cols-3"
+        className="w-full max-w-[1000px] gap-2.5 sm:columns-2 lg:columns-3"
         onClick={(event) => event.stopPropagation()}
       >
         {photos.map((photo, index) => (
-          <figure key={photo.src.src} ref={index === startAt ? startRef : undefined}>
+          <figure
+            key={photo.src.src}
+            ref={index === startAt ? startRef : undefined}
+            className="mb-2.5 break-inside-avoid"
+          >
             {/* alt="" where a figcaption is about to say the same words. Repeating the
                 description in both read each photo twice, forty-six times. */}
-            <Image
-              src={photo.src}
-              alt={photo.alt ? "" : labels.propertyName}
-              placeholder="blur"
-              sizes="(min-width: 1024px) 330px, (min-width: 640px) 50vw, 100vw"
-              className="h-auto w-full rounded-box"
-            />
+            <div
+              className={`relative overflow-hidden rounded-box ${isPortrait(photo) ? "aspect-3/4" : "aspect-3/2"}`}
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt ? "" : labels.propertyName}
+                placeholder="blur"
+                fill
+                sizes="(min-width: 1024px) 330px, (min-width: 640px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
             {photo.alt ? (
               <figcaption
                 lang="en"
