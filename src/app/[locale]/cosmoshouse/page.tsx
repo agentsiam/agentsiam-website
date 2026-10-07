@@ -6,7 +6,7 @@ import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { IconChip } from "@/components/icon";
-import { GUIDE_DISTANCES } from "@/lib/guide.generated";
+import { GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
 import { FEATURE_ICONS, ORIENTATION_ANCHORS } from "@/lib/orientation";
 import { PHOTOS } from "@/lib/photos.generated";
 import { AREAS } from "@/lib/areas";
@@ -219,6 +219,7 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
           ) : null}
         </div>
 
+        <div className="flex flex-col gap-6">
         <section className="rounded-panel bg-surface p-6">
           <h2 className="font-display text-lg font-bold tracking-[-0.015em]">
             {t.cosmosNotOpenTitle}
@@ -231,6 +232,20 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
             {t.cosmosEnquire}
           </a>
         </section>
+
+        {/* The local guide, as on Lotus House, with times routed from this house. */}
+        <section className="rounded-panel bg-surface p-6">
+          <h2 className="font-display text-lg font-bold tracking-[-0.015em]">
+            {t.guideCardTitle}
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-body">
+            {t.guideCardBody.replace("{n}", String(GUIDE_PLACES.length))}
+          </p>
+          <Link href={href(`/${property.slug}/local-guide`)} className="pill-primary mt-4">
+            {t.guideCardLink}
+          </Link>
+        </section>
+        </div>
       </div>
     </div>
   );
