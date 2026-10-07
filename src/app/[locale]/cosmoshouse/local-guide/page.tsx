@@ -5,7 +5,8 @@ import { getDictionary } from "@/i18n";
 import { isLocale, LOCALES } from "@/i18n/config";
 import { GUIDE_PLACES } from "@/lib/guide.generated";
 import { COSMOS_HOUSE_PREVIEW } from "@/lib/property";
-import { pageMeta } from "@/lib/site";
+import { pageMeta, routeOgImage } from "@/lib/site";
+import { alt as ogAlt } from "./opengraph-image";
 
 /**
  * The Cosmos House local guide: the same places as Lotus House's, with walking and driving
@@ -32,6 +33,7 @@ export async function generateMetadata({
     path: "/cosmoshouse/local-guide",
     locale,
     placeholder: true,
+    image: routeOgImage(locale, "/cosmoshouse/local-guide", ogAlt),
   });
 }
 

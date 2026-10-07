@@ -11,7 +11,8 @@ import { FEATURE_ICONS, ORIENTATION_ANCHORS } from "@/lib/orientation";
 import { PHOTOS } from "@/lib/photos.generated";
 import { AREAS } from "@/lib/areas";
 import { COSMOS_HOUSE_PREVIEW, type Property } from "@/lib/property";
-import { CONTACT_EMAIL, pageMeta, SITE_NAME } from "@/lib/site";
+import { CONTACT_EMAIL, pageMeta, routeOgImage, SITE_NAME } from "@/lib/site";
+import { alt as ogAlt } from "./opengraph-image";
 import type { Dictionary } from "@/i18n";
 import { areaVibe } from "@/i18n/area-vibe";
 
@@ -37,6 +38,7 @@ export async function generateMetadata({
     path: "/cosmoshouse",
     locale,
     placeholder: true,
+    image: routeOgImage(locale, "/cosmoshouse", ogAlt),
   });
 }
 
