@@ -4,14 +4,13 @@ import { LocalGuide } from "@/components/local-guide";
 import { getDictionary } from "@/i18n";
 import { isLocale, LOCALES } from "@/i18n/config";
 import { GUIDE_PLACES } from "@/lib/guide.generated";
-import { COSMOS_HOUSE_PREVIEW } from "@/lib/property";
+import { COSMOS_HOUSE } from "@/lib/property";
 import { pageMeta, routeOgImage } from "@/lib/site";
 import { alt as ogAlt } from "./opengraph-image";
 
 /**
  * The Cosmos House local guide: the same places as Lotus House's, with walking and driving
- * times routed from this house. Not bookable yet, so the "book direct" prompts are off, and
- * noindex like the property page until it opens.
+ * times routed from this house. Not bookable yet, so the "book direct" prompts are off.
  */
 
 export function generateStaticParams() {
@@ -26,13 +25,12 @@ export async function generateMetadata({
   const t = getDictionary(locale);
 
   return pageMeta({
-    title: t.metaGuideTitle.replace("{property}", COSMOS_HOUSE_PREVIEW.title),
+    title: t.metaGuideTitle.replace("{property}", COSMOS_HOUSE.title),
     description: t.metaGuideDesc
       .replace("{n}", String(GUIDE_PLACES.length))
-      .replace("{property}", COSMOS_HOUSE_PREVIEW.title),
+      .replace("{property}", COSMOS_HOUSE.title),
     path: "/cosmoshouse/local-guide",
     locale,
-    placeholder: true,
     image: routeOgImage(locale, "/cosmoshouse/local-guide", ogAlt),
   });
 }
@@ -47,7 +45,7 @@ export default async function CosmosLocalGuidePage({
     <LocalGuide
       locale={locale}
       query={await searchParams}
-      property={COSMOS_HOUSE_PREVIEW}
+      property={COSMOS_HOUSE}
       bookable={false}
     />
   );

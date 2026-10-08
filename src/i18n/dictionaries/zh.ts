@@ -253,6 +253,7 @@ export const zh: Dictionary = {
   sort_price_desc: "价格从高到低",
   features: "设施",
   fromPrice: "起价",
+  tileNotOpen: "尚未开放预订",
   perNight: "每晚",
   kmToCentre: "距市中心{n}公里",
   oneProperty: "1处房源",

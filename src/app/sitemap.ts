@@ -16,6 +16,7 @@ import { LOCALES } from "@/i18n/config";
  */
 const ROUTE_PHOTO_SET: Record<string, string> = {
   "/lotushouse": "lotushouse",
+  "/cosmoshouse": "cosmoshouse",
 };
 
 /**

@@ -250,6 +250,7 @@ export const th: Dictionary = {
   sort_price_desc: "ราคาสูงไปต่ำ",
   features: "สิ่งอำนวยความสะดวก",
   fromPrice: "เริ่มต้น",
+  tileNotOpen: "ยังไม่เปิดรับจอง",
   perNight: "ต่อคืน",
   kmToCentre: "{n} กม. จากใจกลางเมือง",
   oneProperty: "ที่พัก 1 แห่ง",

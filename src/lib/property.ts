@@ -47,8 +47,11 @@ export type Property = {
    * public booking-page URL -- so they live here with the rest of the property's facts
    * rather than in an env var. The refresh token is the secret, and that is the only
    * Beds24 value that is one.
+   *
+   * Null for a house listed for enquiry only: not in Beds24 yet, so no price, no booking
+   * panel, and its tile says it is not open for booking rather than showing a rate.
    */
-  beds24: { propertyId: number; roomId: number };
+  beds24: { propertyId: number; roomId: number } | null;
   /** ISO 4217, as configured on the Beds24 property. Prices are quoted in it. */
   currency: string;
   /** Occupancy and stay rules, mirroring the Beds24 room so the UI can validate early. */
@@ -74,7 +77,8 @@ export type Property = {
   descriptionKeys: (keyof Dictionary)[];
   /** Dictionary key for the one-line pitch under the title. */
   taglineKey: keyof Dictionary;
-  address: string;
+  /** Null until the profile asserts one. */
+  address: string | null;
   checkIn: string;
   checkOut: string;
   /** Dictionary keys. These sit in the same list as the localised safety line, so an
@@ -88,7 +92,7 @@ export type Property = {
   reviews: { quote: string; lang: string; source: string }[];
 };
 
-export const LOTUS_HOUSE: Property = {
+export const LOTUS_HOUSE = {
   slug: "lotushouse",
   title: "Lotus House",
   taglineKey: "lotusTagline",
@@ -141,30 +145,39 @@ export const LOTUS_HOUSE: Property = {
       source: "Airbnb guest review",
     },
   ],
-};
-
-export const PROPERTIES: Property[] = [LOTUS_HOUSE];
+} satisfies Property & { beds24: NonNullable<Property["beds24"]>; address: string };
 
 /**
- * A unit being set up with no allotment: not in Beds24, so no IDs, no price, no booking
- * panel, and deliberately not in PROPERTIES, which feeds search, the map, the homepage
- * rail and the sitemap. Every value here is a field the property profile asserts; the
- * rest of a Property's shape waits for the walkthrough rather than being filled.
+ * Listed for enquiry only: not in Beds24 yet, so no IDs, no price and no booking panel.
+ * It is in PROPERTIES, so search, the map, the area pages and the sitemap show it, and its
+ * tile says it is not open for booking. Every value here is a field the property profile
+ * asserts; the rest waits for the walkthrough rather than being filled.
  */
-export const COSMOS_HOUSE_PREVIEW = {
+export const COSMOS_HOUSE: Property = {
   slug: "cosmoshouse",
   title: "Cosmos House",
+  taglineKey: "cosmosTagline",
   areaSlug: "chang-khlan",
+  citySlug: "chiang-mai",
   // The profile's maps_url pin. Routing input for the guide's walking and driving times
-  // only; never rendered, for the same reason as the street address.
+  // and, through approxLocation, the public map; never rendered as is, for the same reason
+  // as the street address.
   lat: 18.7700888,
   lng: 98.9927484,
   type: "townhouse",
   bedrooms: 2,
   bathrooms: 2,
+  fromPrice: null,
+  features: ["rooftop", "kitchen", "wifi", "smart-tv", "workspace", "washer", "parking", "safe", "soaking-tub"],
+  beds24: null,
+  currency: "THB",
   maxGuests: 4,
   minStay: 2,
-  features: ["rooftop", "kitchen", "wifi", "smart-tv", "workspace", "washer", "parking", "safe", "soaking-tub"],
+  // Only the booking flow reads this, and it reads Lotus House's. Matches Lotus House's
+  // until Cosmos House has a Beds24 room of its own.
+  maxStay: 90,
+  fill: "bg-primary",
+  onFill: "text-white",
   facts: [
     { labelKey: "guests", value: "4" },
     { labelKey: "bedrooms", value: "2" },
@@ -174,15 +187,14 @@ export const COSMOS_HOUSE_PREVIEW = {
     { labelKey: "factRooftop", value: "1" },
   ],
   descriptionKeys: ["cosmosDesc1", "cosmosDesc2"],
+  address: null,
   checkIn: "15:00",
   checkOut: "12:00",
   houseRuleKeys: ["ruleNoPets", "ruleNoSmokingIndoors", "ruleNoEvents"],
-} satisfies Pick<
-  Property,
-  | "slug" | "title" | "areaSlug" | "lat" | "lng" | "type" | "bedrooms" | "bathrooms"
-  | "maxGuests" | "minStay" | "features" | "facts" | "descriptionKeys" | "checkIn"
-  | "checkOut" | "houseRuleKeys"
->;
+  reviews: [],
+};
+
+export const PROPERTIES: Property[] = [LOTUS_HOUSE, COSMOS_HOUSE];
 
 /**
  * An approximate point for a property, for any public map.

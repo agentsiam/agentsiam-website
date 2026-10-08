@@ -161,6 +161,8 @@ export function PropertyTile({
             </span>
             <span className="text-muted"> {t.perNight}</span>
           </p>
+        ) : property.beds24 === null ? (
+          <p className="mt-3 text-[15px] text-muted">{t.tileNotOpen}</p>
         ) : null}
       </div>
     </Link>

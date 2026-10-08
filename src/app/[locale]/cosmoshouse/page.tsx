@@ -10,7 +10,7 @@ import { GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
 import { FEATURE_ICONS, ORIENTATION_ANCHORS } from "@/lib/orientation";
 import { PHOTOS } from "@/lib/photos.generated";
 import { AREAS } from "@/lib/areas";
-import { COSMOS_HOUSE_PREVIEW, type Property } from "@/lib/property";
+import { COSMOS_HOUSE, type Property } from "@/lib/property";
 import { CONTACT_EMAIL, pageMeta, routeOgImage, SITE_NAME } from "@/lib/site";
 import { alt as ogAlt } from "./opengraph-image";
 import type { Dictionary } from "@/i18n";
@@ -18,12 +18,12 @@ import { areaVibe } from "@/i18n/area-vibe";
 
 /**
  * Cosmos House, before allotment. The Lotus House page's layout with an enquiry block where
- * the booking panel would be. Every fact below is a field in COSMOS_HOUSE_PREVIEW, which
+ * the booking panel would be. Every fact below is a field in COSMOS_HOUSE, which
  * mirrors the property profile. Left out until they exist: reviews, the guest FAQ (its
  * answers are Lotus House's), a price and the booking panel.
  *
- * noindex, not in ROUTES, not in the sitemap and not linked from anywhere: reachable by
- * URL only, for the owner to see.
+ * Listed for enquiry only: in PROPERTIES, ROUTES and the sitemap like Lotus House, with
+ * the enquiry block in place of booking until it has a Beds24 room.
  */
 
 export async function generateMetadata({
@@ -37,7 +37,6 @@ export async function generateMetadata({
     description: t.metaCosmosDesc,
     path: "/cosmoshouse",
     locale,
-    placeholder: true,
     image: routeOgImage(locale, "/cosmoshouse", ogAlt),
   });
 }
@@ -47,7 +46,7 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale as Locale, path);
-  const property = COSMOS_HOUSE_PREVIEW;
+  const property = COSMOS_HOUSE;
   const area = AREAS.find((item) => item.slug === property.areaSlug);
   const photos = PHOTOS[property.slug] ?? [];
 

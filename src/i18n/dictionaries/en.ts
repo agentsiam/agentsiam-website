@@ -286,6 +286,8 @@ export const en = {
   sort_price_desc: "Price, highest first",
   features: "Features",
   fromPrice: "from",
+  // A tile for a house listed for enquiry only, where the price would be.
+  tileNotOpen: "Not open for booking yet",
   perNight: "per night",
   kmToCentre: "{n} km to centre",
   oneProperty: "1 place to stay",
