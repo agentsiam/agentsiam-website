@@ -335,6 +335,13 @@ The pipeline, so nobody has to think about image formats:
 
 ## Known gaps
 
+- **WhatsApp guest messages are a second store beside Beds24.** `/api/whatsapp/webhook`
+  receives Meta's WhatsApp Cloud API webhook and keeps messages in Upstash Redis
+  (`src/lib/whatsapp-store.ts`); `/api/whatsapp/messages` is the bridge's read and record
+  endpoint, behind `WA_BRIDGE_SECRET`. The bridge itself is outside this repo, at
+  `/Users/paulb/code/whatsapp-bridge`. Open: the privacy policy does not yet say guest
+  WhatsApp messages are stored with Upstash, and nothing expires old conversations beyond the
+  500-message cap per guest.
 - ~~No photography yet.~~ Resolved. Real Lotus House photography landed 15/08/2026. As of
   24/08/2026 the published set is 46 Lotus House frames across seven rooms, plus five team
   portraits. Three carport shots are held back in `_excluded/` for showing the house number.
