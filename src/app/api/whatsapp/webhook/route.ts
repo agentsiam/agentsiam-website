@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
+import { notificationBody, sendMail } from "@/lib/mailer";
 import { saveMessage, saveStatus, STORE_READY } from "@/lib/whatsapp-store";
 
 export const runtime = "nodejs";
@@ -14,6 +15,10 @@ export const dynamic = "force-dynamic";
  *
  * Meta retries a non-2xx for days, so the only failure answered with one is the store being
  * down, which is worth retrying. A payload we cannot read is logged and acknowledged.
+ *
+ * Every new guest message is also emailed to the team, because a message nobody is told
+ * about is a guest waiting. A retried delivery is not stored twice, so it is not emailed
+ * twice either.
  */
 
 export async function GET(request: Request) {
@@ -53,7 +58,7 @@ export async function POST(request: Request) {
   const changes = payload.entry?.flatMap((e) => e.changes ?? []) ?? (payload.field ? [payload] : []);
 
   try {
-    let stored = 0;
+    const fresh: { waId: string; name?: string; body: string }[] = [];
     for (const change of changes) {
       const value = change.value ?? {};
       const names = new Map((value.contacts ?? []).map((c) => [c.wa_id, c.profile?.name]));
@@ -69,14 +74,31 @@ export async function POST(request: Request) {
           },
           names.get(m.from),
         );
-        if (saved) stored += 1;
+        if (saved) fresh.push({ waId: m.from, name: names.get(m.from), body: messageBody(m) });
       }
       for (const s of value.statuses ?? []) await saveStatus(s.id, s.status);
     }
-    return NextResponse.json({ ok: true, stored });
+    if (fresh.length > 0) await notifyTeam(fresh);
+    return NextResponse.json({ ok: true, stored: fresh.length });
   } catch (error) {
     console.error("[whatsapp/webhook] store failed", error);
     return NextResponse.json({ error: "Store unavailable." }, { status: 503 });
+  }
+}
+
+async function notifyTeam(messages: { waId: string; name?: string; body: string }[]): Promise<void> {
+  for (const m of messages) {
+    const { html, text } = notificationBody(
+      "New guest message on WhatsApp",
+      [
+        ["From", m.name ?? "?"],
+        ["Number", `+${m.waId}`],
+      ],
+      m.body,
+      "Reply within 24 hours of the guest's last message, or only a template can be sent.",
+    );
+    const sent = await sendMail({ subject: `WhatsApp: ${m.name ?? `+${m.waId}`}`, html, text });
+    if (!sent) console.error("[whatsapp/webhook] message from", m.waId, "stored but not emailed");
   }
 }
 
