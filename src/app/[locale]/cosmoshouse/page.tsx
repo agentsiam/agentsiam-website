@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PhotoGallery } from "@/components/photo-gallery";
-import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { IconChip } from "@/components/icon";
@@ -80,7 +79,6 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
 
   return (
     <div>
-      <TranslationNote locale={locale} />
 
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-9">
         <nav aria-label={t.breadcrumbLabel} className="eyebrow">

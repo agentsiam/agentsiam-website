@@ -6,7 +6,6 @@ import { Faq } from "@/components/faq";
 import { IconChip } from "@/components/icon";
 import { JsonLd } from "@/components/json-ld";
 import { PhotoGallery } from "@/components/photo-gallery";
-import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
@@ -178,7 +177,6 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
 
   return (
     <div>
-      <TranslationNote locale={locale} />
       <JsonLd data={propertySchema({ locale, t, property, photos })} />
       <JsonLd data={breadcrumbSchema(locale, crumbs)} />
       <JsonLd data={faqSchema(guestFaq)} />

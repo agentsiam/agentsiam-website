@@ -50,9 +50,10 @@ unfinished page out of the sitemap and set it to noindex.
 - Strings live in `src/i18n/dictionaries/{en,th,zh}.ts`. English is the source and the type;
   adding a key there is a compile error until the other two carry it. Lookup falls back to
   English per key, so a missing or blank translation degrades to readable rather than blank.
-- **Deliberately untranslated:** property descriptions, the long-form owner sections on
-  `/how-it-works`, and both legal pages. Those pages render `<TranslationNote>` on `/th` and
-  `/zh`, which names what is still English rather than serving it silently.
+- **Deliberately untranslated:** both legal pages. They render `<TranslationNote>` on `/th`
+  and `/zh`, which names what is still English rather than serving it silently. Property
+  descriptions and the `/how-it-works` owner sections are in the dictionaries now, so those
+  pages no longer render it; a page whose body is fully translated must not carry the note.
 - **Unreviewed translations:** there is no marker convention any more. Every key was reviewed in
   all three languages on 23/08/2026 and the `// NEW` markers were removed on 24/08/2026. Keys
   added since then are unreviewed and nothing in the files distinguishes them, so a review pass
