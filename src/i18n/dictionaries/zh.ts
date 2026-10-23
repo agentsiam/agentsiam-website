@@ -375,6 +375,7 @@ export const zh: Dictionary = {
   childrenNote: "无论年龄大小，每位入住者都计入最大人数。",
   whatThisPlaceIsNot: "预订前须知的限制",
   childSupervision: "幼儿在楼梯和屋顶露台需要成人看护。",
+  outdoorCamera: "房源设有一个监控摄像头，位于室外前方停车场大门处，背向房屋，仅覆盖入口通道。室内没有摄像头。",
 
   // -- accessible names for chrome and controls ----------------------------
   mainNav: "主导航",

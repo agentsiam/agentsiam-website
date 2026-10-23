@@ -431,6 +431,7 @@ export const en = {
   childrenNote: "Everyone counts toward the maximum, whatever their age.",
   whatThisPlaceIsNot: "Limits to know before booking",
   childSupervision: "Toddlers need supervision on the stairs and the roof terrace.",
+  outdoorCamera: "There is one security camera, outdoors at the front parking gate, facing away from the house and covering the approach only. No cameras inside.",
 
   // -- accessible names for chrome and controls ----------------------------
   // Two navigation landmarks per page once a breadcrumb is on it, so both need names.

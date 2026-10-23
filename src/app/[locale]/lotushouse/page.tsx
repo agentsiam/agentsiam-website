@@ -259,9 +259,11 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
             {/* `three-storey-child-safety` rides in this list as one line rather than
                 as a block of its own. It is a standing recommendation, not an
                 interrogation: most guests travel without toddlers, and the ones who do
-                are capable of supervising them. See CLAUDE.md, guest-facing copy. */}
+                are capable of supervising them. See CLAUDE.md, guest-facing copy.
+                `airbnb-outdoor-camera` rides here too: surface listing, so it is said
+                before booking, in the wording already live on Airbnb. */}
             <ul className="mt-3 flex flex-col gap-2">
-              {[...houseRules, t.childSupervision].map((rule) => (
+              {[...houseRules, t.childSupervision, t.outdoorCamera].map((rule) => (
                 <li key={rule} className="flex gap-2.5 text-sm leading-normal text-body">
                   <span aria-hidden="true" className="font-bold text-deep-red">
                     ·
