@@ -14,21 +14,14 @@ import { alt as ogAlt } from "./opengraph-image";
 import type { Dictionary } from "@/i18n";
 import { areaVibe } from "@/i18n/area-vibe";
 
-/** Same mapping as the property tile and the booking panel. */
-const INTL_LOCALE: Record<Locale, string> = {
-  en: "en-GB",
-  th: "th-TH-u-ca-gregory",
-  zh: "zh-Hans",
-};
-
 /**
- * Mae Rim House, offered on a monthly lease. The Cosmos House layout with lease terms where
- * check-in times would be and an enquiry block where the booking panel would be.
+ * Mae Rim House, before allotment. The Cosmos House layout with an enquiry block where the
+ * booking panel would be.
  *
  * Every fact is a field in MAE_RIM_HOUSE, which mirrors the property profile. Left out until
- * the profile has them: house rules, guest count, the travel times (the owner's are
- * unmeasured), the local guide (its times are routed from a pin this house does not have
- * yet) and the address line.
+ * the profile has them: house rules, guest count, check-in times and a price. No local
+ * guide: the guide was built outwards from Chang Khlan and does not reach Mae Rim, so the
+ * driving times below are the profile's own measured routes instead.
  */
 
 export async function generateMetadata({
@@ -52,25 +45,15 @@ export default async function MaeRimHousePage({ params }: PageProps<"/[locale]">
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale as Locale, path);
   const property = MAE_RIM_HOUSE;
-  const lease = property.lease!;
   const area = AREAS.find((item) => item.slug === property.areaSlug);
   const photos = PHOTOS[property.slug] ?? [];
   const facts = propertyFacts(t, property);
   const typeLabel = String(t[`type_${property.type}` as keyof Dictionary] ?? property.type);
 
-  const money = (amount: number) =>
-    `${property.currency} ${new Intl.NumberFormat(INTL_LOCALE[locale as Locale], {
-      maximumFractionDigits: 0,
-    }).format(amount)}`;
-  const terms = [
-    t.leaseShort.replace("{price}", money(lease.monthlyShort)),
-    t.leaseLong.replace("{price}", money(lease.monthlyLong)),
-    t.leaseDeposit
-      .replace("{d}", String(lease.depositMonths))
-      .replace("{a}", String(lease.advanceMonths)),
-    t.leaseGarden,
-    t.leasePets,
-  ];
+  const nearby = (property.nearby ?? []).map((place) => ({
+    ...place,
+    text: t[place.labelKey] as string,
+  }));
 
   // As on the Lotus House page: a feature with no dictionary label is dropped.
   const amenities = property.features
@@ -164,25 +147,35 @@ export default async function MaeRimHousePage({ params }: PageProps<"/[locale]">
             </section>
           ) : null}
 
-          <section className="mt-8 grid gap-6 sm:grid-cols-2">
-            <div>
-              <h2 className="eyebrow">{t.leaseTermsTitle}</h2>
-              <ul className="mt-2 flex flex-col gap-1.5">
-                {terms.map((term) => (
-                  <li key={term} className="text-sm leading-relaxed text-body">
-                    {term}
+          <section className="mt-8">
+            <h2 className="eyebrow">{t.whereYoullBe}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-body">
+              {[area?.name, t.homeCity].filter(Boolean).join(", ")}
+            </p>
+            <p className="mt-1.5 text-[13px] text-muted">{areaVibe(t, area)}</p>
+            <p className="mt-1.5 text-[13px] text-muted">{t.addressAfterBooking}</p>
+          </section>
+
+          {nearby.length > 0 ? (
+            <section className="mt-8">
+              <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
+                {t.gettingAround}
+              </h2>
+              <p className="mt-1.5 text-[13px] text-muted">{t.maeRimGettingAroundBody}</p>
+              <ul className="mt-4 divide-y divide-hairline border-y border-hairline">
+                {nearby.map((place) => (
+                  <li key={place.labelKey} className="flex items-center gap-3.5 py-3">
+                    <IconChip name="transfer" />
+                    <span className="flex-1 text-[15px] text-body">{place.text}</span>
+                    <span className="shrink-0 text-right text-[13px] text-muted">
+                      {t.minDrive.replace("{n}", String(place.driveMinutes))} ·{" "}
+                      {t.kmShort.replace("{n}", String(place.km))}
+                    </span>
                   </li>
                 ))}
               </ul>
-            </div>
-            <div>
-              <h2 className="eyebrow">{t.whereYoullBe}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-body">
-                {[area?.name, t.homeCity].filter(Boolean).join(", ")}
-              </p>
-              <p className="mt-1.5 text-[13px] text-muted">{areaVibe(t, area)}</p>
-            </div>
-          </section>
+            </section>
+          ) : null}
         </div>
 
         <section className="rounded-panel bg-surface p-6">

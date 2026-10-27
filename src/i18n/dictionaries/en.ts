@@ -1035,13 +1035,12 @@ export const en = {
   ruleNoSmokingIndoors: "No smoking indoors",
   ruleNoEvents: "No parties or events",
 
-  // -- mae rim house: monthly lease listing --------------------------------
-  metaMaeRimTitle: "Mae Rim House, a house with a garden for monthly rent, Chiang Mai",
-  metaMaeRimDesc: "A detached house in Mae Rim, Chiang Mai: two bedrooms, two bathrooms and a work room on 1,412 m² of land, for monthly rent. The covered parking can be converted into a café, slow bar or studio.",
-  maeRimTagline: "Two bedrooms, a work room and 1,412 m² of land in Mae Rim, Chiang Mai, for monthly rent",
+  // -- mae rim house: enquiry-only listing ---------------------------------
+  metaMaeRimTitle: "Mae Rim House, Mae Rim, Chiang Mai",
+  metaMaeRimDesc: "Two bedrooms, two bathrooms and a work room in a detached house with a garden in Mae Rim, Chiang Mai. Not open for booking yet; write to us and hear first when it is.",
+  maeRimTagline: "Two bedrooms, a work room and a garden on 1,412 m² of land in Mae Rim, Chiang Mai",
   maeRimDesc1: "Mae Rim House is a detached house with 120 m² of living space, not counting the covered parking, on 1,412 m² of land in Mae Rim, north of Chiang Mai. Garden surrounds the house, and there is an outdoor seating area.",
   maeRimDesc2: "Inside are two bedrooms and a living room, all air-conditioned; two bathrooms, both with water heaters; a work room; and a dining room with a kitchen area and range hood. A washing machine is included.",
-  maeRimDesc3: "The covered parking takes two to three cars, and the owner is open to it being converted or extended into a café, a slow bar or a studio, so the house works for living and for running a small business from the garden.",
   factWorkRoom: "Work room",
   factLivingArea: "Living area",
   factLand: "Land",
@@ -1049,17 +1048,15 @@ export const en = {
   maeRimLivingAreaValue: "120 m²",
   maeRimLandValue: "1,412 m²",
   maeRimParkingValue: "2–3 cars",
-  perMonth: "per month",
-  leaseTermsTitle: "Lease terms",
-  // {price} is the currency and amount, already formatted.
-  leaseShort: "1 to 6 months: {price} a month",
-  leaseLong: "7 months or longer: {price} a month",
-  leaseDeposit: "{d} months' rent as deposit, plus {a} month's rent in advance",
-  leaseGarden: "The owner tends the garden once or twice a month, at no extra cost",
-  leasePets: "Pets considered case by case",
-  maeRimEnquireTitle: "Available on a monthly lease",
-  maeRimEnquireBody: "Write to us with any question about the house or the lease terms, and we will answer it.",
+  maeRimEnquireTitle: "Not open for booking yet",
+  maeRimEnquireBody: "Dates for Mae Rim House are not open yet. Write to us and we will tell you the day they are, and answer any question about the house in the meantime.",
   maeRimEnquire: "Email us about Mae Rim House",
+  nearRajabhatMaeRim: "Chiang Mai Rajabhat University, Mae Rim campus",
+  nearTaweerotMarket: "Taweerot Market",
+  nearPremSchool: "Prem Tinsulanonda International School",
+  nearKadFarangMaeRim: "Kad Farang Mae Rim",
+  maeRimGettingAroundBody: "Driving times from the house, measured on Google Maps.",
+  kmShort: "{n} km",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

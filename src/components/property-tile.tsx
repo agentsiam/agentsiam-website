@@ -163,17 +163,6 @@ export function PropertyTile({
             </span>
             <span className="text-muted"> {t.perNight}</span>
           </p>
-        ) : property.lease ? (
-          <p className="mt-3 text-[15px]">
-            <span className="text-muted">{t.fromPrice} </span>
-            <span className="font-display font-bold">
-              {property.currency}&nbsp;
-              {new Intl.NumberFormat(INTL_LOCALE[locale], { maximumFractionDigits: 0 }).format(
-                Math.min(property.lease.monthlyShort, property.lease.monthlyLong),
-              )}
-            </span>
-            <span className="text-muted"> {t.perMonth}</span>
-          </p>
         ) : property.beds24 === null ? (
           <p className="mt-3 text-[15px] text-muted">{t.tileNotOpen}</p>
         ) : null}

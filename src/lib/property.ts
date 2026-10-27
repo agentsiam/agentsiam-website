@@ -68,17 +68,10 @@ export type Property = {
    */
   maxStay: number;
   /**
-   * A house offered on a monthly lease rather than by the night. The owner's advertised
-   * rent and move-in terms, read off the property profile. Absent for nightly stays.
+   * Driving times from the door to named places, measured on a route rather than looked
+   * up, from the property profile's `proximity` block. Absent where nothing is measured.
    */
-  lease?: {
-    /** THB a month for 1 to 6 months. */
-    monthlyShort: number;
-    /** THB a month for 7 months or longer. */
-    monthlyLong: number;
-    depositMonths: number;
-    advanceMonths: number;
-  };
+  nearby?: { labelKey: keyof Dictionary; driveMinutes: number; km: number }[];
   /** Tailwind background class for the tile fill. Solid brand colour, not a photo. */
   fill: string;
   /** Text colour that meets contrast on `fill`. */
@@ -211,7 +204,8 @@ export const COSMOS_HOUSE: Property = {
 };
 
 /**
- * Listed for enquiry on a monthly lease. Every value is a field in
+ * Listed for enquiry only, like Cosmos House: not in Beds24, no price, no booking panel.
+ * Every value is a field in
  * as-operations/properties/pending_MaeRimHouse/MaeRimHouse-property-profile.md, which was
  * written from the owner's advert; what the advert does not say is left out rather than
  * filled.
@@ -222,10 +216,9 @@ export const MAE_RIM_HOUSE: Property = {
   taglineKey: "maeRimTagline",
   areaSlug: "mae-rim",
   citySlug: "chiang-mai",
-  // NOT the house. The Mae Rim area centre from src/lib/areas.ts, because the profile has
-  // no maps pin yet. Replace with the profile's pin when it has one.
-  lat: 18.916,
-  lng: 98.894,
+  // The profile's maps_url pin. Never rendered as is; public maps get approxLocation().
+  lat: 19.0371944,
+  lng: 98.9430556,
   type: "house",
   bedrooms: 2,
   bathrooms: 2,
@@ -234,11 +227,16 @@ export const MAE_RIM_HOUSE: Property = {
   beds24: null,
   currency: "THB",
   maxGuests: null,
-  // A month, the shortest lease advertised. Only the booking flow reads minStay and
-  // maxStay, and it reads Lotus House's.
-  minStay: 30,
-  maxStay: 365,
-  lease: { monthlyShort: 40000, monthlyLong: 35000, depositMonths: 2, advanceMonths: 1 },
+  // Only the booking flow reads these, and it reads Lotus House's. Matches Cosmos House
+  // until Mae Rim House has a Beds24 room of its own.
+  minStay: 2,
+  maxStay: 90,
+  nearby: [
+    { labelKey: "nearRajabhatMaeRim", driveMinutes: 7, km: 4.1 },
+    { labelKey: "nearTaweerotMarket", driveMinutes: 7, km: 3.1 },
+    { labelKey: "nearPremSchool", driveMinutes: 21, km: 16.9 },
+    { labelKey: "nearKadFarangMaeRim", driveMinutes: 26, km: 20.9 },
+  ],
   fill: "bg-primary",
   onFill: "text-white",
   facts: [
@@ -249,7 +247,7 @@ export const MAE_RIM_HOUSE: Property = {
     { labelKey: "factLand", valueKey: "maeRimLandValue" },
     { labelKey: "factParking", valueKey: "maeRimParkingValue" },
   ],
-  descriptionKeys: ["maeRimDesc1", "maeRimDesc2", "maeRimDesc3"],
+  descriptionKeys: ["maeRimDesc1", "maeRimDesc2"],
   address: null,
   checkIn: "",
   checkOut: "",
