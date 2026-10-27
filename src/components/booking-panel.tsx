@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
+import { trackEvent, type AnalyticsEvent } from "@/lib/analytics";
 import { LOTUS_HOUSE } from "@/lib/property";
 import { CONTACT_EMAIL } from "@/lib/site";
 import { PAYMENTS_ENABLED, PaymentForm, retrievePaymentStatus } from "@/components/payment-form";
@@ -680,6 +681,36 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
     if (mode === "requested" || mode === "paid" || mode === "unconfirmed") {
       confirmationRef.current?.focus();
     }
+  }, [mode]);
+
+  /**
+   * The same three terminal states, counted once each. Separate from the focus effect
+   * above because they are different jobs on the same signal, and because this one has to
+   * remember what it already did.
+   *
+   * Counted once per mount, not once per effect run. A guest coming back from a redirect
+   * payment lands on a freshly mounted panel, so the ref starts empty and the outcome is
+   * counted there; the panel then strips the payment parameters from the URL, so a reload
+   * does not reach a terminal state again and nothing is double counted. In development
+   * React mounts twice on purpose, and without the ref every booking would arrive in the
+   * reports as two.
+   *
+   * What goes to Google is the event name alone. No dates, no total, no reference, nothing
+   * the guest typed. See src/lib/analytics.ts.
+   */
+  const trackedOutcomes = useRef(new Set<AnalyticsEvent>());
+  useEffect(() => {
+    const outcome: AnalyticsEvent | null =
+      mode === "requested"
+        ? "booking_requested"
+        : mode === "paid"
+          ? "booking_paid"
+          : mode === "unconfirmed"
+            ? "booking_unconfirmed"
+            : null;
+    if (!outcome || trackedOutcomes.current.has(outcome)) return;
+    trackedOutcomes.current.add(outcome);
+    trackEvent(outcome);
   }, [mode]);
 
   function validateGuest(): boolean {

@@ -410,10 +410,16 @@ The pipeline, so nobody has to think about image formats:
   `US`, `DE`, `GB`, `CH`, `RE`, `AX` and a lowercase `th` all answered correctly, and a
   missing header answers "ask". Pressing Accept in the browser then loaded gtag at the right
   id with `ad_storage`, `ad_user_data` and `ad_personalization` denied in the Consent Mode
-  default, which is the same code path a non-European visitor takes. What is still untested
+  default, which is the same code path a non-European visitor takes. ~~What is still untested
   off Vercel is only whether Vercel sets the header at all; if it stops, the site over-asks
   rather than over-tracks. Worth one look in the Network tab on the first production deploy
-  anyway.
+  anyway.~~ Checked on the live site 26/10/2026 and all of it holds: a Thai visitor gets
+  `{"required":false}` and no banner, gtag loads at the live id, and a real `page_view`
+  reaches Google with `gcs=G101`, meaning ads storage denied. Vercel also overwrites the
+  header rather than trusting it, so a visitor cannot pick their own country: requests sent
+  with `x-vercel-ip-country: DE` and `GB` from Thailand both still answered `false`. The
+  route comes back `private, no-store` and uncached, so one visitor's answer is never served
+  to another.
 
   The Thai and Chinese banner strings (`consentLabel`, `consentBody`, `consentAccept`,
   `consentDecline`) were read for accuracy and rendered at 375px in both languages: accurate,
@@ -429,6 +435,20 @@ The pipeline, so nobody has to think about image formats:
   `_ga` cookies from an earlier session with no stored choice could press Decline and keep the
   cookies.~~ Fixed 03/10/2026: `clearAnalyticsCookies()` now runs on `denied` before the gtag
   check, and only the Consent Mode update sits behind it.
+
+  **Four outcome events are sent and none of them is a key event yet.**
+  `src/lib/analytics.ts` is the only thing that speaks to gtag: `contact_form_sent` from the
+  contact form, and `booking_requested`, `booking_paid` and `booking_unconfirmed` from the
+  booking panel's three terminal states. Each carries an event name and no parameters, so
+  nothing a visitor typed, and no amount, reaches Google; that is what keeps the privacy
+  policy's description of what Google receives true, and adding a parameter is a change to
+  the policy. GA4 treats them as ordinary events until someone marks them as key events in
+  Admin, Events, in the GA4 property, which nobody has done, so the reports still show no
+  leads. The contact path was exercised end to end with the POST stubbed in the browser, so
+  no enquiry was sent: the event reached Google on Accept, and on Decline the form still
+  submitted while no gtag, no `dataLayer`, no cookie and no request existed at all. The
+  booking panel's three were not exercised, because reaching them means holding real nights
+  in Beds24 or taking a real payment.
 - **No Search Console or Bing Webmaster property is verified.** Nothing stops the site being
   crawled, but nobody can submit `sitemap.xml`, read the coverage report, see which queries
   the site already appears for, or ask for a URL to be recrawled. The tags are wired and

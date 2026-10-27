@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { trackEvent } from "@/lib/analytics";
 import { CONTACT_EMAIL } from "@/lib/site";
 
 /**
@@ -121,6 +122,10 @@ export function ContactForm({
         return;
       }
       setStatus("sent");
+      // After the route accepted it, never before: a counted enquiry that never reached
+      // anyone is worse than no number at all. Carries the event name and nothing else,
+      // so none of what was just typed into this form goes to Google.
+      trackEvent("contact_form_sent");
     } catch {
       setError(t.ctErrorNetwork.replace("{email}", CONTACT_EMAIL));
       setStatus("idle");

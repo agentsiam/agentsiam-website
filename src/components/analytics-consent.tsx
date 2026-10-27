@@ -33,11 +33,9 @@ type Choice = "granted" | "denied";
 
 const CHOICE_KEY = "as-analytics-consent";
 
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-  }
-}
+// `window.gtag` is declared once, in src/lib/analytics.ts, which is also the only place
+// that sends an event. This file owns whether gtag exists at all; that one owns what is
+// said through it.
 
 /**
  * The stored choice is state React does not own, so it is read through
