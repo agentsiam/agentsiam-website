@@ -153,7 +153,8 @@ function matches(property: Property, state: SearchState): boolean {
   if (state.types.length && !state.types.includes(property.type)) return false;
   if (state.bedrooms && property.bedrooms < state.bedrooms) return false;
   if (state.bathrooms && property.bathrooms < state.bathrooms) return false;
-  if (state.guests && property.maxGuests < state.guests) return false;
+  if (state.guests && property.maxGuests !== null && property.maxGuests < state.guests)
+    return false;
   if (state.features.length && !state.features.every((f) => property.features.includes(f))) {
     return false;
   }

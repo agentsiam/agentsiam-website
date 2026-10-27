@@ -54,8 +54,12 @@ export type Property = {
   beds24: { propertyId: number; roomId: number } | null;
   /** ISO 4217, as configured on the Beds24 property. Prices are quoted in it. */
   currency: string;
-  /** Occupancy and stay rules, mirroring the Beds24 room so the UI can validate early. */
-  maxGuests: number;
+  /**
+   * Occupancy and stay rules, mirroring the Beds24 room so the UI can validate early.
+   * `maxGuests` is null where the profile does not state it: the tile then prints no guest
+   * count and the guest filter does not exclude the house, rather than a number nobody gave.
+   */
+  maxGuests: number | null;
   minStay: number;
   /**
    * Longest stay bookable online. Not a limit on what we will accept: longer stays are
@@ -63,6 +67,18 @@ export type Property = {
    * holding a year of nights.
    */
   maxStay: number;
+  /**
+   * A house offered on a monthly lease rather than by the night. The owner's advertised
+   * rent and move-in terms, read off the property profile. Absent for nightly stays.
+   */
+  lease?: {
+    /** THB a month for 1 to 6 months. */
+    monthlyShort: number;
+    /** THB a month for 7 months or longer. */
+    monthlyLong: number;
+    depositMonths: number;
+    advanceMonths: number;
+  };
   /** Tailwind background class for the tile fill. Solid brand colour, not a photo. */
   fill: string;
   /** Text colour that meets contrast on `fill`. */
@@ -194,7 +210,54 @@ export const COSMOS_HOUSE: Property = {
   reviews: [],
 };
 
-export const PROPERTIES: Property[] = [LOTUS_HOUSE, COSMOS_HOUSE];
+/**
+ * Listed for enquiry on a monthly lease. Every value is a field in
+ * as-operations/properties/pending_MaeRimHouse/MaeRimHouse-property-profile.md, which was
+ * written from the owner's advert; what the advert does not say is left out rather than
+ * filled.
+ */
+export const MAE_RIM_HOUSE: Property = {
+  slug: "maerimhouse",
+  title: "Mae Rim House",
+  taglineKey: "maeRimTagline",
+  areaSlug: "mae-rim",
+  citySlug: "chiang-mai",
+  // NOT the house. The Mae Rim area centre from src/lib/areas.ts, because the profile has
+  // no maps pin yet. Replace with the profile's pin when it has one.
+  lat: 18.916,
+  lng: 98.894,
+  type: "house",
+  bedrooms: 2,
+  bathrooms: 2,
+  fromPrice: null,
+  features: ["kitchen", "workspace", "washer", "parking"],
+  beds24: null,
+  currency: "THB",
+  maxGuests: null,
+  // A month, the shortest lease advertised. Only the booking flow reads minStay and
+  // maxStay, and it reads Lotus House's.
+  minStay: 30,
+  maxStay: 365,
+  lease: { monthlyShort: 40000, monthlyLong: 35000, depositMonths: 2, advanceMonths: 1 },
+  fill: "bg-primary",
+  onFill: "text-white",
+  facts: [
+    { labelKey: "bedrooms", value: "2" },
+    { labelKey: "bathrooms", value: "2" },
+    { labelKey: "factWorkRoom", value: "1" },
+    { labelKey: "factLivingArea", valueKey: "maeRimLivingAreaValue" },
+    { labelKey: "factLand", valueKey: "maeRimLandValue" },
+    { labelKey: "factParking", valueKey: "maeRimParkingValue" },
+  ],
+  descriptionKeys: ["maeRimDesc1", "maeRimDesc2", "maeRimDesc3"],
+  address: null,
+  checkIn: "",
+  checkOut: "",
+  houseRuleKeys: [],
+  reviews: [],
+};
+
+export const PROPERTIES: Property[] = [LOTUS_HOUSE, COSMOS_HOUSE, MAE_RIM_HOUSE];
 
 /**
  * An approximate point for a property, for any public map.

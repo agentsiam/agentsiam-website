@@ -139,10 +139,12 @@ export function PropertyTile({
               {t[`type_${property.type}` as keyof Dictionary] ?? property.type}
             </dd>
           </div>
-          <div className="flex gap-1.5">
-            <dt>{t.maxGuests}</dt>
-            <dd className="font-semibold text-text">{property.maxGuests}</dd>
-          </div>
+          {property.maxGuests !== null ? (
+            <div className="flex gap-1.5">
+              <dt>{t.maxGuests}</dt>
+              <dd className="font-semibold text-text">{property.maxGuests}</dd>
+            </div>
+          ) : null}
           <div className="flex gap-1.5">
             <dt>{t.bedrooms}</dt>
             <dd className="font-semibold text-text">{property.bedrooms}</dd>
@@ -160,6 +162,17 @@ export function PropertyTile({
               {property.currency}&nbsp;{price}
             </span>
             <span className="text-muted"> {t.perNight}</span>
+          </p>
+        ) : property.lease ? (
+          <p className="mt-3 text-[15px]">
+            <span className="text-muted">{t.fromPrice} </span>
+            <span className="font-display font-bold">
+              {property.currency}&nbsp;
+              {new Intl.NumberFormat(INTL_LOCALE[locale], { maximumFractionDigits: 0 }).format(
+                Math.min(property.lease.monthlyShort, property.lease.monthlyLong),
+              )}
+            </span>
+            <span className="text-muted"> {t.perMonth}</span>
           </p>
         ) : property.beds24 === null ? (
           <p className="mt-3 text-[15px] text-muted">{t.tileNotOpen}</p>

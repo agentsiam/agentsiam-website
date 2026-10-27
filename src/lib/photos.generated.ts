@@ -74,6 +74,20 @@ import lotushouse_42 from "@/photos/lotushouse/Terrace/asian_couple_terrace_suns
 import lotushouse_43 from "@/photos/lotushouse/Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg";
 import lotushouse_44 from "@/photos/lotushouse/Terrace/terrace_people.jpg";
 import lotushouse_45 from "@/photos/lotushouse/Terrace/two_men_terrace_sunset_1280.jpg";
+import maerimhouse_0 from "@/photos/maerimhouse/01-exterior.jpg";
+import maerimhouse_1 from "@/photos/maerimhouse/02-dining.jpg";
+import maerimhouse_2 from "@/photos/maerimhouse/03-work-room.jpg";
+import maerimhouse_3 from "@/photos/maerimhouse/04-entrance.jpg";
+import maerimhouse_4 from "@/photos/maerimhouse/05-covered-parking.jpg";
+import maerimhouse_5 from "@/photos/maerimhouse/06-living-room.jpg";
+import maerimhouse_6 from "@/photos/maerimhouse/07-kitchen.jpg";
+import maerimhouse_7 from "@/photos/maerimhouse/08-bedroom-1.jpg";
+import maerimhouse_8 from "@/photos/maerimhouse/09-bedroom-2.jpg";
+import maerimhouse_9 from "@/photos/maerimhouse/10-bathroom.jpg";
+import maerimhouse_10 from "@/photos/maerimhouse/11-garden-seating.jpg";
+import maerimhouse_11 from "@/photos/maerimhouse/12-house-from-drive.jpg";
+import maerimhouse_12 from "@/photos/maerimhouse/13-garden.jpg";
+import maerimhouse_13 from "@/photos/maerimhouse/14-drive.jpg";
 import team_0 from "@/photos/team/agentsiam-team-group-portrait.jpg";
 import team_1 from "@/photos/team/Nils_m_portrait_as_Co-founder.jpeg";
 import team_2 from "@/photos/team/Paul_b__portrait_as_Co-founder.jpg";
@@ -164,6 +178,22 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: lotushouse_43, file: "Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg", alt: "The soaking tub and loungers on the roof terrace at sunset", room: "Terrace" },
     { src: lotushouse_44, file: "Terrace/terrace_people.jpg", alt: "Four people on the roof terrace at sunset, one of them in the tub", room: "Terrace" },
     { src: lotushouse_45, file: "Terrace/two_men_terrace_sunset_1280.jpg", alt: "Two men on the roof terrace at sunset, one on a lounger beside the tub", room: "Terrace" },
+  ],
+  "maerimhouse": [
+    { src: maerimhouse_0, file: "01-exterior.jpg", alt: "White house with a timber gable, a garden table under a parasol and lawn behind" },
+    { src: maerimhouse_1, file: "02-dining.jpg", alt: "Dining table for four beside the kitchen counter" },
+    { src: maerimhouse_2, file: "03-work-room.jpg", alt: "Work room with a wooden desk and bench, and a window onto the garden" },
+    { src: maerimhouse_3, file: "04-entrance.jpg", alt: "Entrance with glass doors, potted pines and a stepping-stone path" },
+    { src: maerimhouse_4, file: "05-covered-parking.jpg", alt: "Covered parking under a steel roof, open on the garden side" },
+    { src: maerimhouse_5, file: "06-living-room.jpg", alt: "Living room with a sofa, TV and glass doors to the garden" },
+    { src: maerimhouse_6, file: "07-kitchen.jpg", alt: "Kitchen with a hob, range hood and wall cabinets" },
+    { src: maerimhouse_7, file: "08-bedroom-1.jpg", alt: "Bedroom with a wardrobe and glass doors" },
+    { src: maerimhouse_8, file: "09-bedroom-2.jpg", alt: "Second bedroom with a wardrobe and wooden blinds" },
+    { src: maerimhouse_9, file: "10-bathroom.jpg", alt: "Bathroom with a shower and water heater" },
+    { src: maerimhouse_10, file: "11-garden-seating.jpg", alt: "Garden table under a parasol, with lawn beyond" },
+    { src: maerimhouse_11, file: "12-house-from-drive.jpg", alt: "The house above a grassy bank, with steps up from the drive" },
+    { src: maerimhouse_12, file: "13-garden.jpg", alt: "Lawn and trees in the garden" },
+    { src: maerimhouse_13, file: "14-drive.jpg", alt: "Concrete drive along the garden wall, with trees beyond" },
   ],
   "team": [
     { src: team_0, file: "agentsiam-team-group-portrait.jpg", alt: "The AgentSiam team, the five people who run the company" },
