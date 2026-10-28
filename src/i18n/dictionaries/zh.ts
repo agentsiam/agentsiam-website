@@ -44,8 +44,8 @@ export const zh: Dictionary = {
   ownerPanelBody: "签约之前我们先把账算清楚。如果不划算，我们会直说。",
   ownerPanelLink: "了解我们如何管理",
 
-  featuredTitle: "这套房源",
-  featuredSub: "一套住宅，现已开放预订。与其挂上十套，不如把一套做好。",
+  featuredTitle: "我们的房源",
+  featuredSub: "清迈的 {n} 套住宅。Lotus House 现已开放预订，其余房源欢迎写信咨询。",
 
   whyA: "官网直订，无平台加价",
   whyABody: "官网直订，房价不含平台加价，直接联系管理房源的团队。",

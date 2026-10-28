@@ -55,8 +55,8 @@ export const en = {
     "We run the numbers before you sign anything. If it will not earn, we say so.",
   ownerPanelLink: "See how management works",
 
-  featuredTitle: "The property",
-  featuredSub: "One house, live now. We would rather run one well than list ten.",
+  featuredTitle: "Our properties",
+  featuredSub: "{n} houses in Chiang Mai. Lotus House takes bookings now; write to us about the others.",
 
   whyA: "Direct rate, no platform markup",
   whyABody:
