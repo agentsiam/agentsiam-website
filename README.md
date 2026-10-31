@@ -429,12 +429,21 @@ The pipeline, so nobody has to think about image formats:
   `_ga` cookies from an earlier session with no stored choice could press Decline and keep the
   cookies.~~ Fixed 03/10/2026: `clearAnalyticsCookies()` now runs on `denied` before the gtag
   check, and only the Consent Mode update sits behind it.
-- **No Search Console or Bing Webmaster property is verified.** Nothing stops the site being
-  crawled, but nobody can submit `sitemap.xml`, read the coverage report, see which queries
-  the site already appears for, or ask for a URL to be recrawled. The tags are wired and
-  waiting: `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` and `NEXT_PUBLIC_BING_SITE_VERIFICATION`
-  render nothing while unset, and `.env.example` carries both. A DNS TXT record verifies the
-  same property without the tag, in which case they stay unset. Bing can import a verified
+- ~~**No Search Console or Bing Webmaster property is verified.**~~ Google resolved
+  31/10/2026. `https://agentsiam.com` is verified as a **URL prefix** property by the HTML
+  tag method, and `sitemap.xml` is submitted. `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` is set
+  in Vercel production, as a Config value rather than a Secret, since the token renders into
+  the page. **Deleting that variable drops the tag on the next deploy and silently
+  unverifies the property.** A Domain property for `agentsiam.com` also exists and is
+  deliberately left unverified: it needs a DNS `TXT` record in a zone that still sits at Wix,
+  and it is the better property to finish the day the zone moves, because it covers the apex,
+  `www` and every subdomain at once.
+  **Two things remain.** Verification by Google Analytics was tried first and cannot work
+  here: `analytics-consent.tsx` decides client-side after the region check, so the HTML
+  Google fetches carries no gtag and the attempt failed with "we could not find any Google
+  Analytics tracking codes on the index page". That is the privacy design working, not a
+  defect, but it rules the method out permanently. And **Bing is still unverified**;
+  `NEXT_PUBLIC_BING_SITE_VERIFICATION` is wired and unset, and Bing can import the verified
   Google property rather than being verified separately.
 - **No aggregate rating and no review count.** One quoted Airbnb review, no verified figure
   behind it. The homepage and the property page both render a single review as a quote
