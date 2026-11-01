@@ -53,7 +53,7 @@ const COPY = {
     },
     {
       q: "Deposit and terms",
-      a: "Any deposit is agreed per home and stated before you book. Monthly terms start at 28 nights.",
+      a: "Any deposit is agreed per home and stated before you book.",
     },
     {
       q: "Wi-Fi and location",
@@ -63,7 +63,7 @@ const COPY = {
   howTitle: "How it works",
   how: [
     "You send the request below: dates, bedrooms, area, budget and what the home must have.",
-    "We look for privately owned homes that fit, from owners, never from other agents.",
+    "We look for privately owned homes that fit.",
     "Before we offer a home we check it: photos, exact location, and a Wi-Fi speed test from the owner.",
     "You get the homes that fit, each with the total price, what is included and the deposit, and decide.",
   ],
@@ -76,7 +76,7 @@ const COPY = {
   faq: [
     {
       q: "Do you have a private house free for a month in Chiang Mai?",
-      a: "Send your dates through the form on this page. We look for privately owned houses that are free for those dates and reply with the ones that fit, each with photos, the exact location and the total price.",
+      a: "Send your dates through the form on this page. We look for privately owned houses that are free for those dates and reply with the ones that fit, each with the total price.",
     },
     {
       q: "What does the monthly rate cover?",
@@ -88,7 +88,7 @@ const COPY = {
     },
     {
       q: "Is the Wi-Fi fast enough for remote work?",
-      a: "We do not guess. Before we offer a home, the owner sends a speed test, and we pass it to you with the photos and the exact location.",
+      a: "Yes, measured: before we offer a home, the owner sends a speed test, and we pass it to you with the photos and the exact location.",
     },
     {
       q: "Can you find a house near Nimman, Santitham or the Old City?",
@@ -96,7 +96,7 @@ const COPY = {
     },
     {
       q: "Do you work with other agents?",
-      a: "No. We find homes from their owners and check each one before we offer it.",
+      a: "No. We find homes from their owners.",
     },
   ],
 } as const;
