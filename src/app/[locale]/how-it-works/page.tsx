@@ -9,15 +9,21 @@ import { SampleReport } from "@/components/sample-report";
 import { TeamRow } from "@/components/team-row";
 import { type Dictionary, getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
-import { pickPhotos } from "@/lib/photos";
+import { pickPhoto, pickPhotos } from "@/lib/photos";
 import { LOTUS_HOUSE } from "@/lib/property";
 import { pageMeta } from "@/lib/site";
 import { faqSchema } from "@/lib/structured-data";
 import { Qualifier } from "./qualifier";
 
 /**
- * The owner conversion page. Block order: hero → routes → menu → what the fee buys → the
- * two gates → the qualifier → included/not included → TM30 → FAQ → closing CTA → guest link.
+ * The owner conversion page. Block order: hero (team photo and five proof chips) → why owners
+ * choose us → the house we run → routes → menu → report → team → the two gates → the
+ * qualifier → included/not included → TM30 → FAQ → closing CTA → guest link.
+ *
+ * Reordered 28/10/2026 for owners arriving cold from Facebook groups: the differentiators and
+ * the proof used to sit below 4,000px of menu, so most visitors never reached them. The route
+ * cards lost their gradient image slots in the same change; with real photography on the site
+ * they read as missing pictures rather than as a deliberate treatment.
  *
  * Restructured 25/08/2026 from "a staircase, not a menu" to a menu. The services no longer
  * run in a fixed order: the study applies where there is no occupancy record to read, and
@@ -95,10 +101,10 @@ const EXTRAS = [
  * Ordered by how often we see them, not by service number.
  */
 const ROUTES = [
-  { icon: "trend", grad: "grad-blue" },
-  { icon: "search", grad: "grad-sand" },
-  { icon: "house", grad: "grad-pink" },
-  { icon: "transfer", grad: "grad-blue" },
+  { icon: "trend" },
+  { icon: "search" },
+  { icon: "house" },
+  { icon: "transfer" },
 ];
 
 /**
@@ -169,6 +175,17 @@ export default async function HowItWorksPage({
     "IMG_5724",
     "mainstree_exterior_lotushouse",
   ]);
+
+  // The team, not the house, in the hero: an owner is hiring people.
+  const heroPhoto = pickPhoto("team", "team-group-portrait");
+
+  const heroProof = [
+    t.ownerHeroProof1,
+    t.ownerHeroProof2,
+    t.ownerHeroProof3,
+    t.ownerHeroProof4,
+    t.ownerHeroProof5,
+  ];
 
   const routes = [
     { ...ROUTES[0], when: t.route1When, take: t.route1Take, why: t.route1Why },
@@ -246,40 +263,50 @@ export default async function HowItWorksPage({
     {
       title: t.vp1Title,
       body: t.vp1Body,
-      tile: "bg-sand",
-      glyph: "§",
-      onTile: "text-ink",
+      icon: "shield",
     },
     {
       title: t.vp2Title,
       body: t.vp2Body,
-      tile: "bg-teal",
-      glyph: "◉",
-      onTile: "text-ink",
+      icon: "pin",
     },
     {
       title: t.vp3Title,
       body: t.vp3Body,
-      tile: "bg-primary",
-      glyph: "±",
-      onTile: "text-white",
+      icon: "coins",
     },
     {
       title: t.vp4Title,
       body: t.vp4Body,
-      tile: "bg-secondary",
-      glyph: "⇄",
-      onTile: "text-white",
+      icon: "globe",
     },
   ];
 
   return (
     <div>
-      {/* shape: hero -- Hero. Blue panel, gold stripe on the right quarter. */}
+      {/* shape: hero -- Hero. Blue panel, team photograph on the right (sand stripe if none). */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-primary px-6 py-13 sm:px-12 sm:py-14">
-          <div className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block" />
-          <div className="relative min-[900px]:max-w-[min(660px,calc(64%-24px))]">
+          {/* Right-hand panel: the team photograph where one exists, the sand stripe from the
+              handoff where it does not. The flat stripe on its own read as an empty image slot
+              to owners arriving from Facebook, so the people come first. */}
+          {heroPhoto ? (
+            <div className="absolute inset-y-0 right-0 hidden w-[36%] min-[900px]:block">
+              <Image
+                src={heroPhoto.src}
+                alt={heroPhoto.alt || t.meetTheTeam}
+                lang="en"
+                placeholder="blur"
+                fill
+                priority
+                sizes="(min-width: 900px) 420px, 0px"
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <div className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block" />
+          )}
+          <div className="relative min-[900px]:max-w-[min(660px,calc(60%-24px))]">
             <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
               {t.ownerHeroEyebrow}
             </span>
@@ -303,9 +330,97 @@ export default async function HowItWorksPage({
                 {t.checkQualify}
               </a>
             </div>
+            {/* The five things owners ask about first, readable before any scroll. Each one is
+                expanded further down the page, so nothing here is a claim the page does not back. */}
+            <ul className="mt-7 flex flex-wrap gap-2">
+              {heroProof.map((item) => (
+                <li
+                  key={item}
+                  className="rounded-full bg-white/12 px-3.5 py-1.5 text-[13px] font-semibold text-white"
+                >
+                  ✓ {item}
+                </li>
+              ))}
+            </ul>
           </div>
+          {heroPhoto ? (
+            <div className="relative mt-8 aspect-16/10 overflow-hidden rounded-box min-[900px]:hidden">
+              <Image
+                src={heroPhoto.src}
+                alt={heroPhoto.alt || t.meetTheTeam}
+                lang="en"
+                placeholder="blur"
+                fill
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
+          ) : null}
         </div>
       </section>
+
+      {/* shape: value-glyph-grid -- Why owners choose us, straight after the hero. Every claim here is checkable; keep it that way. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
+          {t.vpTitle}
+        </h2>
+        <div className="mt-7 grid gap-x-6.5 gap-y-8 sm:grid-cols-[repeat(auto-fit,minmax(215px,1fr))]">
+          {valueProps.map((prop) => (
+            <div key={prop.title} className="flex flex-col gap-3.5">
+              <IconChip name={prop.icon} tone="sand" />
+              <h3 className="font-display text-lg font-bold leading-tight tracking-[-0.015em]">
+                {prop.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-body">{prop.body}</p>
+            </div>
+          ))}
+        </div>
+        <Link href={href("/contact")} className="pill-primary mt-8">
+          {t.talkToUs} →
+        </Link>
+      </section>
+
+      {/* shape: proof-block
+          -- Proof, straight after the claims: the four promises above are only as good as
+             a house that shows them, and this is the one we run. Photographs of the actual house, not atmosphere.
+
+             The link out is plain text, never a button: it crosses audiences (owner page ->
+             guest page) and the design's CTA rule puts those a full tier below the primary.
+             Renders nothing at all if the photo set is empty. */}
+      {proofPhotos.length > 0 ? (
+        <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+          <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
+            {t.proofTitle}
+          </h2>
+          <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
+            {t.proofBody}
+          </p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            {proofPhotos.map((photo) => (
+              <div
+                key={photo.file}
+                className="relative aspect-4/3 overflow-hidden rounded-box"
+              >
+                <Image
+                  src={photo.src}
+                  alt={photo.alt || LOTUS_HOUSE.title}
+                  lang="en"
+                  placeholder="blur"
+                  fill
+                  sizes="(min-width: 640px) 340px, 100vw"
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
+          <Link
+            href={href(`/${LOTUS_HOUSE.slug}`)}
+            className="hit mt-4 inline-block text-sm font-semibold text-primary hover:text-secondary"
+          >
+            {LOTUS_HOUSE.title} →
+          </Link>
+        </section>
+      ) : null}
 
       {/* shape: route-grid
           -- The routes. Before the menu, deliberately: a list of six services asks the owner
@@ -331,27 +446,6 @@ export default async function HowItWorksPage({
                     {route.when}
                   </h3>
                 </div>
-
-                {/* Image slot. The abstract gradient ground is the correct current-state
-                    treatment, not a stopgap: zero active photos exist and the guardrails
-                    forbid dropping in stock "just for now". Swap for real photography
-                    once something clears intake.
-
-                    The hue per route is deliberately NOT matched to its sentiment, and as
-                    of 06/09/2026 the two verdict hues are off these cards entirely. Teal is
-                    the positive-verdict token and vermilion the negative one, and they were
-                    landing on "Not listed yet" and "Already with another manager" -- which
-                    reads as a rating of the owner's situation, and of their current manager,
-                    that the copy never made. Avoiding the correlation by shuffling the two
-                    hues is fragile: any reorder brings it back. Blue, sand and pink carry no
-                    verdict meaning anywhere on the site, so they are the only three that can
-                    sit on a card whose copy could be read as good or bad news. Four cards
-                    from three hues means one repeats, on the diagonal of the 2x2, which
-                    reads as a pattern rather than as a mistake. */}
-                <div
-                  aria-hidden="true"
-                  className={`mx-5 mt-4 h-[156px] rounded-lg ${route.grad}`}
-                />
 
                 <div className="flex flex-col gap-2 px-5 pt-4 pb-5.5">
                   <p className="text-[14px] font-semibold leading-snug text-primary">
@@ -496,38 +590,6 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* shape: value-glyph-grid -- What the fee buys. Every claim here is checkable; keep it that way. */}
-      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
-        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
-          {t.vpTitle}
-        </h2>
-        <div className="mt-7 grid gap-x-6.5 gap-y-8 sm:grid-cols-[repeat(auto-fit,minmax(215px,1fr))]">
-          {valueProps.map((prop) => (
-            <div key={prop.title} className="flex flex-col gap-3.5">
-              <div
-                className={`flex h-11.5 w-11.5 items-center justify-center rounded-box ${prop.tile}`}
-              >
-                {/* Typographic glyphs, as in the handoff. An icon set has not been chosen;
-                    aria-hidden because these are decoration, not content. */}
-                <span
-                  aria-hidden="true"
-                  className={`text-xl font-semibold ${prop.onTile}`}
-                >
-                  {prop.glyph}
-                </span>
-              </div>
-              <h3 className="font-display text-lg font-bold leading-tight tracking-[-0.015em]">
-                {prop.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-body">{prop.body}</p>
-            </div>
-          ))}
-        </div>
-        <Link href={href("/contact")} className="pill-primary mt-8">
-          {t.talkToUs} →
-        </Link>
-      </section>
-
       {/* shape: team-row -- The people. Rendered from a component, so the page declares it here. */}
       <TeamRow t={t} heading={t.meetTheTeam} />
 
@@ -643,48 +705,6 @@ export default async function HowItWorksPage({
         <JsonLd data={faqSchema(faq)} />
       </section>
 
-      {/* shape: proof-block
-          -- Proof. The page has just spent 2,000 words claiming we run properties here; this
-             is the one we run. Photographs of the actual house, not atmosphere.
-
-             The link out is plain text, never a button: it crosses audiences (owner page ->
-             guest page) and the design's CTA rule puts those a full tier below the primary.
-             Renders nothing at all if the photo set is empty. */}
-      {proofPhotos.length > 0 ? (
-        <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
-          <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
-            {t.proofTitle}
-          </h2>
-          <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
-            {t.proofBody}
-          </p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            {proofPhotos.map((photo) => (
-              <div
-                key={photo.file}
-                className="relative aspect-4/3 overflow-hidden rounded-box"
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt || LOTUS_HOUSE.title}
-                  lang="en"
-                  placeholder="blur"
-                  fill
-                  sizes="(min-width: 640px) 340px, 100vw"
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
-          <Link
-            href={href(`/${LOTUS_HOUSE.slug}`)}
-            className="hit mt-4 inline-block text-sm font-semibold text-primary hover:text-secondary"
-          >
-            {LOTUS_HOUSE.title} →
-          </Link>
-        </section>
-      ) : null}
-
       {/* shape: closing-cta -- Closing CTA, then the cross-audience link as plain text one tier below it. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-14">
         <div className="flex flex-wrap items-center justify-between gap-7 rounded-panel bg-ink px-6 py-9 sm:px-10">
@@ -696,12 +716,20 @@ export default async function HowItWorksPage({
               {t.hwClosingBody}
             </p>
           </div>
-          <Link
-            href={href("/contact")}
-            className="pill-light whitespace-nowrap"
-          >
-            {t.bookStudy}
-          </Link>
+          <div className="flex flex-col items-start gap-3">
+            <Link
+              href={href("/contact")}
+              className="pill-light whitespace-nowrap"
+            >
+              {t.talkToUs}
+            </Link>
+            <Link
+              href={href("/contact")}
+              className="hit text-sm text-white underline underline-offset-4"
+            >
+              {t.bookStudy}
+            </Link>
+          </div>
         </div>
       </section>
 

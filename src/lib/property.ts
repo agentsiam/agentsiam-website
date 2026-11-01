@@ -54,8 +54,12 @@ export type Property = {
   beds24: { propertyId: number; roomId: number } | null;
   /** ISO 4217, as configured on the Beds24 property. Prices are quoted in it. */
   currency: string;
-  /** Occupancy and stay rules, mirroring the Beds24 room so the UI can validate early. */
-  maxGuests: number;
+  /**
+   * Occupancy and stay rules, mirroring the Beds24 room so the UI can validate early.
+   * `maxGuests` is null where the profile does not state it: the tile then prints no guest
+   * count and the guest filter does not exclude the house, rather than a number nobody gave.
+   */
+  maxGuests: number | null;
   minStay: number;
   /**
    * Longest stay bookable online. Not a limit on what we will accept: longer stays are
@@ -63,6 +67,11 @@ export type Property = {
    * holding a year of nights.
    */
   maxStay: number;
+  /**
+   * Driving times from the door to named places, measured on a route rather than looked
+   * up, from the property profile's `proximity` block. Absent where nothing is measured.
+   */
+  nearby?: { labelKey: keyof Dictionary; driveMinutes: number; km: number }[];
   /** Tailwind background class for the tile fill. Solid brand colour, not a photo. */
   fill: string;
   /** Text colour that meets contrast on `fill`. */
@@ -194,7 +203,59 @@ export const COSMOS_HOUSE: Property = {
   reviews: [],
 };
 
-export const PROPERTIES: Property[] = [LOTUS_HOUSE, COSMOS_HOUSE];
+/**
+ * Listed for enquiry only, like Cosmos House: not in Beds24, no price, no booking panel.
+ * Every value is a field in
+ * as-operations/properties/pending_MaeRimHouse/MaeRimHouse-property-profile.md, which was
+ * written from the owner's advert; what the advert does not say is left out rather than
+ * filled.
+ */
+export const MAE_RIM_HOUSE: Property = {
+  slug: "maerimhouse",
+  title: "Mae Rim House",
+  taglineKey: "maeRimTagline",
+  areaSlug: "mae-rim",
+  citySlug: "chiang-mai",
+  // The profile's maps_url pin. Never rendered as is; public maps get approxLocation().
+  lat: 19.0371944,
+  lng: 98.9430556,
+  type: "house",
+  bedrooms: 2,
+  bathrooms: 2,
+  fromPrice: null,
+  features: ["kitchen", "workspace", "washer", "parking"],
+  beds24: null,
+  currency: "THB",
+  maxGuests: null,
+  // Only the booking flow reads these, and it reads Lotus House's. Matches Cosmos House
+  // until Mae Rim House has a Beds24 room of its own.
+  minStay: 2,
+  maxStay: 90,
+  nearby: [
+    { labelKey: "nearRajabhatMaeRim", driveMinutes: 7, km: 4.1 },
+    { labelKey: "nearTaweerotMarket", driveMinutes: 7, km: 3.1 },
+    { labelKey: "nearPremSchool", driveMinutes: 21, km: 16.9 },
+    { labelKey: "nearKadFarangMaeRim", driveMinutes: 26, km: 20.9 },
+  ],
+  fill: "bg-primary",
+  onFill: "text-white",
+  facts: [
+    { labelKey: "bedrooms", value: "2" },
+    { labelKey: "bathrooms", value: "2" },
+    { labelKey: "factWorkRoom", value: "1" },
+    { labelKey: "factLivingArea", valueKey: "maeRimLivingAreaValue" },
+    { labelKey: "factLand", valueKey: "maeRimLandValue" },
+    { labelKey: "factParking", valueKey: "maeRimParkingValue" },
+  ],
+  descriptionKeys: ["maeRimDesc1", "maeRimDesc2"],
+  address: null,
+  checkIn: "",
+  checkOut: "",
+  houseRuleKeys: [],
+  reviews: [],
+};
+
+export const PROPERTIES: Property[] = [LOTUS_HOUSE, COSMOS_HOUSE, MAE_RIM_HOUSE];
 
 /**
  * An approximate point for a property, for any public map.

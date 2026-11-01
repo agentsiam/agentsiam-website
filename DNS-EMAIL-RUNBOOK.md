@@ -29,6 +29,17 @@ transfer adds a year — see Path 2.
 | DMARC | **none** |
 | Locks | `clientTransferProhibited`, `clientUpdateProhibited` |
 
+> **The September registrar transfer did not happen.** Checked 31/10/2026: `agentsiam.com`
+> still answers on `ns2.wixdns.net` and `ns3.wixdns.net`, so Path 2 below is still a plan
+> and not a record of events, and the Cloudflare zone described there does not exist. The
+> apex `TXT` set was read the same day and holds exactly two records, the Zoho SPF line and
+> the Zoho verification string, both unchanged. Nothing else in the table above was
+> re-checked on that date: the registrar, the website `A` records, the `MX` set, DKIM and
+> the locks are all as they were last recorded, which for the website rows means pre-cutover
+> and wrong, since the site has served from Vercel since the launch. Read the zone from the
+> Wix UI on the day, as the warning below already says.
+
+
 Note the SPF include is `zohomail.eu`, **not** `zoho.com`. Zoho's EU tenant. Getting this
 wrong breaks all outbound mail, so copy it exactly.
 

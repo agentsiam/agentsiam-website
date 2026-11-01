@@ -52,7 +52,7 @@ import { searchToQuery } from "@/lib/search";
  */
 
 /** The largest party any property we manage can take. The stepper stops there. */
-const MAX_GUESTS = Math.max(...PROPERTIES.map((property) => property.maxGuests));
+const MAX_GUESTS = Math.max(...PROPERTIES.map((property) => property.maxGuests ?? 0));
 
 /**
  * Today, in UTC, matching the server's own date arithmetic. Read at submit time rather

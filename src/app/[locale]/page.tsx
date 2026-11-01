@@ -6,7 +6,8 @@ import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { heroPhoto, pickPhoto } from "@/lib/photos";
 import { HeroSearch } from "@/components/hero-search";
-import { LOTUS_HOUSE, propertyArea, propertyFacts } from "@/lib/property";
+import { LOTUS_HOUSE, PROPERTIES } from "@/lib/property";
+import { PropertyTile } from "@/components/property-tile";
 import { areaVibe } from "@/i18n/area-vibe";
 import { AREAS } from "@/lib/areas";
 import { areaGradient, areaName } from "@/lib/area-content";
@@ -62,7 +63,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale as Locale, path);
   const property = LOTUS_HOUSE;
-  const area = propertyArea(property);
   // The gallery's first photo doubles as the card image, so the two cannot disagree.
   const cardPhoto = heroPhoto(property.slug);
   // The fork panels take a photo each or neither. The guest side wants somewhere you would
@@ -330,73 +330,38 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      {/* shape: property-tile -- The property. One tile, using the same component shape a results grid would. */}
+      {/* shape: property-tile -- Every listed property, as the same tiles /properties
+          shows, so the homepage and the results grid cannot describe a house two ways.
+          auto-fill for the same reason as /properties: a short row keeps its column width
+          rather than stretching one tile across the page. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
-        <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
-          {t.featuredTitle}
-        </h2>
-        <p className="mt-1.5 text-sm text-muted">{t.featuredSub}</p>
-
-        {/* Capped rather than full-bleed: the design's featured row is four tiles across
-            1440px, and one tile stretched to that width reads as a page that failed to
-            load the other three. */}
-        <Link
-          href={href(`/${property.slug}`)}
-          className="group mt-5.5 grid max-w-[900px] gap-6 rounded-panel border border-hairline p-4 sm:grid-cols-[minmax(0,320px)_1fr] sm:items-center"
-        >
-          {/* The first photo, once one exists. Until then the brand fill carries the
-              title, so the tile reads as designed rather than as a failed image. */}
-          {cardPhoto ? (
-            <div className="relative aspect-4/3 overflow-hidden rounded-box">
-              <Image
-                src={cardPhoto.src}
-                alt={cardPhoto.alt || property.title}
-                lang="en"
-                placeholder="blur"
-                fill
-                sizes="(min-width: 640px) 320px, 100vw"
-                className="object-cover"
-              />
-            </div>
-          ) : (
-            /* aria-hidden: this is the fill doing graphic work, and the real heading is
-               in the column beside it. Without this a screen reader reads the name twice. */
-            <div
-              aria-hidden="true"
-              className={`flex aspect-4/3 flex-col justify-end rounded-box ${property.fill} p-5`}
-            >
-              <span
-                className={`font-headline text-xl font-extrabold tracking-[-0.03em] ${property.onFill}`}
-              >
-                {property.title}
-              </span>
-              <span className={`text-[13px] ${property.onFill} opacity-80`}>
-                {area?.name}
-              </span>
-            </div>
-          )}
-
-          <div className="px-1 pb-3 sm:pb-0 sm:pr-5">
-            <h3 className="font-display text-xl font-bold tracking-[-0.015em]">
-              {property.title}
-            </h3>
-            <span className="eyebrow mt-1.5 block">{areaVibe(t, area)}</span>
-            <p className="mt-2.5 text-[15px] leading-relaxed text-body">
-              {t.lotusTagline}
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
+              {t.featuredTitle}
+            </h2>
+            <p className="mt-1.5 text-sm text-muted">
+              {t.featuredSub.replace("{n}", String(PROPERTIES.length))}
             </p>
-            <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-muted">
-              {propertyFacts(t, property).map((fact) => (
-                <div key={fact.label} className="flex gap-1.5">
-                  <dt>{fact.label}</dt>
-                  <dd className="font-semibold text-text">{fact.value}</dd>
-                </div>
-              ))}
-            </dl>
-            <span className="mt-5 inline-block text-sm font-semibold text-primary group-hover:text-secondary">
-              {t.viewProperty} →
-            </span>
           </div>
-        </Link>
+          <Link
+            href={href("/properties")}
+            className="text-sm font-semibold text-primary hover:text-secondary"
+          >
+            {t.allProperties} →
+          </Link>
+        </div>
+        <div className="mt-5.5 grid gap-6 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
+          {PROPERTIES.map((item) => (
+            <PropertyTile
+              key={item.slug}
+              property={item}
+              t={t}
+              href={href(`/${item.slug}`)}
+              locale={locale as Locale}
+            />
+          ))}
+        </div>
       </section>
 
       {/* shape: value-glyph-grid -- Why book direct. */}

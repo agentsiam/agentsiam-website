@@ -55,8 +55,8 @@ export const en = {
     "We run the numbers before you sign anything. If it will not earn, we say so.",
   ownerPanelLink: "See how management works",
 
-  featuredTitle: "The property",
-  featuredSub: "One house, live now. We would rather run one well than list ten.",
+  featuredTitle: "Our properties",
+  featuredSub: "{n} houses in Chiang Mai. Lotus House takes bookings now; write to us about the others.",
 
   whyA: "Direct rate, no platform markup",
   whyABody:
@@ -125,7 +125,7 @@ export const en = {
   addServicesTitle: "Alongside the management",
   whatYouGet: "What you get",
   notIncluded: "Not included, so there are no surprises",
-  vpTitle: "What the fee actually buys",
+  vpTitle: "Why owners choose AgentSiam",
   vp1Title: "Legal, not just listed",
   vp1Body:
     "We assess your property against the Hotel Act and the non-hotel framework, prepare the documents and file under power of attorney. Most managers skip this step entirely and leave the risk with you.",
@@ -135,9 +135,8 @@ export const en = {
   vp3Title: "Numbers before contracts",
   vp3Body:
     "The feasibility study is paid, and it can end in a No-Go. We judge on the conservative case against a real local long-term comparable, not on the optimistic column.",
-  vp4Title: "Channels, plus your own",
-  vp4Body:
-    "Listings and rates managed across the main OTAs through Beds24, and a direct booking site so not every night pays platform commission. TM30 guest reporting is included.",
+  vp4Title: "Seven channels, plus your own",
+  vp4Body: "Airbnb, Booking.com, Agoda, Expedia, Vrbo, Trip.com and Google Vacation Rentals run from one calendar and one rate plan, so nothing double-books, plus a direct booking site where a booking pays no platform commission. TM30 guest reporting is included.",
   gatesTitle: "The study has to be able to say no.",
   qualifyTitle: "Is your property a fit?",
   mgmtTitle: "What management actually means",
@@ -431,6 +430,7 @@ export const en = {
   childrenNote: "Everyone counts toward the maximum, whatever their age.",
   whatThisPlaceIsNot: "Limits to know before booking",
   childSupervision: "Toddlers need supervision on the stairs and the roof terrace.",
+  outdoorCamera: "There is one security camera, outdoors at the front parking gate, facing away from the house and covering the approach only. No cameras inside.",
 
   // -- accessible names for chrome and controls ----------------------------
   // Two navigation landmarks per page once a breadcrumb is on it, so both need names.
@@ -824,7 +824,7 @@ export const en = {
   hwCore3Body: "Listings, pricing, guests and compliance, run by the team here in Chiang Mai. This is the service most owners come for, and the only one that runs continuously.",
   hwCore3Get1: "Listing creation and management across the main OTA channels",
   hwCore3Get2: "A direct booking website, so not every night pays platform commission",
-  hwCore3Get3: "Channel and rate management in Beds24",
+  hwCore3Get3: "Channel and rate management across all seven channels from one system",
   hwCore3Get4: "Guest communication across the whole stay",
   hwCore3Get5: "Review, Superhost and Guest Favourite management",
   hwCore3Get6: "Compliance upkeep, and TM30 guest reporting",
@@ -1033,6 +1033,36 @@ export const en = {
   cosmosDesc2: "Inside are two king bedrooms, two bathrooms, a full kitchen with a breakfast bar, a dining table, and a second lounge that opens onto a balcony. Two work desks, a smart TV, air conditioning, Wi-Fi, a washing machine and a safety box are included.",
   ruleNoSmokingIndoors: "No smoking indoors",
   ruleNoEvents: "No parties or events",
+
+  // -- mae rim house: enquiry-only listing ---------------------------------
+  metaMaeRimTitle: "Mae Rim House, Mae Rim, Chiang Mai",
+  metaMaeRimDesc: "Two bedrooms, two bathrooms and a work room in a detached house with a garden in Mae Rim, Chiang Mai. Not open for booking yet; write to us and hear first when it is.",
+  maeRimTagline: "Two bedrooms, a work room and a garden on 1,412 m² of land in Mae Rim, Chiang Mai",
+  maeRimDesc1: "Mae Rim House is a detached house with 120 m² of living space, not counting the covered parking, on 1,412 m² of land in Mae Rim, north of Chiang Mai. Garden surrounds the house, and there is an outdoor seating area.",
+  maeRimDesc2: "Inside are two bedrooms and a living room, all air-conditioned; two bathrooms, both with water heaters; a work room; and a dining room with a kitchen area and range hood. A washing machine is included.",
+  factWorkRoom: "Work room",
+  factLivingArea: "Living area",
+  factLand: "Land",
+  factParking: "Parking",
+  maeRimLivingAreaValue: "120 m²",
+  maeRimLandValue: "1,412 m²",
+  maeRimParkingValue: "2–3 cars",
+  maeRimEnquireTitle: "Not open for booking yet",
+  maeRimEnquireBody: "Dates for Mae Rim House are not open yet. Write to us and we will tell you the day they are, and answer any question about the house in the meantime.",
+  maeRimEnquire: "Email us about Mae Rim House",
+  nearRajabhatMaeRim: "Chiang Mai Rajabhat University, Mae Rim campus",
+  nearTaweerotMarket: "Taweerot Market",
+  nearPremSchool: "Prem Tinsulanonda International School",
+  nearKadFarangMaeRim: "Kad Farang Mae Rim",
+  maeRimGettingAroundBody: "Driving times from the house, measured on Google Maps.",
+  kmShort: "{n} km",
+
+  // -- how-it-works hero proof chips ---------------------------------------
+  ownerHeroProof1: "Team based in Chiang Mai",
+  ownerHeroProof2: "7 booking channels plus a direct site",
+  ownerHeroProof3: "Licensing handled for you",
+  ownerHeroProof4: "Housekeeping and upkeep",
+  ownerHeroProof5: "No lock-in period",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

@@ -139,10 +139,12 @@ export function PropertyTile({
               {t[`type_${property.type}` as keyof Dictionary] ?? property.type}
             </dd>
           </div>
-          <div className="flex gap-1.5">
-            <dt>{t.maxGuests}</dt>
-            <dd className="font-semibold text-text">{property.maxGuests}</dd>
-          </div>
+          {property.maxGuests !== null ? (
+            <div className="flex gap-1.5">
+              <dt>{t.maxGuests}</dt>
+              <dd className="font-semibold text-text">{property.maxGuests}</dd>
+            </div>
+          ) : null}
           <div className="flex gap-1.5">
             <dt>{t.bedrooms}</dt>
             <dd className="font-semibold text-text">{property.bedrooms}</dd>
