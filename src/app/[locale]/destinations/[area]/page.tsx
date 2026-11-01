@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Faq } from "@/components/faq";
 import { IconChip } from "@/components/icon";
 import { JsonLd } from "@/components/json-ld";
 import { PropertyTile } from "@/components/property-tile";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, LOCALES, type Locale } from "@/i18n/config";
 import { AREAS, areaBySlug, CITY_CENTRE, distanceKm } from "@/lib/areas";
-import { areaContent, areaLine, guidePlacesInArea } from "@/lib/area-content";
+import { areaContent, areaLine, areaName, guidePlacesInArea } from "@/lib/area-content";
 import { categoryIcon } from "@/lib/guide-icons";
 import { propertiesInArea } from "@/lib/property";
 import { searchToQuery } from "@/lib/search";
 import { pageMeta, routeOgImage } from "@/lib/site";
-import { breadcrumbSchema, type Crumb } from "@/lib/structured-data";
+import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
 import { areaVibe } from "@/i18n/area-vibe";
 import { alt as ogAlt } from "./opengraph-image";
 
@@ -87,6 +88,25 @@ export default async function AreaPage({
   const content = areaContent(area.slug);
   const guidePlaces = guidePlacesInArea(area.slug);
   const shown = guidePlaces.slice(0, GUIDE_PREVIEW);
+  const kmText = km < 10 ? km.toFixed(1) : String(Math.round(km));
+
+  // The questions guests ask about a neighbourhood, answered with lines this page already
+  // shows: the first "what it is like" paragraph, the distance, and the "who it suits" list
+  // with its "not for" line. Only the monthly-house answer is new, and it points at the
+  // request form. Rendered visibly as well as marked up, so markup and page agree.
+  const name = areaName(t, area.slug);
+  const join = locale === "zh" ? "" : " ";
+  const faq = content
+    ? [
+        { q: t.areaFaqWhatQ.replace("{area}", name), a: areaLine(t, content.what[0]) },
+        { q: t.areaFaqDistQ.replace("{area}", name), a: t.areaFaqDistA.replace("{n}", kmText) },
+        {
+          q: t.areaFaqSuitsQ.replace("{area}", name),
+          a: [...content.suits, content.notFor].map((key) => areaLine(t, key)).join(join),
+        },
+        { q: t.areaFaqMonthQ.replace("{area}", name), a: t.areaFaqMonthA.replace("{area}", name) },
+      ]
+    : [];
 
   // One trail, rendered and marked up from the same array so the two cannot drift apart.
   //
@@ -105,6 +125,7 @@ export default async function AreaPage({
        reads as two pages stacked. */
     <div className="mx-auto max-w-(--container-prose) px-5 pb-18 pt-9">
       <JsonLd data={breadcrumbSchema(locale, crumbs)} />
+      {faq.length > 0 ? <JsonLd data={faqSchema(faq)} /> : null}
       <nav aria-label="Breadcrumb" className="eyebrow">
         <Link href={href("/destinations")} className="hit hover:text-primary">
           {t.navDestinations}
@@ -125,10 +146,7 @@ export default async function AreaPage({
         <IconChip name="pin" />
         <span>
           <span className="block text-[14px] font-semibold">
-            {t.areaKmFromGate.replace(
-              "{n}",
-              km < 10 ? km.toFixed(1) : String(Math.round(km)),
-            )}
+            {t.areaKmFromGate.replace("{n}", kmText)}
           </span>
           <span className="mt-0.5 block text-[12.5px] text-muted">{t.areaKmNote}</span>
         </span>
@@ -319,6 +337,18 @@ export default async function AreaPage({
           </Link>
         </div>
       </section>
+
+      {faq.length > 0 ? (
+        <section className="mt-12">
+          <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
+            {t.areaFaqTitle.replace("{area}", name)}
+          </h2>
+          <Faq items={faq} />
+          <Link href={href("/house-for-rent-chiang-mai")} className="pill-outline mt-5 inline-block">
+            {t.areaFaqMonthLink}
+          </Link>
+        </section>
+      ) : null}
 
       {/* The other neighbourhoods, so this page is a junction rather than a cul-de-sac. */}
       <section className="mt-14 border-t border-hairline pt-8">

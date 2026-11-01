@@ -386,7 +386,7 @@ export const en = {
   // snippet would not match what the visitor lands on.
   metaHomeTitle: "AgentSiam | Short-term rental management in Chiang Mai",
   metaHomeDesc:
-    "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Take the services your property needs and leave the ones it does not.",
+    "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Take the services your property needs, and leave the rest.",
   metaHowTitle: "Vacation rental management in Chiang Mai",
   metaHowDesc: "Six services, chosen against your property rather than sold as a package. Feasibility, the non-hotel exemption filing, and OTA and direct booking management.",
   metaMgmtTitle: "Short-term rental management in {city}",
@@ -401,7 +401,7 @@ export const en = {
   metaPropertiesTitle: "Places to stay in Chiang Mai",
   metaPropertiesDesc:
     "Homes, villas and townhouses in Chiang Mai, managed on the ground. Filter by neighbourhood, type and size, and book direct.",
-  metaLotusTitle: "Lotus House, a private townhouse near the Night Bazaar",
+  metaLotusTitle: "Lotus House Chiang Mai, near the Night Bazaar",
   metaLotusDesc:
     "A three-storey townhouse with a rooftop terrace in Chang Khlan, Chiang Mai. Two king bedrooms, two bathrooms, a full kitchen and space for four guests.",
   metaGuideTitle: "{property} local guide",
@@ -1036,7 +1036,7 @@ export const en = {
 
   // -- mae rim house: enquiry-only listing ---------------------------------
   metaMaeRimTitle: "Mae Rim House, Mae Rim, Chiang Mai",
-  metaMaeRimDesc: "Two bedrooms, two bathrooms and a work room in a detached house with a garden in Mae Rim, Chiang Mai. Not open for booking yet; write to us and hear first when it is.",
+  metaMaeRimDesc: "Two bedrooms, two bathrooms and a work room in a detached house with a garden in Mae Rim, Chiang Mai. Not open for booking yet; write to us to hear first.",
   maeRimTagline: "Two bedrooms, a work room and a garden on 1,412 m² of land in Mae Rim, Chiang Mai",
   maeRimDesc1: "Mae Rim House is a detached house with 120 m² of living space, not counting the covered parking, on 1,412 m² of land in Mae Rim, north of Chiang Mai. Garden surrounds the house, and there is an outdoor seating area.",
   maeRimDesc2: "Inside are two bedrooms and a living room, all air-conditioned; two bathrooms, both with water heaters; a work room; and a dining room with a kitchen area and range hood. A washing machine is included.",
@@ -1067,7 +1067,7 @@ export const en = {
   // -- monthly house rental and licence pages ------------------------------
   // /house-for-rent-chiang-mai. Guest page: Thai takes คุณ.
   hfrMetaTitle: "Houses for rent in Chiang Mai, by the month",
-  hfrMetaDesc: "Private houses for rent in Chiang Mai by the month, found for you. Send your dates, size, area and budget. Every home is checked first: photos, exact location and a Wi-Fi speed test.",
+  hfrMetaDesc: "Private houses for rent in Chiang Mai by the month, found for you. Every home is checked first: photos, exact location and a Wi-Fi speed test.",
   hfrCrumb: "House for rent, monthly",
   hfrEyebrow: "Monthly stays · Chiang Mai",
   hfrH1: "Houses for rent in Chiang Mai, by the month.",
@@ -1126,8 +1126,8 @@ export const en = {
   hfrFormConsent: "We use what you send only to reply to this request. See our",
   hfrFormPrivacy: "privacy policy",
   // /short-term-rental-licence-chiang-mai. Owner page: Thai takes ท่าน. Every legal line traces to str-legal-overview.md in agentsiam-consulting.
-  licMetaTitle: "Short-term rental licence in Chiang Mai: condos and houses",
-  licMetaDesc: "Do you need a licence to rent out your condo or house short term in Chiang Mai? The 30-night rule, the non-hotel Certificate of Exemption, and why condos cannot use it.",
+  licMetaTitle: "Short-term rental licence in Chiang Mai",
+  licMetaDesc: "Do you need a licence to let your condo or house short term in Chiang Mai? The 30-night rule, the non-hotel route, and why condos cannot use it.",
   licCrumb: "Short-term rental licence",
   licEyebrow: "For owners · Chiang Mai",
   licH1: "Do you need a licence to rent out short term in Chiang Mai?",
@@ -1173,6 +1173,19 @@ export const en = {
   licLimitsTitle: "What this page is",
   licLimitsBody: "A summary of what published sources say today. It is not legal advice: confirm the position for your own property before you list it.",
   licSourcesTitle: "Sources",
+
+  // -- area FAQ and contact guest pointer ----------------------------------
+  // Neighbourhood FAQ. Answers 1 to 3 reuse the page's own lines; {area} is the localised name.
+  areaFaqTitle: "Questions guests ask about {area}",
+  areaFaqWhatQ: "What is {area} like to stay in?",
+  areaFaqDistQ: "How far is {area} from Tha Phae Gate?",
+  areaFaqDistA: "{n} km from Tha Phae Gate, measured in a straight line rather than by road.",
+  areaFaqSuitsQ: "Who is {area} a good fit for?",
+  areaFaqMonthQ: "Can I rent a house in {area} by the month?",
+  areaFaqMonthA: "Yes, ask. Send your dates, size and budget through our monthly request form, and we look for privately owned homes in {area} that fit. If we cannot find one, we tell you plainly.",
+  areaFaqMonthLink: "Ask for a monthly house",
+  // /contact is the owner form; this points guests to the monthly request form instead.
+  contactGuestNote: "Looking for a place to stay instead? Send your dates, size, area and budget through our monthly request form.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

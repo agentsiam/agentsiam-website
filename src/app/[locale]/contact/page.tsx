@@ -42,6 +42,14 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
       <p className="mt-3.5 max-w-[560px] text-[15.5px] leading-relaxed text-body">
         {t.contactSub}
       </p>
+      {/* This form is for owners. A guest who lands here is sent to the monthly request
+          form rather than left to describe a stay in an owner's form. */}
+      <p className="mt-2.5 max-w-[560px] text-[14px] leading-relaxed text-muted">
+        {t.contactGuestNote}{" "}
+        <Link href={href("/house-for-rent-chiang-mai")} className="font-semibold underline hover:text-primary">
+          {t.areaFaqMonthLink}
+        </Link>
+      </p>
 
       {/* shape: contact-form -- The form and the sidebar beside it. */}
       <div className="mt-8.5 grid items-start gap-10 min-[900px]:grid-cols-[1fr_340px]">
