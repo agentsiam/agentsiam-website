@@ -21,6 +21,10 @@ export const SITE_DESCRIPTION =
 // contact form notifications, so it is written down once.
 export const CONTACT_EMAIL = "hi@agentsiam.com";
 
+// The business line, as listed on the Google Business Profile, in international form for
+// schema.org. Declared in the LocalBusiness node so it matches that profile.
+export const CONTACT_TELEPHONE = "+66 98 482 5832";
+
 /**
  * The registered postal address, as published.
  *

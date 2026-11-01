@@ -7,6 +7,7 @@ import {
   absoluteUrl,
   assetUrl,
   CONTACT_EMAIL,
+  CONTACT_TELEPHONE,
   POSTAL_ADDRESS,
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -32,9 +33,9 @@ import {
  *   Test, which reports the listing invalid on the missing geo alone. The block is still
  *   correct for every other reader, and the property page earns a valid Local business
  *   result regardless.
- * - **No telephone and no sameAs on the organisation.** No phone number or LINE ID is
- *   published anywhere on the site yet, and no social profile is confirmed. Each is a
- *   one-line addition on the day it becomes true. `logo` is set: `public/agentsiam-logo.jpg`
+ * - **No sameAs on the organisation.** No profile under the AgentSiam name is confirmed
+ *   yet. It is a one-line addition on the day it becomes true. `telephone` is set, to the
+ *   business line on the Google Business Profile. `logo` is set: `public/agentsiam-logo.jpg`
  *   is a copy of the asset named in the design system, `AS Brand Creative Assets/
  *   agentsiam-logo.jpg`, which stays the source per that repo's R6.
  *
@@ -64,9 +65,8 @@ const SCHEMA_CONTEXT = "https://schema.org";
  * type honest. `Organization` remains in the type array so anything reading for the more
  * general type still resolves.
  *
- * Still absent, and each is a one-line addition on the day it becomes true: `telephone`,
- * because no number is published anywhere on the site; `sameAs`, because no social profile
- * is confirmed; `geo` and `openingHours`, which are the two fields a LocalBusiness rich
+ * Still absent, and each is a one-line addition on the day it becomes true: `sameAs`,
+ * because no profile under the AgentSiam name is confirmed; `geo` and `openingHours`, which are the two fields a LocalBusiness rich
  * result most wants and neither of which has a verified value yet.
  */
 export function organizationSchema(): Record<string, unknown> {
@@ -78,6 +78,7 @@ export function organizationSchema(): Record<string, unknown> {
     legalName: POSTAL_ADDRESS.legalName,
     url: SITE_URL,
     email: CONTACT_EMAIL,
+    telephone: CONTACT_TELEPHONE,
     description: SITE_DESCRIPTION,
     logo: assetUrl("/agentsiam-logo.jpg"),
     address: {
