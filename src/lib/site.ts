@@ -135,6 +135,8 @@ type RouteMeta = {
   path: string;
   /** Excluded from the sitemap and marked noindex. Use for placeholder pages. */
   placeholder?: boolean;
+  /** Rendered in English only: the sitemap lists the one URL and hreflang names English alone. */
+  englishOnly?: boolean;
   changeFrequency: "yearly" | "monthly" | "weekly";
   priority: number;
 };
@@ -172,9 +174,8 @@ export const ROUTES: RouteMeta[] = [
       priority: 0.7,
     }),
   ),
-  // Guest-demand page for "house for rent chiang mai". Placeholder until its copy is settled:
-  // noindex and out of the sitemap, English only.
-  { path: "/house-for-rent-chiang-mai", placeholder: true, changeFrequency: "monthly", priority: 0.7 },
+  // Guest-demand page for "house for rent chiang mai". English only until translated.
+  { path: "/house-for-rent-chiang-mai", englishOnly: true, changeFrequency: "monthly", priority: 0.7 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.7 },
   { path: "/business-services", changeFrequency: "monthly", priority: 0.6 },
   { path: "/terms-and-conditions", changeFrequency: "yearly", priority: 0.3 },
@@ -240,6 +241,12 @@ export function languageAlternates(path: string): Record<string, string> {
   }
   languages["x-default"] = absoluteUrl(DEFAULT_LOCALE, path);
   return languages;
+}
+
+/** hreflang map for a page published in English only: English plus x-default, nothing else. */
+export function englishOnlyAlternates(path: string): Record<string, string> {
+  const url = absoluteUrl(DEFAULT_LOCALE, path);
+  return { [HTML_LANG[DEFAULT_LOCALE]]: url, "x-default": url };
 }
 
 /**

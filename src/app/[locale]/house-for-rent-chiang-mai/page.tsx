@@ -3,13 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
 import { JsonLd } from "@/components/json-ld";
-import { PropertyTile } from "@/components/property-tile";
 import { StayRequestForm, type StayRequestLabels } from "@/components/stay-request-form";
 import { getDictionary } from "@/i18n";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
 import { LOTUS_HOUSE } from "@/lib/property";
-import { pageMeta } from "@/lib/site";
+import { englishOnlyAlternates, pageMeta } from "@/lib/site";
 import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
 
 /**
@@ -19,14 +18,17 @@ import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
  * 30/10/2026: 31 variants, 101 impressions, average position 7.6, 0 clicks).
  *
  * The first screen answers the four things every long-stay guest asks: the monthly rate or
- * how to get one, what is included, deposit and terms, and where. Then what we actually
- * have, then the request form, then the FAQ that carries the FAQPage markup.
+ * how to get one, what is included, deposit and terms, and where. Then the request form,
+ * one line on the house we run, and the FAQ that carries the FAQPage markup. Lotus House
+ * is a link, not a tile: the page answers the search, it is not a listing.
  *
- * **Template status.** English only and `placeholder` in ROUTES, so it is noindex and out
- * of the sitemap. Lines marked TO CONFIRM are facts nobody has given yet (the deposit and the
- * Wi-Fi speed). What is included and the 28-night terms follow the long-stay rate policy. They stay visible on the preview on
- * purpose, so they cannot ship by accident. Once the copy is settled it moves into the
- * dictionaries and is translated in one pass (R9), and the page renders on every locale.
+ * **English only.** Rendered on /en alone, with hreflang naming English only and the
+ * sitemap listing the one URL (`englishOnly` in ROUTES). When the copy is translated in one
+ * pass (R9) it moves into the dictionaries and the flag goes.
+ *
+ * The approach for homes we do not list (finding service, owners only, every home checked
+ * with photos, exact location and a speed test) is Ariya's, 01/11/2026. The owner's fee
+ * stays off the page: the owner pays it.
  */
 
 const PATH = "/house-for-rent-chiang-mai";
@@ -34,52 +36,67 @@ const PATH = "/house-for-rent-chiang-mai";
 const COPY = {
   metaTitle: "Houses for rent in Chiang Mai, by the month",
   metaDesc:
-    "Monthly house rentals in Chiang Mai for remote workers and families. Tell us your dates, area and budget, and we reply with what fits and a price.",
+    "Private houses for rent in Chiang Mai by the month, found for you. Send your dates, size, area and budget. Every home is checked first: photos, exact location and a Wi-Fi speed test.",
   crumb: "House for rent, monthly",
   eyebrow: "Monthly stays · Chiang Mai",
   h1: "Houses for rent in Chiang Mai, by the month.",
   intro:
-    "Staying three weeks or three months? Tell us the dates, the area and the budget. We reply with what fits and a price for your dates.",
+    "Tell us your dates, size, area, budget and must-haves. We find a privately owned home that fits, from owners and never from other agents, and send it to you with the total price.",
   answers: [
     {
       q: "Monthly rate",
-      a: "Priced for your dates. Send the form and we reply with a price for the whole stay.",
+      a: "Priced per home for your dates. We send the total for the whole stay before you decide.",
     },
     {
       q: "What's included",
-      a: "For stays of 28 nights or more at our house: utilities on fair use, and one clean a week on a fixed day and time. Extra cleans are charged.",
+      a: "Stated for each home before you book: utilities, cleaning and internet. At the house we run, stays of 28 nights or more include utilities on fair use and one clean a week.",
     },
     {
       q: "Deposit and terms",
-      a: "Monthly terms start at 28 nights. Booked direct, the stay is paid in full on confirmation and is non-refundable. TO CONFIRM: deposit.",
+      a: "Any deposit is agreed per home and stated before you book. Monthly terms start at 28 nights.",
     },
     {
-      q: "Where",
-      a: "Our house is in Chang Khlan, near the Night Bazaar. Ask about Nimman, Santitham, the Old City or further out and we tell you honestly what we can find.",
+      q: "Wi-Fi and location",
+      a: "Measured at each home: the owner sends a speed test, and we send it to you with the photos and the exact location before you book.",
     },
   ],
-  haveTitle: "What we run today",
+  howTitle: "How it works",
+  how: [
+    "You send the request below: dates, bedrooms, area, budget and what the home must have.",
+    "We look for privately owned homes that fit, from owners, never from other agents.",
+    "Before we offer a home we check it: photos, exact location, and a Wi-Fi speed test from the owner.",
+    "You get the homes that fit, each with the total price, what is included and the deposit, and decide.",
+  ],
   haveBody:
-    "One house, run properly. We would rather run one well than list ten. If it does not fit your dates or your family, the form below is how we look further for you.",
+    "We also run one house ourselves, Lotus House in Chang Khlan, and we would rather run one well than list ten.",
+  haveLink: "See Lotus House",
   formTitle: "Tell us what you need",
-  formBody: "One form, two minutes. A person reads it and replies by email.",
+  formBody: "A person reads every request and replies by email.",
   faqTitle: "Questions guests ask",
   faq: [
     {
-      q: "Can I rent a house in Chiang Mai by the month?",
-      a: "Yes. Send your dates, the area you want and your budget through the form on this page, and we reply with what fits and a price for the whole stay.",
+      q: "Do you have a private house free for a month in Chiang Mai?",
+      a: "Send your dates through the form on this page. We look for privately owned houses that are free for those dates and reply with the ones that fit, each with photos, the exact location and the total price.",
     },
     {
-      q: "Is Wi-Fi good enough for remote work?",
-      a: "TO CONFIRM: the measured download and upload speed at the house.",
+      q: "What does the monthly rate cover?",
+      a: "It depends on the home, and we state it for each one before you book: utilities, cleaning and internet. At the house we run, stays of 28 nights or more include utilities on fair use and one clean a week on a fixed day and time. Extra cleans are charged.",
     },
     {
-      q: "Are electricity and water included in a monthly rent?",
-      a: "At our house, yes, on fair use, for stays of 28 nights or more. One clean a week is included as well, and extra cleans are charged.",
+      q: "What is the deposit?",
+      a: "Any deposit is agreed per home and stated before you book, so you know it before you pay anything.",
     },
     {
-      q: "Do you only rent the houses on this site?",
-      a: "We run one house today. When a request does not fit it, we look for one that does, and tell you plainly if we cannot find a match.",
+      q: "Is the Wi-Fi fast enough for remote work?",
+      a: "We do not guess. Before we offer a home, the owner sends a speed test, and we pass it to you with the photos and the exact location.",
+    },
+    {
+      q: "Can you find a house near Nimman, Santitham or the Old City?",
+      a: "Yes, ask. Choose the area in the form, or say anywhere in Chiang Mai, and we tell you plainly if we cannot find a match.",
+    },
+    {
+      q: "Do you work with other agents?",
+      a: "No. We find homes from their owners and check each one before we offer it.",
     },
   ],
 } as const;
@@ -98,13 +115,13 @@ const FORM_LABELS: StayRequestLabels = {
   budgetHint: "e.g. 30,000 THB a month",
   foundVia: "How did you find us?",
   foundViaHint: "e.g. Google, ChatGPT, a friend, Facebook",
-  message: "Anything else",
-  messageHint: "Work desk, pool, pets, parking, schools nearby...",
+  message: "Must-haves",
+  messageHint: "Private house, outdoor space, fibre Wi-Fi, work desk, quiet, near nature...",
   required: "required",
   send: "Send request",
   sending: "Sending...",
   sentTitle: "Request received.",
-  sentBody: "We reply by email, usually the same day. If it is urgent, write to",
+  sentBody: "A person reads it and replies by email. If it is urgent, write to",
   error: "Sending failed. Please email us at {email}.",
   consent: "We use what you send only to reply to this request. See our",
   privacy: "privacy policy",
@@ -117,13 +134,17 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (locale !== DEFAULT_LOCALE) notFound();
-  return pageMeta({
+  const meta = pageMeta({
     title: COPY.metaTitle,
     description: COPY.metaDesc,
     path: PATH,
     locale,
-    placeholder: true,
   });
+  // English only, so hreflang names English alone rather than two URLs that 404.
+  return {
+    ...meta,
+    alternates: { canonical: meta.alternates?.canonical, languages: englishOnlyAlternates(PATH) },
+  };
 }
 
 export default async function HouseForRentPage({ params }: PageProps<"/[locale]">) {
@@ -160,13 +181,12 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
       </a>
 
       <section className="mt-12">
-        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.haveTitle}</h2>
-        <p className="mt-2.5 max-w-[600px] text-[15px] leading-relaxed text-body">
-          {COPY.haveBody}
-        </p>
-        <div className="mt-5 grid gap-6 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
-          <PropertyTile property={LOTUS_HOUSE} t={t} href={href(`/${LOTUS_HOUSE.slug}`)} />
-        </div>
+        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.howTitle}</h2>
+        <ol className="mt-4 max-w-[640px] list-decimal space-y-2 pl-5 text-[15px] leading-relaxed text-body">
+          {COPY.how.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
       </section>
 
       <section id="request" className="mt-12 scroll-mt-24">
@@ -181,6 +201,13 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
           privacyHref={href("/privacy-policy")}
         />
       </section>
+
+      <p className="mt-6 max-w-[600px] text-[14px] leading-relaxed text-muted">
+        {COPY.haveBody}{" "}
+        <Link href={href(`/${LOTUS_HOUSE.slug}`)} className="font-semibold underline hover:text-primary">
+          {COPY.haveLink}
+        </Link>
+      </p>
 
       <section className="mt-12">
         <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.faqTitle}</h2>
