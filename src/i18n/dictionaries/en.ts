@@ -871,7 +871,7 @@ export const en = {
   hwFaq2Q: "Do I have to take the study first?",
   hwFaq2A: "No. It is one service on the menu, not a gate. If your property is already listed and earning, your own numbers tell us more than a model would, and we will start from those instead. Where we think the study genuinely would change your decision, we will say so.",
   hwFaq3Q: "What if I do not have a licence, and do not want to apply for one?",
-  hwFaq3A: "Tell us and we will talk it through properly. The permission service exists because most owners have never been told which rules apply to their property, and a lot of them turn out to be straightforward. What we will not do is make the decision for you or pretend the question does not exist.",
+  hwFaq3A: "That is your choice, and there is still a lawful way to earn from your home. Under the published rules, stays of 30 nights or more need no hotel registration, so we can run your home for monthly guests only. If you later want shorter stays, a house or villa can be registered as non-hotel accommodation with the district office, and we handle that for you. A condo cannot use that route, so for a condo, monthly stays are the option. Rules change, so we confirm what applies to your property before you sign.",
   hwFaq4Q: "Am I locked into a contract?",
   hwFaq4A: "No minimum term on management. You give notice, we hand over the listings and calendars, and we do not hold your channel accounts hostage.",
   hwFaq5Q: "What happens if a guest damages something?",
