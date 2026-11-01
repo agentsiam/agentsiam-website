@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
 import { JsonLd } from "@/components/json-ld";
-import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "@/i18n/config";
-import { englishOnlyAlternates, pageMeta } from "@/lib/site";
+import { getDictionary, type Dictionary } from "@/i18n";
+import { isLocale, localePath, type Locale } from "@/i18n/config";
+import { pageMeta } from "@/lib/site";
 import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
 
 /**
@@ -20,133 +21,97 @@ import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
  * written as what the rules say today, to be confirmed per property, never as settled; and
  * nothing here mentions serving owners who do not apply.
  *
- * **English only**, like /house-for-rent-chiang-mai, until the copy is translated in one
- * pass (R9).
+ * English, Thai and Chinese. The copy lives in the dictionaries under the `lic` keys; Thai
+ * addresses the owner as ท่าน.
  */
 
 const PATH = "/short-term-rental-licence-chiang-mai";
 
-const COPY = {
-  metaTitle: "Short-term rental licence in Chiang Mai: condos and houses",
-  metaDesc:
-    "Do you need a licence to rent out your condo or house short term in Chiang Mai? The 30-night rule, the non-hotel Certificate of Exemption, and why condos cannot use it.",
-  crumb: "Short-term rental licence",
-  eyebrow: "For owners · Chiang Mai",
-  h1: "Do you need a licence to rent out short term in Chiang Mai?",
-  intro:
-    "For stays under 30 nights, in most cases yes. Here is what the rules say today, for condos and for houses. Confirm the position for your own property before you list it.",
-  answers: [
-    {
-      q: "Stays of 30 nights or more",
-      a: "Legal without hotel registration.",
-    },
-    {
-      q: "Stays under 30 nights",
-      a: "Fall under hotel-type registration under Thai law.",
-    },
-    {
-      q: "Houses, townhouses and villas",
-      a: "Can take the non-hotel route: notify the local Registrar and obtain a Certificate of Exemption, instead of a full hotel licence.",
-    },
-    {
-      q: "Condos",
-      a: "Cannot use the Certificate of Exemption. It is available to landed property only.",
-    },
-  ],
-  exemptionTitle: "The Certificate of Exemption",
-  exemptionRows: [
-    { k: "Who can apply", v: "Owners of landed property: houses, townhouses and villas. Not condominium units." },
-    { k: "Limit", v: "Up to 8 rooms and 30 guests. Raised in 2023 from 4 rooms and 20 guests, and the old figure is still widely repeated." },
-    { k: "Valid for", v: "5 years, renewable." },
-    { k: "Inspection", v: "A safety inspection is mandatory: fire extinguishers, emergency lighting and smoke detectors." },
-    { k: "Where", v: "The District Office or the Provincial Administration Office." },
-  ],
-  condoTitle: "If you own a condo",
-  condoBody:
-    "The Certificate of Exemption is not open to condominium units, so a condo has no exemption route for stays under 30 nights. Stays of 30 nights or more do not need hotel registration. Separately from national law, your building's own rules can restrict short-term letting, so check them with the building's juristic person.",
-  helpTitle: "We can file it for you",
-  helpBody:
-    "We assess your property against these rules, prepare the documents and file the application under power of attorney, so you do not have to deal with the office yourself.",
-  helpLink: "See how it works",
-  contactLink: "Ask about your property",
-  faqTitle: "Questions owners ask",
-  faq: [
-    {
-      q: "Do I need a licence to rent out my condo short term in Chiang Mai?",
-      a: "For stays under 30 nights, the rules treat it as hotel-type accommodation, and the non-hotel Certificate of Exemption is not available to condominium units. Stays of 30 nights or more do not need hotel registration. Your building's own rules can restrict short-term letting as well. Confirm the position for your unit before you list it.",
-    },
-    {
-      q: "Is Airbnb legal in a Chiang Mai condo?",
-      a: "For stays of 30 nights or more, it needs no hotel registration, subject to your building's rules. For shorter stays a condo unit has no exemption route, because the Certificate of Exemption covers landed property only.",
-    },
-    {
-      q: "Do I need a short-term rental licence for a house in Chiang Mai?",
-      a: "For stays under 30 nights, yes. A house, townhouse or villa can take the non-hotel route instead of a full hotel licence: notify the District Office or the Provincial Administration Office and obtain a Certificate of Exemption, valid for 5 years and renewable.",
-    },
-    {
-      q: "How many rooms and guests does the Certificate of Exemption allow?",
-      a: "Up to 8 rooms and 30 guests, raised in 2023 from 4 rooms and 20 guests. The published sources do not settle whether rooms means bedrooms only or every habitable room.",
-    },
-    {
-      q: "What does the safety inspection check?",
-      a: "Fire extinguishers, emergency lighting and smoke detectors.",
-    },
-    {
-      q: "Is the 30-night rule enforced in Chiang Mai?",
-      a: "Enforcement is expanding in tourist-heavy areas, and in Chiang Mai that means Nimman and the Old City.",
-    },
-  ],
-  limitsTitle: "What this page is",
-  limitsBody:
-    "A summary of what published sources say today. It is not legal advice: confirm the position for your own property before you list it.",
-  sourcesTitle: "Sources",
-  sources: [
-    {
-      name: "Short-Term Rentals in Thailand: Understanding the Non-Hotel Registration Framework (FOSR Law)",
-      url: "https://fosrlaw.com/2026/short-term-rental-laws-thailand/",
-    },
-    {
-      name: "Short-Term Rentals in Thailand: the Non-Hotel Registration Framework (FRANK Legal & Tax)",
-      url: "https://franklegaltax.com/short-term-rentals-in-thailand-understanding-the-non-hotel-registration-framework/",
-    },
-    {
-      name: "Legal Prohibition, Penalties and the Landed Property Exception (Lexology)",
-      url: "https://www.lexology.com/library/detail.aspx?g=324a55bc-3b3b-434d-90d6-fe88d5153150",
-    },
-    {
-      name: "Thailand Airbnb Rules 2026: Short-Term Rental Laws (Rumavi)",
-      url: "https://rumavi.com/en/property-guides/short-term-rental-rules-in-thailand-what-airbnb-investors-need-to-know-in-2026",
-    },
-    {
-      name: "Is Airbnb Legal in Thailand in 2026? (Relife Properties)",
-      url: "https://relifeproperties.com/airbnb-legal-thailand/",
-    },
-  ],
-} as const;
-
-export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+function pageCopy(t: Dictionary) {
+  return {
+    metaTitle: t.licMetaTitle,
+    metaDesc: t.licMetaDesc,
+    crumb: t.licCrumb,
+    eyebrow: t.licEyebrow,
+    h1: t.licH1,
+    intro: t.licIntro,
+    answers: [
+      { q: t.licAns1Q, a: t.licAns1A },
+      { q: t.licAns2Q, a: t.licAns2A },
+      { q: t.licAns3Q, a: t.licAns3A },
+      { q: t.licAns4Q, a: t.licAns4A },
+    ],
+    exemptionTitle: t.licExTitle,
+    exemptionRows: [
+      { k: t.licRow1K, v: t.licRow1V },
+      { k: t.licRow2K, v: t.licRow2V },
+      { k: t.licRow3K, v: t.licRow3V },
+      { k: t.licRow4K, v: t.licRow4V },
+      { k: t.licRow5K, v: t.licRow5V },
+    ],
+    condoTitle: t.licCondoTitle,
+    condoBody: t.licCondoBody,
+    helpTitle: t.licHelpTitle,
+    helpBody: t.licHelpBody,
+    helpLink: t.licHelpLink,
+    contactLink: t.licContactLink,
+    faqTitle: t.licFaqTitle,
+    faq: [
+      { q: t.licFaq1Q, a: t.licFaq1A },
+      { q: t.licFaq2Q, a: t.licFaq2A },
+      { q: t.licFaq3Q, a: t.licFaq3A },
+      { q: t.licFaq4Q, a: t.licFaq4A },
+      { q: t.licFaq5Q, a: t.licFaq5A },
+      { q: t.licFaq6Q, a: t.licFaq6A },
+    ],
+    limitsTitle: t.licLimitsTitle,
+    limitsBody: t.licLimitsBody,
+    sourcesTitle: t.licSourcesTitle,
+    sources: SOURCES,
+  };
 }
+
+/** The sources are English-language articles, so their titles stay English on every locale. */
+const SOURCES = [
+  {
+    name: "Short-Term Rentals in Thailand: Understanding the Non-Hotel Registration Framework (FOSR Law)",
+    url: "https://fosrlaw.com/2026/short-term-rental-laws-thailand/",
+  },
+  {
+    name: "Short-Term Rentals in Thailand: the Non-Hotel Registration Framework (FRANK Legal & Tax)",
+    url: "https://franklegaltax.com/short-term-rentals-in-thailand-understanding-the-non-hotel-registration-framework/",
+  },
+  {
+    name: "Legal Prohibition, Penalties and the Landed Property Exception (Lexology)",
+    url: "https://www.lexology.com/library/detail.aspx?g=324a55bc-3b3b-434d-90d6-fe88d5153150",
+  },
+  {
+    name: "Thailand Airbnb Rules 2026: Short-Term Rental Laws (Rumavi)",
+    url: "https://rumavi.com/en/property-guides/short-term-rental-rules-in-thailand-what-airbnb-investors-need-to-know-in-2026",
+  },
+  {
+    name: "Is Airbnb Legal in Thailand in 2026? (Relife Properties)",
+    url: "https://relifeproperties.com/airbnb-legal-thailand/",
+  },
+] as const;
 
 export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
-  const meta = pageMeta({
-    title: COPY.metaTitle,
-    description: COPY.metaDesc,
+  if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
+  return pageMeta({
+    title: t.licMetaTitle,
+    description: t.licMetaDesc,
     path: PATH,
     locale,
   });
-  // English only, so hreflang names English alone rather than two URLs that 404.
-  return {
-    ...meta,
-    alternates: { canonical: meta.alternates?.canonical, languages: englishOnlyAlternates(PATH) },
-  };
 }
 
 export default async function LicencePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
-  if (!isLocale(locale) || locale !== DEFAULT_LOCALE) notFound();
+  if (!isLocale(locale)) notFound();
+  const t = getDictionary(locale);
+  const COPY = pageCopy(t);
   const href = (path: string) => localePath(locale as Locale, path);
   const crumbs: Crumb[] = [{ name: COPY.crumb }];
 

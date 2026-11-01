@@ -174,10 +174,10 @@ export const ROUTES: RouteMeta[] = [
       priority: 0.7,
     }),
   ),
-  // Guest-demand page for "house for rent chiang mai". English only until translated.
-  { path: "/house-for-rent-chiang-mai", englishOnly: true, changeFrequency: "monthly", priority: 0.7 },
+  // Guest-demand page for "house for rent chiang mai".
+  { path: "/house-for-rent-chiang-mai", changeFrequency: "monthly", priority: 0.7 },
   // Owner page for "do I need a licence to rent out my condo short term in Chiang Mai".
-  { path: "/short-term-rental-licence-chiang-mai", englishOnly: true, changeFrequency: "monthly", priority: 0.7 },
+  { path: "/short-term-rental-licence-chiang-mai", changeFrequency: "monthly", priority: 0.7 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.7 },
   { path: "/business-services", changeFrequency: "monthly", priority: 0.6 },
   { path: "/terms-and-conditions", changeFrequency: "yearly", priority: 0.3 },
