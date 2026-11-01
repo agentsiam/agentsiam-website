@@ -1,0 +1,37 @@
+# AgentSiam
+
+> Short-term rental management in Chiang Mai, Thailand. Feasibility, vacation rental permission and management for short-term rentals, chosen against the property rather than sold as a package. For guests, AgentSiam runs one house itself and finds privately owned homes for monthly stays, from owners and never from other agents.
+
+AgentSiam Co., Ltd., 42 Soi 1, Wiang Ping Road, Chang Khlan, Chiang Mai 50100, Thailand. Email hi@agentsiam.com, phone +66 98 482 5832. The site is in English, Thai (/th) and Simplified Chinese (/zh).
+
+## For property owners
+
+- [How it works](https://www.agentsiam.com/how-it-works): six services, chosen against your property rather than sold as a package. Feasibility, the non-hotel exemption filing, and OTA and direct booking management. Houses, townhouses and small buildings in Chiang Mai; condos too, where the building permits short stays in writing.
+- [Short-term rental licence in Chiang Mai](https://www.agentsiam.com/short-term-rental-licence-chiang-mai): the 30-night rule, the non-hotel route (Certificate of Exemption) for houses, townhouses and villas, and why condos cannot use it. A summary of published sources, not legal advice.
+- [Short-term rental management in Phuket](https://www.agentsiam.com/management/phuket)
+- [Short-term rental management in Bangkok](https://www.agentsiam.com/management/bangkok)
+- [Contact](https://www.agentsiam.com/contact): tell us about your property. We read it and reply within two working days.
+
+## For guests
+
+- [Houses for rent in Chiang Mai, by the month](https://www.agentsiam.com/house-for-rent-chiang-mai): send your dates, size, area, budget and must-haves. We find a privately owned home that fits and send it with the total price. Every home is checked first: photos, exact location and a Wi-Fi speed test from the owner. Any deposit is agreed per home and stated before you book.
+- [Lotus House](https://www.agentsiam.com/lotushouse): the house AgentSiam runs. A three-storey townhouse with a rooftop terrace in Chang Khlan, Chiang Mai, near the Night Bazaar. Two king bedrooms, two bathrooms, a full kitchen and space for four guests. Book direct on this site.
+- [Lotus House local guide](https://www.agentsiam.com/lotushouse/local-guide)
+- [All properties](https://www.agentsiam.com/properties)
+
+## Chiang Mai neighbourhoods
+
+- [Nimman](https://www.agentsiam.com/destinations/nimman)
+- [Old City](https://www.agentsiam.com/destinations/old-city)
+- [Santitham](https://www.agentsiam.com/destinations/santitham)
+- [Chang Khlan](https://www.agentsiam.com/destinations/chang-khlan)
+- [Riverside](https://www.agentsiam.com/destinations/riverside)
+- [Hang Dong](https://www.agentsiam.com/destinations/hang-dong)
+- [Mae Rim](https://www.agentsiam.com/destinations/mae-rim)
+- [San Sai](https://www.agentsiam.com/destinations/san-sai)
+
+## Optional
+
+- [Business services](https://www.agentsiam.com/business-services): for businesses entering Thailand.
+- [Terms and conditions](https://www.agentsiam.com/terms-and-conditions)
+- [Privacy policy](https://www.agentsiam.com/privacy-policy)
