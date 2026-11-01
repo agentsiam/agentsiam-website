@@ -31,6 +31,7 @@
  * | Event                 | Fires when                                                |
  * |-----------------------|-----------------------------------------------------------|
  * | `contact_form_sent`   | the owner enquiry form reached /api/contact and was accepted |
+ * | `stay_request_sent`   | a guest stay request reached /api/stay-request and was accepted |
  * | `booking_requested`   | a guest sent a booking request, the path where no money moves |
  * | `booking_paid`        | a stay was paid for and confirmed                          |
  * | `booking_unconfirmed` | a redirect payment came back and we cannot tell what happened |
@@ -56,6 +57,7 @@ declare global {
 
 export type AnalyticsEvent =
   | "contact_form_sent"
+  | "stay_request_sent"
   | "booking_requested"
   | "booking_paid"
   | "booking_unconfirmed";

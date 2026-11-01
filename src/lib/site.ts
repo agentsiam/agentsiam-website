@@ -171,6 +171,9 @@ export const ROUTES: RouteMeta[] = [
       priority: 0.7,
     }),
   ),
+  // Guest-demand page for "house for rent chiang mai". Placeholder until its copy is settled:
+  // noindex and out of the sitemap, English only.
+  { path: "/house-for-rent-chiang-mai", placeholder: true, changeFrequency: "monthly", priority: 0.7 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.7 },
   { path: "/business-services", changeFrequency: "monthly", priority: 0.6 },
   { path: "/terms-and-conditions", changeFrequency: "yearly", priority: 0.3 },
