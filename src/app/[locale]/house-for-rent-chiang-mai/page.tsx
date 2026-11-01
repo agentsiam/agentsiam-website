@@ -23,8 +23,8 @@ import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
  * have, then the request form, then the FAQ that carries the FAQPage markup.
  *
  * **Template status.** English only and `placeholder` in ROUTES, so it is noindex and out
- * of the sitemap. Lines marked TO CONFIRM are facts nobody has given yet (what the monthly
- * price includes, the deposit, the Wi-Fi speed). They stay visible on the preview on
+ * of the sitemap. Lines marked TO CONFIRM are facts nobody has given yet (the deposit and the
+ * Wi-Fi speed). What is included and the 28-night terms follow the long-stay rate policy. They stay visible on the preview on
  * purpose, so they cannot ship by accident. Once the copy is settled it moves into the
  * dictionaries and is translated in one pass (R9), and the page renders on every locale.
  */
@@ -47,11 +47,11 @@ const COPY = {
     },
     {
       q: "What's included",
-      a: "TO CONFIRM: electricity, water, cleaning and the Wi-Fi speed.",
+      a: "For stays of 28 nights or more at our house: utilities on fair use, and one clean a week on a fixed day and time. Extra cleans are charged.",
     },
     {
       q: "Deposit and terms",
-      a: "TO CONFIRM: deposit amount, when it is returned, and the minimum stay.",
+      a: "Monthly terms start at 28 nights. Booked direct, the stay is paid in full on confirmation and is non-refundable. TO CONFIRM: deposit.",
     },
     {
       q: "Where",
@@ -75,7 +75,7 @@ const COPY = {
     },
     {
       q: "Are electricity and water included in a monthly rent?",
-      a: "TO CONFIRM: what the monthly price covers and how electricity is billed.",
+      a: "At our house, yes, on fair use, for stays of 28 nights or more. One clean a week is included as well, and extra cleans are charged.",
     },
     {
       q: "Do you only rent the houses on this site?",
