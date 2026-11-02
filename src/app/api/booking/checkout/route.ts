@@ -14,6 +14,7 @@ import {
 } from "@/lib/beds24";
 import { LOTUS_HOUSE } from "@/lib/property";
 import { callerIp, rateLimit } from "@/lib/rate-limit";
+import { CANCELLATION_POLICY_VERSION } from "@/lib/cancellation-policy";
 import { CONTACT_EMAIL } from "@/lib/site";
 import { STRIPE_READY, stripe, toMinorUnits } from "@/lib/stripe";
 
@@ -96,6 +97,15 @@ export async function POST(request: Request) {
   const message = clean(body.message, "message");
 
   const locale = clean(body.locale, "locale") || "en";
+
+  // No hold without the terms. The panel will not submit unchecked, so this only catches a
+  // stale tab running older code, or a request that did not come from the panel at all.
+  if (body.acceptedPolicy !== CANCELLATION_POLICY_VERSION) {
+    return NextResponse.json(
+      { error: "Please accept the cancellation terms to continue.", code: "terms_not_accepted" },
+      { status: 400 },
+    );
+  }
 
   if (!isValidDate(arrival) || !isValidDate(departure) || departure <= arrival) {
     return NextResponse.json({ error: "Please choose your dates again.", code: "bad_dates" }, { status: 400 });
@@ -189,6 +199,7 @@ export async function POST(request: Request) {
       message,
       locale,
       total,
+      policyVersion: CANCELLATION_POLICY_VERSION,
     });
   } catch (error) {
     console.error("[booking/checkout] Beds24 refused the hold", error);
@@ -235,6 +246,7 @@ export async function POST(request: Request) {
           guestEmail: email,
           guestName: `${firstName} ${lastName}`,
           locale,
+          cancellationPolicy: CANCELLATION_POLICY_VERSION,
         },
       },
       // Retrying this route must not create a second charge for the same hold.

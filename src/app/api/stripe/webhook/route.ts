@@ -2,7 +2,9 @@ import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { ALLOTMENT_TAG, cancelBooking, confirmPaidBooking } from "@/lib/beds24";
-import { notificationBody, sendMail } from "@/lib/mailer";
+import { getDictionary, isLocale } from "@/i18n";
+import { cancellationPolicyHtml, cancellationPolicyText } from "@/lib/cancellation-policy";
+import { escapeHtml, MAIL_TO, notificationBody, sendMail } from "@/lib/mailer";
 import { LOTUS_HOUSE } from "@/lib/property";
 import { fromMinorUnits, STRIPE_READY, stripe } from "@/lib/stripe";
 
@@ -77,6 +79,7 @@ export async function POST(request: Request) {
           // is worth publishing anyway so nothing downstream is looking at a stale copy.
           revalidateTag(ALLOTMENT_TAG, { expire: 0 });
           await notifyHost(intent, bookingId, amount);
+          await notifyGuest(intent, bookingId, amount);
         }
         return NextResponse.json({ ok: true, confirmed: bookingId, alreadyDone });
       }
@@ -117,6 +120,7 @@ async function notifyHost(
     ["Name", meta.guestName ?? "?"],
     ["Email", meta.guestEmail ?? "?"],
     ["Wrote in", meta.locale ?? "en"],
+    ["Cancellation terms", meta.cancellationPolicy ?? "not recorded"],
     ["Beds24 booking", String(bookingId)],
     ["Stripe payment", intent.id],
   ];
@@ -137,5 +141,46 @@ async function notifyHost(
 
   if (!sent) {
     console.error("[stripe/webhook] booking", bookingId, "confirmed but not emailed");
+  }
+}
+
+/**
+ * The guest's own confirmation, in their language, carrying the cancellation terms they
+ * accepted. Best effort for the same reason as the host's: the booking is already confirmed
+ * in Beds24, and Stripe has sent its receipt. A failure is logged, never retried here.
+ */
+async function notifyGuest(
+  intent: Stripe.PaymentIntent,
+  bookingId: number,
+  amount: number,
+): Promise<void> {
+  const meta = intent.metadata ?? {};
+  const to = typeof meta.guestEmail === "string" ? meta.guestEmail : "";
+  if (!to) return;
+  const t = getDictionary(isLocale(meta.locale ?? "") ? (meta.locale as Parameters<typeof getDictionary>[0]) : "en");
+  const version = meta.cancellationPolicy ?? "";
+
+  const rows: [string, string][] = [
+    [t.geArrival, meta.arrival ?? ""],
+    [t.geDeparture, meta.departure ?? ""],
+    [t.geNights, meta.nights ?? ""],
+    [t.geGuests, meta.guests ?? ""],
+    [t.gePaid, `${LOTUS_HOUSE.currency} ${amount.toLocaleString("en-US")}`],
+    [t.geReference, String(bookingId)],
+  ];
+  const heading = t.geSubject.replace("{property}", LOTUS_HOUSE.title);
+  const body = notificationBody(heading, rows, undefined, t.geIntro);
+  const lead = t.geTermsLead.replace("{version}", version);
+
+  const sent = await sendMail({
+    to,
+    replyTo: MAIL_TO,
+    subject: heading,
+    html: `${body.html}<p>${escapeHtml(lead)}</p>${cancellationPolicyHtml(t, escapeHtml)}<p>${escapeHtml(t.geReply)}</p>`,
+    text: `${body.text}\n\n${lead}\n\n${cancellationPolicyText(t)}\n\n${t.geReply}`,
+  });
+
+  if (!sent) {
+    console.error("[stripe/webhook] booking", bookingId, "confirmed but guest not emailed");
   }
 }

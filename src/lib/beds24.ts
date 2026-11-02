@@ -541,6 +541,8 @@ export type HoldInput = {
   message: string;
   locale: string;
   total: number;
+  /** The cancellation-policy version the guest accepted at checkout. */
+  policyVersion: string;
 };
 
 /**
@@ -565,7 +567,7 @@ export async function createHold(input: HoldInput): Promise<number | null> {
       email: input.email,
       mobile: input.phone,
       message: input.message,
-      notes: `Online booking from agentsiam.com (${input.locale}). Awaiting card payment.`,
+      notes: `Online booking from agentsiam.com (${input.locale}). Awaiting card payment. Guest accepted cancellation terms version ${input.policyVersion}.`,
       referer: "agentsiam.com",
       flagText: "Awaiting payment",
       price: input.total,

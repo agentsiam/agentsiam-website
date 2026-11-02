@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CancellationTerms } from "@/components/cancellation-terms";
 import { TranslationNote } from "@/components/translation-note";
 import { getDictionary } from "@/i18n";
 import { isLocale } from "@/i18n/config";
@@ -47,7 +48,7 @@ export default async function TermsPage({ params }: PageProps<"/[locale]">) {
           {t.terms}
         </h1>
         <p className="mt-2.5 text-sm text-muted">
-          {t.lastUpdated} {policyUpdated(locale)}
+          {t.lastUpdated} {policyUpdated(locale, "2026-11-02")}
         </p>
 
         <div className="mt-8 text-[15px] leading-relaxed text-body [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:tracking-[-0.015em] [&_h2]:text-text [&_p]:mt-3"
@@ -81,6 +82,8 @@ export default async function TermsPage({ params }: PageProps<"/[locale]">) {
             that booking&rsquo;s own terms presented at the time of booking, and by the
             property&rsquo;s house rules.
           </p>
+
+          <CancellationTerms t={getDictionary("en")} heading="h2" />
 
           <h2>Form Submissions and Communication</h2>
           <p>

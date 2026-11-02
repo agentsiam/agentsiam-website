@@ -378,15 +378,14 @@ The pipeline, so nobody has to think about image formats:
   a LocalBusiness rich result most wants. ~~`logo` is also absent.~~ Set 12/09/2026:
   `public/agentsiam-logo.jpg`, wired into `organizationSchema()`, copied from the consulting
   repo's brand assets, which stay the source.
-- **No cancellation policy exists anywhere on the site.** Not in the booking panel, not in
-  the guest FAQ, and `/terms-and-conditions` contains no occurrence of *cancel*, *refund* or
-  *deposit*. The guest FAQ added 06/09/2026 says so plainly rather than inventing terms, and
-  the booking flow asks for the full amount of a stay up front with nothing stated about
-  what happens if the guest cannot travel. This is the largest remaining hole on the booking
-  path and it is a decision, not a build task. The market research and a draft policy are in
-  the consulting repo at
-  `as-work/2026-09-06-website-ui-ux-audit/cancellation-policy.md`, written 06/09/2026 and
-  waiting on five numbers only Paul can set. Nothing from it is on the site.
+- ~~**No cancellation policy exists anywhere on the site.**~~ Resolved 02/11/2026: windows
+  30 / 7 / 50% and a THB 1,000 rebooking fee, with a line that terms stated in a booking
+  confirmation take precedence. Wording in the `cx*` dictionary keys, version in
+  `src/lib/cancellation-policy.ts`. Shown in full with a checkbox before the nights are held,
+  required by `/api/booking/checkout`, stored on the Stripe PaymentIntent metadata and the
+  Beds24 booking notes, sent in the guest confirmation email from the Stripe webhook, and on
+  `/terms-and-conditions` in English. Still open from the draft's section 4: deposit versus
+  full prepayment, Direct Sale Act s.33, and Booking.com rate parity.
 - **The live chat is built and switched off.** `src/components/crisp-chat.tsx` renders
   nothing until `NEXT_PUBLIC_CRISP_WEBSITE_ID` is set, which needs a Crisp account that does
   not exist yet. Two things have to be true before it is set: Total Privacy Mode enabled in

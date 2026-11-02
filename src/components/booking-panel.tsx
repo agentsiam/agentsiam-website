@@ -8,6 +8,8 @@ import { trackEvent, type AnalyticsEvent } from "@/lib/analytics";
 import { LOTUS_HOUSE } from "@/lib/property";
 import { CONTACT_EMAIL } from "@/lib/site";
 import { PAYMENTS_ENABLED, PaymentForm, retrievePaymentStatus } from "@/components/payment-form";
+import { CancellationTerms } from "@/components/cancellation-terms";
+import { CANCELLATION_POLICY_VERSION } from "@/lib/cancellation-policy";
 
 /**
  * The booking panel: pick dates against live Beds24 availability, see the real total,
@@ -305,6 +307,9 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
    */
   const [mode, setMode] = useState<Mode>("dates");
   const [sending, setSending] = useState(false);
+  // The cancellation terms on the paid path. Reset is not needed: the panel only moves
+  // forward from here, and a guest who backs out has still read them.
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [formError, setFormError] = useState<ApiError | null>(null);
   /**
    * The guest's own words, held here rather than in the form.
@@ -800,6 +805,7 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
     setFormError(null);
     const company = String(new FormData(event.currentTarget).get("company") ?? "");
     if (!validateGuest()) return;
+    if (!termsAccepted) return;
     setSending(true);
 
     try {
@@ -814,6 +820,7 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
           adults,
           children,
           locale,
+          acceptedPolicy: CANCELLATION_POLICY_VERSION,
         }),
       });
       const payload: ApiError & {
@@ -1149,6 +1156,11 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
             staleNotice={t.bkFormStale}
             privacyHref={privacyHref}
             submitLabel={mode === "request" ? t.sendRequest : t.continueToPayment}
+            terms={
+              mode === "payDetails"
+                ? { accepted: termsAccepted, onToggle: setTermsAccepted }
+                : undefined
+            }
             onSubmit={mode === "request" ? submitRequest : startCheckout}
             onCancel={() => {
               setMode("dates");
@@ -1156,6 +1168,13 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
             }}
           />
         ) : mode === "paying" && payment ? (
+          <>
+          <details className="mt-4 rounded-xl border border-hairline p-3.5 text-[12.5px] leading-relaxed text-body">
+            <summary className="cursor-pointer font-semibold text-text">{t.cxAccepted}</summary>
+            <div className="mt-2 [&_h3]:hidden [&_p]:mt-2">
+              <CancellationTerms t={t} />
+            </div>
+          </details>
           <PaymentForm
             clientSecret={payment.clientSecret}
             locale={locale}
@@ -1175,6 +1194,7 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
             // had been taken by themselves.
             onCancel={() => setMode("dates")}
           />
+          </>
         ) : (
           <div className="mt-4 flex flex-col gap-2.5">
             {/* Paying is the primary action when it is available -- it is the one that
@@ -1596,6 +1616,7 @@ function GuestForm({
   staleNotice,
   privacyHref,
   submitLabel,
+  terms,
   onSubmit,
   onCancel,
 }: {
@@ -1612,6 +1633,11 @@ function GuestForm({
   privacyHref: string;
   /** Differs by path: "Send request" versus "Continue to payment". */
   submitLabel: string;
+  /**
+   * Present on the paid path only. The full policy and its checkbox sit on the step that
+   * holds the nights and opens the payment, and the accepted version travels with it.
+   */
+  terms?: { accepted: boolean; onToggle: (accepted: boolean) => void };
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   onCancel: () => void;
 }) {
@@ -1707,7 +1733,32 @@ function GuestForm({
         </p>
       ) : null}
 
-      <button type="submit" disabled={sending || !canSubmit} className={`mt-3.5 ${primaryButton}`}>
+      {terms ? (
+        <div className="mt-4">
+          <div
+            tabIndex={0}
+            className="max-h-56 overflow-y-auto rounded-xl border border-hairline p-3.5 text-[12.5px] leading-relaxed text-body [&_h3]:font-semibold [&_h3]:text-text [&_p]:mt-2"
+          >
+            <CancellationTerms t={t} />
+          </div>
+          <label className="mt-3 flex cursor-pointer items-start gap-2.5 text-[13px] leading-snug text-text">
+            <input
+              type="checkbox"
+              required
+              checked={terms.accepted}
+              onChange={(event) => terms.onToggle(event.target.checked)}
+              className="mt-0.5 size-4 shrink-0 accent-ink"
+            />
+            <span>{t.cxAccept}</span>
+          </label>
+        </div>
+      ) : null}
+
+      <button
+        type="submit"
+        disabled={sending || !canSubmit || (terms ? !terms.accepted : false)}
+        className={`mt-3.5 ${primaryButton}`}
+      >
         {sending ? t.sending : submitLabel}
       </button>
       <button
