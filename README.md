@@ -386,6 +386,13 @@ The pipeline, so nobody has to think about image formats:
   Beds24 booking notes, sent in the guest confirmation email from the Stripe webhook, and on
   `/terms-and-conditions` in English. Still open from the draft's section 4: deposit versus
   full prepayment, Direct Sale Act s.33, and Booking.com rate parity.
+- **The paid-booking half of the cancellation flow is untested end to end.** Checked live
+  02/11/2026: terms box and checkbox gate on the pay path. Not yet seen: the "You accepted"
+  panel on the payment step and the guest confirmation email from the Stripe webhook. Paul
+  chose to verify on the first real paid booking rather than a preview test: the host email
+  for that booking should show a "Cancellation terms" row with a version, and the guest
+  should receive the confirmation. If the guest email is missing, check the Vercel logs for
+  `guest not emailed`.
 - **The live chat is built and switched off.** `src/components/crisp-chat.tsx` renders
   nothing until `NEXT_PUBLIC_CRISP_WEBSITE_ID` is set, which needs a Crisp account that does
   not exist yet. Two things have to be true before it is set: Total Privacy Mode enabled in
