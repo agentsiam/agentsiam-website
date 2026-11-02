@@ -809,7 +809,7 @@ export const en = {
   // The property's tagline, description, fact labels and house rules were literals in src/lib/property.ts and rendered in English on /th and /zh, on the homepage and the property page both. The guest review quote stays English, because a guest's own words translated are no longer the guest's words; it is marked lang=en instead.
   // -- Cosmos House preview copy. Facts only from fields the property profile asserts.
   metaCosmosTitle: "Cosmos House, Chang Khlan, Chiang Mai",
-  metaCosmosDesc: "Two bedrooms, two bathrooms and space for four guests in Chang Khlan, Chiang Mai. Booking by enquiry: send us your dates and we will confirm availability and price.",
+  metaCosmosDesc: "Two bedrooms, two bathrooms and space for four guests in Chang Khlan, Chiang Mai. Booking by enquiry: send us your dates for availability and price.",
   cosmosTagline: "Two bedrooms and two bathrooms for up to four guests, in Chang Khlan, Chiang Mai",
   cosmosNotOpenTitle: "Booking by enquiry",
   cosmosNotOpenBody: "Send us your arrival and departure dates and the number of guests. We'll reply personally with availability and a price for your stay.",
@@ -1060,7 +1060,7 @@ export const en = {
 
   // -- mae rim house: enquiry-only listing ---------------------------------
   metaMaeRimTitle: "Mae Rim House, Mae Rim, Chiang Mai",
-  metaMaeRimDesc: "Two bedrooms, two bathrooms and a work room in a detached house with a garden in Mae Rim, Chiang Mai. Booking by enquiry: send us your dates and we will confirm availability and price.",
+  metaMaeRimDesc: "Two-bedroom detached house with a work room and garden in Mae Rim, Chiang Mai. Booking by enquiry: send us your dates for availability and price.",
   maeRimTagline: "Two bedrooms, a work room and a garden on 1,412 m² of land in Mae Rim, Chiang Mai",
   maeRimDesc1: "Mae Rim House is a detached house with 120 m² of living space, not counting the covered parking, on 1,412 m² of land in Mae Rim, north of Chiang Mai. Garden surrounds the house, and there is an outdoor seating area.",
   maeRimDesc2: "Inside are two bedrooms and a living room, all air-conditioned; two bathrooms, both with water heaters; a work room; and a dining room with a kitchen area and range hood. A washing machine is included.",
