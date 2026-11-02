@@ -35,7 +35,7 @@ export const en = {
 
   // Shown on /th and /zh above long-form copy that has not been translated yet.
   pendingNote:
-    "Not yet translated: property descriptions, legal pages and the detailed owner sections below. Shown in English rather than machine-translated.",
+    "Property descriptions, legal pages and the detailed owner information below are currently available in English.",
 
   // -- home ---------------------------------------------------------------
   heroEyebrow: "Chiang Mai · book direct",
@@ -286,7 +286,7 @@ export const en = {
   features: "Features",
   fromPrice: "from",
   // A tile for a house listed for enquiry only, where the price would be.
-  tileNotOpen: "Not open for booking yet",
+  tileNotOpen: "By enquiry only",
   perNight: "per night",
   kmToCentre: "{n} km to centre",
   oneProperty: "1 place to stay",
@@ -297,10 +297,10 @@ export const en = {
   noMatchRelaxOne: "Drop the {filter} filter and one place comes back.",
   noMatchNothing:
     "Relaxing any one filter would not change it either. Tell us what you are looking for and we will say honestly whether we can help.",
-  launchingSoon: "Launching soon",
-  cityComingTitle: "{city} is not open yet.",
+  launchingSoon: "By enquiry",
+  cityComingTitle: "{city}, by enquiry only.",
   cityComingBody:
-    "We manage properties in Chiang Mai today, on the ground, with our own team. {city} is next. Tell us what you need there and we will come back to you when it opens.",
+    "Looking for a stay in {city}? Tell us your dates and what you need, and we'll let you know whether we can help.",
   browseChiangMai: "Browse Chiang Mai",
   tellUsWhatYouNeed: "Tell us what you need",
   type_apartment: "Apartment",
@@ -325,10 +325,10 @@ export const en = {
   destinationsTitle: "Eight neighbourhoods, honestly described.",
   destinationsIntro:
     "Chiang Mai is small enough to cross in twenty minutes and varied enough that the neighbourhood decides the holiday. Here is what each one is actually like, and what we manage there.",
-  areaNoneYet: "Nothing here yet",
-  areaEmptyTitle: "We do not manage anywhere in {area} yet.",
+  areaNoneYet: "By enquiry",
+  areaEmptyTitle: "Staying in {area}? Ask us first.",
   areaEmptyBody:
-    "Rather than pad this page out, we would sooner say so. We take on properties one at a time and only where we can look after them properly, so this list grows slowly and on purpose.",
+    "Tell us your dates and what you need, and we'll let you know whether we can help.",
   seeEverything: "See everything we manage",
   otherAreas: "Other neighbourhoods",
   searchThisArea: "Search {area}",
@@ -393,9 +393,9 @@ export const en = {
   metaMgmtDesc: "Feasibility, vacation rental permission and management for short-term rentals in {city}, delivered from our Chiang Mai team.",
   mgmtEyebrow: "For owners",
   mgmtHeroTitle: "Short-term rental management in {city}",
-  mgmtHeroSub: "The same three services we run in Chiang Mai, available in {city} when the work comes. Take the ones your property needs.",
+  mgmtHeroSub: "The same three services we run in Chiang Mai, available in {city} by enquiry. Take the ones your property needs.",
   mgmtServicesTitle: "What AgentSiam does",
-  mgmtScopeTitle: "What we do not do in {city} yet",
+  mgmtScopeTitle: "How we work in {city}",
   mgmtCtaTitle: "Thinking about short-term letting in {city}?",
   mgmtHowLink: "See how it works",
   metaPropertiesTitle: "Places to stay in Chiang Mai",
@@ -479,7 +479,7 @@ export const en = {
   ga6: "When your booking is confirmed. The listing shows the neighbourhood only, and the confirmation carries the exact address, the Grab address, and how to find the door.",
   gq7: "What happens if I need to cancel?",
   // There is no published cancellation policy anywhere on the site, including the terms. Boilerplate would be inventing legal text, so this says what is true and gives a route. Replace it the day a policy is agreed.
-  ga7: "We have not published a standard cancellation policy yet. If your dates might move, write to us before you book and we will put the terms for your stay in writing.",
+  ga7: "If you book through our team, we'll confirm the cancellation terms for your stay in writing before you book.",
   // A guest with a question and no dates had nowhere to go: the booking button needs dates, and /contact sends guests back here.
   askTitle: "Still have a question?",
   askBody: "Write to us about this house. A person answers, usually the same day.",
@@ -514,7 +514,7 @@ export const en = {
   bsPillarsTitle: "The four areas we work in",
   bsPillarsIntro: "Each one is a scope of work rather than a package. Most projects need one or two of them, and where a project needs none of them we will say so.",
   // Marks a deliberate gap. Nothing behind this label is a capability claim.
-  bsPendingLabel: "Not published yet",
+  bsPendingLabel: "On request",
   bsLimitLabel: "What this is not",
   bsPillar1Hook: "Structured and compliant from day one.",
   bsPillar1Name: "Business Setup & Compliance Advisory",
@@ -522,7 +522,7 @@ export const en = {
   bsPillar1Get1: "Company registration coordinated end to end with a licensed Thai partner.",
   bsPillar1Get2: "The licences and permits your activity actually requires, identified before you commit to premises or staff.",
   bsPillar1Get3: "Tax registration and a working accounting arrangement, set up with an accounting partner.",
-  bsPillar1Pending: "The document checklist and the timeline for each company structure are not published here yet. We send the current version for your case.",
+  bsPillar1Pending: "We send the document checklist and timeline for your company structure on request.",
   bsPillar1Limit: "We coordinate the work and stay in the room for it. We are not a law firm or an accounting firm, and we do not give legal or tax advice ourselves.",
   bsPillar2Hook: "From product idea to market-ready goods.",
   bsPillar2Name: "OEM & Supply Chain Enablement",
@@ -530,7 +530,7 @@ export const en = {
   bsPillar2Get1: "A shortlist of manufacturers found and vetted against your product, not a directory export.",
   bsPillar2Get2: "Sampling managed through the rounds it takes to reach a sample you approve.",
   bsPillar2Get3: "The production and supply steps prepared, so the first real order can be placed.",
-  bsPillar2Pending: "Which product categories we have run this in, and the factories behind them, are not published here yet.",
+  bsPillar2Pending: "Ask us about our experience in your product category.",
   bsPillar2Limit: "We do not manufacture, and we do not buy, hold or resell your stock. The supply agreement is between you and the factory.",
   bsPillar3Hook: "Live on LINE, TikTok, Shopee, Lazada.",
   bsPillar3Name: "Ecommerce & Local Platform Launch",
@@ -538,7 +538,7 @@ export const en = {
   bsPillar3Get1: "Your store opened on the platforms that matter for your category, rather than on all of them at once.",
   bsPillar3Get2: "Thai payment methods connected, so a local buyer can pay the way they normally pay.",
   bsPillar3Get3: "Product content written and laid out in Thai for each platform, not translated once and pasted everywhere.",
-  bsPillar3Pending: "Which platforms we recommend for which category, and what each one costs to run, are not published here yet.",
+  bsPillar3Pending: "Ask us which platforms suit your product category and what they cost to run.",
   bsPillar3Limit: "This is launch work. Day-to-day selling, customer service and order fulfilment stay with your team unless we agree otherwise in writing.",
   bsPillar4Hook: "Strategy connected to execution.",
   bsPillar4Name: "Growth, Marketing & Operations Integration",
@@ -546,7 +546,7 @@ export const en = {
   bsPillar4Get1: "Brand and messaging adapted for a Thai audience rather than translated from your home market.",
   bsPillar4Get2: "A marketing plan per channel, saying what each channel is for and how it will be judged.",
   bsPillar4Get3: "The handover points between marketing and operations written down, so an enquiry does not stop at the boundary.",
-  bsPillar4Pending: "What we report back, and how often, is not published here yet.",
+  bsPillar4Pending: "What we report back, and how often, is agreed with you at the start.",
   bsPillar4Limit: "We build the plan and connect it to your workflows. We do not take over your team, and we do not run your operations for you.",
   bsStartTitle: "How an engagement starts",
   bsStep1Title: "You write to us",
@@ -555,7 +555,7 @@ export const en = {
   bsStep2Body: "The first thing we work out on that call is which of the four areas your project actually needs, and which of them it does not.",
   bsStep3Title: "What happens after that",
   // Deliberate gap. There is no agreed consulting intake process to publish.
-  bsStep3Body: "How the work is scoped, staged and quoted after that call is not published here. Consulting engagements differ enough that a published sequence would be a guess, and leaving the gap visible is more useful to you than filling it.",
+  bsStep3Body: "After the call we scope, stage and quote the work for your case. Every engagement differs, so you get a written plan made for you rather than a standard sequence.",
   bsPriceNote: "Nothing on this page carries a price. Work is quoted against the scope once there is one.",
   bsCloseTitle: "Planning something in Thailand?",
   bsCloseBody: "Tell us what you are building and where you are starting from. If the work is outside what we do, we will say so rather than take it on.",
@@ -571,8 +571,8 @@ export const en = {
   mgmt2Svc5Body: "Interior and exterior photography, shot and edited to the standard the channels reward. Photography is the single biggest lever on how a listing performs.",
   mgmt2Svc6Body: "Where the numbers are held back by the property itself rather than by the listing, we advise on what to change, what it would cost, and whether the return justifies it.",
   mgmt2Fees: "Fees are quoted per property.",
-  mgmt2Scope1: "Our home market is Chiang Mai. That is where the team, the District Office relationship and the properties we run are. We take work in {city} when it comes, and it is delivered from Chiang Mai.",
-  mgmt2Scope2: "So we do not claim local area knowledge here yet, we have no {city} property to show you, and we have not published market data for this city. If what you need is a manager with people on the ground in {city} this week, we are not that yet, and it is cheaper for both of us to say so now.",
+  mgmt2Scope1: "Our home market is Chiang Mai. That is where the team, the District Office relationship and the properties we run are. We take on work in {city} by enquiry, and it is delivered by the Chiang Mai team.",
+  mgmt2Scope2: "Our team is based in Chiang Mai. We consider work in {city} individually and agree the scope and arrangements before taking it on. If you need a manager with staff based in {city} full time, tell us at the start and we will say plainly whether we are the right fit.",
   mgmt2Scope3: "What travels is the work itself: the feasibility model, the licensing route, the channel and rate management, the compliance upkeep. That is most of it, and the study will tell you honestly whether the numbers work before you commit to anything.",
   mgmt2CtaBody: "Tell us what the property is and what it is doing now. If a study would genuinely tell you something your own numbers do not, we will say so, and it ends in a Go or a No-Go we are willing to hand you.",
   // Subordinate cross-audience route out. Plain text, never a second primary CTA.
@@ -591,7 +591,7 @@ export const en = {
   // Marks the block as judgement, not fact.
   areaWhoNote: "Judgement rather than fact. This is how we answer a guest who asks us to choose between neighbourhoods.",
   // Shown on the three areas with no entries in the guide dataset. Marks the description above as general rather than checked.
-  areaUnsourced: "We have no first-hand notes on file for this neighbourhood. The guide we write for guests was built outwards from a house in Chang Khlan and does not reach here yet, so the description above is general rather than something we have walked and checked.",
+  areaUnsourced: "This is a general overview; our guest guide does not yet cover this neighbourhood in detail. Contact us with any questions and we'll help where we can.",
   // Distance figure with its origin named. CITY_CENTRE in areas.ts is Tha Phae Gate.
   areaKmFromGate: "{n} km from Tha Phae Gate",
   // The method behind the figure. distanceKm() is crow-flies on purpose.
@@ -602,7 +602,7 @@ export const en = {
   // Index card line: how many guide places sit in this area.
   areaGuideCount: "{n} places in our guide",
   areaGuideCountOne: "1 place in our guide",
-  areaGuideCountNone: "Not in our guide yet",
+  areaGuideCountNone: "Local tips on request",
   areaIndexCloseTitle: "None of them quite right?",
   areaIndexCloseBody: "Tell us the trip rather than the neighbourhood. We answer with what actually fits, even when that means pointing you at a part of the city we manage nothing in.",
   // Owner-facing cross-link at the foot of the index. Owner register, so Thai takes ท่าน.
@@ -662,7 +662,7 @@ export const en = {
 
   // -- neighbourhood pages, second pass ------------------------------------
   // Supersedes areaUnsourced. Same copy, with the neighbourhood name interpolated from areaChangKhlan rather than spelled out inside the sentence: the Chinese transliteration in the first pass did not match the one the dictionary already uses.
-  areaUnsourcedFrom: "We have no first-hand notes on file for this neighbourhood. The guide we write for guests was built outwards from a house in {area} and does not reach here yet, so the description above is general rather than something we have walked and checked.",
+  areaUnsourcedFrom: "This is a general overview; our guest guide does not yet cover this neighbourhood in detail. Contact us with any questions and we'll help where we can.",
   // Supersedes areaNimmanP3.
   areaNimmanGuide: "Our local guide holds only three places in Nimman. That is a limit of the guide rather than of the neighbourhood: it was written outwards from a house in {area} and covers what our own guests walk to. Read the list below as our notes, not as a survey.",
   // Supersedes areaOldCityP3.
@@ -785,11 +785,11 @@ export const en = {
   // The property's tagline, description, fact labels and house rules were literals in src/lib/property.ts and rendered in English on /th and /zh, on the homepage and the property page both. The guest review quote stays English, because a guest's own words translated are no longer the guest's words; it is marked lang=en instead.
   // -- Cosmos House preview copy. Facts only from fields the property profile asserts.
   metaCosmosTitle: "Cosmos House, Chang Khlan, Chiang Mai",
-  metaCosmosDesc: "Two bedrooms, two bathrooms and space for four guests in Chang Khlan, Chiang Mai. Not open for booking yet; write to us and hear first when it is.",
+  metaCosmosDesc: "Two bedrooms, two bathrooms and space for four guests in Chang Khlan, Chiang Mai. Booking by enquiry: send us your dates and we will confirm availability and price.",
   cosmosTagline: "Two bedrooms and two bathrooms for up to four guests, in Chang Khlan, Chiang Mai",
-  cosmosNotOpenTitle: "Not open for booking yet",
-  cosmosNotOpenBody: "Dates for Cosmos House are not open yet. Write to us and we will tell you the day they are, and answer any question about the house in the meantime.",
-  cosmosEnquire: "Email us about Cosmos House",
+  cosmosNotOpenTitle: "Booking by enquiry",
+  cosmosNotOpenBody: "Send us your arrival and departure dates and the number of guests. We'll reply personally with availability and a price for your stay.",
+  cosmosEnquire: "Enquire about availability",
 
   lotusTagline: "Your base for adventure and local living in Chiang Mai",
   lotusDesc1: "Lotus House is your base for adventure and local living in Chiang Mai. Tucked on a quiet street among friendly neighbours, this three-storey home blends comfort with character, offering spacious rooms and a rooftop terrace to relax after exploring the city's vibrant markets, temples, and nightlife.",
@@ -1036,7 +1036,7 @@ export const en = {
 
   // -- mae rim house: enquiry-only listing ---------------------------------
   metaMaeRimTitle: "Mae Rim House, Mae Rim, Chiang Mai",
-  metaMaeRimDesc: "Two bedrooms, two bathrooms and a work room in a detached house with a garden in Mae Rim, Chiang Mai. Not open for booking yet; write to us to hear first.",
+  metaMaeRimDesc: "Two bedrooms, two bathrooms and a work room in a detached house with a garden in Mae Rim, Chiang Mai. Booking by enquiry: send us your dates and we will confirm availability and price.",
   maeRimTagline: "Two bedrooms, a work room and a garden on 1,412 m² of land in Mae Rim, Chiang Mai",
   maeRimDesc1: "Mae Rim House is a detached house with 120 m² of living space, not counting the covered parking, on 1,412 m² of land in Mae Rim, north of Chiang Mai. Garden surrounds the house, and there is an outdoor seating area.",
   maeRimDesc2: "Inside are two bedrooms and a living room, all air-conditioned; two bathrooms, both with water heaters; a work room; and a dining room with a kitchen area and range hood. A washing machine is included.",
@@ -1047,9 +1047,9 @@ export const en = {
   maeRimLivingAreaValue: "120 m²",
   maeRimLandValue: "1,412 m²",
   maeRimParkingValue: "2–3 cars",
-  maeRimEnquireTitle: "Not open for booking yet",
-  maeRimEnquireBody: "Dates for Mae Rim House are not open yet. Write to us and we will tell you the day they are, and answer any question about the house in the meantime.",
-  maeRimEnquire: "Email us about Mae Rim House",
+  maeRimEnquireTitle: "Booking by enquiry",
+  maeRimEnquireBody: "Send us your arrival and departure dates and the number of guests. We'll reply personally with availability and a price for your stay.",
+  maeRimEnquire: "Enquire about availability",
   nearRajabhatMaeRim: "Chiang Mai Rajabhat University, Mae Rim campus",
   nearTaweerotMarket: "Taweerot Market",
   nearPremSchool: "Prem Tinsulanonda International School",
