@@ -33,7 +33,7 @@ export const zh: Dictionary = {
   heroEyebrow: "清迈 · 按晚或按月入住",
   heroTitleA: "在清迈有个家，",
   heroTitleB: "住一周或一年都可以。",
-  heroSub: "我们在清迈自己经营房子，也为长住的客人直接从房东处找房。从第一晚到最后一个月，都是同一支本地团队。",
+  heroSub: "我们在清迈亲自运营房屋，也为长住客人直接从房东处寻找私人房屋。从第一晚到最后一个月，全程由同一支清迈本地团队照应。",
   viewProperty: "查看房源",
 
   forGuests: "给住客",
@@ -339,7 +339,7 @@ export const zh: Dictionary = {
   guideAskDismiss: "稍后再说",
   // -- page metadata ------------------------------------------------------
   metaHomeTitle: "AgentSiam｜清迈住宿，按晚或按月",
-  metaHomeDesc: "直接预订 Lotus House，按月入住，或请我们直接从房东处为您找房。清迈本地团队全程照应。",
+  metaHomeDesc: "官网直订 Lotus House，入住一个月以上，或请我们直接从房东处为您寻找私人房屋。全程由清迈本地团队照应。",
   metaHowTitle: "清迈短租托管",
   metaHowDesc: "六项服务，按您的房产来选，而不是打包出售：可行性研究、短租许可办理，以及主要OTA和官网直订的日常管理。",
   metaMgmtTitle: "{city}短租物业管理",
@@ -1057,11 +1057,11 @@ export const zh: Dictionary = {
 
   // -- homepage, renter hero choices ---------------------------------------
   homeChoiceNightsTitle: "住几晚",
-  homeChoiceNightsBody: "直接预订 Lotus House，价格不含平台加价。",
+  homeChoiceNightsBody: "官网直订 Lotus House，无需支付平台加价。",
   homeChoiceNightsCta: "查看可订日期",
   homeChoiceMonthTitle: "住一个月以上",
-  homeChoiceMonthBody: "在 Lotus House 住满 28 晚，含合理用量的水电费和每周一次清洁。",
+  homeChoiceMonthBody: "在 Lotus House 入住 28 晚及以上，包含合理使用范围内的水电费和每周一次的清洁服务。",
   homeChoiceMonthCta: "查看 Lotus House",
   homeChoiceFindTitle: "帮我找房",
-  homeChoiceFindBody: "告诉我们日期、区域和预算。我们直接从房东处找合适的房子，每套先核实，并附上总价。",
+  homeChoiceFindBody: "告诉我们入住日期、区域和预算。我们会直接从房东处寻找合适的私人房屋，每套都先核查，并附上总价。",
 };
