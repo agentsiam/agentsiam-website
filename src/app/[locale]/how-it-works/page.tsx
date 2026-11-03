@@ -401,23 +401,52 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
-      {/* shape: value-glyph-grid -- Why owners choose us, straight after the hero. Every claim here is checkable; keep it that way. */}
+      {/* shape: value-glyph-grid
+          -- Why owners choose us. Rebuilt 03/11/2026, Paul's direction, after the "a real
+             co-host" block on Lodgify's home page, whose measured numbers these are: heading
+             40px/700 uppercase at line-height 1.2 and tracking 0, capped at 816px; four
+             columns with a 20px gap; each card a square panel at radius 24px above a 20px
+             heading and a 14px body at 1.5 and -0.014em.
+
+             The panel is a .grad-sand ground. That is the design system's own `.on-grad`
+             treatment, which is the same idea as their yellow-to-white panel, brand colour at
+             the top fading out by mid-panel, and it is also the documented treatment for an
+             image slot with no photograph. So it is both the placeholder and a legitimate
+             final ground if no illustration is ever commissioned. The same hue on all four,
+             so it cannot be read as a verdict on the card it sits in. Each panel renders at
+             245px square at desktop and 158px on a phone, so an illustration wants a 1:1
+             frame at 720x720, which covers the larger of those at 3x.
+
+             Three numbers of theirs are not taken. Their card heading is weight 500 and this
+             is 600, because Poppins loads 600, 700 and 800 here and a 500 would be
+             synthesised. Their grid is 1255 wide; this stays inside --container-prose with the
+             rest of the page. And the grid holds two columns rather than one below 1024px: at
+             375 a single column makes each panel a 335px square, so the four stack into
+             1340px of gradient before the reader reaches anything else, which is too much
+             scroll for a supporting section. Their own phone markup could not be measured for
+             comparison, since the card is not in the DOM under that text at 375. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
-        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
+        <h2 className="mx-auto max-w-[816px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase">
           {t.vpTitle}
         </h2>
-        <div className="mt-7 grid gap-x-6.5 gap-y-8 sm:grid-cols-[repeat(auto-fit,minmax(215px,1fr))]">
+        <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
           {valueProps.map((prop) => (
-            <div key={prop.title} className="flex flex-col gap-3.5">
-              <IconChip name={prop.icon} tone="sand" />
-              <h3 className="font-display text-lg font-bold leading-tight tracking-[-0.015em]">
+            <div key={prop.title}>
+              <div className="grad-sand flex aspect-square items-center justify-center rounded-[24px]">
+                <span className="scale-150">
+                  <IconChip name={prop.icon} tone="surface" />
+                </span>
+              </div>
+              <h3 className="mt-5 font-display text-[20px] leading-[1.2] font-semibold">
                 {prop.title}
               </h3>
-              <p className="text-sm leading-relaxed text-body">{prop.body}</p>
+              <p className="mt-2.5 text-[14px] leading-[1.5] tracking-[-0.014em] text-muted">
+                {prop.body}
+              </p>
             </div>
           ))}
         </div>
-        <Link href={href("/contact")} className="pill-primary mt-8">
+        <Link href={href("/contact")} className="pill-primary mt-10">
           {t.talkToUs} →
         </Link>
       </section>
