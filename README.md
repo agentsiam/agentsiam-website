@@ -343,6 +343,9 @@ The pipeline, so nobody has to think about image formats:
   dictionaries; `guestPanelBody` still carries the "local number that answers" promise, so it
   must not be reused while no number is published. The homepage review is shown as stored in
   `src/lib/property.ts`, which is itself cut off with an ellipsis: the full text is not on file.
+- **Homepage Chinese strings unreviewed.** The renter homepage keys (`heroEyebrow`, `heroTitleA`,
+  `heroTitleB`, `heroSub`, the eight `homeChoice*` keys, `metaHomeTitle`, `metaHomeDesc`) and
+  `metaHowTitle` in `zh.ts` have had no native read. Thai approved by Paul 03/11/2026.
 
 - **WhatsApp guest messages are a second store beside Beds24.** `/api/whatsapp/webhook`
   receives Meta's WhatsApp Cloud API webhook and keeps messages in Upstash Redis
