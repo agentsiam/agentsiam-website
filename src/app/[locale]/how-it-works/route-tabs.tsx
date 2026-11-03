@@ -11,26 +11,29 @@ import {
 import { IconChip } from "@/components/icon";
 
 /**
- * The four routes as a tabbed panel on an ink ground, Paul's direction 03/11/2026, after the
- * same block on Lodgify's home page.
+ * The four routes as a tabbed block on an ink ground, Paul's direction 03/11/2026, taking the
+ * design of the "one platform, every task handled" block on Lodgify's home page.
  *
- * Three things are deliberately not copied from it. Theirs marks the selected tab by text
- * colour alone on a plain `div`, with no `role`, no `aria-selected` and no keyboard route in,
- * so the block cannot be used without a mouse; these are real buttons in a tablist with
- * arrow-key navigation. Theirs slides a flex track of panels sideways and, on two separate
- * loads, the pill animated while the panels did not follow; one panel renders at a time here,
- * so there is no track to desynchronise. And its heading is set in caps, which this one is
- * not: the brand reads formal without being cold, and the route titles are sentences.
+ * Its numbers, measured off that page at a 1440 viewport, are the ones used here: block radius
+ * 28px, content 1120 wide inside it, 80px of air above the heading and below the panel;
+ * heading 40px/700 uppercase at 1.2 and tracking 0, capped at 762px; standfirst 16px/400 at
+ * 1.5 and -0.013em, capped at 675px; the bar white, 50 tall, radius 999px, 4px of padding,
+ * each tab radius 40px with 12px of padding and its label 16px/500 at -0.037em; the panel two
+ * columns at 0.43 and 0.57 with a 20px gap; the left column's statement 34px/500 at 1.17 and
+ * its body 14px/400 at 1.5; the image 5:4.
  *
- * The marker is positioned from the active button's measured box, not from a percentage of
- * the bar. Two attempts at the arithmetic drifted, because the grid's own gaps have to appear
- * in both the width and the step and the measured pitch did not match the measured width.
- * Measuring also survives what arithmetic could not: the four labels are dictionary strings
- * and Thai runs longer than English, so the columns are not the same width in every locale.
+ * One number is deliberately not taken. Its heading is #FFF65B, an acid yellow that is not an
+ * AgentSiam colour, and the guardrails forbid a new brand colour without updating the token
+ * table and design-system.html. This uses --color-gold-on-ink, the gold the system already
+ * defines for exactly this job, type on an ink ground.
  *
- * The ground is the ink panel, which is the design system's own treatment for an image slot
- * with no photograph yet rather than a stopgap. A dark photograph drops in behind it when one
- * is shot, at 2160x1920 for desktop and a portrait crop for phones.
+ * Three behaviours are also not copied. Its tabs are plain divs with no role, no aria-selected
+ * and no keyboard route in; these are buttons in a tablist with arrow, Home and End. Its panels
+ * are a flex track that slides and, on two separate loads, the marker moved while the panels
+ * did not follow; one panel renders at a time here. And the marker is positioned from the
+ * active button's measured box: two attempts at arithmetic on the bar's width drifted, because
+ * the grid tracks and the rendered buttons are different widths, and measuring also survives
+ * the labels being dictionary strings, since Thai runs wider than English.
  */
 
 type Route = {
@@ -79,20 +82,19 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
   const route = routes[active];
 
   return (
-    <div className="mt-8">
-      {/* The pill bar. Below 640px the four stack and each active button carries its own fill,
-          because one sliding marker cannot follow a wrapped row. Stacked rather than two by
-          two: these labels are dictionary strings and the Thai ones run to two lines each, so
-          a 2x2 grid of them reads as four labels crammed in a box rather than as a bar. */}
+    <>
+      {/* The bar. Below 640px the four stack and the active one carries its own fill, because
+          one sliding marker cannot follow a wrapped row, and a 2x2 grid of the two-line Thai
+          labels reads as four labels crammed in a box rather than as a bar. */}
       <div
         ref={bar}
         role="tablist"
         aria-label={panelLabel}
-        className="relative grid grid-cols-1 gap-1 rounded-panel bg-bg p-1 sm:grid-cols-4 sm:rounded-full"
+        className="relative mt-14 grid grid-cols-1 gap-1 rounded-panel bg-bg p-1 sm:grid-cols-4 sm:rounded-full"
       >
         <span
           aria-hidden="true"
-          className="absolute top-1 bottom-1 left-0 hidden rounded-full bg-ink transition-transform duration-300 ease-out sm:block"
+          className="absolute top-1 bottom-1 left-0 hidden rounded-[40px] bg-ink transition-transform duration-300 ease-out sm:block"
           style={{
             width: `${marker.width}px`,
             transform: `translateX(${marker.left}px)`,
@@ -113,7 +115,7 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
             tabIndex={index === active ? 0 : -1}
             onClick={() => setActive(index)}
             onKeyDown={(event) => onKeyDown(event, index)}
-            className={`hit relative z-10 min-w-0 rounded-full px-3.5 py-2 text-center text-[13px] font-semibold leading-snug transition-colors duration-200 sm:bg-transparent ${
+            className={`hit relative z-10 min-w-0 rounded-[40px] p-3 text-center text-[16px] leading-[1.12] font-medium tracking-[-0.037em] transition-colors duration-200 sm:bg-transparent ${
               index === active ? "bg-ink text-white sm:text-white" : "text-ink hover:text-primary"
             }`}
           >
@@ -129,18 +131,28 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
         id={`route-panel-${active}`}
         aria-labelledby={`route-tab-${active}`}
         tabIndex={0}
-        className="mt-4 animate-[panel-in_260ms_ease-out] rounded-panel bg-bg p-5.5 sm:p-7"
+        className="mt-10 grid animate-[panel-in_260ms_ease-out] gap-5 sm:grid-cols-[0.43fr_0.57fr]"
       >
-        <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] sm:gap-9">
-          <div className="flex items-start gap-3">
-            <IconChip name={route.icon} tone="sand" />
-            <p className="font-display text-[17px] font-bold leading-snug tracking-[-0.015em] text-primary">
-              {route.take}
-            </p>
-          </div>
-          <p className="text-[14.5px] leading-relaxed text-body">{route.why}</p>
+        <div className="rounded-[24px] bg-bg p-6 sm:p-7.5">
+          <IconChip name={route.icon} tone="sand" />
+          <p className="mt-5 font-display text-[clamp(24px,3.1vw,34px)] leading-[1.17] font-medium text-ink">
+            {route.take}
+          </p>
+          <p className="mt-4 text-[14px] leading-[1.5] tracking-[-0.014em] text-muted">
+            {route.why}
+          </p>
+        </div>
+
+        {/* The image slot. A brand gradient ground at the card's own radius is the design
+            system's treatment for a slot with no photograph, not a grey rectangle and not
+            stock, and the hue is the same on all four routes so it cannot be read as a verdict
+            on the route it sits beside. It carries no caption: a visible "photograph to come"
+            would be a fifth string needing Thai and Chinese, and the gradient ground is already
+            the honest treatment on its own. The frame wanted here is 5:4, so 1060x848 at 2x. */}
+        <div className="rounded-[24px] bg-bg p-3">
+          <div aria-hidden="true" className="grad-blue aspect-5/4 rounded-[16px]" />
         </div>
       </div>
-    </div>
+    </>
   );
 }

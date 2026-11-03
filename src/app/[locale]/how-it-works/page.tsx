@@ -388,14 +388,16 @@ export default async function HowItWorksPage({
           -- The routes. Before the menu, deliberately: a list of six services asks the owner
              to work out which ones apply to them, which is the job we are supposed to do. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
-        <div className="overflow-hidden rounded-panel bg-ink px-5 py-9 sm:px-9 sm:py-11">
-          <h2 className="text-center font-display text-[26px] font-bold tracking-[-0.02em] text-gold-on-ink">
-            {t.routeTitle}
-          </h2>
-          <p className="mx-auto mt-2.5 max-w-[660px] text-center text-[15px] leading-relaxed text-white/70">
-            {t.routeBody}
-          </p>
-          <RouteTabs routes={routes} panelLabel={t.routeTitle} />
+        <div className="overflow-hidden rounded-[28px] bg-ink px-5 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[1040px]">
+            <h2 className="mx-auto max-w-[762px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase text-gold-on-ink">
+              {t.routeTitle}
+            </h2>
+            <p className="mx-auto mt-4 max-w-[675px] text-center text-[16px] leading-[1.5] tracking-[-0.013em] text-white/75">
+              {t.routeBody}
+            </p>
+            <RouteTabs routes={routes} panelLabel={t.routeTitle} />
+          </div>
         </div>
       </section>
 
