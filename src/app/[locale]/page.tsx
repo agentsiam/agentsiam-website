@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
@@ -10,6 +10,7 @@ import { PropertyTile } from "@/components/property-tile";
 import { areaVibe } from "@/i18n/area-vibe";
 import { AREAS } from "@/lib/areas";
 import { areaName } from "@/lib/area-content";
+import heroPortrait from "@/photos/lotushouse/_hero/lotus_living_room_portrait.jpg";
 import {
   OG_IMAGE,
   OG_LOCALE,
@@ -108,7 +109,31 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   // Paul, 03/11/2026: the sunset was replaced by the roof terrace itself, tub and loungers,
   // because a sky reads as anywhere and the terrace is this house. Centred rather than
   // bottom-cropped: the subject sits in the middle of the frame, not on a ridge line.
-  const heroGround = pickPhoto(property.slug, "lotus_patio_2");
+  //
+  // Paul, later the same day: the living room instead, because the headline promises a home
+  // for a week or a year and a bathing terrace promises an amenity. Two of the three cards
+  // below now sell stays of a month or more, and the living room is the room those guests
+  // are buying. It also carries its subject across the whole frame, where the terrace corner
+  // had one white object against a blank wall, so both crops below keep a readable scene
+  // rather than throwing the subject away.
+  const heroGround = pickPhoto(property.slug, "20240411_052358");
+
+  // Art direction. The panel's height is set by the text stack, so at 375 it is a 0.34 ratio
+  // box, and object-fit cover on a 4:3 frame keeps only about a quarter of its width at that
+  // shape, whatever the frame is of. Phones get the 9:16 crop that
+  // scripts/crop-hero-portrait.mjs cuts, and the wide frame is held back for 900px and up,
+  // where the panel is wide enough to carry it.
+  //
+  // One <picture> built from getImageProps rather than two <Image> elements, because a
+  // hidden <img> is still fetched and two components would mean two hero downloads. The cost
+  // is the blur placeholder, which this API cannot carry (next/image docs, getImageProps);
+  // the panel's own bg-ink stands in as the ground, so the photo still resolves over brand
+  // ink rather than over white.
+  const heroImage = { alt: "", sizes: "(min-width: 1440px) 1400px, 100vw", priority: true };
+  const heroWide = heroGround
+    ? getImageProps({ ...heroImage, src: heroGround.src }).props
+    : null;
+  const heroTall = getImageProps({ ...heroImage, src: heroPortrait }).props;
   const why = [
     { title: t.whyA, body: t.whyABody },
     { title: t.whyB, body: t.whyBBody },
@@ -130,11 +155,22 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
              still leaves the headline on bright sky. Stacking both was tried first and the
              two compounded into near-black, which is the flat panel again with extra steps.
 
-             So: a single horizontal scrim, using the system's own rgba(10,8,20,...) ink,
-             opaque enough to hold the text column and releasing almost entirely by the
-             right edge so the mountains and the sun actually read. Cropped to the bottom of
-             the frame, where the ridge line and the sun are; the top two thirds of the
-             source is empty sky.
+             So: a single horizontal scrim at 900px and up, using the system's own
+             rgba(10,8,20,...) ink, opaque enough to hold the text column and releasing
+             almost entirely by the right edge so the terrace actually reads.
+
+             Below 900px that scrim turns vertical after all, because the layout does. The
+             copy stacks across the full panel width with the three cards beneath it, so
+             there is no text column for a horizontal scrim to hold and its clear right end
+             lands under the headline instead.
+
+             Held at 0.88 down to 40 percent, which is the whole text block, because what
+             sits behind the copy in the portrait crop is white wall: measured on
+             the running site, the standfirst's own white/80 lands at about 4.1 to 1 against
+             a 0.80 scrim there and about 5.4 to 1 against this one. It then releases to a
+             floor of 0.20, so the sofa and the horseshoe chair read in the gutters beside
+             the three cards, which is the only place on a phone the photograph can be seen at
+             all: the cards are opaque and cover the lower two thirds of the panel.
 
              The photo stays decorative: alt="" and aria-hidden, because the h1 immediately
              below already says what this section is, and a screen reader announcing a
@@ -143,19 +179,18 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-ink px-6 py-12 sm:px-12 sm:py-13">
           {heroGround ? (
             <>
-              <Image
-                src={heroGround.src}
-                alt=""
-                aria-hidden="true"
-                placeholder="blur"
-                fill
-                priority
-                sizes="(min-width: 1440px) 1400px, 100vw"
-                className="object-cover object-center"
-              />
+              <picture className="absolute inset-0">
+                <source media="(min-width: 900px)" srcSet={heroWide?.srcSet} />
+                <img
+                  {...heroTall}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full object-cover object-[50%_50%] min-[900px]:object-[50%_42%]"
+                />
+              </picture>
               <div
                 aria-hidden="true"
-                className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,8,20,0.88)_0%,rgba(10,8,20,0.72)_30%,rgba(10,8,20,0.28)_58%,rgba(10,8,20,0.06)_100%)]"
+                className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,20,0.90)_0%,rgba(10,8,20,0.88)_40%,rgba(10,8,20,0.42)_62%,rgba(10,8,20,0.20)_100%)] min-[900px]:bg-[linear-gradient(90deg,rgba(10,8,20,0.88)_0%,rgba(10,8,20,0.72)_30%,rgba(10,8,20,0.28)_58%,rgba(10,8,20,0.06)_100%)]"
               />
             </>
           ) : (
