@@ -39,11 +39,11 @@ the whole frame, at quality 95 with no chroma subsampling. `write-captions.mjs` 
 IPTC caption and the star rating back, because a re-encode drops the metadata block and the
 alt text lives in it.
 
-**`Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg`.** Held from 22/08 pending an answer
-on where the file came from, because `Gemini_Generated_Image_` plus a random token is Google
-Gemini's default output filename and the design system bans stock and fake mockups.
-**Paul confirmed on 24/08/2026 that the photograph is real.** Returned to `Terrace/` with its
-caption intact. The filename is misleading and nothing more.
+**`Terrace/lotus_terrace_tub_sunset.jpg`.** Held from 22/08 pending an answer on where the
+file came from, because its original filename was a generator's default and the design
+system bans stock and fake mockups. **Paul confirmed on 24/08/2026 that the photograph is
+real.** Returned to `Terrace/` with its caption intact, and renamed on 03/11/2026 so the
+filename no longer suggests otherwise.
 
 ## Resolved, and not to be re-asked
 

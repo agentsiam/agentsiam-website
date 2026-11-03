@@ -120,7 +120,7 @@ const CAPTIONS = {
     "Sunset over the mountains, seen from the roof terrace",
   "lotushouse/Terrace/asian_couple_terrace_sunset_3900px.jpg":
     "Two people on loungers beside the tub on the roof terrace at sunset",
-  "lotushouse/Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg":
+  "lotushouse/Terrace/lotus_terrace_tub_sunset.jpg":
     "The soaking tub and loungers on the roof terrace at sunset",
   "lotushouse/Terrace/IMG_4982_edited.jpg":
     "Soaking in the tub on the roof terrace at sunset, with the mountains on the horizon",
@@ -219,7 +219,7 @@ const RATINGS = {
   // gallery opens on photographs of the actual house.
   "lotushouse/Kitchen/kitchen_with_people.jpg": 1,
   "lotushouse/Terrace/asian_couple_terrace_sunset_3900px.jpg": 1,
-  "lotushouse/Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg": 1,
+  "lotushouse/Terrace/lotus_terrace_tub_sunset.jpg": 1,
   "lotushouse/Terrace/terrace_people.jpg": 1,
   "lotushouse/Terrace/two_men_terrace_sunset_1280.jpg": 1,
 

@@ -71,7 +71,7 @@ import lotushouse_39 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-
 import lotushouse_40 from "@/photos/lotushouse/Floor Plan/Lotus House Layout Fl-3.jpg";
 import lotushouse_41 from "@/photos/lotushouse/Kitchen/kitchen_with_people.jpg";
 import lotushouse_42 from "@/photos/lotushouse/Terrace/asian_couple_terrace_sunset_3900px.jpg";
-import lotushouse_43 from "@/photos/lotushouse/Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg";
+import lotushouse_43 from "@/photos/lotushouse/Terrace/lotus_terrace_tub_sunset.jpg";
 import lotushouse_44 from "@/photos/lotushouse/Terrace/terrace_people.jpg";
 import lotushouse_45 from "@/photos/lotushouse/Terrace/two_men_terrace_sunset_1280.jpg";
 import maerimhouse_0 from "@/photos/maerimhouse/01-exterior.jpg";
@@ -175,7 +175,7 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: lotushouse_40, file: "Floor Plan/Lotus House Layout Fl-3.jpg", alt: "Third floor plan: the front and back roof patios", room: "Floor Plan" },
     { src: lotushouse_41, file: "Kitchen/kitchen_with_people.jpg", alt: "Four people around the kitchen island, with the arched door and the staircase behind", room: "Kitchen" },
     { src: lotushouse_42, file: "Terrace/asian_couple_terrace_sunset_3900px.jpg", alt: "Two people on loungers beside the tub on the roof terrace at sunset", room: "Terrace" },
-    { src: lotushouse_43, file: "Terrace/Gemini_Generated_Image_m2gl4om2gl4om2gl.jpg", alt: "The soaking tub and loungers on the roof terrace at sunset", room: "Terrace" },
+    { src: lotushouse_43, file: "Terrace/lotus_terrace_tub_sunset.jpg", alt: "The soaking tub and loungers on the roof terrace at sunset", room: "Terrace" },
     { src: lotushouse_44, file: "Terrace/terrace_people.jpg", alt: "Four people on the roof terrace at sunset, one of them in the tub", room: "Terrace" },
     { src: lotushouse_45, file: "Terrace/two_men_terrace_sunset_1280.jpg", alt: "Two men on the roof terrace at sunset, one on a lounger beside the tub", room: "Terrace" },
   ],
