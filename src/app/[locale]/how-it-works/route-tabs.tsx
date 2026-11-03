@@ -49,10 +49,19 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
   const bar = useRef<HTMLDivElement | null>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
 
+  // Measured from the rects, not offsetLeft: offsetLeft is relative to the offsetParent's
+  // padding edge and the marker is pinned to the border edge, so the two disagreed by the
+  // bar's own 4px of padding and the marker sat a hair left of the pill.
   const measure = useCallback(() => {
     const node = tabs.current[active];
-    if (!node) return;
-    setMarker({ left: node.offsetLeft, width: node.offsetWidth, measured: true });
+    const element = bar.current;
+    if (!node || !element) return;
+    const box = node.getBoundingClientRect();
+    setMarker({
+      left: box.left - element.getBoundingClientRect().left,
+      width: box.width,
+      measured: true,
+    });
   }, [active]);
 
   useEffect(() => {
@@ -85,7 +94,18 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
     <>
       {/* The bar. Below 640px the four stack and the active one carries its own fill, because
           one sliding marker cannot follow a wrapped row, and a 2x2 grid of the two-line Thai
-          labels reads as four labels crammed in a box rather than as a bar. */}
+          labels reads as four labels crammed in a box rather than as a bar.
+
+          No `.hit` on these buttons, deliberately, though most controls on the site carry it.
+          It is a tap-target expander, `padding: 6px 4px; margin: -6px -4px`, and that negative
+          margin pulled each button 4px past its grid track: it cancelled the bar's own 4px of
+          padding, so the active pill sat hard against the bar's edge, and it made every button
+          8px wider than its track, which is what made the first two attempts at the sliding
+          marker drift. These are already 48px tall, so they need no expanding.
+
+          The pill is `rounded-full` rather than their 40px. At their 42px tall a 40px radius is
+          effectively round; at ours it is not, and a part-round pill inside a fully round bar
+          reads as colliding with the end cap. */}
       <div
         ref={bar}
         role="tablist"
@@ -94,7 +114,7 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
       >
         <span
           aria-hidden="true"
-          className="absolute top-1 bottom-1 left-0 hidden rounded-[40px] bg-ink transition-transform duration-300 ease-out sm:block"
+          className="absolute top-1 bottom-1 left-0 hidden rounded-full bg-ink transition-transform duration-300 ease-out sm:block"
           style={{
             width: `${marker.width}px`,
             transform: `translateX(${marker.left}px)`,
@@ -115,7 +135,7 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
             tabIndex={index === active ? 0 : -1}
             onClick={() => setActive(index)}
             onKeyDown={(event) => onKeyDown(event, index)}
-            className={`hit relative z-10 min-w-0 rounded-[40px] p-3 text-center text-[16px] leading-[1.12] font-medium tracking-[-0.037em] transition-colors duration-200 sm:bg-transparent ${
+            className={`relative z-10 min-w-0 rounded-full p-3 text-center text-[16px] leading-[1.12] font-medium tracking-[-0.037em] transition-colors duration-200 outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary sm:bg-transparent ${
               index === active ? "bg-ink text-white sm:text-white" : "text-ink hover:text-primary"
             }`}
           >
