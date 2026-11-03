@@ -205,7 +205,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       {/* shape: property-tile -- Every listed property, as the same tiles /properties
           shows, so the homepage and the results grid cannot describe a house two ways.
           Two then three columns, not auto-fill: three tiles in an auto-fill grid at 1440px
-          left a fourth, empty column. */}
+          left a fourth, empty column. Both breakpoints are written in px: `sm:` is in rem and
+          sorted after `min-[900px]:` in the built CSS, so the two-column rule won. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -223,7 +224,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             {t.allProperties} →
           </Link>
         </div>
-        <div className="mt-5.5 grid gap-6 sm:grid-cols-2 min-[900px]:grid-cols-3">
+        <div className="mt-5.5 grid gap-6 min-[640px]:grid-cols-2 min-[900px]:grid-cols-3">
           {PROPERTIES.map((item) => (
             <PropertyTile
               key={item.slug}
