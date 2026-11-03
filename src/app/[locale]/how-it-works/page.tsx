@@ -14,11 +14,22 @@ import { LOTUS_HOUSE } from "@/lib/property";
 import { pageMeta } from "@/lib/site";
 import { faqSchema } from "@/lib/structured-data";
 import { Qualifier } from "./qualifier";
+import { RouteTabs } from "./route-tabs";
 
 /**
- * The owner conversion page. Block order: hero (team photo and five proof chips) → why owners
- * choose us → the house we run → routes → menu → report → team → the two gates → the
- * qualifier → included/not included → TM30 → FAQ → closing CTA → guest link.
+ * The owner conversion page. Block order: hero (team photo and five proof chips) → the
+ * qualifier → routes → why owners choose us → the house we run → menu → report → team → the
+ * two gates → included/not included → TM30 → FAQ → closing CTA → guest link.
+ *
+ * Reordered 03/11/2026, Paul's direction, to follow the block order of Lodgify's own home
+ * page: it puts its qualifier second, directly under the hero, so the visitor self-selects
+ * before reading anything and the rest of the page is framed by that answer. Ours sat ninth,
+ * below the menu. The move also settles a guardrail the page was failing either way, that
+ * every menu carries a visible recommended route per profile ahead of it: the qualifier
+ * produces the profile and the route grid states the recommendation, so the two now run
+ * together and both sit above the menu they gate. The 28/10/2026 reorder's requirement is
+ * unchanged, since the differentiators and the proof still sit above 4,000px of menu rather
+ * than below it.
  *
  * Reordered 28/10/2026 for owners arriving cold from Facebook groups: the differentiators and
  * the proof used to sit below 4,000px of menu, so most visitors never reached them. The route
@@ -359,6 +370,35 @@ export default async function HowItWorksPage({
         </div>
       </section>
 
+      {/* shape: qualifier -- The qualifier. */}
+      <section
+        id="qualify"
+        className="mx-auto max-w-(--container-prose) scroll-mt-24 px-5 pt-16"
+      >
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
+          {t.qualifyTitle}
+        </h2>
+        <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
+          {t.hwQualifyIntro}
+        </p>
+        <Qualifier t={t} contactHref={href("/contact")} />
+      </section>
+
+      {/* shape: route-grid
+          -- The routes. Before the menu, deliberately: a list of six services asks the owner
+             to work out which ones apply to them, which is the job we are supposed to do. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+        <div className="overflow-hidden rounded-panel bg-ink px-5 py-9 sm:px-9 sm:py-11">
+          <h2 className="text-center font-display text-[26px] font-bold tracking-[-0.02em] text-gold-on-ink">
+            {t.routeTitle}
+          </h2>
+          <p className="mx-auto mt-2.5 max-w-[660px] text-center text-[15px] leading-relaxed text-white/70">
+            {t.routeBody}
+          </p>
+          <RouteTabs routes={routes} panelLabel={t.routeTitle} />
+        </div>
+      </section>
+
       {/* shape: value-glyph-grid -- Why owners choose us, straight after the hero. Every claim here is checkable; keep it that way. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
@@ -421,45 +461,6 @@ export default async function HowItWorksPage({
           </Link>
         </section>
       ) : null}
-
-      {/* shape: route-grid
-          -- The routes. Before the menu, deliberately: a list of six services asks the owner
-             to work out which ones apply to them, which is the job we are supposed to do. */}
-      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
-        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
-          {t.routeTitle}
-        </h2>
-        <p className="mt-2 max-w-[660px] text-[15px] leading-relaxed text-muted">
-          {t.routeBody}
-        </p>
-
-        <div className="mt-8 grid gap-5 sm:grid-cols-2">
-          {routes.map((route) => (
-            <div
-              key={route.when}
-              className="rounded-panel bg-surface-2 p-3.5"
-            >
-              <div className="flex h-full flex-col overflow-hidden rounded-box bg-bg">
-                <div className="flex items-center gap-3 px-5 pt-5">
-                  <IconChip name={route.icon} tone="sand" />
-                  <h3 className="font-display text-[16px] font-bold leading-snug tracking-[-0.015em]">
-                    {route.when}
-                  </h3>
-                </div>
-
-                <div className="flex flex-col gap-2 px-5 pt-4 pb-5.5">
-                  <p className="text-[14px] font-semibold leading-snug text-primary">
-                    {route.take}
-                  </p>
-                  <p className="text-[13.5px] leading-relaxed text-body">
-                    {route.why}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* shape: service-card-stack -- The menu. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
@@ -628,20 +629,6 @@ export default async function HowItWorksPage({
             {t.hwGatesFoot}
           </p>
         </div>
-      </section>
-
-      {/* shape: qualifier -- The qualifier. */}
-      <section
-        id="qualify"
-        className="mx-auto max-w-(--container-prose) scroll-mt-24 px-5 pt-16"
-      >
-        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
-          {t.qualifyTitle}
-        </h2>
-        <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
-          {t.hwQualifyIntro}
-        </p>
-        <Qualifier t={t} contactHref={href("/contact")} />
       </section>
 
       {/* shape: included-split -- Included / not included, side by side. */}
