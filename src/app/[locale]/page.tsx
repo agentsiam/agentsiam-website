@@ -104,7 +104,11 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   // wrong as the front door.
   //
   // Falls back to the flat ink panel if the file is ever renamed, so the hero cannot break.
-  const heroGround = pickPhoto(property.slug, "891b0e74");
+  //
+  // Paul, 03/11/2026: the sunset was replaced by the roof terrace itself, tub and loungers,
+  // because a sky reads as anywhere and the terrace is this house. Centred rather than
+  // bottom-cropped: the subject sits in the middle of the frame, not on a ridge line.
+  const heroGround = pickPhoto(property.slug, "lotus_patio_2");
   const why = [
     { title: t.whyA, body: t.whyABody },
     { title: t.whyB, body: t.whyBBody },
@@ -147,7 +151,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
                 fill
                 priority
                 sizes="(min-width: 1440px) 1400px, 100vw"
-                className="object-cover object-bottom"
+                className="object-cover object-center"
               />
               <div
                 aria-hidden="true"
