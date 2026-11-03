@@ -72,8 +72,10 @@ export function Nav({ locale }: { locale: Locale }) {
             {t.navListProperty}
           </Link>
 
+          {/* Contact is the renter route: the monthly request. Owners have "Property
+              Owners" in the nav list and the button beside this one, both owner-only. */}
           <Link
-            href={href("/contact")}
+            href={href("/house-for-rent-chiang-mai#request")}
             className="pill-compact"
           >
             {t.navContact}
