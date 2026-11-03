@@ -4,13 +4,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
-import { heroPhoto, pickPhoto } from "@/lib/photos";
-import { HeroSearch } from "@/components/hero-search";
+import { pickPhoto } from "@/lib/photos";
 import { LOTUS_HOUSE, PROPERTIES } from "@/lib/property";
 import { PropertyTile } from "@/components/property-tile";
 import { areaVibe } from "@/i18n/area-vibe";
 import { AREAS } from "@/lib/areas";
-import { areaGradient, areaName } from "@/lib/area-content";
+import { areaName } from "@/lib/area-content";
 import {
   OG_IMAGE,
   OG_LOCALE,
@@ -63,24 +62,36 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale as Locale, path);
   const property = LOTUS_HOUSE;
-  // The gallery's first photo doubles as the card image, so the two cannot disagree.
-  const cardPhoto = heroPhoto(property.slug);
-  // The fork panels take a photo each or neither. The guest side wants somewhere you would
-  // want to be rather than the hero again; the owner side wants a face, which is what
-  // src/photos/team/ is for. Drop a portrait in there and both panels light up together.
-  const guestForkPhoto =
-    pickPhoto(property.slug, "20250413_100343") ?? cardPhoto;
-  // Deliberately not one of the square avatars: those are ~480px, and this slot is a wide
-  // 16:9 band that would crop heads and upscale them. It wants a landscape frame of the
-  // team at a property, a street, a site visit.
-  //
-  // It lives in src/photos/team/ alongside the portraits rather than in a set of its own,
-  // and is picked by name. A whole top-level set for one file is a folder to maintain, a
-  // key to remember and a thing to explain; TEAM in src/lib/team.ts already addresses this
-  // set by filename fragment, so this is the idiom the folder is already using. Nothing
-  // iterates the set blind -- TeamRow walks the explicit TEAM list -- so an extra file here
-  // shows up in this slot and nowhere else.
-  const ownerForkPhoto = pickPhoto("team", "team-group-portrait");
+  // The homepage is for renters in every language (Paul, 03/11/2026). Owners are sent to
+  // /how-it-works, which carries the services, so this page signposts it once and no more.
+  // The audience fork and the three service cards that used to sit here are gone with that.
+
+  // Three ways in, by length of stay, replacing the destination and date search, which
+  // offered three cities and one bookable house. The monthly facts in the second choice are
+  // the same ones /house-for-rent-chiang-mai states (hfrAns2A), not new claims.
+  const choices = [
+    {
+      key: "nights",
+      title: t.homeChoiceNightsTitle,
+      body: t.homeChoiceNightsBody,
+      cta: t.homeChoiceNightsCta,
+      href: href(`/${property.slug}`),
+    },
+    {
+      key: "month",
+      title: t.homeChoiceMonthTitle,
+      body: t.homeChoiceMonthBody,
+      cta: t.homeChoiceMonthCta,
+      href: href(`/${property.slug}`),
+    },
+    {
+      key: "find",
+      title: t.homeChoiceFindTitle,
+      body: t.homeChoiceFindBody,
+      cta: t.areaFaqMonthLink,
+      href: href("/house-for-rent-chiang-mai#request"),
+    },
+  ];
 
   // The hero ground. Paul, 24/08/2026: the hero should carry a photograph rather than the
   // flat ink panel. The migration plan's original shot list asked for "one Chiang Mai
@@ -94,58 +105,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   //
   // Falls back to the flat ink panel if the file is ever renamed, so the hero cannot break.
   const heroGround = pickPhoto(property.slug, "891b0e74");
-  const forkPhotos =
-    guestForkPhoto && ownerForkPhoto
-      ? { guest: guestForkPhoto, owner: ownerForkPhoto }
-      : null;
-
-  // The three services that lead the home page. Unnumbered and management-first since
-  // 29/08/2026, on Paul's instruction that the ladder is gone: numbering three of six
-  // services and opening on the study restated the staircase the offering dropped on
-  // 25/08/2026, whatever the eyebrow called them. Ordinals were removed from the cards
-  // and from the dictionary keys in the same edit, so the concept cannot come back by
-  // someone reading stair1Title and assuming a sequence. Management leads because it is
-  // the only recurring service and the one most owners actually arrive for.
-  //
-  // website-wireframe.html specifies these as
-  // "3-STEP STAIRCASE -- bento-grid, 3x bento-card.on-grad", which is the retired model
-  // stated as a build rule. It is already recorded as stale in the consulting repo's
-  // decisions-log.md; re-deriving it is a Law 1 change and has not been proposed. The
-  // gradient treatment below is taken from it and is unaffected. on-grad is a gradient
-  // rather than a flat fill: full brand colour to 20%, fading to white by 62%. They were
-  // flat bg-teal/bg-secondary/bg-sand until 24/08/2026, which read heavier and more
-  // poster-like than the system intends. The .grad-* classes are in globals.css, copied
-  // from the design system rather than retyped.
-  //
-  // Ink text throughout is part of the variant, not a choice: the lower half of each card
-  // is near-white, so white text would vanish there.
-  //
-  // Sand, blue and pink, and no teal or vermilion: those two are the verdict tokens, and
-  // they were sitting on Permission ("Thailand's rules on short stays are specific and
-  // often misread") and on Feasibility. A vermilion ground under a sentence about rules
-  // being misread is a warning the copy did not write. The three remaining hues carry no
-  // verdict meaning anywhere on the site.
-  const leadServices = [
-    {
-      k: "management",
-      title: t.svcManagementTitle,
-      body: t.svcManagementBody,
-      fill: "grad-sand",
-    },
-    {
-      k: "permission",
-      title: t.svcPermissionTitle,
-      body: t.svcPermissionBody,
-      fill: "grad-blue",
-    },
-    {
-      k: "study",
-      title: t.svcStudyTitle,
-      body: t.svcStudyBody,
-      fill: "grad-pink",
-    },
-  ];
-
   const why = [
     { title: t.whyA, body: t.whyABody },
     { title: t.whyB, body: t.whyBBody },
@@ -215,125 +174,38 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               {t.heroSub}
             </p>
 
-            {/* The search bar is the hero's only action. No CTA pair beside it: a button
-                here would be a second primary, and the owner path is stated properly in
-                the fork band immediately below rather than crammed in up here. */}
           </div>
 
-          <div className="relative mt-8">
-            <HeroSearch
-              // Twelve strings, not the dictionary. See src/components/hero-search.tsx.
-              t={{
-                where: t.where,
-                checkIn: t.checkIn,
-                checkOut: t.checkOut,
-                guests: t.guests,
-                search: t.search,
-                launchingSoon: t.launchingSoon,
-                bkPastCheckIn: t.bkPastCheckIn,
-                bkCheckOutAfter: t.bkCheckOutAfter,
-                bkFewerGuests: t.bkFewerGuests,
-                bkMoreGuests: t.bkMoreGuests,
-                bkOneGuestSelected: t.bkOneGuestSelected,
-                bkGuestsSelected: t.bkGuestsSelected,
-              }}
-              locale={locale}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* shape: audience-fork
-          -- The audience fork. Guests left, owners right, both low-key panels rather than
-             competing buttons. This is the *only* place the visitor is asked to
-             self-identify: a second, text-only fork band sat directly above this one until
-             24/08/2026, repeating "I want to stay here." and "I own a property here."
-             verbatim about 200px higher up. Two identical headings on one screen read as a
-             build error, so it was removed along with its six now-orphaned fork keys.
-
-             The two panels carry a photo only when *both* have one, so the pair always
-             reads as a matched set. Guests see the house; owners see the people who run it.
-             With either photo missing, both fall back to flat brand colour, which is the
-             handoff's own treatment -- one panel with a photo and one without leaves a
-             hole where the second image should be. */}
-      <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
-        <div className="grid gap-4 sm:grid-cols-[repeat(auto-fit,minmax(270px,1fr))]">
-          {[
-            {
-              key: "guests",
-              photo: forkPhotos?.guest,
-              fill: "bg-teal",
-              eyebrow: <span className="eyebrow text-ink">{t.forGuests}</span>,
-              title: "text-ink",
-              body: "text-ink/85",
-              link: "text-ink",
-              heading: t.guestPanelTitle,
-              copy: t.guestPanelBody,
-              href: href(`/${property.slug}`),
-              label: t.viewProperty,
-            },
-            {
-              key: "owners",
-              photo: forkPhotos?.owner,
-              fill: "bg-primary",
-              eyebrow: (
-                <span className="eyebrow text-white/80">{t.forOwners}</span>
-              ),
-              title: "text-white",
-              body: "text-white/85",
-              link: "text-white",
-              heading: t.ownerPanelTitle,
-              copy: t.ownerPanelBody,
-              href: href("/how-it-works"),
-              label: t.ownerPanelLink,
-            },
-          ].map((panel) => (
-            <div
-              key={panel.key}
-              className={`flex flex-col overflow-hidden rounded-panel ${panel.fill}`}
-            >
-              {panel.photo ? (
-                // Photo above the copy rather than behind it: text over an image needs a
-                // scrim to stay legible, and a scrim over a brand panel is two treatments
-                // fighting. The colour keeps doing its job underneath.
-                <div className="relative aspect-16/9">
-                  <Image
-                    src={panel.photo.src}
-                    alt={panel.photo.alt}
-                    lang="en"
-                    placeholder="blur"
-                    fill
-                    sizes="(min-width: 640px) 50vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-              ) : null}
-              <div className="flex flex-1 flex-col gap-2.5 px-7 pb-6.5 pt-6">
-                {panel.eyebrow}
-                <h2
-                  className={`font-display text-[22px] font-bold tracking-[-0.015em] ${panel.title}`}
-                >
-                  {panel.heading}
-                </h2>
-                <p className={`text-sm leading-relaxed ${panel.body}`}>
-                  {panel.copy}
-                </p>
+          {/* Three choices rather than one search bar. White cards on the scrim so the
+              photograph still reads between them; each is one link, so the whole card is
+              the target on a phone. */}
+          <ul className="relative mt-8 grid gap-3 min-[900px]:grid-cols-3">
+            {choices.map((choice) => (
+              <li key={choice.key}>
                 <Link
-                  href={panel.href}
-                  className={`hit mt-1 inline-block text-sm font-semibold underline underline-offset-4 ${panel.link}`}
+                  href={choice.href}
+                  className="group flex h-full flex-col gap-1.5 rounded-box bg-white/95 px-5.5 py-5 text-ink transition-colors hover:bg-white"
                 >
-                  {panel.label}
+                  <span className="font-display text-[17px] font-bold tracking-[-0.015em]">
+                    {choice.title}
+                  </span>
+                  <span className="text-[13.5px] leading-relaxed text-body">
+                    {choice.body}
+                  </span>
+                  <span className="mt-auto pt-2 text-[13.5px] font-semibold text-primary underline-offset-4 group-hover:underline">
+                    {choice.cta} →
+                  </span>
                 </Link>
-              </div>
-            </div>
-          ))}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
       {/* shape: property-tile -- Every listed property, as the same tiles /properties
           shows, so the homepage and the results grid cannot describe a house two ways.
-          auto-fill for the same reason as /properties: a short row keeps its column width
-          rather than stretching one tile across the page. */}
+          Two then three columns, not auto-fill: three tiles in an auto-fill grid at 1440px
+          left a fourth, empty column. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -351,7 +223,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             {t.allProperties} →
           </Link>
         </div>
-        <div className="mt-5.5 grid gap-6 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
+        <div className="mt-5.5 grid gap-6 sm:grid-cols-2 min-[900px]:grid-cols-3">
           {PROPERTIES.map((item) => (
             <PropertyTile
               key={item.slug}
@@ -385,11 +257,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
              the nav and the footer and from nothing in the body of any page. The spec names
              three routes into them and this is the missing one.
 
-             The gradient block is decorative, so it is aria-hidden, and the hue is assigned
-             by position rather than by anything about the place. That is the rule: teal is
-             the positive-verdict token and vermilion the negative one, so a hue that tracks
-             the sentiment of the copy above it turns a decorative ground into a rating
-             nobody wrote. */}
+             Drawn as an index rather than eight cards: a colour fade per card carried no
+             information, and the names and one line each are the content. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
         <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
           {t.homeAreasTitle}
@@ -398,28 +267,23 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           {t.homeAreasSub}
         </p>
 
-        {/* Four across, not auto-fit. Eight cards into an auto-fit grid at 1440px gives
-            six and then two, and a row of two under a row of six reads as a grid that ran
-            out rather than as eight neighbourhoods. Four and four is the only split of
-            eight that stays even at every width this grid has. */}
-        <ul className="mt-5.5 grid gap-3.5 grid-cols-2 min-[900px]:grid-cols-4">
-          {AREAS.map((area, index) => (
-            <li key={area.slug}>
+        <ul className="mt-5.5 grid border-t border-hairline sm:grid-cols-2 sm:gap-x-10">
+          {AREAS.map((area) => (
+            <li key={area.slug} className="border-b border-hairline">
               <Link
                 href={href(`/destinations/${area.slug}`)}
-                className="group flex h-full flex-col overflow-hidden rounded-panel border border-hairline transition-colors hover:border-ink"
+                className="group flex items-baseline justify-between gap-4 py-4"
               >
-                <span
-                  aria-hidden="true"
-                  className={`block h-14 ${areaGradient(index)}`}
-                />
-                <span className="flex flex-1 flex-col gap-1 px-4 pb-4 pt-3">
-                  <span className="font-display text-[15px] font-bold tracking-[-0.015em] group-hover:text-primary">
+                <span className="flex flex-col gap-0.5">
+                  <span className="font-display text-[16px] font-bold tracking-[-0.015em] group-hover:text-primary">
                     {areaName(t, area.slug)}
                   </span>
-                  <span className="text-[13px] leading-normal text-muted">
+                  <span className="text-[13.5px] leading-normal text-muted">
                     {areaVibe(t, area)}
                   </span>
+                </span>
+                <span aria-hidden="true" className="text-muted group-hover:text-primary">
+                  →
                 </span>
               </Link>
             </li>
@@ -485,84 +349,44 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       </section>
 
       {/* shape: audience-fork
-          -- Owner band. The cross-audience fork, given real weight here because owners are
-             the business's paying side, but kept below the guest content. */}
+          -- Owner signpost. One line and one link to /how-it-works in the visitor's
+             language, which is where owners are sent from every page. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-16">
-        <div className="relative overflow-hidden rounded-panel bg-ink p-8 sm:p-12">
-          <div className="absolute inset-y-0 right-0 hidden w-[22%] bg-primary min-[900px]:block" />
-
-          <div className="relative flex flex-wrap items-end justify-between gap-8">
-            <div className="min-[900px]:max-w-[min(620px,calc(70%-24px))]">
-              <span className="eyebrow text-gold-on-ink">{t.forOwners}</span>
-              <h2 className="mt-3.5 font-headline text-[clamp(26px,4vw,34px)] font-extrabold leading-[1.12] tracking-[-0.03em] text-white">
-                {t.ownerBandTitle}
-              </h2>
-              <p className="mt-3 max-w-[520px] text-[15.5px] leading-relaxed text-white/80">
-                {t.ownerBandSub}
-              </p>
-            </div>
-            <Link
-              href={href("/contact")}
-              className="pill-light whitespace-nowrap"
-            >
-              {t.talkToUs}
-            </Link>
+        <div className="flex flex-wrap items-center justify-between gap-6 rounded-panel bg-ink px-8 py-8 sm:px-12">
+          <div className="max-w-[620px]">
+            <span className="eyebrow text-gold-on-ink">{t.forOwners}</span>
+            <h2 className="mt-3 font-display text-[clamp(22px,3vw,26px)] font-bold tracking-[-0.015em] text-white">
+              {t.ownerBandTitle}
+            </h2>
+            <p className="mt-2 text-[15px] leading-relaxed text-white/80">
+              {t.ownerPanelBody}
+            </p>
           </div>
-
-          <div className="relative mt-8 grid gap-4 sm:grid-cols-[repeat(auto-fit,minmax(240px,1fr))]">
-            {leadServices.map((svc) => (
-              <Link
-                key={svc.k}
-                href={href("/how-it-works")}
-                className={`group flex min-h-[210px] flex-col gap-2.5 rounded-panel ${svc.fill} p-6.5`}
-              >
-                <h3 className="font-display text-xl font-bold tracking-[-0.015em] text-ink">
-                  {svc.title}
-                </h3>
-                <p className="text-[13.5px] leading-relaxed text-ink/80">
-                  {svc.body}
-                </p>
-                <span className="mt-auto flex h-8.5 w-8.5 items-center justify-center rounded-full bg-ink text-white group-hover:bg-primary">
-                  →
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          <p className="relative mt-5.5 text-[13px] text-white/55">
-            {t.ownerBandFoot}{" "}
-            <Link
-              href={href("/how-it-works")}
-              className="text-gold-on-ink underline underline-offset-[3px]"
-            >
-              {t.checkQualify} →
-            </Link>
-          </p>
+          <Link
+            href={href("/how-it-works")}
+            className="pill-light whitespace-nowrap"
+          >
+            {t.ownerPanelLink}
+          </Link>
         </div>
       </section>
 
       {/* shape: closing-cta
-          -- Closing. One CTA per audience, and the guest one is the plain link because the
-             page is guest-led: the owner CTA is the conversion this page is asking for. */}
+          -- Closing, renters only. The two ways to stay, at equal weight. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pb-17 pt-14">
-        <div className="grid gap-7 border-t border-hairline pt-7.5 sm:grid-cols-[repeat(auto-fit,minmax(260px,1fr))]">
-          <div>
-            <h2 className="font-display text-[19px] font-bold tracking-[-0.015em]">
-              {t.closingGuest}
-            </h2>
-            <Link
-              href={href(`/${property.slug}`)}
-              className="hit mt-2.5 inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
-            >
+        <div className="border-t border-hairline pt-7.5">
+          <h2 className="font-display text-[19px] font-bold tracking-[-0.015em]">
+            {t.closingGuest}
+          </h2>
+          <div className="mt-3.5 flex flex-wrap gap-3">
+            <Link href={href(`/${property.slug}`)} className="pill-primary">
               {t.viewProperty}
             </Link>
-          </div>
-          <div>
-            <h2 className="font-display text-[19px] font-bold tracking-[-0.015em]">
-              {t.closingOwner}
-            </h2>
-            <Link href={href("/contact")} className="pill-primary mt-3">
-              {t.talkToUs}
+            <Link
+              href={href("/house-for-rent-chiang-mai#request")}
+              className="pill-outline"
+            >
+              {t.areaFaqMonthLink}
             </Link>
           </div>
         </div>

@@ -30,10 +30,10 @@ export const zh: Dictionary = {
 
   pendingNote: "房源描述、法律条款页面以及下方房东部分的详细信息目前提供英文版本。",  // adapted from the handoff
 
-  heroEyebrow: "清迈·官网直订",
-  heroTitleA: "住进真正",
-  heroTitleB: "有人打理的房子",
-  heroSub: "清迈现有一套房源，由接听电话的本地团队亲自打理。今后每接手一套，再上线一套。",
+  heroEyebrow: "清迈 · 按晚或按月入住",
+  heroTitleA: "在清迈有个家，",
+  heroTitleB: "住一周或一年都可以。",
+  heroSub: "我们在清迈自己经营房子，也为长住的客人直接从房东处找房。从第一晚到最后一个月，都是同一支本地团队。",
   viewProperty: "查看房源",
 
   forGuests: "给住客",
@@ -338,9 +338,9 @@ export const zh: Dictionary = {
   guideAskPrefill: "你好，AgentSiam。我正在阅读Lotus House周边指南，有一个问题想咨询。",
   guideAskDismiss: "稍后再说",
   // -- page metadata ------------------------------------------------------
-  metaHomeTitle: "AgentSiam｜清迈短租托管",
-  metaHomeDesc: "清迈短租房的可行性研究、短租许可办理和日常托管。房源需要哪几项就选哪几项，不需要的可以不选。",
-  metaHowTitle: "短租物业管理如何运作",
+  metaHomeTitle: "AgentSiam｜清迈住宿，按晚或按月",
+  metaHomeDesc: "直接预订 Lotus House，按月入住，或请我们直接从房东处为您找房。清迈本地团队全程照应。",
+  metaHowTitle: "清迈短租托管",
   metaHowDesc: "六项服务，按您的房产来选，而不是打包出售：可行性研究、短租许可办理，以及主要OTA和官网直订的日常管理。",
   metaMgmtTitle: "{city}短租物业管理",
   metaMgmtDesc: "为{city}业主提供短租可行性研究、经营许可与物业管理，由清迈团队交付。",
@@ -1054,4 +1054,14 @@ export const zh: Dictionary = {
   areaFaqMonthA: "可以。通过我们的月租需求表单发送您的日期、户型和预算，我们会在{area}寻找合适的私人房屋。如果找不到，我们会直接告诉您。",
   areaFaqMonthLink: "申请月租房屋",
   contactGuestNote: "如果您是想找住处，请通过我们的月租需求表单发送日期、户型、区域和预算。",
+
+  // -- homepage, renter hero choices ---------------------------------------
+  homeChoiceNightsTitle: "住几晚",
+  homeChoiceNightsBody: "直接预订 Lotus House，价格不含平台加价。",
+  homeChoiceNightsCta: "查看可订日期",
+  homeChoiceMonthTitle: "住一个月以上",
+  homeChoiceMonthBody: "在 Lotus House 住满 28 晚，含合理用量的水电费和每周一次清洁。",
+  homeChoiceMonthCta: "查看 Lotus House",
+  homeChoiceFindTitle: "帮我找房",
+  homeChoiceFindBody: "告诉我们日期、区域和预算。我们直接从房东处找合适的房子，每套先核实，并附上总价。",
 };

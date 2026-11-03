@@ -336,6 +336,14 @@ The pipeline, so nobody has to think about image formats:
 
 ## Known gaps
 
+- **Left behind by the renter homepage (homepage-renter branch, 03/11/2026).**
+  `src/components/hero-search.tsx` is no longer rendered anywhere. The fork, owner-band and
+  service-card keys the homepage used (`guestPanelTitle`, `guestPanelBody`, `ownerPanelTitle`,
+  `forGuests`, `ownerBandSub`, `ownerBandFoot`, `closingOwner`) are orphaned in all three
+  dictionaries; `guestPanelBody` still carries the "local number that answers" promise, so it
+  must not be reused while no number is published. The homepage review is shown as stored in
+  `src/lib/property.ts`, which is itself cut off with an ellipsis: the full text is not on file.
+
 - **WhatsApp guest messages are a second store beside Beds24.** `/api/whatsapp/webhook`
   receives Meta's WhatsApp Cloud API webhook and keeps messages in Upstash Redis
   (`src/lib/whatsapp-store.ts`); `/api/whatsapp/messages` is the bridge's read and record

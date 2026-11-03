@@ -38,11 +38,10 @@ export const en = {
     "Property descriptions, legal pages and the detailed owner information below are currently available in English.",
 
   // -- home ---------------------------------------------------------------
-  heroEyebrow: "Chiang Mai · book direct",
-  heroTitleA: "Stay somewhere",
-  heroTitleB: "actually looked after.",
-  heroSub:
-    "One house in Chiang Mai, managed on the ground by the people who answer the phone. More as we take them on.", // replaces the handoff's portfolio wording
+  heroEyebrow: "Chiang Mai · by the night or the month",
+  heroTitleA: "A home in Chiang Mai,",
+  heroTitleB: "for a week or a year.",
+  heroSub: "We run houses in Chiang Mai ourselves, and find privately owned homes for longer stays. The same team on the ground from your first night to your last month.",
   viewProperty: "See the property",
 
   forGuests: "For guests",
@@ -384,9 +383,8 @@ export const en = {
   // Area names are deliberately not translated. They render as English on the page
   // itself (they come from AREAS, which has no locale axis), so a translated name in the
   // snippet would not match what the visitor lands on.
-  metaHomeTitle: "AgentSiam | Short-term rental management in Chiang Mai",
-  metaHomeDesc:
-    "Feasibility, vacation rental permission and management for short-term rentals in Chiang Mai. Take the services your property needs, and leave the rest.",
+  metaHomeTitle: "AgentSiam | Stays in Chiang Mai, by the night or the month",
+  metaHomeDesc: "Book Lotus House direct, stay a month or more, or have us find a privately owned home for you. One team on the ground in Chiang Mai.",
   metaHowTitle: "Vacation rental management in Chiang Mai",
   metaHowDesc: "Six services, chosen against your property rather than sold as a package. Feasibility, the non-hotel exemption filing, and OTA and direct booking management.",
   metaMgmtTitle: "Short-term rental management in {city}",
@@ -1210,6 +1208,19 @@ export const en = {
   areaFaqMonthLink: "Ask for a monthly house",
   // /contact is the owner form; this points guests to the monthly request form instead.
   contactGuestNote: "Looking for a place to stay instead? Send your dates, size, area and budget through our monthly request form.",
+
+  // -- homepage, renter hero choices ---------------------------------------
+  // Hero choice one of three, by length of stay. Links to Lotus House.
+  homeChoiceNightsTitle: "A few nights",
+  homeChoiceNightsBody: "Book Lotus House direct, at the rate without the platform markup.",
+  homeChoiceNightsCta: "Check dates",
+  // Hero choice two. Facts from hfrAns2A: 28 nights or more, utilities on fair use, one clean a week.
+  homeChoiceMonthTitle: "A month or more",
+  homeChoiceMonthBody: "Stay 28 nights or more at Lotus House, with utilities on fair use and a weekly clean included.",
+  homeChoiceMonthCta: "See Lotus House",
+  // Hero choice three. Links to the monthly request form on /house-for-rent-chiang-mai.
+  homeChoiceFindTitle: "Find me a home",
+  homeChoiceFindBody: "Tell us your dates, area and budget. We find privately owned homes that fit, checked first, each with the total price.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
