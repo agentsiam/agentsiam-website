@@ -8,7 +8,8 @@ import { getDictionary, type Dictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
 import { LOTUS_HOUSE } from "@/lib/property";
-import { pageMeta } from "@/lib/site";
+import { pageMeta, routeOgImage } from "@/lib/site";
+import { alt as ogAlt } from "./opengraph-image";
 import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
 
 /**
@@ -102,6 +103,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]">): Prom
     description: t.hfrMetaDesc,
     path: PATH,
     locale,
+    image: routeOgImage(locale, PATH, ogAlt),
   });
 }
 

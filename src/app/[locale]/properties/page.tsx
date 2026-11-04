@@ -16,7 +16,8 @@ import {
   searchProperties,
   searchToQuery,
 } from "@/lib/search";
-import { pageMeta } from "@/lib/site";
+import { pageMeta, routeOgImage } from "@/lib/site";
+import { alt as ogAlt } from "./opengraph-image";
 
 /**
  * Level 1 of the handoff: search results.
@@ -43,6 +44,7 @@ export async function generateMetadata({
     description: t.metaPropertiesDesc,
     path: "/properties",
     locale,
+    image: routeOgImage(locale, "/properties", ogAlt),
   });
 }
 

@@ -599,6 +599,19 @@ The pipeline, so nobody has to think about image formats:
   own documentation says its crawler may bypass robots.txt. Run the Facebook Sharing Debugger
   on `https://www.agentsiam.com/` once to settle whether previews were ever broken.
 
+- ~~The homepage, `/properties` and `/house-for-rent-chiang-mai` shared the owner-pitch card.~~
+  Resolved 04/11/2026. The homepage turned renter-first on 03/11/2026 and kept the site-wide
+  card ("Know if it's worth it before you commit to it. Feasibility study, vacation rental
+  permission, and management."), so pasting it into a guest group showed an offer to someone
+  who came to rent. `/properties/opengraph-image.tsx` is the renter card, and the homepage
+  names it explicitly: a file-based card cannot sit at the locale root beside the site-wide
+  one. `/house-for-rent-chiang-mai` has its own. Both use the Lotus House living room the
+  homepage hero uses, not the terrace tub shot, and read their words from the English
+  dictionary (`heroEyebrow`, `heroTitleA`, `heroTitleB`, `hfrEyebrow`, `hfrH1`), so they
+  cannot drift from the pages. The owner pages (`/how-it-works`, `/business-services`, the
+  licence page) keep the owner card on purpose. `src/lib/og-photo-card.tsx` is the shared
+  renderer. The five older cards still carry their own copy of the wordmark and could adopt it.
+
 ## Getting started
 
 ```bash

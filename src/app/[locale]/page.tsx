@@ -12,12 +12,13 @@ import { AREAS } from "@/lib/areas";
 import { areaName } from "@/lib/area-content";
 import heroPortrait from "@/photos/lotushouse/_hero/lotus_living_room_portrait.jpg";
 import {
-  OG_IMAGE,
+  routeOgImage,
   OG_LOCALE,
   SITE_NAME,
   absoluteUrl,
   languageAlternates,
 } from "@/lib/site";
+import { alt as ogAlt } from "./properties/opengraph-image";
 
 // The homepage keeps an absolute title rather than the layout's "%s | AgentSiam" template,
 // so the brand name is not repeated twice in the tab and in search results.
@@ -28,6 +29,8 @@ export async function generateMetadata({
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
   const title = t.metaHomeTitle;
+  // The renter card, which lives under /properties: see properties/opengraph-image.tsx.
+  const image = routeOgImage(locale, "/properties", ogAlt);
 
   return {
     title: { absolute: title },
@@ -46,13 +49,13 @@ export async function generateMetadata({
       url: absoluteUrl(locale, "/"),
       title,
       description: t.metaHomeDesc,
-      images: [OG_IMAGE],
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: t.metaHomeDesc,
-      images: [OG_IMAGE],
+      images: [image],
     },
   };
 }
