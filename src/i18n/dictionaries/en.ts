@@ -1225,11 +1225,11 @@ export const en = {
   // -- Home page: the long-stay block, for guests here a month or more -----
   // Heading of the long-stay block. Guest register: คุณ, never ท่าน.
   longStayTitle: "Here for a month or more",
-  longStaySub: "What a stay of 28 nights or more actually includes, and the one thing about Chiang Mai worth knowing before you book it.",
+  longStaySub: "What a long stay of 28 nights or more actually includes, and the one thing about Chiang Mai worth knowing before you book it.",
   longStay1Title: "Utilities and a weekly clean",
   longStay1Body: "At 28 nights or more, electricity and water are on fair use and the house is cleaned once a week. Both are in the rate, not added at the end.",
   longStay2Title: "A desk in both bedrooms",
-  longStay2Body: "Not a dining table you work at. Each bedroom at Lotus House has its own desk, one of them at the window onto the back yard.",
+  longStay2Body: "If you work remotely, you are not doing it at the dining table. Each bedroom at Lotus House has its own desk, one of them at the window onto the back yard.",
   longStay3Title: "Two kilometres from the centre",
   longStay3Body: "Lotus House and Cosmos House are both in Chang Khlan, 2.0km and 1.9km out, with the Night Bazaar and the Ping within walking distance.",
   // Sourced: IQAir, March 2026. The figure and its source travel together, per the guardrails.

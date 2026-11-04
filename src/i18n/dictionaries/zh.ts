@@ -1067,12 +1067,12 @@ export const zh: Dictionary = {
 
   // -- Home page: the long-stay block, for guests here a month or more -----
   longStayTitle: "住一个月以上",
-  longStaySub: "入住 28 晚及以上包含哪些内容，以及订房前值得了解的一件关于清迈的事。",
+  longStaySub: "长住28晚及以上包含哪些内容，以及订房前值得了解的一件关于清迈的事。",
   longStay1Title: "水电费与每周清洁",
-  longStay1Body: "入住 28 晚及以上，水电费按合理使用计算，每周清洁一次。两项都已含在房价内，不会在最后另行收取。",
+  longStay1Body: "入住28晚及以上，水电费按合理使用计算，每周清洁一次。两项都已含在房价内，不会在最后另行收取。",
   longStay2Title: "两间卧室各有书桌",
-  longStay2Body: "不是拿餐桌当工作台。Lotus House 的每间卧室都有自己的书桌，其中一张靠窗，望向后院。",
+  longStay2Body: "如果您远程工作，不必在餐桌上办公。Lotus House的每间卧室都有自己的书桌，其中一张靠窗，望向后院。",
   longStay3Title: "距市中心两公里",
-  longStay3Body: "Lotus House 和 Cosmos House 都在昌康，距市中心 2.0 公里和 1.9 公里，步行可到夜市和平河。",
-  longStaySmoke: "二月到四月是清迈的烟霾季，三月最重。2026 年 3 月，清迈位居 IQAir 全球空气质量指数首位，29 日 PM2.5 达到 188。如果可以选择时间，建议避开这三个月。我们宁愿您现在就知道，而不是到了之后才发现。",
+  longStay3Body: "Lotus House和Cosmos House都在昌康，距市中心2.0公里和1.9公里，步行可到夜市和平河。",
+  longStaySmoke: "二月到四月是清迈的烟霾季，三月最重。2026年3月，清迈位居IQAir全球空气质量指数首位，29日PM2.5达到188。如果可以选择时间，建议避开这三个月。我们宁愿您现在就知道，而不是到了之后才发现。",
 };
