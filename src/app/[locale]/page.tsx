@@ -345,17 +345,26 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
              three quarters of the band empty, which reads as seven cards that failed to
              load rather than as one quote we stand behind.
 
+             Restyled 04/11/2026, Paul's direction, after Lodgify's own reviews page: a soft
+             panel with a generous radius and 44px of padding, the heading centred and set
+             40px/700 uppercase as on the owner page. Two of its parts are deliberately left
+             out. Its card carries a 5/5 chip, and no rating is on file here. And it splits
+             each quote into a bold lead and a lighter body, which this one cannot do
+             honestly: the stored quote is already cut off with an ellipsis, so there is no
+             second half to set differently. Its radius is 51px and this is 28px, the figure
+             used across the owner page, rather than a third rounding on the site.
+
              So one review is drawn as a quote at full measure and more than one goes back
              to the rail. Nothing here states a count or an average, because neither is on
              file: the figure a reader could check has to come off the platform, and a
              number nobody verified is worse than no number. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
-        <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
+        <h2 className="mx-auto max-w-[816px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase">
           {t.guestReviews}
         </h2>
 
         {property.reviews.length === 1 ? (
-          <figure className="mt-5 max-w-[780px] rounded-panel bg-pink px-8 py-7 sm:px-10 sm:py-9">
+          <figure className="mx-auto mt-10 max-w-[720px] rounded-[28px] bg-pink px-7 py-8 sm:px-11 sm:py-11">
             <blockquote
               lang={property.reviews[0].lang}
               className="font-display text-[clamp(18px,2.4vw,23px)] font-semibold leading-[1.45] tracking-[-0.01em] text-ink"
