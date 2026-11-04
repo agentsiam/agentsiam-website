@@ -34,7 +34,7 @@ export const zh: Dictionary = {
   heroTitleA: "在清迈有个家，",
   heroTitleB: "住一周或一年都可以。",
   heroSub: "我们在清迈亲自运营房屋，也为长住客人直接从房东处寻找私人房屋。从第一晚到最后一个月，全程由同一支清迈本地团队照应。",
-  viewProperty: "查看房源",
+  viewProperty: "查看所有房源",
 
   forGuests: "给住客",
   forOwners: "给房东",
@@ -45,7 +45,7 @@ export const zh: Dictionary = {
   ownerPanelLink: "了解我们如何管理",
 
   featuredTitle: "我们的房源",
-  featuredSub: "清迈的 {n} 套住宅。Lotus House 现已开放预订，其余房源欢迎写信咨询。",
+  featuredSub: "清迈{n}套房子。可在线预订，也可以给我们发消息，后面交给我们。",
 
   whyA: "官网直订，无平台加价",
   whyABody: "官网直订，房价不含平台加价，直接联系管理房源的团队。",
@@ -121,7 +121,7 @@ export const zh: Dictionary = {
   weDont: "我们不负责",
   reportTitle: "报告实际长什么样",
   reportBody: "报告共六部分，建议放在最后。下方数字已隐藏，因为虚构数字比不展示更糟。实际数字会根据您的房产测算。",
-  proofTitle: "我们实际管理的一套房源",
+  proofTitle: "一套我们自己管理的房子",
   proofBody: "Lotus House位于昌康。这一页列出的每项工作，都是我们实际为它提供的，包括短租许可办理、上线渠道、TM30申报和住客接待。",
   meetTheTeam: "负责这些工作的人",
   faqTitle: "房东常问的问题",
@@ -537,13 +537,13 @@ export const zh: Dictionary = {
   areaKmFromGate: "距塔佩门 {n} 公里",
   areaKmNote: "直线距离，非道路里程。",
   areaCloseTitle: "还不确定这个区合不合适？",
-  areaCloseBody: "告诉我们同行的人，以及你希望步行十分钟内有什么。我们会说清楚清迈哪一带合适，哪怕答案是我们一处房子都没有管理的地方。",
+  areaCloseBody: "告诉我们同行的人，以及希望步行十分钟内有什么。我们会告诉您清迈哪一带合适。我们按您的行程来回答，而不是按我们想出租的房子。",
   areaCloseGuide: "阅读本地向导手册",
   areaGuideCount: "向导手册收录 {n} 处",
   areaGuideCountOne: "向导手册收录 1 处",
   areaGuideCountNone: "当地信息欢迎咨询",
   areaIndexCloseTitle: "都不太合适？",
-  areaIndexCloseBody: "与其先挑区，不如先讲你的行程。我们会按行程给出真正合适的答案，哪怕要把你指向我们没有任何房源的地段。",
+  areaIndexCloseBody: "直接讲您的行程，不必先选街区。我们会给出真正合适的答案，而不是我们更想卖给您的。",
   areaOwnerCross: "您在其中某个区也有房产吗？",
   areaNimmanP1: "尼曼路和从它两侧岔出的数字巷。咖啡在这里近乎一门本地行业，多数咖啡馆里坐着一半带电脑工作的人，靠前的几条巷子集中了烘豆店、设计小店和营业到很晚的餐厅。",
   areaNimmanP2: "它在古城以西，紧邻清迈大学，背后是素贴山，Maya 和 One Nimman 分别守着一头一尾。进古城开车约十分钟，步行则是一段不短的平路，这是这个区要你接受的取舍。",
@@ -888,7 +888,7 @@ export const zh: Dictionary = {
 
   // -- homepage neighbourhood strip ----------------------------------------
   homeAreasTitle: "清迈的哪一区",
-  homeAreasSub: "决定这趟旅行的，往往是所在的区域而不是房子本身。八个区域，如实描述，包括我们目前一处都没有管理的那些。",
+  homeAreasSub: "决定这趟旅行体验的，往往是街区而不是房子。八个街区，如实介绍。",
   homeAreasLink: "查看全部八个区域",
 
   // -- live chat, privacy policy sentence ----------------------------------
@@ -956,8 +956,8 @@ export const zh: Dictionary = {
   hfrHow2: "我们寻找合适的私人房屋。",
   hfrHow3: "在推荐任何房屋之前，我们会先核查：照片、确切位置，以及房东提供的 Wi-Fi 测速。",
   hfrHow4: "您会收到合适的房屋，每套都附总价、包含项目和押金，由您决定。",
-  hfrHaveBody: "我们也自己运营一套房屋：昌康区的 Lotus House。我们宁愿把一套运营好，也不愿罗列十套。",
-  hfrHaveLink: "查看 Lotus House",
+  hfrHaveBody: "我们自己也管理房子，分布在昌康和湄林，所以通过我们预订的住宿由同一支当地团队负责。",
+  hfrHaveLink: "查看我们的房子",
   hfrFormTitle: "告诉我们您的需求",
   hfrFormBody: "每条需求都由真人阅读，并通过邮件回复。",
   hfrFaqTitle: "房客常见问题",
@@ -1057,21 +1057,21 @@ export const zh: Dictionary = {
 
   // -- homepage, renter hero choices ---------------------------------------
   homeChoiceNightsTitle: "住几晚",
-  homeChoiceNightsBody: "官网直订 Lotus House，无需支付平台加价。",
+  homeChoiceNightsBody: "直接预订，房价不含平台加价。",
   homeChoiceNightsCta: "查看可订日期",
   homeChoiceMonthTitle: "住一个月以上",
-  homeChoiceMonthBody: "在 Lotus House 入住 28 晚及以上，包含合理使用范围内的水电费和每周一次的清洁服务。",
-  homeChoiceMonthCta: "查看 Lotus House",
+  homeChoiceMonthBody: "住满28晚，房费已含合理用量的水电和每周一次清洁。",
+  homeChoiceMonthCta: "查看所有房源",
   homeChoiceFindTitle: "帮我找房",
   homeChoiceFindBody: "告诉我们入住日期、区域和预算。我们会直接从房东处寻找合适的私人房屋，每套都先核查，并附上总价。",
 
   // -- Home page: the long-stay block, for guests here a month or more -----
   longStayTitle: "计划住一个月或更久？",
-  longStaySub: "住满28晚，房费包含哪些服务？预订前，也有一件关于清迈的事值得了解。",
+  longStaySub: "住满28晚，房费包含哪些服务。",
   longStay1Title: "水电费与每周清洁",
   longStay1Body: "入住满28晚，合理用量内的水电费和每周一次的清洁服务均包含在房费内。",
-  longStay2Title: "两间卧室各有书桌",
-  longStay2Body: "如果您远程工作，不必占用餐桌。Lotus House的两间卧室各有一张书桌，其中一张靠窗，窗外就是后院。",
-  longStay3Title: "距市中心约2公里。",
-  longStay3Body: "Lotus House和Cosmos House都在昌康，距市中心分别为2.0公里和1.9公里，从两处都可步行前往清迈夜市和湄平河。",
+  longStay2Title: "有书桌，不必占用餐桌",
+  longStay2Body: "如果您远程工作，每套房子都有可以办公的地方：昌康的房子每间卧室都配书桌，湄林的房子另有一间独立的工作室。",
+  longStay3Title: "靠近市中心，或在花园里",
+  longStay3Body: "昌康距市中心约2公里，可步行前往清迈夜市和湄平河。湄林则用这段距离换来围绕房子的花园和1,412平方米土地。",
 };

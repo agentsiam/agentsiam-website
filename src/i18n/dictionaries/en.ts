@@ -42,7 +42,7 @@ export const en = {
   heroTitleA: "A home in Chiang Mai,",
   heroTitleB: "for a week or a year.",
   heroSub: "We run houses in Chiang Mai ourselves, and find privately owned homes for longer stays. The same team on the ground from your first night to your last month.",
-  viewProperty: "See the property",
+  viewProperty: "See the houses",
 
   forGuests: "For guests",
   forOwners: "For owners",
@@ -55,7 +55,7 @@ export const en = {
   ownerPanelLink: "See how management works",
 
   featuredTitle: "Our properties",
-  featuredSub: "{n} houses in Chiang Mai. Lotus House takes bookings now; write to us about the others.",
+  featuredSub: "{n} houses in Chiang Mai. Book online, or send us a message and we will take it from there.",
 
   whyA: "Direct rate, no platform markup",
   whyABody:
@@ -143,7 +143,7 @@ export const en = {
   weDont: "We do not",
   reportTitle: "What the report actually looks like",
   reportBody: "Six sections, with the recommendation last rather than first. The figures below are hidden because inventing them would be worse than showing nothing. The real figures are calculated for your property.",
-  proofTitle: "One we run ourselves",
+  proofTitle: "A house we run ourselves",
   proofBody: "Lotus House, in Chang Khlan. Everything on this page is what we actually do for it: permission, channels, TM30 filings and guest care.",
   meetTheTeam: "The people who do it",
   faqTitle: "The questions everyone asks",
@@ -619,14 +619,14 @@ export const en = {
   // The method behind the figure. distanceKm() is crow-flies on purpose.
   areaKmNote: "Straight line, not a road distance.",
   areaCloseTitle: "Not sure this is the right neighbourhood?",
-  areaCloseBody: "Tell us who is travelling and what you want inside a ten minute walk. We will say which part of Chiang Mai fits, including when the answer is one we manage nothing in.",
+  areaCloseBody: "Tell us who is travelling and what you want inside a ten minute walk. We will say which part of Chiang Mai fits, and we answer on the trip rather than on what we would rather fill.",
   areaCloseGuide: "Read the local guide",
   // Index card line: how many guide places sit in this area.
   areaGuideCount: "{n} places in our guide",
   areaGuideCountOne: "1 place in our guide",
   areaGuideCountNone: "Local tips on request",
   areaIndexCloseTitle: "None of them quite right?",
-  areaIndexCloseBody: "Tell us the trip rather than the neighbourhood. We answer with what actually fits, even when that means pointing you at a part of the city we manage nothing in.",
+  areaIndexCloseBody: "Tell us the trip rather than the neighbourhood. We answer with what actually fits, rather than with what we would rather sell you.",
   // Owner-facing cross-link at the foot of the index. Owner register, so Thai takes ท่าน.
   areaOwnerCross: "Own a property in one of these neighbourhoods?",
   areaNimmanP1: "Nimmanhaemin Road and the numbered sois that run off it. Coffee is close to a local industry here, most cafés are half full of people working, and the lower sois hold the roasters, design shops and restaurants that open late.",
@@ -1036,7 +1036,7 @@ export const en = {
   // -- homepage neighbourhood strip ----------------------------------------
   // The eight neighbourhood pages became substantial on 06/09/2026 and the homepage pointed at none of them: they were reachable from the nav and the footer only. This is the third route the spec names.
   homeAreasTitle: "Where in Chiang Mai",
-  homeAreasSub: "The neighbourhood decides the holiday more than the house does. Eight of them, described as they actually are, including the ones we manage nothing in.",
+  homeAreasSub: "The neighbourhood decides the holiday more than the house does. Eight of them, described as they actually are.",
   homeAreasLink: "All eight neighbourhoods",
 
   // -- live chat, privacy policy sentence ----------------------------------
@@ -1107,8 +1107,8 @@ export const en = {
   hfrHow2: "We look for privately owned homes that fit.",
   hfrHow3: "Before we offer a home we check it: photos, exact location, and a Wi-Fi speed test from the owner.",
   hfrHow4: "You get the homes that fit, each with the total price, what is included and the deposit, and decide.",
-  hfrHaveBody: "We also run one house ourselves, Lotus House in Chang Khlan, and we would rather run one well than list ten.",
-  hfrHaveLink: "See Lotus House",
+  hfrHaveBody: "We run houses ourselves too, in Chang Khlan and Mae Rim, so a stay booked through us is handled by the same team on the ground.",
+  hfrHaveLink: "See our houses",
   hfrFormTitle: "Tell us what you need",
   hfrFormBody: "A person reads every request and replies by email.",
   hfrFaqTitle: "Questions guests ask",
@@ -1212,12 +1212,12 @@ export const en = {
   // -- homepage, renter hero choices ---------------------------------------
   // Hero choice one of three, by length of stay. Links to Lotus House.
   homeChoiceNightsTitle: "A few nights",
-  homeChoiceNightsBody: "Book Lotus House direct, at the rate without the platform markup.",
+  homeChoiceNightsBody: "Book direct, at the rate without the platform markup.",
   homeChoiceNightsCta: "Check dates",
   // Hero choice two. Facts from hfrAns2A: 28 nights or more, utilities on fair use, one clean a week.
   homeChoiceMonthTitle: "A month or more",
-  homeChoiceMonthBody: "Stay 28 nights or more at Lotus House, with utilities on fair use and a weekly clean included.",
-  homeChoiceMonthCta: "See Lotus House",
+  homeChoiceMonthBody: "Stay 28 nights or more, with utilities on fair use and a weekly clean included.",
+  homeChoiceMonthCta: "See the houses",
   // Hero choice three. Links to the monthly request form on /house-for-rent-chiang-mai.
   homeChoiceFindTitle: "Find me a home",
   homeChoiceFindBody: "Tell us your dates, area and budget. We find privately owned homes that fit, checked first, each with the total price.",
@@ -1225,14 +1225,13 @@ export const en = {
   // -- Home page: the long-stay block, for guests here a month or more -----
   // Heading of the long-stay block. Guest register: คุณ, never ท่าน.
   longStayTitle: "Here for a month or more",
-  longStaySub: "What a long stay of 28 nights or more actually includes, and the one thing about Chiang Mai worth knowing before you book it.",
+  longStaySub: "What a stay of 28 nights or more actually includes.",
   longStay1Title: "Utilities and a weekly clean",
   longStay1Body: "At 28 nights or more, electricity and water are on fair use and the house is cleaned once a week. Both are in the rate, not added at the end.",
-  longStay2Title: "A desk in both bedrooms",
-  longStay2Body: "If you work remotely, you are not doing it at the dining table. Each bedroom at Lotus House has its own desk, one of them at the window onto the back yard.",
-  longStay3Title: "Two kilometres from the centre",
-  longStay3Body: "Lotus House and Cosmos House are both in Chang Khlan, 2.0km and 1.9km out, with the Night Bazaar and the Ping within walking distance.",
-  // Sourced: IQAir, March 2026. The figure and its source travel together, per the guardrails.
+  longStay2Title: "A desk, not the dining table",
+  longStay2Body: "If you work remotely, every house has somewhere to do it: a desk in each bedroom in the Chang Khlan houses, and a separate work room out at Mae Rim.",
+  longStay3Title: "Close to the centre, or out in a garden",
+  longStay3Body: "Chang Khlan is about two kilometres out, with the Night Bazaar and the Ping within walking distance. Mae Rim trades that for a garden and 1,412 m² of land around the house.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

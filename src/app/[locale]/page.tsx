@@ -79,14 +79,14 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       title: t.homeChoiceNightsTitle,
       body: t.homeChoiceNightsBody,
       cta: t.homeChoiceNightsCta,
-      href: href(`/${property.slug}`),
+      href: href("/properties"),
     },
     {
       key: "month",
       title: t.homeChoiceMonthTitle,
       body: t.homeChoiceMonthBody,
       cta: t.homeChoiceMonthCta,
-      href: href(`/${property.slug}`),
+      href: href("/properties"),
     },
     {
       key: "find",
@@ -500,7 +500,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             {t.closingGuest}
           </h2>
           <div className="mt-3.5 flex flex-wrap gap-3">
-            <Link href={href(`/${property.slug}`)} className="pill-primary">
+            <Link href={href("/properties")} className="pill-primary">
               {t.viewProperty}
             </Link>
             <Link
