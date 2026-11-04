@@ -15,7 +15,16 @@ import { TEAM } from "@/lib/team";
  * head off or leaves it swimming. If landscape portraits ever arrive, revisit this.
  *
  * The grid goes to five across only at lg: five 1:1 tiles need about a thousand pixels
- * before each one is big enough to read a face in.
+ * before each one is big enough to read a face in. Five columns rather than the four of the
+ * value-prop block above it, because there are five people; the treatment is the same, the
+ * count is not.
+ *
+ * Restyled 04/11/2026, Paul's direction, to the measurements of the "a real co-host" block on
+ * Lodgify's home page, which the value props above already use: heading 40px/700 uppercase at
+ * line-height 1.2, centred and capped at 816px; a 20px grid gap; each tile a square panel at
+ * radius 24px above a 20px heading and a 14px line at 1.5 and -0.014em. Their panels hold an
+ * illustration floating on a gradient; ours hold a photograph, so the photograph fills the
+ * panel and the gradient is only what shows if one ever fails to load.
  *
  * Renders nothing when src/photos/team/ is empty, so the page stays whole either way.
  *
@@ -32,11 +41,13 @@ export function TeamRow({ t, heading }: { t: Dictionary; heading: string }) {
 
   return (
     <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
-      <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">{heading}</h2>
-      <ul className="mt-6 grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 lg:grid-cols-5">
+      <h2 className="mx-auto max-w-[816px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase">
+        {heading}
+      </h2>
+      <ul className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
         {members.map((member) => (
           <li key={member.match}>
-            <div className="relative aspect-square overflow-hidden rounded-panel bg-surface">
+            <div className="grad-sand relative aspect-square overflow-hidden rounded-[24px]">
               <Image
                 src={member.photo!.src}
                 alt={member.photo!.alt}
@@ -47,10 +58,12 @@ export function TeamRow({ t, heading }: { t: Dictionary; heading: string }) {
                 className="object-cover"
               />
             </div>
-            <p className="mt-3 font-display text-[17px] font-bold tracking-[-0.015em]">
+            <p className="mt-5 font-display text-[20px] leading-[1.2] font-semibold">
               {member.name}
             </p>
-            <p className="mt-0.5 text-[13px] leading-snug text-muted">{t[member.role]}</p>
+            <p className="mt-2.5 text-[14px] leading-[1.5] tracking-[-0.014em] text-muted">
+              {t[member.role]}
+            </p>
           </li>
         ))}
       </ul>
