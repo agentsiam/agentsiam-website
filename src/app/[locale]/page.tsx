@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { pickPhoto } from "@/lib/photos";
-import { LOTUS_HOUSE, PROPERTIES } from "@/lib/property";
+import { FEATURED_PROPERTY, PROPERTIES } from "@/lib/property";
 import { PropertyTile } from "@/components/property-tile";
 import { areaVibe } from "@/i18n/area-vibe";
 import { AREAS } from "@/lib/areas";
@@ -65,7 +65,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale as Locale, path);
-  const property = LOTUS_HOUSE;
+  const property = FEATURED_PROPERTY;
   // The homepage is for renters in every language (Paul, 03/11/2026). Owners are sent to
   // /how-it-works, which carries the services, so this page signposts it once and no more.
   // The audience fork and the three service cards that used to sit here are gone with that.

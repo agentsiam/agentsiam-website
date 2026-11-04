@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { localePath } from "@/i18n/config";
 import { useNotFoundStrings } from "@/components/not-found-strings";
-import { LOTUS_HOUSE } from "@/lib/property";
+import { FEATURED_PROPERTY } from "@/lib/property";
 import { SITE_NAME } from "@/lib/site";
 
 /**
@@ -25,7 +25,7 @@ export default function NotFound() {
 
   const suggestions = [
     { href: href("/"), label: SITE_NAME },
-    { href: href(`/${LOTUS_HOUSE.slug}`), label: LOTUS_HOUSE.title },
+    { href: href(`/${FEATURED_PROPERTY.slug}`), label: FEATURED_PROPERTY.title },
     { href: href("/how-it-works"), label: t.howItWorks },
     { href: href("/contact"), label: t.contact },
   ];

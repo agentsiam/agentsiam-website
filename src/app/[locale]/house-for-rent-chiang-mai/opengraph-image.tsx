@@ -2,7 +2,7 @@ import { getDictionary } from "@/i18n";
 import { isLocale } from "@/i18n/config";
 import { heroDataUri } from "@/lib/og-hero";
 import { CARD_SIZE, photoCard } from "@/lib/og-photo-card";
-import { LOTUS_HOUSE } from "@/lib/property";
+import { FEATURED_PROPERTY } from "@/lib/property";
 
 /**
  * The share card for the monthly house-for-rent page, a renter page that was sharing the
@@ -19,6 +19,6 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
   const { locale } = await params;
   if (!isLocale(locale)) return new Response("Not found", { status: 404 });
   const t = getDictionary("en");
-  const photo = await heroDataUri(LOTUS_HOUSE.slug, ["20240411_052358"]);
+  const photo = await heroDataUri(FEATURED_PROPERTY.slug, ["20240411_052358"]);
   return photoCard({ photo, eyebrow: t.hfrEyebrow, title: t.hfrH1 });
 }

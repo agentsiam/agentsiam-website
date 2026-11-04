@@ -258,6 +258,35 @@ export const MAE_RIM_HOUSE: Property = {
 export const PROPERTIES: Property[] = [LOTUS_HOUSE, COSMOS_HOUSE, MAE_RIM_HOUSE];
 
 /**
+ * The one house that stands for the company wherever a page needs a single property and
+ * is not a property's own page: the homepage hero and closing links, the contact aside,
+ * the 404 link list, the proof photographs on /how-it-works, the /house-for-rent-chiang-mai
+ * link, and the two share cards that belong to a route rather than to a house.
+ *
+ * It is a setting here because it used to be seven separate imports of LOTUS_HOUSE, which
+ * made the flagship a constant rather than a decision. AgentSiam letting property it does
+ * not manage means the house that fronts the company and the house it happens to run stop
+ * being the same thing, and that change should be one line.
+ *
+ * Typed as Property on purpose. Reading a Lotus-House-specific field off this constant
+ * should fail to compile, because whatever it points at next may not have one.
+ *
+ * TWO THINGS THIS DOES NOT MOVE.
+ *
+ * The booking engine. src/lib/beds24.ts, the three routes under src/app/api/booking/, the
+ * Stripe webhook and src/components/booking-panel.tsx all still read LOTUS_HOUSE directly,
+ * and they are right to. They are not showing a featured property, they are taking money
+ * for the only property this site can sell, and pointing them here would offer a checkout
+ * for a house with no Beds24 room behind it.
+ *
+ * The homepage hero photographs. page.tsx imports a Lotus House file by path and picks a
+ * second by filename, because a static import is what gives Next the dimensions and the
+ * blur placeholder, and neither can be derived from a slug. Changing this setting changes
+ * every link and title; the hero imagery is a second edit in the same commit.
+ */
+export const FEATURED_PROPERTY: Property = LOTUS_HOUSE;
+
+/**
  * An approximate point for a property, for any public map.
  *
  * Exact coordinates are `booking-confirmation` material under the visibility rule in

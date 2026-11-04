@@ -7,7 +7,7 @@ import { StayRequestForm, type StayRequestLabels } from "@/components/stay-reque
 import { getDictionary, type Dictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
-import { LOTUS_HOUSE } from "@/lib/property";
+import { FEATURED_PROPERTY } from "@/lib/property";
 import { pageMeta, routeOgImage } from "@/lib/site";
 import { alt as ogAlt } from "./opengraph-image";
 import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
@@ -165,7 +165,7 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
 
       <p className="mt-6 max-w-[600px] text-[14px] leading-relaxed text-muted">
         {COPY.haveBody}{" "}
-        <Link href={href(`/${LOTUS_HOUSE.slug}`)} className="font-semibold underline hover:text-primary">
+        <Link href={href(`/${FEATURED_PROPERTY.slug}`)} className="font-semibold underline hover:text-primary">
           {COPY.haveLink}
         </Link>
       </p>

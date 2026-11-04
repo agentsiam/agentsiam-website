@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { pickPhoto } from "@/lib/photos";
-import { LOTUS_HOUSE } from "@/lib/property";
+import { FEATURED_PROPERTY } from "@/lib/property";
 import { CONTACT_EMAIL, pageMeta } from "@/lib/site";
 import { ContactForm } from "./contact-form";
 
@@ -29,7 +29,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale as Locale, path);
 
-  const asidePhoto = pickPhoto(LOTUS_HOUSE.slug, "IMG_5724");
+  const asidePhoto = pickPhoto(FEATURED_PROPERTY.slug, "IMG_5724");
   const steps = [t.nextStep1, t.nextStep2, t.nextStep3];
 
   return (
@@ -67,7 +67,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
             <div className="relative aspect-4/3">
               <Image
                 src={asidePhoto.src}
-                alt={asidePhoto.alt || LOTUS_HOUSE.title}
+                alt={asidePhoto.alt || FEATURED_PROPERTY.title}
                 lang="en"
                 placeholder="blur"
                 fill
@@ -99,10 +99,10 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
               <p>
                 {t.guestQnNote}{" "}
                 <Link
-                  href={href(`/${LOTUS_HOUSE.slug}`)}
+                  href={href(`/${FEATURED_PROPERTY.slug}`)}
                   className="font-semibold text-primary hover:text-secondary"
                 >
-                  {LOTUS_HOUSE.title} →
+                  {FEATURED_PROPERTY.title} →
                 </Link>
               </p>
               <p>

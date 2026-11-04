@@ -14,7 +14,7 @@ import { TeamRow } from "@/components/team-row";
 import { type Dictionary, getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { pickPhoto, pickPhotos } from "@/lib/photos";
-import { LOTUS_HOUSE } from "@/lib/property";
+import { FEATURED_PROPERTY } from "@/lib/property";
 import { pageMeta } from "@/lib/site";
 import { faqSchema } from "@/lib/structured-data";
 import { Qualifier } from "./qualifier";
@@ -185,7 +185,7 @@ export default async function HowItWorksPage({
   // keys at". That file was pulled on 18/08/2026 for showing the house number and a legible
   // licence plate, so the fragment had been resolving to nothing and pickPhotos was silently
   // topping the slot up from the front of the set. See _excluded/README.md.
-  const proofPhotos = pickPhotos(LOTUS_HOUSE.slug, [
+  const proofPhotos = pickPhotos(FEATURED_PROPERTY.slug, [
     "IMG_5359",
     "IMG_5724",
     "mainstree_exterior_lotushouse",
@@ -545,7 +545,7 @@ export default async function HowItWorksPage({
               >
                 <Image
                   src={photo.src}
-                  alt={photo.alt || LOTUS_HOUSE.title}
+                  alt={photo.alt || FEATURED_PROPERTY.title}
                   lang="en"
                   placeholder="blur"
                   fill
@@ -556,10 +556,10 @@ export default async function HowItWorksPage({
             ))}
           </div>
           <Link
-            href={href(`/${LOTUS_HOUSE.slug}`)}
+            href={href(`/${FEATURED_PROPERTY.slug}`)}
             className="hit mt-4 inline-block text-sm font-semibold text-primary hover:text-secondary"
           >
-            {LOTUS_HOUSE.title} →
+            {FEATURED_PROPERTY.title} →
           </Link>
         </section>
       ) : null}
@@ -845,7 +845,7 @@ export default async function HowItWorksPage({
       <section className="mx-auto flex max-w-(--container-prose) flex-wrap items-center gap-2.5 px-5 pb-17 pt-8.5">
         <span className="text-sm text-muted">{t.lookingToStay}</span>
         <Link
-          href={href(`/${LOTUS_HOUSE.slug}`)}
+          href={href(`/${FEATURED_PROPERTY.slug}`)}
           className="hit text-sm font-semibold text-primary hover:text-secondary"
         >
           {t.viewProperty} →
