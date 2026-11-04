@@ -97,6 +97,10 @@ import maerimhouse_10 from "@/photos/maerimhouse/11-garden-seating.jpg";
 import maerimhouse_11 from "@/photos/maerimhouse/12-house-from-drive.jpg";
 import maerimhouse_12 from "@/photos/maerimhouse/13-garden.jpg";
 import maerimhouse_13 from "@/photos/maerimhouse/14-drive.jpg";
+import routes_0 from "@/photos/routes/route-1-unbothered.jpg";
+import routes_1 from "@/photos/routes/route-2-puzzled.jpg";
+import routes_2 from "@/photos/routes/route-3-not-yet-furnished.jpg";
+import routes_3 from "@/photos/routes/route-4-two-at-the-table.jpg";
 import team_0 from "@/photos/team/agentsiam-team-group-portrait.jpg";
 import team_1 from "@/photos/team/Nils_m_portrait_as_Co-founder.jpeg";
 import team_2 from "@/photos/team/Paul_b__portrait_as_Co-founder.jpg";
@@ -214,6 +218,12 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: maerimhouse_11, file: "12-house-from-drive.jpg", alt: "The house above a grassy bank, with steps up from the drive" },
     { src: maerimhouse_12, file: "13-garden.jpg", alt: "Lawn and trees in the garden" },
     { src: maerimhouse_13, file: "14-drive.jpg", alt: "Concrete drive along the garden wall, with trees beyond" },
+  ],
+  "routes": [
+    { src: routes_0, file: "route-1-unbothered.jpg", alt: "A woman at a cafe table in Chiang Mai with her laptop closed, looking out at the street" },
+    { src: routes_1, file: "route-2-puzzled.jpg", alt: "A man at a dining table reading printed sheets beside an open laptop" },
+    { src: routes_2, file: "route-3-not-yet-furnished.jpg", alt: "A woman standing in an unfurnished room of a new house, looking up at the window" },
+    { src: routes_3, file: "route-4-two-at-the-table.jpg", alt: "Two people at a table on a veranda, reading printed sheets together" },
   ],
   "team": [
     { src: team_0, file: "agentsiam-team-group-portrait.jpg", alt: "The AgentSiam team, the five people who run the company" },

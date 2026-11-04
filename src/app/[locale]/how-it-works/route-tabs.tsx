@@ -8,7 +8,9 @@ import {
   type ComponentProps,
   type KeyboardEvent,
 } from "react";
+import Image from "next/image";
 import { IconChip } from "@/components/icon";
+import type { Photo } from "@/lib/photos";
 
 /**
  * The four routes as a tabbed block on an ink ground, Paul's direction 03/11/2026, taking the
@@ -41,6 +43,7 @@ type Route = {
   when: string;
   take: string;
   why: string;
+  photo?: Photo;
 };
 
 export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel: string }) {
@@ -163,14 +166,28 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
           </p>
         </div>
 
-        {/* The image slot. A brand gradient ground at the card's own radius is the design
-            system's treatment for a slot with no photograph, not a grey rectangle and not
-            stock, and the hue is the same on all four routes so it cannot be read as a verdict
-            on the route it sits beside. It carries no caption: a visible "photograph to come"
-            would be a fifth string needing Thai and Chinese, and the gradient ground is already
-            the honest treatment on its own. The frame wanted here is 5:4, so 1060x848 at 2x. */}
+        {/* A real frame from the photo library, 5:4. The gradient stays underneath as the
+            ground that shows if a file is ever renamed, which is also the design system's own
+            treatment for a slot with no photograph, and the hue is the same on all four so it
+            cannot be read as a verdict on the route it sits beside.
+
+            The alt text is the caption written into the file itself and read out by
+            `npm run photos`, so it is the photographer's description rather than something
+            invented here, and it stays English under lang="en" like the team portraits. */}
         <div className="rounded-[24px] bg-bg p-3">
-          <div aria-hidden="true" className="grad-blue aspect-5/4 rounded-[16px]" />
+          <div className="grad-blue relative aspect-5/4 overflow-hidden rounded-[16px]">
+            {route.photo ? (
+              <Image
+                src={route.photo.src}
+                alt={route.photo.alt}
+                lang="en"
+                placeholder="blur"
+                fill
+                sizes="(min-width: 1024px) 620px, 100vw"
+                className="object-cover"
+              />
+            ) : null}
+          </div>
         </div>
       </div>
     </>

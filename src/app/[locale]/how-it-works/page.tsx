@@ -202,11 +202,56 @@ export default async function HowItWorksPage({
     t.ownerHeroProof5,
   ];
 
+  // Owner-narrative frames, permitted by decision 70 in the consulting repo and scoped to
+  // these four panels. The block addresses an owner about their own position, so the panel
+  // shows that position and not a property: a managed-property frame here reads as inventory
+  // rather than narrative, which is why the earlier version using real Lotus House and Mae Rim
+  // House photography was dropped even though the photographs were better.
+  //
+  // The cast comes from `tone-of-voice.md`'s owner voice, which describes the reader as
+  // someone with capital in a building, often already burned by a manager who over-promised
+  // and frequently taking advice from a family member who is not in the room. That last clause
+  // is why route 4 is two people over the same statements. Three Thai and one foreign, per
+  // `service-model.md` v2.20: Thai owners primary, foreign secondary.
+  //
+  // Generated, and decision 70 records what that breaches: `visual-language.json`'s territory
+  // excludes staged actor/model lifestyle scenes, and `design-system.html` section 06
+  // specifies this card type as real property photography. Both stand; this is a named
+  // exception against them, not a reading that makes them fit.
+  //
+  // 960x768 after cropping. Every generation came back 1376x768 whatever the prompt asked, so
+  // `src/crop-5x4.py` in the work folder is the pipeline. That leaves about 1.55x density for
+  // a panel rendering near 620px, so these are slightly soft on a retina display and cannot be
+  // improved by cropping differently.
   const routes = [
-    { ...ROUTES[0], when: t.route1When, take: t.route1Take, why: t.route1Why },
-    { ...ROUTES[1], when: t.route2When, take: t.route2Take, why: t.route2Why },
-    { ...ROUTES[2], when: t.route3When, take: t.route3Take, why: t.route3Why },
-    { ...ROUTES[3], when: t.route4When, take: t.route4Take, why: t.route4Why },
+    {
+      ...ROUTES[0],
+      when: t.route1When,
+      take: t.route1Take,
+      why: t.route1Why,
+      photo: pickPhoto("routes", "route-1"),
+    },
+    {
+      ...ROUTES[1],
+      when: t.route2When,
+      take: t.route2Take,
+      why: t.route2Why,
+      photo: pickPhoto("routes", "route-2"),
+    },
+    {
+      ...ROUTES[2],
+      when: t.route3When,
+      take: t.route3Take,
+      why: t.route3Why,
+      photo: pickPhoto("routes", "route-3"),
+    },
+    {
+      ...ROUTES[3],
+      when: t.route4When,
+      take: t.route4Take,
+      why: t.route4Why,
+      photo: pickPhoto("routes", "route-4"),
+    },
   ];
 
   const core = [
