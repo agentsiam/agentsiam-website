@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
@@ -8,7 +9,14 @@ import { PropertyTile } from "@/components/property-tile";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, LOCALES, type Locale } from "@/i18n/config";
 import { AREAS, areaBySlug, CITY_CENTRE, distanceKm } from "@/lib/areas";
-import { areaContent, areaLine, areaName, guidePlacesInArea } from "@/lib/area-content";
+import {
+  areaContent,
+  areaGradient,
+  areaLine,
+  areaName,
+  guidePlacesInArea,
+} from "@/lib/area-content";
+import { pickPhoto } from "@/lib/photos";
 import { categoryIcon } from "@/lib/guide-icons";
 import { propertiesInArea } from "@/lib/property";
 import { searchToQuery } from "@/lib/search";
@@ -118,6 +126,11 @@ export default async function AreaPage({
     { name: area.name },
   ];
 
+  // Same frame and the same gradient ground this area gets on the index, so moving from
+  // the grid to the page does not change what the place looks like.
+  const photo = pickPhoto("areas", `${area.slug}.`);
+  const ground = areaGradient(AREAS.findIndex((item) => item.slug === area.slug));
+
   return (
     /* container-prose, not container-chrome. This is a reading page rather than a grid of
        tiles, and /how-it-works already settles what a reading page is measured at. At
@@ -151,6 +164,31 @@ export default async function AreaPage({
           <span className="mt-0.5 block text-[12.5px] text-muted">{t.areaKmNote}</span>
         </span>
       </div>
+
+      {/* shape: photo-band -- What the area looks like, under what it is called.
+
+          Placed after the header rather than above the h1 on purpose: this is a reading
+          page measured at container-prose, and a band above the title turns it into a
+          landing page. 3:2 matches the index cards, and a square source loses less to it
+          than it would to 16:9.
+
+          A commissioned image of the kind of street this area is, not a photograph of a
+          specific address and not of anything we manage. The alt says what is in the
+          frame and claims nothing beyond it. */}
+      {photo ? (
+        <div className={`relative mt-7 aspect-3/2 overflow-hidden rounded-panel ${ground}`}>
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            lang="en"
+            placeholder="blur"
+            fill
+            priority
+            sizes="(min-width: 800px) 720px, 100vw"
+            className="object-cover"
+          />
+        </div>
+      ) : null}
 
       {/* shape: prose -- What it is like. Two or three paragraphs, at a reading measure. */}
       {content ? (

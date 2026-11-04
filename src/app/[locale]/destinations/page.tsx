@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS, CITY_CENTRE, distanceKm } from "@/lib/areas";
 import { areaGradient, guidePlacesInArea } from "@/lib/area-content";
+import { pickPhoto } from "@/lib/photos";
 import { propertiesInArea } from "@/lib/property";
 import { pageMeta, routeOgImage } from "@/lib/site";
 import { areaVibe } from "@/i18n/area-vibe";
@@ -73,19 +75,44 @@ export default async function DestinationsPage({ params }: PageProps<"/[locale]"
           const count = propertiesInArea(area.slug).length;
           const guideCount = guidePlacesInArea(area.slug).length;
           const km = distanceKm(CITY_CENTRE, { lat: area.lat, lng: area.lng });
+          const photo = pickPhoto("areas", `${area.slug}.`);
           return (
             <li key={area.slug}>
               <Link
                 href={href(`/destinations/${area.slug}`)}
                 className="flex h-full flex-col overflow-hidden rounded-panel border border-hairline hover:border-ink"
               >
-                {/* Decorative ground. No photography exists for any neighbourhood, and the
-                    guardrail against stock is absolute, so the gradient IS the treatment
-                    rather than a placeholder waiting on a photo. */}
-                <div
-                  aria-hidden="true"
-                  className={`h-[88px] shrink-0 ${areaGradient(index)}`}
-                />
+                {/* The neighbourhood frame, or the gradient ground where one is missing.
+                    These eight are commissioned images of the kind of street each area is,
+                    not photographs of a specific address and not of a property we manage,
+                    so the alt text describes the scene and claims nothing more. The
+                    gradient stays underneath as the ground that shows if a file ever fails
+                    to load, which is the same treatment the team row uses.
+
+                    3:2 rather than the 88px band the gradient had. A square frame cropped
+                    to 3:2 keeps its middle two thirds, which is where the subject sits in
+                    all eight, and Hang Dong is improved by it: the crop takes out most of
+                    the gravel apron that was eating its lower half. */}
+                {photo ? (
+                  <div
+                    className={`relative aspect-3/2 shrink-0 overflow-hidden ${areaGradient(index)}`}
+                  >
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      lang="en"
+                      placeholder="blur"
+                      fill
+                      sizes="(min-width: 1100px) 340px, (min-width: 640px) 45vw, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    aria-hidden="true"
+                    className={`h-[88px] shrink-0 ${areaGradient(index)}`}
+                  />
+                )}
                 <div className="flex flex-1 flex-col p-6">
                   <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
                     {area.name}
