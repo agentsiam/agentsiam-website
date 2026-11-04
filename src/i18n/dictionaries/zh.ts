@@ -1066,13 +1066,13 @@ export const zh: Dictionary = {
   homeChoiceFindBody: "告诉我们入住日期、区域和预算。我们会直接从房东处寻找合适的私人房屋，每套都先核查，并附上总价。",
 
   // -- Home page: the long-stay block, for guests here a month or more -----
-  longStayTitle: "住一个月以上",
-  longStaySub: "长住28晚及以上包含哪些内容，以及订房前值得了解的一件关于清迈的事。",
+  longStayTitle: "计划住一个月或更久？",
+  longStaySub: "住满28晚，房费包含哪些服务？预订前，也有一件关于清迈的事值得了解。",
   longStay1Title: "水电费与每周清洁",
-  longStay1Body: "入住28晚及以上，水电费按合理使用计算，每周清洁一次。两项都已含在房价内，不会在最后另行收取。",
+  longStay1Body: "入住满28晚，合理用量内的水电费和每周一次的清洁服务均包含在房费内。",
   longStay2Title: "两间卧室各有书桌",
-  longStay2Body: "如果您远程工作，不必在餐桌上办公。Lotus House的每间卧室都有自己的书桌，其中一张靠窗，望向后院。",
-  longStay3Title: "距市中心两公里",
-  longStay3Body: "Lotus House和Cosmos House都在昌康，距市中心2.0公里和1.9公里，步行可到夜市和平河。",
-  longStaySmoke: "二月到四月是清迈的烟霾季，三月最重。2026年3月，清迈位居IQAir全球空气质量指数首位，29日PM2.5达到188。如果可以选择时间，建议避开这三个月。我们宁愿您现在就知道，而不是到了之后才发现。",
+  longStay2Body: "如果您远程工作，不必占用餐桌。Lotus House的两间卧室各有一张书桌，其中一张靠窗，窗外就是后院。",
+  longStay3Title: "距市中心约2公里。",
+  longStay3Body: "Lotus House和Cosmos House都在昌康，距市中心分别为2.0公里和1.9公里，从两处都可步行前往清迈夜市和湄平河。",
+  longStaySmoke: "清迈每年2月至4月容易出现烟霾，3月尤其明显。2026年3月26日，清迈在IQAir全球主要城市空气污染实时榜单上位列榜首，空气质量指数超过220。如果行程灵活，建议避开这三个月，订房前就把空气质量考虑进去。",
 };
