@@ -609,16 +609,35 @@ export default async function HowItWorksPage({
           -- The report. The study's deliverable, shown rather than described. It sits
              directly after the menu because that is where the study is explained, and the
              single most common owner objection -- "what do I actually get for the fee"
-             -- is answered by looking at it. */}
+             -- is answered by looking at it.
+
+             Framed 04/11/2026, Paul's direction, after the way Lodgify's home page presents
+             its product: a large panel at radius 28px, no border and no shadow on the frame
+             itself, so all the detail is in the artefact inside it. Ours is an ink ground,
+             the same as the routes block, because SampleReport is already a white card with
+             a hairline and a sand edge and it had been sitting on a white page, where a
+             hairline was the only thing separating the document from the page behind it. On
+             ink it reads as an object being shown.
+
+             The 16px radius of that card inside this 28px ground is deliberate nesting, not
+             a mismatch: an inner radius is smaller than the one around it.
+
+             What is not copied: their panel holds a screenshot. SampleReport stays markup,
+             so it stays sharp at any size, reflows on a phone and can be read aloud. Turning
+             the deliverable into an image to match them would cost all three. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
-        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
-          {t.reportTitle}
-        </h2>
-        <p className="mt-2 max-w-[700px] text-[15px] leading-relaxed text-muted">
-          {t.reportBody}
-        </p>
-        <div className="mt-6">
-          <SampleReport t={t} />
+        <div className="overflow-hidden rounded-[28px] bg-ink px-5 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[1040px]">
+            <h2 className="mx-auto max-w-[816px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase text-gold-on-ink">
+              {t.reportTitle}
+            </h2>
+            <p className="mx-auto mt-4 max-w-[675px] text-center text-[16px] leading-[1.5] tracking-[-0.013em] text-white/75">
+              {t.reportBody}
+            </p>
+            <div className="mt-10">
+              <SampleReport t={t} />
+            </div>
+          </div>
         </div>
       </section>
 
