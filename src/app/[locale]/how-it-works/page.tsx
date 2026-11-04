@@ -128,8 +128,9 @@ const ROUTES = [
  * so an English literal here published English structured data on /th and /zh as well as
  * English text on the page.
  *
- * Two of the nine inclusions are the same sentences as the management card's bullets, so
- * they read from the same keys rather than a second spelling of the same promise.
+ * Two of the seven inclusions are the same sentences as the management card's bullets, so
+ * they read from the same keys rather than a second spelling of the same promise. Arranging
+ * cleaning and maintenance is housekeeping, not management, so it is not on this list.
  */
 function includedList(t: Dictionary): string[] {
   return [
@@ -138,8 +139,6 @@ function includedList(t: Dictionary): string[] {
     t.hwCore3Get3,
     t.hwInc4,
     t.hwCore3Get5,
-    t.hwInc6,
-    t.hwInc7,
     t.hwInc8,
     t.hwInc9,
   ];
