@@ -45,7 +45,7 @@ export const zh: Dictionary = {
   ownerPanelLink: "了解我们如何管理",
 
   featuredTitle: "我们的房源",
-  featuredSub: "清迈{n}套房子。可在线预订，也可以给我们发消息，后面交给我们。",
+  featuredSub: "清迈有{n}套可供入住的房源。您可以在线预订，也可以发消息联系我们，由我们协助安排。",
 
   whyA: "官网直订，无平台加价",
   whyABody: "官网直订，房价不含平台加价，直接联系管理房源的团队。",
@@ -537,13 +537,13 @@ export const zh: Dictionary = {
   areaKmFromGate: "距塔佩门 {n} 公里",
   areaKmNote: "直线距离，非道路里程。",
   areaCloseTitle: "还不确定这个区合不合适？",
-  areaCloseBody: "告诉我们同行的人，以及希望步行十分钟内有什么。我们会告诉您清迈哪一带合适。我们按您的行程来回答，而不是按我们想出租的房子。",
+  areaCloseBody: "告诉我们您和谁同行，以及希望步行十分钟内能到哪些地方。我们会按您的行程推荐清迈适合的街区，不会只看哪套房有空。",
   areaCloseGuide: "阅读本地向导手册",
   areaGuideCount: "向导手册收录 {n} 处",
   areaGuideCountOne: "向导手册收录 1 处",
   areaGuideCountNone: "当地信息欢迎咨询",
   areaIndexCloseTitle: "都不太合适？",
-  areaIndexCloseBody: "直接讲您的行程，不必先选街区。我们会给出真正合适的答案，而不是我们更想卖给您的。",
+  areaIndexCloseBody: "不必先选街区，告诉我们您的旅行计划就好。我们会根据您的行程推荐合适的地方。",
   areaOwnerCross: "您在其中某个区也有房产吗？",
   areaNimmanP1: "尼曼路和从它两侧岔出的数字巷。咖啡在这里近乎一门本地行业，多数咖啡馆里坐着一半带电脑工作的人，靠前的几条巷子集中了烘豆店、设计小店和营业到很晚的餐厅。",
   areaNimmanP2: "它在古城以西，紧邻清迈大学，背后是素贴山，Maya 和 One Nimman 分别守着一头一尾。进古城开车约十分钟，步行则是一段不短的平路，这是这个区要你接受的取舍。",
@@ -888,7 +888,7 @@ export const zh: Dictionary = {
 
   // -- homepage neighbourhood strip ----------------------------------------
   homeAreasTitle: "清迈的哪一区",
-  homeAreasSub: "决定这趟旅行体验的，往往是街区而不是房子。八个街区，如实介绍。",
+  homeAreasSub: "住在哪个街区，往往比选哪套房更影响旅行体验。这里介绍清迈8个街区，看看住在各处是什么样。",
   homeAreasLink: "查看全部八个区域",
 
   // -- live chat, privacy policy sentence ----------------------------------
@@ -956,8 +956,8 @@ export const zh: Dictionary = {
   hfrHow2: "我们寻找合适的私人房屋。",
   hfrHow3: "在推荐任何房屋之前，我们会先核查：照片、确切位置，以及房东提供的 Wi-Fi 测速。",
   hfrHow4: "您会收到合适的房屋，每套都附总价、包含项目和押金，由您决定。",
-  hfrHaveBody: "我们自己也管理房子，分布在昌康和湄林，所以通过我们预订的住宿由同一支当地团队负责。",
-  hfrHaveLink: "查看我们的房子",
+  hfrHaveBody: "昌康和湄林的房源也由我们自行管理。您通过我们预订后，仍由负责房源的同一支当地团队照顾您的住宿。",
+  hfrHaveLink: "查看我们管理的房源",
   hfrFormTitle: "告诉我们您的需求",
   hfrFormBody: "每条需求都由真人阅读，并通过邮件回复。",
   hfrFaqTitle: "房客常见问题",
@@ -1057,21 +1057,21 @@ export const zh: Dictionary = {
 
   // -- homepage, renter hero choices ---------------------------------------
   homeChoiceNightsTitle: "住几晚",
-  homeChoiceNightsBody: "直接预订，房价不含平台加价。",
+  homeChoiceNightsBody: "直接向我们预订，房价不含平台加价。",
   homeChoiceNightsCta: "查看可订日期",
   homeChoiceMonthTitle: "住一个月以上",
-  homeChoiceMonthBody: "住满28晚，房费已含合理用量的水电和每周一次清洁。",
+  homeChoiceMonthBody: "入住满28晚，房费包含合理用量内的水电费和每周一次的清洁服务。",
   homeChoiceMonthCta: "查看所有房源",
   homeChoiceFindTitle: "帮我找房",
   homeChoiceFindBody: "告诉我们入住日期、区域和预算。我们会直接从房东处寻找合适的私人房屋，每套都先核查，并附上总价。",
 
   // -- Home page: the long-stay block, for guests here a month or more -----
   longStayTitle: "计划住一个月或更久？",
-  longStaySub: "住满28晚，房费包含哪些服务。",
+  longStaySub: "入住满28晚，房费包含什么？",
   longStay1Title: "水电费与每周清洁",
   longStay1Body: "入住满28晚，合理用量内的水电费和每周一次的清洁服务均包含在房费内。",
   longStay2Title: "有书桌，不必占用餐桌",
-  longStay2Body: "如果您远程工作，每套房子都有可以办公的地方：昌康的房子每间卧室都配书桌，湄林的房子另有一间独立的工作室。",
-  longStay3Title: "靠近市中心，或在花园里",
-  longStay3Body: "昌康距市中心约2公里，可步行前往清迈夜市和湄平河。湄林则用这段距离换来围绕房子的花园和1,412平方米土地。",
+  longStay2Body: "如果您需要远程工作，每套房源都有办公空间。昌康的房源每间卧室都配有书桌，湄林的房源则设有独立工作间。",
+  longStay3Title: "住在市中心附近，或选一套带花园的房子",
+  longStay3Body: "昌康的房源距市中心约2公里，可步行前往清迈夜市和湄平河。湄林的房源带花园，房屋周围有1,412平方米的土地。",
 };
