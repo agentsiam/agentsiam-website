@@ -453,16 +453,27 @@ The pipeline, so nobody has to think about image formats:
   cookies.~~ Fixed 03/10/2026: `clearAnalyticsCookies()` now runs on `denied` before the gtag
   check, and only the Consent Mode update sits behind it.
 
-  **Four outcome events are sent and none of them is a key event yet.**
+  **Five outcome events are sent, all five are key events, and not one has ever fired.**
   `src/lib/analytics.ts` is the only thing that speaks to gtag: `contact_form_sent` from the
-  contact form, and `booking_requested`, `booking_paid` and `booking_unconfirmed` from the
-  booking panel's three terminal states. Each carries an event name and no parameters, so
-  nothing a visitor typed, and no amount, reaches Google; that is what keeps the privacy
-  policy's description of what Google receives true, and adding a parameter is a change to
-  the policy. GA4 treats them as ordinary events until someone marks them as key events in
-  Admin, Events, in the GA4 property, which nobody has done, so the reports still show no
-  leads. The contact path was exercised end to end with the POST stubbed in the browser, so
-  no enquiry was sent: the event reached Google on Accept, and on Decline the form still
+  contact form, `stay_request_sent` from the monthly stay request on
+  `/house-for-rent-chiang-mai`, and `booking_requested`, `booking_paid` and
+  `booking_unconfirmed` from the booking panel's three terminal states. Each carries an
+  event name and no parameters, so nothing a visitor typed, and no amount, reaches Google;
+  that is what keeps the privacy policy's description of what Google receives true, and
+  adding a parameter is a change to the policy. All five are starred as key events in the
+  GA4 property under Admin, Data display, Events, checked there 03/11/2026.
+
+  **The zero is real, not a wiring fault**, and it is the finding rather than the gap. Over
+  06/10 to 03/11/2026 the property recorded 95 active users and 276 views and zero key
+  events. Collection is working: `page_view`, `session_start`, `first_visit`, `scroll`,
+  `click`, `user_engagement` and `form_start` all arrive from the agentsiam.com stream, and
+  the deployed JavaScript on `/contact` contains `contact_form_sent`, checked by fetching
+  the live chunk. `form_start` arriving without any completion is the shape of the problem:
+  people reach a form and leave it. In the same window `/contact` took 6 views from 5
+  people against 61 on `/lotushouse`, so most of the loss is before the form, not inside it.
+
+  The contact path was exercised end to end with the POST stubbed in the browser, so no
+  enquiry was sent: the event reached Google on Accept, and on Decline the form still
   submitted while no gtag, no `dataLayer`, no cookie and no request existed at all. The
   booking panel's three were not exercised, because reaching them means holding real nights
   in Beds24 or taking a real payment.
