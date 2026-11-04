@@ -244,7 +244,7 @@ export default async function PropertiesPage({
           </ul>
         </section>
 
-        {/* shape: cta-band
+        {/* shape: closing-cta
             -- The page's one CTA pair, and it belongs at the foot. The header's job is to
             get someone into the grid; asking them to write to us before they have looked at
             anything is asking at the wrong end. */}

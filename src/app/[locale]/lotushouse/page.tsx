@@ -387,7 +387,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
             </section>
           ) : null}
 
-          {/* shape: faq
+          {/* shape: faq-rows
               -- The guest question set. A different set from the eight on /how-it-works,
                  which are an owner's questions about a fee and a filing. Marked up as its
                  own FAQPage, which is the second block the spec asks for and the site did
