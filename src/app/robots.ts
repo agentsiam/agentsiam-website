@@ -6,9 +6,12 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // Next's generated OG route is not a page; keeping it out of the crawl budget avoids
-      // an image URL being indexed as if it were content.
-      disallow: ["/opengraph-image"],
+      // Nothing is disallowed, and /opengraph-image in particular must not be. It is the
+      // og:image URL of nearly every page, and link-preview crawlers (Facebook's and X's
+      // report honouring robots.txt) are told by a Disallow that they may not fetch it,
+      // which would blank the preview of any link pasted into a group. The old reason, crawl
+      // budget, did not hold: an image URL is not indexed as a page, and every per-route
+      // card was already crawlable.
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,

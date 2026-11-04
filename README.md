@@ -592,6 +592,12 @@ The pipeline, so nobody has to think about image formats:
   invisible by design, per the component's own comment ("Unset hides every WhatsApp call to
   action"), not broken. Setting the env var is the fix, once a real number exists to put in
   it.
+- ~~`robots.txt` disallowed `/opengraph-image`, the `og:image` URL of nearly every page.~~
+  Resolved 04/11/2026: nothing is disallowed now. Facebook's and X's crawlers are reported to
+  honour robots rules, so a Disallow on the card could blank the preview of any link pasted
+  into a group. **That impact is inferred from third-party reports, not confirmed**: Meta's
+  own documentation says its crawler may bypass robots.txt. Run the Facebook Sharing Debugger
+  on `https://www.agentsiam.com/` once to settle whether previews were ever broken.
 
 ## Getting started
 
