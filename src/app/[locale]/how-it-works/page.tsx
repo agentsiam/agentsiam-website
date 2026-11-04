@@ -4,6 +4,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
 import { IconChip } from "@/components/icon";
+import vpChannels from "@/illustrations/value-props/vp-channels.png";
+import vpLegal from "@/illustrations/value-props/vp-legal.png";
+import vpNumbers from "@/illustrations/value-props/vp-numbers.png";
+import vpTeam from "@/illustrations/value-props/vp-team.png";
 import { JsonLd } from "@/components/json-ld";
 import { SampleReport } from "@/components/sample-report";
 import { TeamRow } from "@/components/team-row";
@@ -270,28 +274,34 @@ export default async function HowItWorksPage({
     },
   ];
 
+  // `art` is the tile illustration; `icon` is the fallback the panel falls back to if one
+  // is ever removed, so the block never renders an empty gradient square.
   const valueProps = [
     {
       title: t.vp1Title,
       body: t.vp1Body,
       icon: "shield",
+      art: vpLegal,
     },
     {
       title: t.vp2Title,
       body: t.vp2Body,
       icon: "pin",
+      art: vpTeam,
     },
     {
       title: t.vp3Title,
       body: t.vp3Body,
       icon: "coins",
+      art: vpNumbers,
     },
     {
       title: t.vp4Title,
       body: t.vp4Body,
       icon: "globe",
+      art: vpChannels,
     },
-  ];
+  ] as const;
 
   return (
     <div>
@@ -432,10 +442,26 @@ export default async function HowItWorksPage({
         <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
           {valueProps.map((prop) => (
             <div key={prop.title}>
-              <div className="grad-sand flex aspect-square items-center justify-center rounded-[24px]">
-                <span className="scale-150">
-                  <IconChip name={prop.icon} tone="surface" />
-                </span>
+              {/* The illustration, on the gradient it was drawn for. aria-hidden with an
+                  empty alt because the heading and the paragraph directly below say the
+                  same thing: alt text here would make a screen reader read every claim
+                  twice. The gradient stays as the ground, which is both the panel's own
+                  treatment and what shows if a file ever fails to load. */}
+              <div className="grad-sand relative flex aspect-square items-center justify-center overflow-hidden rounded-[24px]">
+                {prop.art ? (
+                  <Image
+                    src={prop.art}
+                    alt=""
+                    aria-hidden="true"
+                    fill
+                    sizes="(min-width: 1024px) 245px, (min-width: 640px) 320px, 45vw"
+                    className="object-contain"
+                  />
+                ) : (
+                  <span className="scale-150">
+                    <IconChip name={prop.icon} tone="surface" />
+                  </span>
+                )}
               </div>
               <h3 className="mt-5 font-display text-[20px] leading-[1.2] font-semibold">
                 {prop.title}
