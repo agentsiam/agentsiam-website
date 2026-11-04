@@ -268,11 +268,22 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
              Lotus House's profile still carries `Internet account / plan | TODO`, and "fast wifi"
              is exactly the unquantified claim the copy rules ban. It goes in when the figure does.
 
-             The smoke paragraph is not a fourth card on purpose. It is the one thing in this
-             block a competitor structurally will not say, because their revenue is the booking,
-             so it reads as a plain sentence the reader has to pass through rather than as a tile
-             that looks like a feature. Its figure and its source travel together, per the
-             guardrails, and the source is named in the copy.
+             There is no burning-season paragraph here, and re-adding one is a decision rather
+             than an improvement. The fact is recorded, in the Lotus House property profile at
+             as-operations/properties/275645_42ChangKhlan/275645-property-profile.md, as the
+             disclosure burning-season-air. Three things about that record govern this block.
+             Its severity is `comfort`, not `safety`, so GC1 in guest-copy-standard.md puts no
+             before-payment duty on it and nothing obliges it on a page that takes no payment.
+             Its approved guest wording carries its own compensation in the same breath, which
+             is what GC6 asks for: the air-conditioning has a PM2.5 purifying function, so keep
+             the windows shut and let it run. And its internal_action still says do not send it
+             until the season window and the city entry are verified.
+
+             What sat here did none of that. It stated the season, named a pollution ranking,
+             and told the reader to come in different months, which is a negation with no
+             compensation on the page with the widest audience, against a business that lets
+             all year round. The honest version of this fact is the profile's own sentence, and
+             it belongs on a property page beside the equipment that answers it, not here.
 
              Breakpoints in px, not `sm:`, for the reason the property grid below already
              documents: `sm:` is in rem and sorts after the px variants in the built CSS. */}
@@ -298,10 +309,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
                 </li>
               ))}
             </ul>
-
-            <p className="mx-auto mt-8 max-w-[760px] text-center text-[15px] leading-relaxed text-white/70">
-              {t.longStaySmoke}
-            </p>
           </div>
         </div>
       </section>

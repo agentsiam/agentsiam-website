@@ -1074,5 +1074,4 @@ export const zh: Dictionary = {
   longStay2Body: "如果您远程工作，不必占用餐桌。Lotus House的两间卧室各有一张书桌，其中一张靠窗，窗外就是后院。",
   longStay3Title: "距市中心约2公里。",
   longStay3Body: "Lotus House和Cosmos House都在昌康，距市中心分别为2.0公里和1.9公里，从两处都可步行前往清迈夜市和湄平河。",
-  longStaySmoke: "清迈每年2月至4月容易出现烟霾，3月尤其明显。2026年3月26日，清迈在IQAir全球主要城市空气污染实时榜单上位列榜首，空气质量指数超过220。如果行程灵活，建议避开这三个月，订房前就把空气质量考虑进去。",
 };

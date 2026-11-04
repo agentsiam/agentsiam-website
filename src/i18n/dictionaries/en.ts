@@ -1233,7 +1233,6 @@ export const en = {
   longStay3Title: "Two kilometres from the centre",
   longStay3Body: "Lotus House and Cosmos House are both in Chang Khlan, 2.0km and 1.9km out, with the Night Bazaar and the Ping within walking distance.",
   // Sourced: IQAir, March 2026. The figure and its source travel together, per the guardrails.
-  longStaySmoke: "February to April is the smoke season here, and March is the worst of it. On 26 March 2026 Chiang Mai was the most polluted major city in the world on IQAir's ranking, at an AQI above 220. If you can choose your months, choose outside those three. We would rather you knew now than after you arrived.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
