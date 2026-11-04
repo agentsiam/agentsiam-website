@@ -1221,6 +1221,19 @@ export const en = {
   // Hero choice three. Links to the monthly request form on /house-for-rent-chiang-mai.
   homeChoiceFindTitle: "Find me a home",
   homeChoiceFindBody: "Tell us your dates, area and budget. We find privately owned homes that fit, checked first, each with the total price.",
+
+  // -- Home page: the long-stay block, for guests here a month or more -----
+  // Heading of the long-stay block. Guest register: คุณ, never ท่าน.
+  longStayTitle: "Here for a month or more",
+  longStaySub: "What a stay of 28 nights or more actually includes, and the one thing about Chiang Mai worth knowing before you book it.",
+  longStay1Title: "Utilities and a weekly clean",
+  longStay1Body: "At 28 nights or more, electricity and water are on fair use and the house is cleaned once a week. Both are in the rate, not added at the end.",
+  longStay2Title: "A desk in both bedrooms",
+  longStay2Body: "Not a dining table you work at. Each bedroom at Lotus House has its own desk, one of them at the window onto the back yard.",
+  longStay3Title: "Two kilometres from the centre",
+  longStay3Body: "Lotus House and Cosmos House are both in Chang Khlan, 2.0km and 1.9km out, with the Night Bazaar and the Ping within walking distance.",
+  // Sourced: IQAir, March 2026. The figure and its source travel together, per the guardrails.
+  longStaySmoke: "February to April is the smoke season here, and March is the worst of it. In March 2026 Chiang Mai topped IQAir's global air quality index, with PM2.5 reaching 188 on the 29th. If you can choose your months, choose outside those three. We would rather you knew now than after you arrived.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

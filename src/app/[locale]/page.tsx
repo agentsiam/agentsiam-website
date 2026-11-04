@@ -134,6 +134,13 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     ? getImageProps({ ...heroImage, src: heroGround.src }).props
     : null;
   const heroTall = getImageProps({ ...heroImage, src: heroPortrait }).props;
+  // The three checkable facts in the long-stay block. The internet line belongs here and is
+  // absent until there is a measured figure to put in it.
+  const longStay = [
+    { title: t.longStay1Title, body: t.longStay1Body },
+    { title: t.longStay2Title, body: t.longStay2Body },
+    { title: t.longStay3Title, body: t.longStay3Body },
+  ];
   const why = [
     { title: t.whyA, body: t.whyABody },
     { title: t.whyB, body: t.whyBBody },
@@ -238,6 +245,61 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* shape: long-stay-block
+          -- For the guest here a month or more, added 04/11/2026 on Paul's direction after the
+             Chiang Mai nomad research in the consulting repo at
+             as-work/2026-11-04-chiang-mai-nomad-seo/.
+
+             Why it exists rather than a "digital nomad friendly" strip. The transactional half of
+             that market is closed: page one of "monthly house rental chiang mai long term",
+             checked 04/11/2026, was airbnb.com on every result across eight districts. The
+             editorial half is open, and its consensus answer names Chang Khlan among the good
+             central areas, which is where both bookable houses are. So this block does not
+             compete for the booking query; it answers what the segment actually decides on.
+
+             Three facts and a limit. Every one is checkable by a reader with a browser, which is
+             the guardrails' own test. The internet line that belongs here is deliberately absent:
+             Lotus House's profile still carries `Internet account / plan | TODO`, and "fast wifi"
+             is exactly the unquantified claim the copy rules ban. It goes in when the figure does.
+
+             The smoke paragraph is not a fourth card on purpose. It is the one thing in this
+             block a competitor structurally will not say, because their revenue is the booking,
+             so it reads as a plain sentence the reader has to pass through rather than as a tile
+             that looks like a feature. Its figure and its source travel together, per the
+             guardrails, and the source is named in the copy.
+
+             Breakpoints in px, not `sm:`, for the reason the property grid below already
+             documents: `sm:` is in rem and sorts after the px variants in the built CSS. */}
+      <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
+        <div className="overflow-hidden rounded-[28px] bg-ink px-5 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[1040px]">
+            <h2 className="mx-auto max-w-[816px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase text-gold-on-ink">
+              {t.longStayTitle}
+            </h2>
+            <p className="mx-auto mt-4 max-w-[675px] text-center text-[16px] leading-[1.5] tracking-[-0.013em] text-white/75">
+              {t.longStaySub}
+            </p>
+
+            <ul className="mt-10 grid gap-5 min-[640px]:grid-cols-3">
+              {longStay.map((item) => (
+                <li key={item.title} className="rounded-[24px] bg-bg p-6 sm:p-7.5">
+                  <h3 className="font-display text-[20px] leading-[1.2] font-semibold">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2.5 text-[14px] leading-[1.5] tracking-[-0.014em] text-muted">
+                    {item.body}
+                  </p>
+                </li>
+              ))}
+            </ul>
+
+            <p className="mx-auto mt-8 max-w-[760px] text-center text-[15px] leading-relaxed text-white/70">
+              {t.longStaySmoke}
+            </p>
+          </div>
         </div>
       </section>
 
