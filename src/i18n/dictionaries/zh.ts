@@ -339,7 +339,7 @@ export const zh: Dictionary = {
   guideAskDismiss: "稍后再说",
   // -- page metadata ------------------------------------------------------
   metaHomeTitle: "AgentSiam｜清迈住宿，按晚或按月",
-  metaHomeDesc: "官网直订 Lotus House，入住一个月以上，或请我们直接从房东处为您寻找私人房屋。全程由清迈本地团队照应。",
+  metaHomeDesc: "直订清迈的私人房屋，按晚或按月入住。我们上架的每一套，都由清迈本地团队照应。",
   metaHowTitle: "清迈短租托管",
   metaHowDesc: "六项服务，按您的房产来选，而不是打包出售：可行性研究、短租许可办理，以及主要OTA和官网直订的日常管理。",
   metaMgmtTitle: "{city}短租物业管理",

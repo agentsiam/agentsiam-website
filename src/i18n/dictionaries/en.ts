@@ -384,7 +384,7 @@ export const en = {
   // itself (they come from AREAS, which has no locale axis), so a translated name in the
   // snippet would not match what the visitor lands on.
   metaHomeTitle: "AgentSiam | Stays in Chiang Mai, by the night or the month",
-  metaHomeDesc: "Book Lotus House direct, stay a month or more, or have us find a privately owned home for you. One team on the ground in Chiang Mai.",
+  metaHomeDesc: "Book a privately owned home in Chiang Mai direct, by the night or the month. One team on the ground, looking after every house we list.",
   metaHowTitle: "Vacation rental management in Chiang Mai",
   metaHowDesc: "Six services, chosen against your property rather than sold as a package. Feasibility, the non-hotel exemption filing, and OTA and direct booking management.",
   metaMgmtTitle: "Short-term rental management in {city}",
