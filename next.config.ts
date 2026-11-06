@@ -24,6 +24,11 @@ const nextConfig: NextConfig = {
       { source: "/about", destination: "/how-it-works", permanent: true },
       { source: "/:locale(th|zh)/about", destination: "/:locale/how-it-works", permanent: true },
 
+      // Riverside was renamed Wat Ket, the name of the old quarter on that bank of the Ping.
+      // The old area URL was published, so it redirects rather than 404s.
+      { source: "/destinations/riverside", destination: "/destinations/wat-ket", permanent: true },
+      { source: "/:locale(th|zh)/destinations/riverside", destination: "/:locale/destinations/wat-ket", permanent: true },
+
       // Everything below is a URL the Wix site had indexed, taken from its own
       // pages-sitemap.xml on 15/08/2026 rather than from memory. That sitemap stops
       // existing when the Wix plan lapses on 04/09, so this list is the only record.
