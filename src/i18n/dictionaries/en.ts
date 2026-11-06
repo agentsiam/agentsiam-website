@@ -93,12 +93,12 @@ export const en = {
 
   // -- /how-it-works ------------------------------------------------------
   ownerHeroEyebrow: "For property owners · Chiang Mai",
-  ownerHeroTitle: "Take the parts you need. Leave the parts you do not.",
-  ownerHeroSub: "The problem is rarely the price. It is that too few of the right people see the property, and too few of those book. We run what moves both, and we will tell you which of our services your property actually needs.",
+  ownerHeroTitle: "The problem is rarely the price.",
+  ownerHeroSub: "It is that too few of the right people see your property, and too few of those book. We run what moves both. Take only the services your property needs, and leave the rest.",
   menuTitle: "The menu",
   menuForWho: "Who it is for",
   routeTitle: "Where owners like you usually start",
-  routeBody: "Nobody buys all six. What you need depends on whether the property is already earning, and whether it is already licensed. These are the four routes we see most.",
+  routeBody: "Nobody buys all six. What you need depends on whether the property is already earning, and whether it is already licensed. These are the four situations owners are usually in.",
   route1When: "Already listed, and it is doing well",
   route1Take: "Management. Permission too, if you do not hold one.",
   route1Why: "Your own occupancy and rate history is better evidence than anything we could model, so there is nothing for a study to tell you. We read your numbers instead, and it costs you nothing.",
@@ -125,9 +125,9 @@ export const en = {
   whatYouGet: "What you get",
   notIncluded: "Not included, so there are no surprises",
   vpTitle: "Why owners choose AgentSiam",
-  vp1Title: "Permission, not just a listing",
+  vp1Title: "Permission that keeps you listed",
   vp1Body:
-    "We assess your property against the Hotel Act and the non-hotel framework, prepare the documents and file under power of attorney, so the permission work is done properly rather than left with you.",
+    "We assess your property against the Hotel Act and the non-hotel framework, prepare the documents and file under power of attorney. The permission is what keeps a listing on the platforms, so we do the work rather than leave it with you.",
   vp2Title: "A team in Chiang Mai",
   vp2Body:
     "We live here. We visit the properties, we meet the guests, and we know which buildings permit short stays. When something breaks at 11pm, someone local reads the message.",
@@ -836,14 +836,14 @@ export const en = {
   // CORE[0].limit, the Not included box
   hwCore1Limit: "A projection is not a promise. Occupancy moves with the season, the economy and the platforms, so we show you the conservative case and judge on that one.",
   // S2 vacation rental permission, card body. CORE[1].body
-  hwCore2Body: "Short-stay letting in Thailand is governed by the Hotel Act and the non-hotel accommodation framework, and the rules are specific enough that most owners have never been told which ones apply to them. We work out what your property is actually allowed to do, prepare the documents, and file under power of attorney so you do not have to deal with the office yourself.",
+  hwCore2Body: "Short-stay letting in Thailand is governed by the Hotel Act and the non-hotel accommodation framework, and which rules apply depends on the property. We work out what yours is allowed to do, prepare the documents, and file under power of attorney so you do not have to deal with the office yourself.",
   hwCore2Get1: "Legal feasibility assessment against the Hotel Act framework",
   hwCore2Get2: "Building and safety equipment requirements review",
   hwCore2Get3: "Full document preparation",
   hwCore2Get4: "Submission and follow-up under power of attorney",
   hwCore2Limit: "Government fees, and any fire safety remediation the inspection turns up, are not included. And we handle the application — we cannot guarantee the government's decision.",
   // S3 management, card body. CORE[2].body
-  hwCore3Body: "Listings, pricing, guests and compliance, run by the team here in Chiang Mai. This is the service most owners come for, and the only one that runs continuously.",
+  hwCore3Body: "Listings, pricing, guests and compliance, run by the team here in Chiang Mai. It is the only service that runs continuously, and the one the others are built around.",
   hwCore3Get1: "Listing creation and management across the main OTA channels",
   hwCore3Get2: "A direct booking website, so not every night pays platform commission",
   hwCore3Get3: "Channel and rate management across all seven channels from one system",
@@ -887,7 +887,7 @@ export const en = {
   hwExc7: "Your own personal-use admin and your own guests",
   // FAQ[0..7]. The same array feeds faqSchema(), so these keys also fix the FAQPage structured data, which was English on all three locales.
   hwFaq1Q: "What do you charge?",
-  hwFaq1A: "Management fees start from 18% of room revenue. We take a share of what the property earns, so when it earns more, we both do. Contact us and we provide a custom made offer in accordance with your needs.",
+  hwFaq1A: "A percentage of room revenue for management, a little higher when you take housekeeping too, plus fixed fees for the one-off services you choose. Exact figures are quoted for your property rather than read off a rate card.",
   hwFaq2Q: "Do I have to take the study first?",
   hwFaq2A: "No. It is one service on the menu, not a gate. If your property is already listed and earning, your own numbers tell us more than a model would, and we will start from those instead. Where we think the study genuinely would change your decision, we will say so.",
   hwFaq3Q: "What if I do not have a licence, and do not want to apply for one?",
@@ -905,9 +905,9 @@ export const en = {
 
   // -- how it works: inline page copy and the qualifier --------------------
   // Under the menu h2
-  hwMenuIntro: "Six services, taken in whatever combination your property needs. Most owners take two or three. Nobody takes all six.",
+  hwMenuIntro: "Six services, taken in whatever combination your property needs. Nobody takes all six.",
   // Under the Alongside the management h3
-  hwExtrasIntro: "Take any of these with management, or on their own. Each is quoted for the property rather than sold at a standard rate.",
+  hwExtrasIntro: "Housekeeping is taken with management. Photography and interior design can be taken with it or on their own. Each is quoted for your property.",
   // Under gatesTitle, ends on a colon leading into the two gate cards
   hwGatesBody: "Otherwise it is a sales document with a fee attached. Two things have to be true before we will manage a property, and they are different questions. A property that is already earning well answers both of them without a study:",
   hwGate1Label: "Gate one · your side",
@@ -919,9 +919,9 @@ export const en = {
   hwGatesFoot: "If your case works but we are not the right size of manager for it, we will say that too, and point you somewhere better.",
   hwQualifyIntro: "Four questions. This is the same shape as our intake, so you get the honest answer now rather than after a site visit.",
   hwMgmtIntro: "Management runs the listings, the pricing, the guests and the compliance. The physical work on the house is housekeeping, which you can add or leave out. With it, we supply the work and you receive one invoice from us. Without it, we arrange your own suppliers and you pay them directly. That is a different product from fully hands-off, and it is better that you know which one you are buying now.",
-  hwTm30Eyebrow: "The bit most managers leave with you",
+  hwTm30Eyebrow: "Included in management",
   hwTm30Title: "TM30 reporting is included.",
-  hwTm30Body: "Every foreign guest has to be reported to Immigration. It is a legal obligation on the property, it is tedious, and most management contracts quietly hand it back to the owner. Ours does not. Keeping the permission compliant once it is granted is part of the same job.",
+  hwTm30Body: "Every foreign guest has to be reported to Immigration. It is a legal obligation on the property, and it is tedious, so we do it as part of management rather than hand it back to you. Keeping the permission compliant once it is granted is part of the same job.",
   // Body of the closing CTA panel, under startNumbers
   hwClosingBody: "One site visit, a written analysis, an hour on a call walking you through it, and a straight Go or No-Go at the end. No management contract attached.",
   // qualifier.tsx, the four fieldset legends. The numbering is part of the label.
