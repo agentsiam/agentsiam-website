@@ -98,7 +98,7 @@ export default async function HowItWorksPage({
   ] as const;
 
   const included = [t.c2Inc1, t.c2Inc2, t.c2Inc3, t.c2Inc4, t.c2Inc5, t.c2Inc6, t.c2Inc7, t.c2Inc8];
-  const excluded = [t.c2Exc1, t.c2Exc2, t.c2Exc3, t.c2Exc4, t.c2Exc5];
+  const excluded = [t.c2Exc1, t.c2Exc2, t.c2Exc3, t.c2Exc4, t.c2Exc6, t.c2Exc7, t.c2Exc5, t.c2Exc8];
   const housekeeping = [t.c2Hk1, t.c2Hk2, t.c2Hk3, t.c2Hk4];
   const needs = [
     { title: t.c2Need1Title, body: t.c2Need1Body },
