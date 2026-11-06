@@ -375,6 +375,19 @@ export const en = {
   guideAskCta: "Message us on WhatsApp",
   guideAskPrefill: "Hello AgentSiam, I am reading the Lotus House local guide and have a question.",
   guideAskDismiss: "Not now",
+  guideReach: "{a} places within a 10-minute walk, {b} within 15, {c} within 20.",
+  guideFavSub: "Where we go ourselves, nearest first.",
+  guideBasicsTitle: "Your first night",
+  guideBasicsSub: "Groceries, cash and a pharmacy: the nearest of each.",
+  guideDayTitle: "A day from the door",
+  guideDaySub: "Morning, afternoon and evening, all within walking distance.",
+  guideMorning: "Morning",
+  guideAfternoon: "Afternoon",
+  guideEvening: "Evening",
+  guideEverything: "Everything in the guide",
+  guidePrint: "Print or save as PDF",
+  guideTitleFor: "Around {property}",
+  guideJump: "Jump to",
   // -- page metadata ------------------------------------------------------
   //
   // Titles and descriptions were English in every locale until 18/08/2026: each

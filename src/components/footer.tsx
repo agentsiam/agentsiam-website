@@ -84,7 +84,7 @@ export function Footer({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <footer className="mt-auto bg-ink px-5 pb-8 pt-13 text-white">
+    <footer className="mt-auto print:hidden bg-ink px-5 pb-8 pt-13 text-white">
       <div className="mx-auto max-w-(--container-chrome)">
         <div className="grid gap-7 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
           {columns.map((column) => (
