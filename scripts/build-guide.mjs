@@ -111,6 +111,15 @@ const RENAME = [
   },
 ];
 
+/**
+ * Places that have closed or must not be recommended, removed after the sheet and
+ * guide-extra.csv are merged. The sheet is left alone; the removal lives here so it can be
+ * reviewed in a diff, the same way as RENAME.
+ */
+const REMOVE = [
+  { name: "ตราบุญ Coffee Station", why: "closed down, reported by Nils 06/11/2026" },
+];
+
 const HIGHLIGHT = "\u{1F536}"; // 🔶, used in the sheet's Site column to mark a host pick
 const ZERO_WIDTH = /[​-‍﻿]/g;
 
@@ -267,6 +276,12 @@ if (existsSync(EXTRA_PATH)) {
   const extra = rowsFromCsv(readFileSync(EXTRA_PATH, "utf8"), "guide-extra.csv");
   places = places.concat(extra);
   console.log(`guide-extra.csv: ${extra.length} place(s) added to the sheet's ${places.length - extra.length}`);
+}
+
+for (const r of REMOVE) {
+  const before = places.length;
+  places = places.filter((p) => p.name !== r.name);
+  console.log(before === places.length ? `remove: ${r.name} not found` : `removed: ${r.name} (${r.why})`);
 }
 
 for (const rule of RENAME) {
