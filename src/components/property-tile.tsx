@@ -69,7 +69,10 @@ export function PropertyTile({
   priority?: boolean;
 }) {
   const area = propertyArea(property);
-  const photo = (PHOTOS[property.slug] ?? [])[0];
+  const set = PHOTOS[property.slug] ?? [];
+  const photo =
+    (property.coverPhoto && set.find((p) => p.file.includes(property.coverPhoto as string))) ||
+    set[0];
   const km = distanceToCentre(property);
 
   const wide = layout === "wide";

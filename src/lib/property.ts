@@ -16,6 +16,11 @@ import type { Dictionary } from "@/i18n";
 
 export type Property = {
   slug: string;
+  /**
+   * Filename fragment of the photo a tile leads with, where the manifest's first photo is
+   * wrong for a lead role. Unset means the manifest's first photo, as before.
+   */
+  coverPhoto?: string;
   title: string;
   /** Area slug, resolved against src/lib/areas.ts. One spelling of a neighbourhood. */
   areaSlug: string;
@@ -103,6 +108,9 @@ export type Property = {
 
 export const LOTUS_HOUSE = {
   slug: "lotushouse",
+  // The living room, as the homepage hero. The manifest's first frame is the rooftop tub with a
+  // guest and a beer, ruled out of lead roles by the 18/08/2026 photo QA; Paul, 06/11/2026.
+  coverPhoto: "20240411_052358",
   title: "Lotus House",
   taglineKey: "lotusTagline",
   areaSlug: "chang-khlan",
