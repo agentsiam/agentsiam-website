@@ -144,6 +144,12 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     { title: t.longStay2Title, body: t.longStay2Body },
     { title: t.longStay3Title, body: t.longStay3Body },
   ];
+  // G2's three steps, in the order a renter experiences them.
+  const findSteps = [
+    { title: t.homeFind1Title, body: t.homeFind1Body },
+    { title: t.homeFind2Title, body: t.homeFind2Body },
+    { title: t.homeFind3Title, body: t.homeFind3Body },
+  ];
   const why = [
     { title: t.whyA, body: t.whyABody },
     { title: t.whyB, body: t.whyBBody },
@@ -251,6 +257,41 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
+      {/* shape: property-tile -- Every listed property, as the same tiles /properties
+          shows, so the homepage and the results grid cannot describe a house two ways.
+          Two then three columns, not auto-fill: three tiles in an auto-fill grid at 1440px
+          left a fourth, empty column. Both breakpoints are written in px: `sm:` is in rem and
+          sorted after `min-[900px]:` in the built CSS, so the two-column rule won. */}
+      <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
+              {t.featuredTitle}
+            </h2>
+            <p className="mt-1.5 text-sm text-muted">
+              {t.featuredSub.replace("{n}", String(PROPERTIES.length))}
+            </p>
+          </div>
+          <Link
+            href={href("/properties")}
+            className="text-sm font-semibold text-primary hover:text-secondary"
+          >
+            {t.allProperties} →
+          </Link>
+        </div>
+        <div className="mt-5.5 grid gap-6 min-[640px]:grid-cols-2 min-[900px]:grid-cols-3">
+          {PROPERTIES.map((item) => (
+            <PropertyTile
+              key={item.slug}
+              property={item}
+              t={t}
+              href={href(`/${item.slug}`)}
+              locale={locale as Locale}
+            />
+          ))}
+        </div>
+      </section>
+
       {/* shape: long-stay-block
           -- For the guest here a month or more, added 04/11/2026 on Paul's direction after the
              Chiang Mai nomad research in the consulting repo at
@@ -313,41 +354,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      {/* shape: property-tile -- Every listed property, as the same tiles /properties
-          shows, so the homepage and the results grid cannot describe a house two ways.
-          Two then three columns, not auto-fill: three tiles in an auto-fill grid at 1440px
-          left a fourth, empty column. Both breakpoints are written in px: `sm:` is in rem and
-          sorted after `min-[900px]:` in the built CSS, so the two-column rule won. */}
-      <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
-              {t.featuredTitle}
-            </h2>
-            <p className="mt-1.5 text-sm text-muted">
-              {t.featuredSub.replace("{n}", String(PROPERTIES.length))}
-            </p>
-          </div>
-          <Link
-            href={href("/properties")}
-            className="text-sm font-semibold text-primary hover:text-secondary"
-          >
-            {t.allProperties} →
-          </Link>
-        </div>
-        <div className="mt-5.5 grid gap-6 min-[640px]:grid-cols-2 min-[900px]:grid-cols-3">
-          {PROPERTIES.map((item) => (
-            <PropertyTile
-              key={item.slug}
-              property={item}
-              t={t}
-              href={href(`/${item.slug}`)}
-              locale={locale as Locale}
-            />
-          ))}
-        </div>
-      </section>
-
       {/* shape: value-glyph-grid -- Why book direct. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
         <div className="grid gap-6.5 rounded-panel bg-surface px-8 py-7.5 sm:grid-cols-[repeat(auto-fit,minmax(230px,1fr))]">
@@ -362,6 +368,41 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
+
+      {/* shape: numbered-sequence
+          -- G2, the introduction to a privately owned home AgentSiam does not run. For stays of a
+             month or longer only: the Hotel Act's definition excludes accommodation charged
+             monthly or longer, and introductions to shorter lets at unlicensed houses are untested
+             (consulting repo, as-work/2026-11-06-homepage-g1-g2/research.md). The third step says
+             plainly that the owner runs the stay, which is the narrative record's limit for G2,
+             and nothing here promises anything about a house we do not run. */}
+      <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
+        <div className="rounded-[28px] bg-surface px-6 py-12 sm:px-10 sm:py-14">
+          <h2 className="font-display text-[clamp(22px,3.4vw,30px)] font-bold tracking-[-0.02em]">
+            {t.homeFindTitle}
+          </h2>
+          <p className="mt-2 max-w-[620px] text-[15px] leading-relaxed text-muted">
+            {t.homeFindSub}
+          </p>
+          <ol className="mt-8 grid gap-5 min-[760px]:grid-cols-3">
+            {findSteps.map((step, i) => (
+              <li key={step.title} className="rounded-[20px] bg-bg p-6">
+                <span className="font-mono text-[13px] font-semibold text-primary">{i + 1}</span>
+                <h3 className="mt-2 font-display text-[18px] font-semibold leading-tight">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-[14px] leading-[1.5] text-muted">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+          <Link
+            href={href("/house-for-rent-chiang-mai#request")}
+            className="pill-primary mt-8"
+          >
+            {t.areaFaqMonthLink}
+          </Link>
+        </div>
+      </section>
 
       {/* shape: value-glyph-grid
           -- Where in Chiang Mai. The eight neighbourhood pages carry real content as of

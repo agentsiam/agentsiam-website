@@ -41,7 +41,7 @@ export const en = {
   heroEyebrow: "Chiang Mai · by the night or the month",
   heroTitleA: "A home in Chiang Mai,",
   heroTitleB: "for a week or a year.",
-  heroSub: "We run houses in Chiang Mai ourselves, and find privately owned homes for longer stays. The same team on the ground from your first night to your last month.",
+  heroSub: "Whole houses we run ourselves, by the night or the month, with people here who answer through your stay. Staying a month or longer and want somewhere else? We find privately owned homes and introduce you to the owner.",
   viewProperty: "See the houses",
 
   forGuests: "For guests",
@@ -51,7 +51,7 @@ export const en = {
     "Book direct and you get the rate without the platform markup, and a local number that answers.",
   ownerPanelTitle: "I own a property here.",
   ownerPanelBody:
-    "We run the numbers before you sign anything. If it will not earn, we say so.",
+    "A plan before a contract: what your property could earn, before you sign anything.",
   ownerPanelLink: "See how management works",
 
   featuredTitle: "Our properties",
@@ -60,14 +60,14 @@ export const en = {
   whyA: "Direct rate, no platform markup",
   whyABody:
     "No platform markup between you and the people who run the house.",
-  whyB: "A team actually in Chiang Mai",
-  whyBBody: "Not a call centre in another timezone. We can be at the property.",
-  whyC: "Reachable through your stay",
+  whyB: "The people who run the house",
+  whyBBody: "Not a call centre in another timezone. We live in Chiang Mai, answer your messages ourselves, and can be at the house.",
+  whyC: "TM30 filed for you",
   // Was "Phone or LINE, 24/7": neither is published anywhere on the site, and the
   // WhatsApp CTA that was meant to carry this is dark in production, NEXT_PUBLIC_WHATSAPP_NUMBER
   // unset. Email is the one channel actually live, verified against the running site
   // 12/09/2026. Revisit once WhatsApp is confirmed on.
-  whyCBody: "Email us any time during your stay. We answer it ourselves, not a support queue.",
+  whyCBody: "We file the TM30 report to Immigration for every foreign guest ourselves, so it is never left to you.",
 
   guestReviews: "What guests said",
   guestReviewSource: "Airbnb guest review",
@@ -1218,7 +1218,15 @@ export const en = {
   homeChoiceMonthCta: "See the houses",
   // Hero choice three. Links to the monthly request form on /house-for-rent-chiang-mai.
   homeChoiceFindTitle: "Find me a home",
-  homeChoiceFindBody: "Tell us your dates, area and budget. We find privately owned homes that fit, checked first, each with the total price.",
+  homeChoiceFindBody: "Staying a month or longer? Tell us your dates, area and budget. We find privately owned homes that fit and introduce you to the owner, with the monthly price.",
+  homeFindTitle: "Staying a month or longer? We find the house.",
+  homeFindSub: "For stays of a month or more, in areas or at budgets our own houses do not cover.",
+  homeFind1Title: "Tell us what you need",
+  homeFind1Body: "Your dates, the area and your budget, in one short form.",
+  homeFind2Title: "We find homes that fit",
+  homeFind2Body: "Privately owned whole houses, each with the monthly price, and we introduce you to the owner.",
+  homeFind3Title: "You rent from the owner",
+  homeFind3Body: "The stay is the owner's to run, at their monthly rent, with no platform in between. You pay us nothing.",
 
   // -- Home page: the long-stay block, for guests here a month or more -----
   // Heading of the long-stay block. Guest register: คุณ, never ท่าน.

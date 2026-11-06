@@ -33,7 +33,7 @@ export const zh: Dictionary = {
   heroEyebrow: "清迈 · 按晚或按月入住",
   heroTitleA: "在清迈有个家，",
   heroTitleB: "住一周或一年都可以。",
-  heroSub: "我们在清迈亲自运营房屋，也为长住客人直接从房东处寻找私人房屋。从第一晚到最后一个月，全程由同一支清迈本地团队照应。",
+  heroSub: "我们亲自运营的整栋房屋，可按晚或按月入住，入住期间由清迈本地团队随时回复。如果您要住一个月以上、想找其他房子，我们帮您寻找私人房屋，并介绍您直接认识房东。",
   viewProperty: "查看所有房源",
 
   forGuests: "给住客",
@@ -41,7 +41,7 @@ export const zh: Dictionary = {
   guestPanelTitle: "我想住这里",
   guestPanelBody: "官网直订，没有平台加价，本地电话由团队亲自接听。",
   ownerPanelTitle: "我在清迈有房子",
-  ownerPanelBody: "签约之前我们先把账算清楚。如果不划算，我们会直说。",
+  ownerPanelBody: "先有方案，再谈合同：签约之前，先看清您的房产能赚多少。",
   ownerPanelLink: "了解我们如何管理",
 
   featuredTitle: "我们的房源",
@@ -49,10 +49,10 @@ export const zh: Dictionary = {
 
   whyA: "官网直订，无平台加价",
   whyABody: "官网直订，房价不含平台加价，直接联系管理房源的团队。",
-  whyB: "团队真的在清迈",
-  whyBBody: "不是其他时区的客服中心。需要时，本地团队能到房源现场处理。",
-  whyC: "入住期间随时联系",
-  whyCBody: "入住期间随时发邮件给我们，我们亲自回复，而不是客服团队。",
+  whyB: "真正打理房子的人",
+  whyBBody: "不是其他时区的客服中心。我们就住在清迈，亲自回复您的消息，也能到房子现场。",
+  whyC: "TM30由我们申报",
+  whyCBody: "每位外籍住客的TM30移民局申报都由我们亲自办理，不必您操心。",
 
   guestReviews: "住客怎么说",
   guestReviewSource: "Airbnb住客评价",
@@ -1061,7 +1061,15 @@ export const zh: Dictionary = {
   homeChoiceMonthBody: "入住满28晚，房费包含合理用量内的水电费和每周一次的清洁服务。",
   homeChoiceMonthCta: "查看所有房源",
   homeChoiceFindTitle: "帮我找房",
-  homeChoiceFindBody: "告诉我们入住日期、区域和预算。我们会直接从房东处寻找合适的私人房屋，每套都先核查，并附上总价。",
+  homeChoiceFindBody: "要住一个月以上？告诉我们入住日期、区域和预算。我们会寻找合适的私人房屋，介绍您认识房东，并附上月租价格。",
+  homeFindTitle: "要住一个月以上？房子我们帮您找。",
+  homeFindSub: "适用于一个月以上的入住，覆盖我们自营房屋没有的区域或预算。",
+  homeFind1Title: "告诉我们您的需求",
+  homeFind1Body: "入住日期、区域和预算，一张简短表单即可。",
+  homeFind2Title: "我们找到合适的房子",
+  homeFind2Body: "整栋私人房屋，附月租价格，并介绍您认识房东。",
+  homeFind3Title: "直接向房东租住",
+  homeFind3Body: "入住由房东负责，按房东的月租，中间没有平台。您无需向我们付费。",
 
   // -- Home page: the long-stay block, for guests here a month or more -----
   longStayTitle: "计划住一个月或更久？",
