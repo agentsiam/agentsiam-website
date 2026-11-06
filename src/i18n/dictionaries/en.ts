@@ -1355,6 +1355,11 @@ export const en = {
 
   // -- owner form: Wat Ket -------------------------------------------------
   c2AreaWatKet: "Wat Ket",
+
+  // -- Concept 2 exclusions, full list -------------------------------------
+  c2Exc6: "Property sale or valuation",
+  c2Exc7: "Legal representation. We coordinate with counsel rather than advising",
+  c2Exc8: "Your own personal-use admin and your own guests",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
