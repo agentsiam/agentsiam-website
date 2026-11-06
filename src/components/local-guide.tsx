@@ -10,6 +10,7 @@ import { categoryIcon } from "@/lib/guide-icons";
 import { PHOTOS } from "@/lib/photos.generated";
 import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
 import { JsonLd } from "@/components/json-ld";
+import { PrintButton } from "@/components/print-button";
 import { CRISP_WEBSITE_ID, SITE_NAME, WHATSAPP_NUMBER } from "@/lib/site";
 import { breadcrumbSchema, type Crumb } from "@/lib/structured-data";
 
@@ -92,6 +93,50 @@ export function LocalGuide({
     return (distances[a.name]?.drive ?? 0) - (distances[b.name]?.drive ?? 0);
   });
 
+  // The default view, before any filter: the five blocks added 06/11/2026 (consulting repo,
+  // as-work/2026-11-06-local-guide/), each derived from the generated guide and nothing else.
+  const isDefault = !category && !area && !nearby && !picks && !one(query.n);
+  const walkOf = (name: string) => distances[name]?.walk ?? null;
+  const inRange = GUIDE_PLACES.filter((p) => {
+    const d = distances[p.name];
+    return !(d?.metres != null && d.metres > MAX_DISTANCE_M);
+  });
+  const walkable = (list: typeof GUIDE_PLACES) =>
+    list.filter((p) => walkOf(p.name) != null).sort((a, b) => walkOf(a.name)! - walkOf(b.name)!);
+  const reach = [10, 15, 20].map((m) => inRange.filter((p) => (walkOf(p.name) ?? Infinity) <= m).length);
+  const favourites = walkable(inRange.filter((p) => p.highlight)).slice(0, 6);
+  // One of each thing a guest needs on arrival, nearest first: a shop, cash, a pharmacy,
+  // then laundry where the guide has one. Matched on the guide's own names and categories.
+  const firstOf = (test: (p: (typeof GUIDE_PLACES)[number]) => boolean) =>
+    walkable(inRange.filter(test))[0];
+  const basics = [
+    firstOf((p) => p.category === "Convenience & Grocery"),
+    firstOf((p) => /\bATM\b/i.test(p.name)),
+    firstOf((p) => /pharmac/i.test(p.name)),
+    firstOf((p) => /laundr/i.test(p.name) || /laundr/i.test(p.comment)),
+  ]
+    .filter((p): p is (typeof GUIDE_PLACES)[number] => Boolean(p))
+    .sort((a, b) => walkOf(a.name)! - walkOf(b.name)!);
+  // Two per part of the day, leaving out the favourites already shown above: a host pick
+  // first where one is walkable, then the nearest.
+  const dayPick = (cats: string[]) => {
+    const shown = new Set(favourites.map((p) => p.name));
+    const pool = walkable(
+      inRange.filter(
+        (p) => cats.includes(p.category) && !shown.has(p.name) && (walkOf(p.name) ?? Infinity) <= NEARBY_MINUTES,
+      ),
+    );
+    const hl = pool.filter((p) => p.highlight);
+    return [...hl, ...pool.filter((p) => !p.highlight)]
+      .slice(0, 2)
+      .sort((a, b) => walkOf(a.name)! - walkOf(b.name)!);
+  };
+  const day = [
+    { label: t.guideMorning, places: dayPick(["Breakfast", "Coffee"]) },
+    { label: t.guideAfternoon, places: dayPick(["Temple", "Museum/Gallery", "Shop/Bazaar", "Nature & Viewpoint", "Massage/Spa", "Workshop"]) },
+    { label: t.guideEvening, places: dayPick(["Restaurant", "Street Food", "Bars"]) },
+  ].filter((slot) => slot.places.length > 0);
+
   // Only the neighbourhoods that actually contain something, so the filter never offers a
   // choice that leads to an empty page.
   const areasPresent = [...new Set(GUIDE_PLACES.map((p) => p.area).filter((a): a is string => a !== null))];
@@ -117,11 +162,11 @@ export function LocalGuide({
   const origin = { lat: property.lat, lng: property.lng, label: property.title };
   const home = origin;
   const propertyPhoto = (PHOTOS[property.slug] ?? [])[0];
-  const walkable = places.filter((place) => {
+  const walkableNow = places.filter((place) => {
     const walk = distances[place.name]?.walk;
     return walk != null && walk <= NEARBY_MINUTES;
   });
-  const frameOn = [home, ...(walkable.length ? walkable : places).map((p) => ({ lat: p.lat, lng: p.lng }))];
+  const frameOn = [home, ...(walkableNow.length ? walkableNow : places).map((p) => ({ lat: p.lat, lng: p.lng }))];
 
   const filterHref = (patch: Record<string, string | null>) => {
     const next = new URLSearchParams();
@@ -178,7 +223,7 @@ export function LocalGuide({
   };
 
   const chip = (active: boolean) =>
-    `inline-flex min-h-11 items-center rounded-full border px-3.5 py-1.5 text-[13px] transition-colors ${
+    `inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[13px] transition-colors ${
       active ? "border-ink bg-ink text-bg font-semibold" : "border-hairline hover:border-ink"
     }`;
 
@@ -218,16 +263,132 @@ export function LocalGuide({
         </Link>{" "}
         · {t.guideTitle}
       </nav>
-      <h1 className="mt-2 font-headline text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-        {t.guideTitle}
+      <h1 className="mt-2 font-headline text-[clamp(28px,6vw,42px)] font-extrabold leading-[1.08] tracking-[-0.03em]">
+        {t.guideTitleFor.replace("{property}", property.title)}
       </h1>
       <p className="mt-3 max-w-2xl text-body">{t.guideIntro}</p>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        {/* The reach summary: how much is within a short walk, counted from the guide. */}
+        <p className="rounded-full bg-surface px-4 py-2 text-[13.5px] font-semibold">
+          {t.guideReach.replace("{a}", String(reach[0])).replace("{b}", String(reach[1])).replace("{c}", String(reach[2]))}
+        </p>
+        <PrintButton label={t.guidePrint} />
+      </div>
+
+      {isDefault && favourites.length > 0 ? (
+        <nav
+          aria-label={t.guideJump}
+          className="mt-5 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] print:hidden"
+        >
+          {[
+            ["#guide-favourites", t.guidePicks],
+            ["#guide-first-night", t.guideBasicsTitle],
+            ["#guide-day", t.guideDayTitle],
+            ["#guide-everything", t.guideEverything],
+          ].map(([target, label]) => (
+            <a
+              key={target}
+              href={target}
+              className="shrink-0 whitespace-nowrap rounded-full bg-surface px-3.5 py-2 text-[13px] font-semibold hover:bg-wash-gold"
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+      ) : null}
+
+      {isDefault && favourites.length > 0 ? (
+        <>
+          {/* The hosts' own picks first, with their notes: the page's proof that the hosts
+              know the street. Before this they sat mid-list behind the 7-Eleven. */}
+          <section id="guide-favourites" className="mt-10 scroll-mt-24">
+            <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
+              <span aria-hidden="true" className="mr-1.5 text-deep-red">★</span>
+              {t.guidePicks}
+            </h2>
+            <p className="mt-1 text-[14px] text-muted">{t.guideFavSub}</p>
+            {/* A swipeable row on a phone, snapping card by card, so six picks do not push the
+                rest of the page six screens down; a grid from 640px and in print. */}
+            <ul className="mt-5 -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 print:grid print:grid-cols-2">
+              {favourites.map((p) => (
+                <li key={p.name} className="flex w-[82%] shrink-0 snap-start flex-col rounded-panel border border-hairline border-l-4 border-l-deep-red p-5 sm:w-auto print:w-auto">
+                  <p className="font-display text-[16.5px] font-bold leading-snug">
+                    <span aria-hidden="true" className="mr-1.5">{categoryIcon(p.category)}</span>
+                    {p.name}
+                  </p>
+                  <p className="eyebrow mt-1">{p.category}</p>
+                  {p.comment ? <p className="mt-2 line-clamp-3 text-[13.5px] text-body">{p.comment}</p> : null}
+                  <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 pt-3">
+                    <span className="rounded-full bg-wash-gold px-2.5 py-1 text-[12.5px] font-semibold text-ink">
+                      {t.guideWalk.replace("{n}", String(walkOf(p.name)))}
+                    </span>
+                    <span className="print:hidden">
+                      <DirectionsLinks
+                        from={{ lat: property.lat, lng: property.lng }}
+                        to={{ lat: p.lat, lng: p.lng }}
+                        mode="walking"
+                        place={p.name}
+                        labels={directionsLabels}
+                      />
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_2fr]">
+            {/* First night: what a guest needs within an hour of arriving. */}
+            <section id="guide-first-night" className="scroll-mt-24 rounded-panel bg-surface p-6">
+              <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{t.guideBasicsTitle}</h2>
+              <p className="mt-1 text-[13.5px] text-muted">{t.guideBasicsSub}</p>
+              <ul className="mt-4">{basics.map((p: (typeof GUIDE_PLACES)[number]) => (
+                <li key={p.name} className="flex items-baseline justify-between gap-3 border-b border-hairline py-2.5 last:border-0">
+                  <span className="text-[14px]">
+                    <span aria-hidden="true" className="mr-1.5">{categoryIcon(p.category)}</span>
+                    {p.name}
+                  </span>
+                  <span className="shrink-0 text-[12.5px] text-muted">
+                    {t.guideWalk.replace("{n}", String(walkOf(p.name)))}
+                  </span>
+                </li>
+              ))}</ul>
+            </section>
+
+            {/* A day from the door: two walkable places per part of the day, host picks first. */}
+            <section id="guide-day" className="scroll-mt-24 rounded-panel border border-hairline p-6">
+              <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{t.guideDayTitle}</h2>
+              <p className="mt-1 text-[13.5px] text-muted">{t.guideDaySub}</p>
+              <div className="mt-4 grid gap-5 sm:grid-cols-3">
+                {day.map((slot) => (
+                  <div key={slot.label}>
+                    <h3 className="eyebrow">{slot.label}</h3>
+                    <ul className="mt-1">{slot.places.map((p: (typeof GUIDE_PLACES)[number]) => (
+                <li key={p.name} className="flex items-baseline justify-between gap-3 border-b border-hairline py-2.5 last:border-0">
+                  <span className="text-[14px]">
+                    <span aria-hidden="true" className="mr-1.5">{categoryIcon(p.category)}</span>
+                    {p.name}
+                  </span>
+                  <span className="shrink-0 text-[12.5px] text-muted">
+                    {t.guideWalk.replace("{n}", String(walkOf(p.name)))}
+                  </span>
+                </li>
+              ))}</ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <h2 id="guide-everything" className="mt-12 scroll-mt-24 font-display text-2xl font-bold tracking-[-0.015em]">{t.guideEverything}</h2>
+        </>
+      ) : null}
 
 
       <div
         role="group"
         aria-label={t.guideFilterPicks}
-        className="mt-7 flex flex-wrap gap-2"
+        className="mt-7 flex flex-wrap gap-2 print:hidden"
       >
         <Link
           aria-current={chipCurrent(picks)}
@@ -253,7 +414,7 @@ export function LocalGuide({
       <div
         role="group"
         aria-label={t.guideFilterCategory}
-        className="mt-3 flex flex-wrap gap-2"
+        className="mt-3 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 print:hidden"
       >
         <Link
           aria-current={chipCurrent(!category)}
@@ -269,6 +430,7 @@ export function LocalGuide({
             href={filterHref({ for: name })}
             className={chip(category === name)}
           >
+            <span aria-hidden="true" className="mr-1.5">{categoryIcon(name)}</span>
             {name}
           </Link>
         ))}
@@ -277,7 +439,7 @@ export function LocalGuide({
       <div
         role="group"
         aria-label={t.guideFilterArea}
-        className="mt-3 flex flex-wrap gap-2"
+        className="mt-3 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 print:hidden"
       >
         <Link
           aria-current={chipCurrent(!area)}
@@ -360,9 +522,11 @@ export function LocalGuide({
 
                     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted">
                       <span>
-                        {d?.walk != null
-                          ? t.guideWalk.replace("{n}", String(d.walk))
-                          : t.guideNoWalk}
+                        <span className={d?.walk != null && d.walk <= NEARBY_MINUTES ? "rounded-full bg-wash-gold px-2.5 py-1 font-semibold text-ink" : ""}>
+                          {d?.walk != null
+                            ? t.guideWalk.replace("{n}", String(d.walk))
+                            : t.guideNoWalk}
+                        </span>
                         {d?.drive != null
                           ? ` · ${t.guideDrive.replace("{n}", String(d.drive))}`
                           : ""}
@@ -395,7 +559,7 @@ export function LocalGuide({
               the actual control on a browsing page. Here it stays beside the guide the
               whole way down, carries the note explaining what the times are measured from,
               and gives the map column a reason to start with something human. */}
-          <div className="grid gap-3 min-[900px]:sticky min-[900px]:top-[150px]">
+          <div className="grid gap-3 min-[900px]:sticky min-[900px]:top-[150px] print:hidden">
             <Link
               href={href(`/${property.slug}`)}
               className="grid grid-cols-[76px_1fr] items-center gap-3 rounded-panel border border-hairline p-3 transition-colors hover:border-ink"
@@ -457,6 +621,19 @@ export function LocalGuide({
             {property.title}
           </Link>
         </div>
+      ) : null}
+
+      {bookable ? (
+        <>
+          {/* Below 900px, the house is one tap away at any scroll depth. Held left so the
+              WhatsApp button keeps its corner, as on the homepage. */}
+          <div className="h-20 min-[900px]:hidden" aria-hidden="true" />
+          <div className="fixed inset-x-0 bottom-0 z-30 border-t border-hairline bg-bg/97 py-3 pl-5 pr-20 backdrop-blur min-[900px]:hidden print:hidden">
+            <Link href={href(`/${property.slug}`)} className="pill-primary py-3 text-[14px]">
+              {t.guideBookDirect} · {property.title}
+            </Link>
+          </div>
+        </>
       ) : null}
 
       <WhatsAppCta
