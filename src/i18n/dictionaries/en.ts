@@ -1258,7 +1258,7 @@ export const en = {
 
   // -- how-it-works Concept 2 (review build, English only) -----------------
   c2HeroTitle: "Your Chiang Mai property, run properly.",
-  c2HeroSub: "We run vacation rentals from start to finish: the listings, the pricing, every guest and the permission. Most properties do not have a price problem. Too few of the right people see them, and too few of those book. Moving both is the work we do.",
+  c2HeroSub: "We run vacation rentals from start to finish: the listings, the pricing, every guest and the permission. The problem is rarely the price. It is that too few of the right people see a property, and too few of those book. Moving both is the work we do.",
   c2CtaManage: "Have us manage yours",
   c2CtaStart: "Where are you starting from?",
   c2Proof1: "7 channels, plus your own booking site",
