@@ -86,7 +86,7 @@ export async function POST(request: Request) {
   // Email or phone/LINE, at least one. A given email still has to look like one, because it
   // becomes the reply-to address.
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  if (!name || (!emailOk && !phone) || (email && !emailOk)) {
+  if (!name || (!emailOk && !phone) || (email && !emailOk) || !listed || !propertyType || !area || !bedrooms) {
     return NextResponse.json(
       { error: "Please check the name and contact fields." },
       { status: 400 },

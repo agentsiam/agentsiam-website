@@ -1162,9 +1162,12 @@ export const zh: Dictionary = {
   c2FormLinkLabel: "Link to the listing",
   c2FormBedrooms: "Bedrooms",
   c2TypeSmallBuilding: "Small building",
-  c2AreaElsewhere: "Elsewhere in Chiang Mai",
+  c2AreaElsewhere: "Elsewhere",
   c2FormPhoneLabel: "Phone or LINE",
   c2FormReachHint: "Email, or phone/LINE. At least one, so we can reply.",
   c2FormSub: "A few things to start. Everything else we can cover on a call.",
   c2FormNeedContact: "Please give an email, or a phone number or LINE ID, so we can reply.",
+
+  // -- owner form required choices -----------------------------------------
+  c2FormNeedDetails: "Please choose whether it is listed, the property type, where it is and the number of bedrooms.",
 };
