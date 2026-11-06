@@ -336,6 +336,11 @@ The pipeline, so nobody has to think about image formats:
 
 ## Known gaps
 
+- **Channel strip shows symbols, not wordmarks (owner-page-s3-1106, 06/11/2026).**
+  `src/components/channel-marquee.tsx` uses Simple Icons symbols beside each name, and Agoda and
+  Vrbo have no symbol at all. Paul decided the official wordmarks replace them, sourced from each
+  platform's own brand or press page with its usage terms checked (decision 84 in the consulting
+  repo). Not yet sourced.
 - **Left behind by the renter homepage (homepage-renter branch, 03/11/2026).**
   `src/components/hero-search.tsx` is no longer rendered anywhere. The fork, owner-band and
   service-card keys the homepage used (`guestPanelTitle`, `guestPanelBody`, `ownerPanelTitle`,
