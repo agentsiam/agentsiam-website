@@ -88,7 +88,7 @@ export function ContactForm({
     ["Santitham", t.areaSantitham],
     ["Old City", t.areaOldCity],
     ["Chang Khlan", t.areaChangKhlan],
-    ["Wat Ket", t.c2AreaWatKet],
+    ["Wat Ket", t.areaRiverside],
     ["Hang Dong", t.areaHangDong],
     ["Mae Rim", t.areaMaeRim],
     ["San Sai", t.areaSanSai],
