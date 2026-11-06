@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { getImageProps } from "next/image";
 import Link from "next/link";
+import { Faq } from "@/components/faq";
+import { JsonLd } from "@/components/json-ld";
+import { faqSchema } from "@/lib/structured-data";
+import { GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
+import { categoryIcon } from "@/lib/guide-icons";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
@@ -144,6 +149,25 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     { title: t.longStay2Title, body: t.longStay2Body },
     { title: t.longStay3Title, body: t.longStay3Body },
   ];
+  // The street around Lotus House: the host's own picks, nearest first, one per category, with
+  // the routed walking time from the door. Every value comes from the generated guide, so the
+  // block cannot say anything the guide does not.
+  const guideDist = GUIDE_DISTANCES.lotushouse ?? {};
+  const seenCats = new Set<string>();
+  const guidePicks = GUIDE_PLACES.filter((p) => p.highlight && guideDist[p.name]?.walk != null)
+    .sort((a, b) => (guideDist[a.name].walk ?? 0) - (guideDist[b.name].walk ?? 0))
+    .filter((p) => (seenCats.has(p.category) ? false : (seenCats.add(p.category), true)))
+    .slice(0, 4);
+
+  // Objections a guest has before paying, answered with the site's existing wording where it
+  // exists, so the homepage and the booking flow cannot say two different things.
+  const homeFaq = [
+    { q: t.homeFaq1Q, a: t.heldNote },
+    { q: t.homeFaq2Q, a: t.ga7 },
+    { q: t.homeFaq3Q, a: t.ga6 },
+    { q: t.homeFaq4Q, a: t.homeFaq4A },
+  ];
+
   // G2's three steps, in the order a renter experiences them.
   const findSteps = [
     { title: t.homeFind1Title, body: t.homeFind1Body },
@@ -369,6 +393,34 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       </section>
 
 
+      {/* shape: fact-grid
+          -- The street around the house, from the local guide: host picks with the routed
+             walk from the door. G1's evidence slot, shown rather than described. */}
+      {guidePicks.length > 0 ? (
+        <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
+          <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">{t.homeGuideTitle}</h2>
+          <p className="mt-1.5 max-w-[640px] text-sm leading-relaxed text-muted">{t.homeGuideSub}</p>
+          <ul className="mt-5.5 grid gap-4 min-[640px]:grid-cols-2 min-[900px]:grid-cols-4">
+            {guidePicks.map((place) => (
+              <li key={place.name} className="rounded-panel border border-hairline p-5">
+                <span aria-hidden="true" className="text-[22px]">{categoryIcon(place.category)}</span>
+                <p className="mt-2 font-display text-[16px] font-semibold leading-snug">{place.name}</p>
+                <p className="mt-1 text-[13px] text-muted">{place.category}</p>
+                <p className="mt-3 text-[13.5px] font-semibold text-primary">
+                  {t.homeGuideWalk.replace("{n}", String(guideDist[place.name].walk))}
+                </p>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href={href(`/${property.slug}/local-guide`)}
+            className="hit mt-5 inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
+          >
+            {t.guideCardLink} →
+          </Link>
+        </section>
+      ) : null}
+
       {/* shape: numbered-sequence
           -- G2, the introduction to a privately owned home AgentSiam does not run. For stays of a
              month or longer only: the Hotel Act's definition excludes accommodation charged
@@ -510,6 +562,15 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         )}
       </section>
 
+      {/* shape: faq-rows
+          -- The objections a guest has before paying, near the end and before the owner band,
+             with FAQPage structured data for search and answer engines. */}
+      <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
+        <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">{t.homeFaqTitle}</h2>
+        <Faq items={homeFaq} />
+        <JsonLd data={faqSchema(homeFaq)} />
+      </section>
+
       {/* shape: audience-fork
           -- Owner signpost. One line and one link to /how-it-works in the visitor's
              language, which is where owners are sent from every page. */}
@@ -553,6 +614,26 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           </div>
         </div>
       </section>
+
+      {/* shape: closing-cta
+          -- Below 900px, a fixed band with the two ways to stay, so a guest never has to
+             scroll back to the hero to act. Same pattern as the property page's bar, with
+             the buttons held left and pr-20 keeping the right corner clear for the floating
+             WhatsApp button. Links only: the booking itself happens on the property page. */}
+      <div className="h-20 min-[900px]:hidden" aria-hidden="true" />
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-hairline bg-bg/97 py-3 pl-5 pr-20 backdrop-blur min-[900px]:hidden">
+        <div className="flex items-center gap-2.5">
+          <Link href={href("/properties")} className="pill-primary shrink-0 py-3 text-[14px]">
+            {t.homeChoiceNightsCta}
+          </Link>
+          <Link
+            href={href("/house-for-rent-chiang-mai#request")}
+            className="pill-outline shrink-0 py-3 text-[14px]"
+          >
+            {t.homeChoiceFindTitle}
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

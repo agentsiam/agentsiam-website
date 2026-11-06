@@ -1227,6 +1227,15 @@ export const en = {
   homeFind2Body: "Privately owned whole houses, each with the monthly price, and we introduce you to the owner.",
   homeFind3Title: "You rent from the owner",
   homeFind3Body: "The stay is the owner's to run, at their monthly rent, with no platform in between. You pay us nothing.",
+  homeGuideTitle: "The street around the house",
+  homeGuideSub: "Host picks near Lotus House, with the walk from the door. Lotus House and Cosmos House each have a guide of their own.",
+  homeGuideWalk: "{n} min walk",
+  homeFaqTitle: "Before you book",
+  homeFaq1Q: "Is booking direct safe?",
+  homeFaq2Q: "What if my plans change?",
+  homeFaq3Q: "When do I get the address?",
+  homeFaq4Q: "Can you find a house that is not one of yours?",
+  homeFaq4A: "Yes, for stays of a month or longer. Tell us your dates, area and budget, and we introduce you to owners of privately owned homes that fit. You rent from the owner directly and pay us nothing.",
 
   // -- Home page: the long-stay block, for guests here a month or more -----
   // Heading of the long-stay block. Guest register: คุณ, never ท่าน.

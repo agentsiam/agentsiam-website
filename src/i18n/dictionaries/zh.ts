@@ -1070,6 +1070,15 @@ export const zh: Dictionary = {
   homeFind2Body: "整栋私人房屋，附月租价格，并介绍您认识房东。",
   homeFind3Title: "直接向房东租住",
   homeFind3Body: "入住由房东负责，按房东的月租，中间没有平台。您无需向我们付费。",
+  homeGuideTitle: "房子周边",
+  homeGuideSub: "Lotus House附近的房东推荐，附从门口步行所需时间。Lotus House和Cosmos House各有一份专属指南。",
+  homeGuideWalk: "步行{n}分钟",
+  homeFaqTitle: "预订前须知",
+  homeFaq1Q: "官网直订安全吗？",
+  homeFaq2Q: "如果行程有变怎么办？",
+  homeFaq3Q: "什么时候能拿到地址？",
+  homeFaq4Q: "能帮我找不是你们管理的房子吗？",
+  homeFaq4A: "可以，适用于一个月以上的入住。告诉我们入住日期、区域和预算，我们会介绍您认识合适的私人房屋房东。您直接向房东租住，无需向我们付费。",
 
   // -- Home page: the long-stay block, for guests here a month or more -----
   longStayTitle: "计划住一个月或更久？",
