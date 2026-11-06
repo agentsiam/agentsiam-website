@@ -7,6 +7,7 @@ import vpChannels from "@/illustrations/value-props/vp-channels.png";
 import vpLegal from "@/illustrations/value-props/vp-legal.png";
 import vpTeam from "@/illustrations/value-props/vp-team.png";
 import { JsonLd } from "@/components/json-ld";
+import { ChannelMarquee } from "@/components/channel-marquee";
 import { TeamRow } from "@/components/team-row";
 import { type Dictionary, getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
@@ -179,6 +180,9 @@ export default async function HowItWorksPage({
           ) : null}
         </div>
       </section>
+
+      {/* shape: logo-strip -- the channels, running under the hero. */}
+      <ChannelMarquee label={t.c2ChannelsLabel} />
 
       {/* shape: value-glyph-grid -- the core claim spelled out: who sees it, who books, what keeps it listed. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
