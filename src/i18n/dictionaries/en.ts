@@ -375,7 +375,7 @@ export const en = {
   guideAskCta: "Message us on WhatsApp",
   guideAskPrefill: "Hello AgentSiam, I am reading the Lotus House local guide and have a question.",
   guideAskDismiss: "Not now",
-  guideReach: "{a} places within a 10-minute walk, {b} within 15, {c} within 20.",
+  guideReach: "{a} places within a 5-minute drive, {b} within 10, and {c} within a 15-minute walk.",
   guideFavSub: "Where we go ourselves, nearest first.",
   guideBasicsTitle: "Your first night",
   guideBasicsSub: "Groceries, cash and a pharmacy: the nearest of each.",

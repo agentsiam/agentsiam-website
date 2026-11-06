@@ -337,7 +337,7 @@ export const th: Dictionary = {
   guideAskCta: "ทักเราทาง WhatsApp",
   guideAskPrefill: "สวัสดี AgentSiam อ่านคู่มือย่านรอบ Lotus House อยู่และมีคำถาม",
   guideAskDismiss: "ไว้ก่อน",
-  guideReach: "{a} แห่งในระยะเดิน 10 นาที {b} แห่งใน 15 นาที และ {c} แห่งใน 20 นาที",
+  guideReach: "{a} แห่งในระยะขับรถ 5 นาที {b} แห่งใน 10 นาที และ {c} แห่งในระยะเดิน 15 นาที",
   guideFavSub: "ที่ที่เราไปเองบ่อย ๆ เรียงจากใกล้ที่สุด",
   guideBasicsTitle: "คืนแรกของคุณ",
   guideBasicsSub: "ของใช้ เงินสด และร้านขายยา ที่ใกล้ที่สุด",

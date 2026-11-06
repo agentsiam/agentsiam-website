@@ -83,28 +83,40 @@ export function LocalGuide({
     if (picks && !place.highlight) return false;
     return true;
   }).sort((a, b) => {
-    // Closest on foot first, because that is the question a guest standing in the hallway
-    // is actually asking. Anything unwalkable sorts to the end by drive time.
-    const wa = distances[a.name]?.walk ?? null;
-    const wb = distances[b.name]?.walk ?? null;
-    if (wa !== null && wb !== null) return wa - wb;
-    if (wa !== null) return -1;
-    if (wb !== null) return 1;
-    return (distances[a.name]?.drive ?? 0) - (distances[b.name]?.drive ?? 0);
+    // Nearest first by routed distance, so the order holds however the guest travels. Until
+    // 06/11/2026 this sorted by walking time; Paul: in Thailand driving (Grab, scooter, car) is
+    // more common than walking, so the drive time now leads on every card.
+    return (distances[a.name]?.metres ?? Infinity) - (distances[b.name]?.metres ?? Infinity);
   });
 
   // The default view, before any filter: the five blocks added 06/11/2026 (consulting repo,
   // as-work/2026-11-06-local-guide/), each derived from the generated guide and nothing else.
   const isDefault = !category && !area && !nearby && !picks && !one(query.n);
   const walkOf = (name: string) => distances[name]?.walk ?? null;
+  const driveOf = (name: string) => distances[name]?.drive ?? null;
+  // "3 min drive · 14 min walk": drive first, walk where there is one.
+  const howFar = (name: string) =>
+    [
+      driveOf(name) != null ? t.guideDrive.replace("{n}", String(driveOf(name))) : null,
+      walkOf(name) != null ? t.guideWalk.replace("{n}", String(walkOf(name))) : null,
+    ]
+      .filter(Boolean)
+      .join(" · ");
   const inRange = GUIDE_PLACES.filter((p) => {
     const d = distances[p.name];
     return !(d?.metres != null && d.metres > MAX_DISTANCE_M);
   });
   const walkable = (list: typeof GUIDE_PLACES) =>
     list.filter((p) => walkOf(p.name) != null).sort((a, b) => walkOf(a.name)! - walkOf(b.name)!);
-  const reach = [10, 15, 20].map((m) => inRange.filter((p) => (walkOf(p.name) ?? Infinity) <= m).length);
-  const favourites = walkable(inRange.filter((p) => p.highlight)).slice(0, 6);
+  const reach = [
+    inRange.filter((p) => (driveOf(p.name) ?? Infinity) <= 5).length,
+    inRange.filter((p) => (driveOf(p.name) ?? Infinity) <= 10).length,
+    inRange.filter((p) => (walkOf(p.name) ?? Infinity) <= 15).length,
+  ];
+  const favourites = inRange
+    .filter((p) => p.highlight && distances[p.name])
+    .sort((a, b) => distances[a.name].metres - distances[b.name].metres)
+    .slice(0, 6);
   // One of each thing a guest needs on arrival, nearest first: a shop, cash, a pharmacy,
   // then laundry where the guide has one. Matched on the guide's own names and categories.
   const firstOf = (test: (p: (typeof GUIDE_PLACES)[number]) => boolean) =>
@@ -319,14 +331,19 @@ export function LocalGuide({
                   <p className="eyebrow mt-1">{p.category}</p>
                   {p.comment ? <p className="mt-2 line-clamp-3 text-[13.5px] text-body">{p.comment}</p> : null}
                   <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 pt-3">
-                    <span className="rounded-full bg-wash-gold px-2.5 py-1 text-[12.5px] font-semibold text-ink">
-                      {t.guideWalk.replace("{n}", String(walkOf(p.name)))}
+                    <span className="text-[12.5px] text-muted">
+                      {driveOf(p.name) != null ? (
+                        <span className="mr-1.5 rounded-full bg-wash-gold px-2.5 py-1 font-semibold text-ink">
+                          {t.guideDrive.replace("{n}", String(driveOf(p.name)))}
+                        </span>
+                      ) : null}
+                      {walkOf(p.name) != null ? t.guideWalk.replace("{n}", String(walkOf(p.name))) : null}
                     </span>
                     <span className="print:hidden">
                       <DirectionsLinks
                         from={{ lat: property.lat, lng: property.lng }}
                         to={{ lat: p.lat, lng: p.lng }}
-                        mode="walking"
+                        mode={(walkOf(p.name) ?? Infinity) <= NEARBY_MINUTES ? "walking" : "driving"}
                         place={p.name}
                         labels={directionsLabels}
                       />
@@ -343,14 +360,12 @@ export function LocalGuide({
               <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{t.guideBasicsTitle}</h2>
               <p className="mt-1 text-[13.5px] text-muted">{t.guideBasicsSub}</p>
               <ul className="mt-4">{basics.map((p: (typeof GUIDE_PLACES)[number]) => (
-                <li key={p.name} className="flex items-baseline justify-between gap-3 border-b border-hairline py-2.5 last:border-0">
-                  <span className="text-[14px]">
+                <li key={p.name} className="border-b border-hairline py-2.5 last:border-0">
+                  <span className="block text-[14px]">
                     <span aria-hidden="true" className="mr-1.5">{categoryIcon(p.category)}</span>
                     {p.name}
                   </span>
-                  <span className="shrink-0 text-[12.5px] text-muted">
-                    {t.guideWalk.replace("{n}", String(walkOf(p.name)))}
-                  </span>
+                  <span className="mt-0.5 block text-[12.5px] text-muted">{howFar(p.name)}</span>
                 </li>
               ))}</ul>
             </section>
@@ -364,14 +379,12 @@ export function LocalGuide({
                   <div key={slot.label}>
                     <h3 className="eyebrow">{slot.label}</h3>
                     <ul className="mt-1">{slot.places.map((p: (typeof GUIDE_PLACES)[number]) => (
-                <li key={p.name} className="flex items-baseline justify-between gap-3 border-b border-hairline py-2.5 last:border-0">
-                  <span className="text-[14px]">
+                <li key={p.name} className="border-b border-hairline py-2.5 last:border-0">
+                  <span className="block text-[14px]">
                     <span aria-hidden="true" className="mr-1.5">{categoryIcon(p.category)}</span>
                     {p.name}
                   </span>
-                  <span className="shrink-0 text-[12.5px] text-muted">
-                    {t.guideWalk.replace("{n}", String(walkOf(p.name)))}
-                  </span>
+                  <span className="mt-0.5 block text-[12.5px] text-muted">{howFar(p.name)}</span>
                 </li>
               ))}</ul>
                   </div>
@@ -522,14 +535,12 @@ export function LocalGuide({
 
                     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted">
                       <span>
-                        <span className={d?.walk != null && d.walk <= NEARBY_MINUTES ? "rounded-full bg-wash-gold px-2.5 py-1 font-semibold text-ink" : ""}>
-                          {d?.walk != null
-                            ? t.guideWalk.replace("{n}", String(d.walk))
-                            : t.guideNoWalk}
-                        </span>
-                        {d?.drive != null
-                          ? ` · ${t.guideDrive.replace("{n}", String(d.drive))}`
-                          : ""}
+                        {d?.drive != null ? (
+                          <span className="rounded-full bg-wash-gold px-2.5 py-1 font-semibold text-ink">
+                            {t.guideDrive.replace("{n}", String(d.drive))}
+                          </span>
+                        ) : null}
+                        {` · ${d?.walk != null ? t.guideWalk.replace("{n}", String(d.walk)) : t.guideNoWalk}`}
                       </span>
                       <DirectionsLinks
                         from={{ lat: origin.lat, lng: origin.lng }}
