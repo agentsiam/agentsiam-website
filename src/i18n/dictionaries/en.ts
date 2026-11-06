@@ -1344,7 +1344,6 @@ export const en = {
   c2FormAgencyQ: "Is it managed by an agency today?",
   c2FormLinkLabel: "Link to the listing",
   c2FormBedrooms: "Bedrooms",
-  c2TypeSmallBuilding: "Small building",
   c2AreaElsewhere: "Elsewhere",
   c2FormPhoneLabel: "Phone or LINE",
   c2FormReachHint: "Email, or phone/LINE. At least one, so we can reply.",
