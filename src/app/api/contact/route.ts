@@ -20,7 +20,24 @@ const MAX = {
   area: 40,
   locale: 8,
   message: 4000,
+  listed: 4,
+  agency: 4,
+  bedrooms: 4,
+  listingUrl: 400,
 };
+
+/**
+ * The ICP tag, Nils 06/11/2026: the form is the first ICP filter. Occupancy is not asked;
+ * it is read off the listing for the next 60 days at the reply step, against the internal
+ * 50% line, so a listed property can only be narrowed to two ICPs here and the rest stays
+ * pending until someone reads the listing or speaks to the owner.
+ */
+function icpTag(listed: string, agency: string, listingUrl: string): string {
+  if (listed === "No") return "ICP5";
+  if (listed !== "Yes") return "ICP pending";
+  const pair = agency === "Yes" ? "ICP4 or ICP2" : agency === "No" ? "ICP3 or ICP1" : "ICP pending";
+  return listingUrl ? `${pair}, read occupancy` : `${pair}, follow up: no listing`;
+}
 
 type Field = keyof typeof MAX;
 
@@ -58,12 +75,20 @@ export async function POST(request: Request) {
   const propertyType = clean(body.propertyType, "propertyType");
   const area = clean(body.area, "area");
   const message = clean(body.message, "message");
+  const listed = clean(body.listed, "listed");
+  const agency = clean(body.agency, "agency");
+  const bedrooms = clean(body.bedrooms, "bedrooms");
+  const listingUrl = clean(body.listingUrl, "listingUrl");
+  const icp = icpTag(listed, agency, listingUrl);
   // Which language the enquiry was written in, so the reply goes back in that language.
   const locale = clean(body.locale, "locale");
 
-  if (!name || !message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  // Email or phone/LINE, at least one. A given email still has to look like one, because it
+  // becomes the reply-to address.
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!name || (!emailOk && !phone) || (email && !emailOk)) {
     return NextResponse.json(
-      { error: "Please check the name, email and message fields." },
+      { error: "Please check the name and contact fields." },
       { status: 400 },
     );
   }
@@ -80,8 +105,13 @@ export async function POST(request: Request) {
 
   const rows: [string, string][] = [
     ["Name", name],
-    ["Email", email],
+    ["ICP", icp],
+    ["Email", email || "not given"],
     ["Phone / LINE", phone || "not given"],
+    ["Listed now", listed || "not answered"],
+    ["With an agency", listed === "Yes" ? agency || "not answered" : "n/a"],
+    ["Listing link", listingUrl || "not given"],
+    ["Bedrooms", bedrooms || "not selected"],
     ["Property type", propertyType || "not selected"],
     ["Neighbourhood", area || "not selected"],
     ["Wrote in", locale || "en"],
@@ -90,14 +120,14 @@ export async function POST(request: Request) {
   const { html, text } = notificationBody(
     `New enquiry from ${SITE_NAME}.com`,
     rows,
-    message,
+    message || "(no message)",
   );
 
   const sent = await sendMail({
-    subject: `Website enquiry: ${name}${propertyType ? ` (${propertyType})` : ""}`,
+    subject: `Website enquiry: ${name} (${icp}${propertyType ? `, ${propertyType}` : ""})`,
     html,
     text,
-    replyTo: email,
+    replyTo: emailOk ? email : undefined,
   });
 
   if (!sent) {
