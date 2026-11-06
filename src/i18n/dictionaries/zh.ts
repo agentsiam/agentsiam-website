@@ -337,7 +337,7 @@ export const zh: Dictionary = {
   guideAskCta: "通过WhatsApp联系我们",
   guideAskPrefill: "你好，AgentSiam。我正在阅读Lotus House周边指南，有一个问题想咨询。",
   guideAskDismiss: "稍后再说",
-  guideReach: "步行10分钟内有{a}处，15分钟内{b}处，20分钟内{c}处。",
+  guideReach: "开车5分钟内有{a}处，10分钟内{b}处，步行15分钟内{c}处。",
   guideFavSub: "我们自己常去的地方，由近到远。",
   guideBasicsTitle: "第一晚",
   guideBasicsSub: "日用品、取款和药店：离得最近的几处。",
