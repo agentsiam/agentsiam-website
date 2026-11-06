@@ -18,7 +18,7 @@ const VIBE_KEYS: Record<string, keyof Dictionary> = {
   "old-city": "vibeOldCity",
   santitham: "vibeSantitham",
   "chang-khlan": "vibeChangKhlan",
-  riverside: "vibeRiverside",
+  "wat-ket": "vibeRiverside",
   "hang-dong": "vibeHangDong",
   "mae-rim": "vibeMaeRim",
   "san-sai": "vibeSanSai",

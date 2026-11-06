@@ -61,8 +61,8 @@ export const AREAS: Area[] = [
     radius: 0.008,
   },
   {
-    slug: "riverside",
-    name: "Riverside",
+    slug: "wat-ket",
+    name: "Wat Ket",
     vibe: "along the Ping, slower pace, garden houses",
     lat: 18.79,
     lng: 99.002,
