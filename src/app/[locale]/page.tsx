@@ -316,6 +316,65 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
+      {/* shape: proof-block
+          -- Social proof. The handoff's rail carries eight review cards; we have the
+             reviews we actually have, and its own comment already said "a rail of one is a
+             quote". It was still drawn as a rail: one 300px card in a 1,400px row, with
+             three quarters of the band empty, which reads as seven cards that failed to
+             load rather than as one quote we stand behind.
+
+             Restyled 04/11/2026, Paul's direction, after Lodgify's own reviews page: a soft
+             panel with a generous radius and 44px of padding, the heading centred and set
+             40px/700 uppercase as on the owner page. Two of its parts are deliberately left
+             out. Its card carries a 5/5 chip, and no rating is on file here. And it splits
+             each quote into a bold lead and a lighter body, which this one cannot do
+             honestly: the stored quote is already cut off with an ellipsis, so there is no
+             second half to set differently. Its radius is 51px and this is 28px, the figure
+             used across the owner page, rather than a third rounding on the site.
+
+             So one review is drawn as a quote at full measure and more than one goes back
+             to the rail. Nothing here states a count or an average, because neither is on
+             file: the figure a reader could check has to come off the platform, and a
+             number nobody verified is worse than no number. */}
+      <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
+        <h2 className="mx-auto max-w-[816px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase">
+          {t.guestReviews}
+        </h2>
+
+        {property.reviews.length === 1 ? (
+          <figure className="mx-auto mt-10 max-w-[720px] rounded-[28px] bg-pink px-7 py-8 sm:px-11 sm:py-11">
+            <blockquote
+              lang={property.reviews[0].lang}
+              className="font-display text-[clamp(18px,2.4vw,23px)] font-semibold leading-[1.45] tracking-[-0.01em] text-ink"
+            >
+              {property.reviews[0].quote}
+            </blockquote>
+            <figcaption className="mt-5 border-t border-ink/12 pt-4 text-[12.5px] text-ink/75">
+              {t.guestReviewSource} · {property.title}
+            </figcaption>
+          </figure>
+        ) : (
+          <div className="mt-5 flex gap-4 overflow-x-auto pb-1">
+            {property.reviews.map((review) => (
+              <figure
+                key={review.quote}
+                className="flex min-h-[200px] w-[300px] shrink-0 flex-col gap-3 rounded-panel bg-pink p-5.5"
+              >
+                <blockquote
+                  lang={review.lang}
+                  className="text-[14.5px] leading-relaxed text-ink"
+                >
+                  {review.quote}
+                </blockquote>
+                <figcaption className="mt-auto flex items-center gap-3 border-t border-ink/12 pt-3.5 text-[12px] text-ink/75">
+                  {t.guestReviewSource} · {property.title}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        )}
+      </section>
+
       {/* shape: long-stay-block
           -- For the guest here a month or more, added 04/11/2026 on Paul's direction after the
              Chiang Mai nomad research in the consulting repo at
@@ -501,65 +560,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         >
           {t.homeAreasLink}
         </Link>
-      </section>
-
-      {/* shape: proof-block
-          -- Social proof. The handoff's rail carries eight review cards; we have the
-             reviews we actually have, and its own comment already said "a rail of one is a
-             quote". It was still drawn as a rail: one 300px card in a 1,400px row, with
-             three quarters of the band empty, which reads as seven cards that failed to
-             load rather than as one quote we stand behind.
-
-             Restyled 04/11/2026, Paul's direction, after Lodgify's own reviews page: a soft
-             panel with a generous radius and 44px of padding, the heading centred and set
-             40px/700 uppercase as on the owner page. Two of its parts are deliberately left
-             out. Its card carries a 5/5 chip, and no rating is on file here. And it splits
-             each quote into a bold lead and a lighter body, which this one cannot do
-             honestly: the stored quote is already cut off with an ellipsis, so there is no
-             second half to set differently. Its radius is 51px and this is 28px, the figure
-             used across the owner page, rather than a third rounding on the site.
-
-             So one review is drawn as a quote at full measure and more than one goes back
-             to the rail. Nothing here states a count or an average, because neither is on
-             file: the figure a reader could check has to come off the platform, and a
-             number nobody verified is worse than no number. */}
-      <section className="mx-auto max-w-(--container-chrome) px-5 pt-14">
-        <h2 className="mx-auto max-w-[816px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase">
-          {t.guestReviews}
-        </h2>
-
-        {property.reviews.length === 1 ? (
-          <figure className="mx-auto mt-10 max-w-[720px] rounded-[28px] bg-pink px-7 py-8 sm:px-11 sm:py-11">
-            <blockquote
-              lang={property.reviews[0].lang}
-              className="font-display text-[clamp(18px,2.4vw,23px)] font-semibold leading-[1.45] tracking-[-0.01em] text-ink"
-            >
-              {property.reviews[0].quote}
-            </blockquote>
-            <figcaption className="mt-5 border-t border-ink/12 pt-4 text-[12.5px] text-ink/75">
-              {t.guestReviewSource} · {property.title}
-            </figcaption>
-          </figure>
-        ) : (
-          <div className="mt-5 flex gap-4 overflow-x-auto pb-1">
-            {property.reviews.map((review) => (
-              <figure
-                key={review.quote}
-                className="flex min-h-[200px] w-[300px] shrink-0 flex-col gap-3 rounded-panel bg-pink p-5.5"
-              >
-                <blockquote
-                  lang={review.lang}
-                  className="text-[14.5px] leading-relaxed text-ink"
-                >
-                  {review.quote}
-                </blockquote>
-                <figcaption className="mt-auto flex items-center gap-3 border-t border-ink/12 pt-3.5 text-[12px] text-ink/75">
-                  {t.guestReviewSource} · {property.title}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        )}
       </section>
 
       {/* shape: faq-rows
