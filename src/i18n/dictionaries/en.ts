@@ -59,7 +59,7 @@ export const en = {
 
   whyA: "Direct rate, no platform markup",
   whyABody:
-    "No platform markup between you and the people who run the house.",
+    "The total you see before you pay is what is charged: no platform service fee, nothing added at checkout.",
   whyB: "The people who run the house",
   whyBBody: "Not a call centre in another timezone. We live in Chiang Mai, answer your messages ourselves, and can be at the house.",
   whyC: "TM30 filed for you",

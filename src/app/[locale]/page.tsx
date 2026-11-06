@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getImageProps } from "next/image";
 import Link from "next/link";
 import { Faq } from "@/components/faq";
+import { TrackedLink } from "@/components/tracked-link";
 import { JsonLd } from "@/components/json-ld";
 import { faqSchema } from "@/lib/structured-data";
 import { GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
@@ -81,6 +82,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   const choices = [
     {
       key: "nights",
+      event: "home_nights_click" as const,
       title: t.homeChoiceNightsTitle,
       body: t.homeChoiceNightsBody,
       cta: t.homeChoiceNightsCta,
@@ -88,6 +90,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     },
     {
       key: "month",
+      event: "home_month_click" as const,
       title: t.homeChoiceMonthTitle,
       body: t.homeChoiceMonthBody,
       cta: t.homeChoiceMonthCta,
@@ -95,6 +98,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     },
     {
       key: "find",
+      event: "home_find_click" as const,
       title: t.homeChoiceFindTitle,
       body: t.homeChoiceFindBody,
       cta: t.areaFaqMonthLink,
@@ -261,8 +265,9 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           <ul className="relative mt-8 grid gap-3 min-[900px]:grid-cols-3">
             {choices.map((choice) => (
               <li key={choice.key}>
-                <Link
+                <TrackedLink
                   href={choice.href}
+                  event={choice.event}
                   className="group flex h-full flex-col gap-1.5 rounded-box bg-white/95 px-5.5 py-5 text-ink transition-colors hover:bg-white"
                 >
                   <span className="font-display text-[17px] font-bold tracking-[-0.015em]">
@@ -274,7 +279,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
                   <span className="mt-auto pt-2 text-[13.5px] font-semibold text-primary underline-offset-4 group-hover:underline">
                     {choice.cta} →
                   </span>
-                </Link>
+                </TrackedLink>
               </li>
             ))}
           </ul>
@@ -506,12 +511,13 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               </li>
             ))}
           </ol>
-          <Link
+          <TrackedLink
             href={href("/house-for-rent-chiang-mai#request")}
+            event="home_find_click"
             className="pill-primary mt-8"
           >
             {t.areaFaqMonthLink}
-          </Link>
+          </TrackedLink>
         </div>
       </section>
 
@@ -623,15 +629,20 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       <div className="h-20 min-[900px]:hidden" aria-hidden="true" />
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-hairline bg-bg/97 py-3 pl-5 pr-20 backdrop-blur min-[900px]:hidden">
         <div className="flex items-center gap-2.5">
-          <Link href={href("/properties")} className="pill-primary shrink-0 py-3 text-[14px]">
+          <TrackedLink
+            href={href("/properties")}
+            event="home_bar_dates_click"
+            className="pill-primary shrink-0 py-3 text-[14px]"
+          >
             {t.homeChoiceNightsCta}
-          </Link>
-          <Link
+          </TrackedLink>
+          <TrackedLink
             href={href("/house-for-rent-chiang-mai#request")}
+            event="home_bar_find_click"
             className="pill-outline shrink-0 py-3 text-[14px]"
           >
             {t.homeChoiceFindTitle}
-          </Link>
+          </TrackedLink>
         </div>
       </div>
     </div>

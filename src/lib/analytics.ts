@@ -35,6 +35,15 @@
  * | `booking_requested`   | a guest sent a booking request, the path where no money moves |
  * | `booking_paid`        | a stay was paid for and confirmed                          |
  * | `booking_unconfirmed` | a redirect payment came back and we cannot tell what happened |
+ * | `home_nights_click`   | a homepage visitor chose "A few nights" in the hero        |
+ * | `home_month_click`    | a homepage visitor chose "A month or more" in the hero     |
+ * | `home_find_click`     | a homepage visitor chose "Find me a home", in the hero or the find block |
+ * | `home_bar_dates_click`| "Check dates" on the homepage's mobile bar                 |
+ * | `home_bar_find_click` | "Find me a home" on the homepage's mobile bar              |
+ *
+ * The five homepage clicks exist to test the 06/11/2026 layout: which way in guests choose,
+ * and whether the mobile bar earns its place. A click is interest, not a lead; the form
+ * events above remain the conversions.
  *
  * The last one is not a success. It is here because that outcome is otherwise invisible:
  * it looks like an abandoned booking in the reports and like silence in the inbox, and if
@@ -60,7 +69,12 @@ export type AnalyticsEvent =
   | "stay_request_sent"
   | "booking_requested"
   | "booking_paid"
-  | "booking_unconfirmed";
+  | "booking_unconfirmed"
+  | "home_nights_click"
+  | "home_month_click"
+  | "home_find_click"
+  | "home_bar_dates_click"
+  | "home_bar_find_click";
 
 export function trackEvent(event: AnalyticsEvent): void {
   if (typeof window === "undefined" || typeof window.gtag !== "function") return;
