@@ -12,9 +12,9 @@ import areas_1 from "@/photos/areas/hang-dong.jpeg";
 import areas_2 from "@/photos/areas/mae-rim.jpeg";
 import areas_3 from "@/photos/areas/nimman.jpeg";
 import areas_4 from "@/photos/areas/old-city.jpeg";
-import areas_5 from "@/photos/areas/riverside.jpeg";
-import areas_6 from "@/photos/areas/san-sai.jpeg";
-import areas_7 from "@/photos/areas/santitham.jpeg";
+import areas_5 from "@/photos/areas/san-sai.jpeg";
+import areas_6 from "@/photos/areas/santitham.jpeg";
+import areas_7 from "@/photos/areas/wat-ket.jpeg";
 import cosmoshouse_0 from "@/photos/cosmoshouse/01-b14bc0ac-4aec-4214-98a0-ce08ad9c2105.jpeg";
 import cosmoshouse_1 from "@/photos/cosmoshouse/02-71e0c6ce-f7fa-49bf-afdb-cec4ff45708d.jpeg";
 import cosmoshouse_2 from "@/photos/cosmoshouse/03-71082491-40a0-4736-9372-9dbe57e0dc17.jpeg";
@@ -127,9 +127,9 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: areas_2, file: "mae-rim.jpeg", alt: "Flooded rice paddy and forested hills in morning haze, Mae Rim, north of Chiang Mai" },
     { src: areas_3, file: "nimman.jpeg", alt: "A modern cafe frontage with folding glass doors open to the street, Nimman, Chiang Mai" },
     { src: areas_4, file: "old-city.jpeg", alt: "A quiet lane of shophouses behind a laterite wall inside the Old City moat, Chiang Mai" },
-    { src: areas_5, file: "riverside.jpeg", alt: "A timber garden house and a jetty on the bank of the Ping river, Riverside, Chiang Mai" },
-    { src: areas_6, file: "san-sai.jpeg", alt: "A modern two-storey house behind a clipped hedge on a suburban street, San Sai, Chiang Mai" },
-    { src: areas_7, file: "santitham.jpeg", alt: "A two-storey townhouse with a shaded forecourt on a residential street, Santitham, Chiang Mai" },
+    { src: areas_5, file: "san-sai.jpeg", alt: "A modern two-storey house behind a clipped hedge on a suburban street, San Sai, Chiang Mai" },
+    { src: areas_6, file: "santitham.jpeg", alt: "A two-storey townhouse with a shaded forecourt on a residential street, Santitham, Chiang Mai" },
+    { src: areas_7, file: "wat-ket.jpeg", alt: "A timber garden house and a jetty on the bank of the Ping river, Riverside, Chiang Mai" },
   ],
   "cosmoshouse": [
     { src: cosmoshouse_0, file: "01-b14bc0ac-4aec-4214-98a0-ce08ad9c2105.jpeg", alt: "" },

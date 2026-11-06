@@ -46,7 +46,7 @@ const NAME_KEYS: Record<string, keyof Dictionary> = {
   "old-city": "areaOldCity",
   santitham: "areaSantitham",
   "chang-khlan": "areaChangKhlan",
-  riverside: "areaRiverside",
+  "wat-ket": "areaRiverside",
   "hang-dong": "areaHangDong",
   "mae-rim": "areaMaeRim",
   "san-sai": "areaSanSai",
@@ -101,7 +101,7 @@ export const AREA_CONTENT: Record<string, AreaContent> = {
     suits: ["areaChangKhlanSuitA", "areaChangKhlanSuitB", "areaChangKhlanSuitC"],
     notFor: "areaChangKhlanRoad",
   },
-  riverside: {
+  "wat-ket": {
     what: ["areaRiversideP1", "areaRiversideP2", "areaRiversideP3"],
     suits: ["areaRiversideSuitA", "areaRiversideSuitB", "areaRiversideSuitC"],
     notFor: "areaRiversideNot",

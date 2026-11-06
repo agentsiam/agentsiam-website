@@ -42,14 +42,14 @@ const AREAS = [
   "Santitham",
   "Old City",
   "Chang Khlan",
-  "Riverside",
+  "Wat Ket",
   "Hang Dong",
   "Mae Rim",
   "San Sai",
 ] as const;
 
 const OUTER_RING = ["Hang Dong", "Mae Rim", "San Sai"];
-const THIN_DATA = ["Riverside"];
+const THIN_DATA = ["Wat Ket"];
 
 const TONE: Record<Tone, { panel: string; accent: string }> = {
   yes: { panel: "bg-wash-green border-teal/50", accent: "text-deep-green" },
@@ -192,7 +192,7 @@ export function Qualifier({ t, contactHref }: { t: Dictionary; contactHref: stri
     Santitham: t.areaSantitham,
     "Old City": t.areaOldCity,
     "Chang Khlan": t.areaChangKhlan,
-    Riverside: t.areaRiverside,
+    "Wat Ket": t.areaRiverside,
     "Hang Dong": t.areaHangDong,
     "Mae Rim": t.areaMaeRim,
     "San Sai": t.areaSanSai,

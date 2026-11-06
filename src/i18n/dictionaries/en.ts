@@ -197,7 +197,7 @@ export const en = {
   areaOldCity: "Old City",
   areaSantitham: "Santitham",
   areaChangKhlan: "Chang Khlan",
-  areaRiverside: "Riverside",
+  areaRiverside: "Wat Ket",
   areaHangDong: "Hang Dong",
   areaMaeRim: "Mae Rim",
   areaSanSai: "San Sai",
@@ -406,7 +406,7 @@ export const en = {
   metaGuideDesc:
     "{n} places around {property} in Chiang Mai, chosen by the hosts, with walking and driving times from the door.",
   metaDestinationsTitle: "Chiang Mai neighbourhoods",
-  metaDestinationsDesc: "Eight Chiang Mai neighbourhoods: Nimman, Old City, Santitham, Chang Khlan, Riverside, Hang Dong, Mae Rim and San Sai, and what each is like.",
+  metaDestinationsDesc: "Eight Chiang Mai neighbourhoods: Nimman, Old City, Santitham, Chang Khlan, Wat Ket, Hang Dong, Mae Rim and San Sai, and what each is like.",
   metaAreaTitle: "Staying in {area}, Chiang Mai",
   metaAreaDesc:
     "{area}: {vibe}. What the neighbourhood is like, and the places we manage there.",
@@ -958,7 +958,7 @@ export const en = {
   hwV3NoPoolTitle: "A three-bed without a pool tends not to clear its own alternative.",
   hwV3NoPoolBody: "The nightly rate does not climb enough to cover the drop in occupancy, and the long-term let for a three-bed house is strong.",
   // Inserted for areas with thin comparable data. Carries its own leading separator.
-  hwV3ThinData: " Riverside also has thin comparable data, which widens the error bars considerably.",
+  hwV3ThinData: " Wat Ket also has thin comparable data, which widens the error bars considerably.",
   // Closes hwV3NoPoolBody, after the thin-data clause when there is one. Carries its own leading separator.
   hwV3NoPoolTail: " We would need to see a real reason the rate would run high.",
   hwV3NoPoolCta: "Ask us to look anyway",
