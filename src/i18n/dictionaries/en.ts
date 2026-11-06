@@ -1352,6 +1352,9 @@ export const en = {
 
   // -- owner form required choices -----------------------------------------
   c2FormNeedDetails: "Please choose whether it is listed, the property type, where it is and the number of bedrooms.",
+
+  // -- owner form: Wat Ket -------------------------------------------------
+  c2AreaWatKet: "Wat Ket",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
