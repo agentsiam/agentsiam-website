@@ -80,7 +80,6 @@ export function ContactForm({
   const types: [string, string][] = [
     ["House", t.typeHouse],
     ["Townhouse", t.typeTownhouse],
-    ["Small building", t.c2TypeSmallBuilding],
     ["Pool villa", t.typePoolVilla],
     ["Condo / apartment", t.typeCondoShort],
   ];
