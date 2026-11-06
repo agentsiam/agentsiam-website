@@ -14,7 +14,7 @@ export const COMPOSED = {
       "source": "core_claim"
     },
     "sub": {
-      "text": "It is that too few of the right people ever see it, and too few of the ones who do go on to book. Everything we run moves one of those two numbers. Where the property is listed and the booking page we build for it decide who sees it, whether that is every major channel or Airbnb alone; the photography, the condition of the house and the standard of the stay decide who books. The permission is what keeps the whole thing on the platforms.",
+      "text": "It is that too few of the right people ever see it, and too few of the ones who do go on to book. Everything we run moves one of those two numbers. Where the property is listed and the booking page we build for it decide who sees it, on one channel or many; the photography, the condition of the house and the standard of the stay decide who books. The permission is what keeps the whole thing on the platforms.",
       "source": "core_claim"
     }
   },
@@ -34,7 +34,7 @@ export const COMPOSED = {
     {
       "id": "S3",
       "name": "Vacation rental management",
-      "text": "Owners in Chiang Mai whose property clears both gates. The owner form is the first filter: whether the property is listed and with whom sorts the enquiry before any site visit, and the gates are read on a forecast or on the owner's own statements.",
+      "text": "Owners in Chiang Mai whose property can earn more as a short stay than as a long let, and enough to be worth managing properly. We read that from your own booking record, or from a study where there is none.",
       "source": "S3.fit"
     },
     {
@@ -135,11 +135,11 @@ export const COMPOSED = {
         "source": "S3.one_liner"
       },
       "scope": {
-        "text": "Listing and channel management across the channels Beds24 connects, a direct booking site so not every night pays a channel commission, rate management, guest communication across the stay, review management, compliance upkeep and TM30 reporting to Immigration.",
+        "text": "Listing and channel management across the main booking channels, a direct booking site so not every night pays a channel commission, rate management, guest communication across the stay, review management, compliance upkeep and TM30 reporting to Immigration.",
         "source": "S3.scope"
       },
       "limit": {
-        "text": "Without housekeeping, cleaning and maintenance are arranged rather than included and the owner keeps and pays their own cleaner. Insurance is recommended rather than arranged. The agreed exclusions in as-context/00-company/price-book.md are stated in every offer.",
+        "text": "Without housekeeping, cleaning and maintenance are arranged rather than included and the owner keeps and pays their own cleaner. Insurance is recommended rather than arranged. The full list of exclusions is stated in every offer.",
         "source": "S3.limit"
       },
       "core": true
@@ -169,7 +169,7 @@ export const COMPOSED = {
         "source": "S5.one_liner"
       },
       "scope": {
-        "text": "Interior photography and editing for the listing, brokered to a third-party photographer and delivered as AgentSiam's service.",
+        "text": "Interior photography and editing for the listing, briefed, directed and delivered as AgentSiam's service.",
         "source": "S5.scope"
       },
       "limit": {
@@ -197,12 +197,12 @@ export const COMPOSED = {
     }
   ],
   "report": {
-    "text": "The sample report on /how-it-works, shown rather than described, with the figures withheld because they are calculated per property.",
+    "text": "A sample report, shown rather than described, with the figures withheld because they are calculated per property.",
     "source": "S1.evidence"
   },
   "gates": [
     {
-      "text": "Owners in Chiang Mai whose property clears both gates. The owner form is the first filter: whether the property is listed and with whom sorts the enquiry before any site visit, and the gates are read on a forecast or on the owner's own statements.",
+      "text": "Owners in Chiang Mai whose property can earn more as a short stay than as a long let, and enough to be worth managing properly. We read that from your own booking record, or from a study where there is none.",
       "source": "S3.fit"
     },
     {
@@ -211,7 +211,7 @@ export const COMPOSED = {
     }
   ],
   "included": {
-    "text": "Listing and channel management across the channels Beds24 connects, a direct booking site so not every night pays a channel commission, rate management, guest communication across the stay, review management, compliance upkeep and TM30 reporting to Immigration.",
+    "text": "Listing and channel management across the main booking channels, a direct booking site so not every night pays a channel commission, rate management, guest communication across the stay, review management, compliance upkeep and TM30 reporting to Immigration.",
     "source": "S3.scope"
   },
   "excluded": {
@@ -227,12 +227,12 @@ export const COMPOSED = {
     ],
     "source": "price-book.md management.excludes",
     "note": {
-      "text": "Without housekeeping, cleaning and maintenance are arranged rather than included and the owner keeps and pays their own cleaner. Insurance is recommended rather than arranged. The agreed exclusions in as-context/00-company/price-book.md are stated in every offer.",
+      "text": "Without housekeeping, cleaning and maintenance are arranged rather than included and the owner keeps and pays their own cleaner. Insurance is recommended rather than arranged. The full list of exclusions is stated in every offer.",
       "source": "S3.limit"
     }
   },
   "tm30": {
-    "text": "Listing and channel management across the channels Beds24 connects, a direct booking site so not every night pays a channel commission, rate management, guest communication across the stay, review management, compliance upkeep and TM30 reporting to Immigration.",
+    "text": "Listing and channel management across the main booking channels, a direct booking site so not every night pays a channel commission, rate management, guest communication across the stay, review management, compliance upkeep and TM30 reporting to Immigration.",
     "source": "S3.scope"
   },
   "faq": [
@@ -248,7 +248,7 @@ export const COMPOSED = {
     },
     {
       "q": "What does management not cover?",
-      "text": "Without housekeeping, cleaning and maintenance are arranged rather than included and the owner keeps and pays their own cleaner. Insurance is recommended rather than arranged. The agreed exclusions in as-context/00-company/price-book.md are stated in every offer.",
+      "text": "Without housekeeping, cleaning and maintenance are arranged rather than included and the owner keeps and pays their own cleaner. Insurance is recommended rather than arranged. The full list of exclusions is stated in every offer.",
       "source": "S3.limit"
     },
     {
