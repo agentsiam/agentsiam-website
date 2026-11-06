@@ -120,6 +120,48 @@ const REMOVE = [
   { name: "ตราบุญ Coffee Station", why: "closed down, reported by Nils 06/11/2026" },
 ];
 
+/**
+ * Spelling and grammar corrections to the hosts' notes, applied after the merge. The sheet is
+ * left alone (R11: it is a spent resource, not a maintained source), so the correction lives
+ * here where it can be reviewed in a diff, the same way as RENAME and REMOVE. Wording, opinion
+ * and the hosts' voice are never changed, only clear errors. Paul asked for it, 06/11/2026.
+ *
+ * Each `from` must be found exactly in that place's note or the build stops: a correction that
+ * silently stops applying because the sheet changed is how a typo comes back.
+ */
+const FIX = [
+  { name: "7 Eleven", from: "Convinience store", to: "Convenience store" },
+  { name: "Lotus's Go Fresh", from: "Convinience store", to: "Convenience store" },
+  { name: "Pharmacy ขวัญดาวเภสัช", from: "Near by pharamacy", to: "Nearby pharmacy" },
+  { name: "Pharmacy ร้านยาเวียงพิงค์เภสัช สาขาตลาดต้นพยอม2", from: "Pharamacy next door to 7 eleven", to: "Pharmacy next door to 7-Eleven" },
+  { name: "Wat Hua Fai", from: "Close by temple.", to: "Nearby temple." },
+  { name: "More Morning", from: "coffe place", to: "coffee place" },
+  { name: "ก๋วยเตี๋ยวโบราณ คุณยายปากแดง", from: "heathy", to: "healthy" },
+  { name: "Wooden Door Cafe", from: "Our preffered western brunch place close by the house (ther's a short cut on Google Map if you're walking)", to: "Our preferred western brunch place close to the house (there's a shortcut on Google Maps if you're walking)" },
+  { name: "Heartwork the Sharing Space", from: "The charge a very small fee for the usage of (with work desks equipeed) co-working space and you have to grab a coffee or some food.", to: "They charge a very small fee for the co-working space (equipped with work desks), and you have to grab a coffee or some food." },
+  { name: "Maajoy Cafe & Tailor", from: "good food(Limited options)", to: "good food (limited options)" },
+  { name: "Cherry Burmese", from: "excellent burmese kitchen. Staff speaks english.", to: "excellent Burmese kitchen. Staff speak English." },
+  { name: "Kad Kom Market", from: "vegtables", to: "vegetables" },
+  { name: "Khao Soi Lung Prakit Kad Kom", from: "National known", to: "Nationally known" },
+  { name: "Thai Akha Kitchen", from: "Excellent thai cooking school", to: "Excellent Thai cooking school" },
+  { name: "The Home Massage and Spa", from: "Luxuary", to: "Luxury" },
+  { name: "Antique Massage Chiangmai", from: "traditional thai building. CALL 091-566-5569 TO BOOK FREE SHUTTLE TAXI OF THE MASSAGE PLACE", to: "traditional Thai building. Call 091-566-5569 to book the massage place's free shuttle taxi." },
+  { name: "Wua Lai Walking Street", from: "Only on saturday evenings", to: "Only on Saturday evenings" },
+  { name: "Chiang Mai Night Bazar & Kalare Night Bazaar", from: "Near to Kalare Night Bazar so you can visit both:", to: "Next to Kalare Night Bazaar, so you can visit both:" },
+  { name: "Chiang Mai University Art Center", from: "Modern Art Exhibtion Centre", to: "Modern art exhibition centre" },
+  { name: "Deck 1", from: "with thai food", to: "with Thai food" },
+  { name: "Beam&Col. coffee bar", from: "Life Music", to: "live music" },
+  { name: "River View Bar", from: "Relaxed thai-style", to: "Relaxed Thai-style" },
+  { name: "River View Bar", from: "Often with life musi, coffering refreshing drinks", to: "Often with live music, offering refreshing drinks" },
+  { name: "Sunday Night Market", from: "Only on sunday evenings, Nearest entry point", to: "Only on Sunday evenings. The nearest entry point" },
+  { name: "The North Gate Jazz Co-Op", from: "is long standing \"institution\" for every night life music, go when it opens at 7PM to get a spot.", to: "is a long-standing \"institution\" for live music every night. Go when it opens at 7PM to get a spot." },
+  { name: "The White Rabbit", from: "Speakeasy type Cocktailbar", to: "Speakeasy-style cocktail bar" },
+  { name: "Rimping Supermarket", from: "with a national and international products", to: "with national and international products" },
+  { name: "Sereephap Muay Thai", from: "Renown", to: "Renowned" },
+  { name: "Marriott Hotel Pool", from: "Marriot Hotel offers non-hotel guest", to: "Marriott Hotel offers non-hotel guests" },
+  { name: "Karnkanok 19 Pool", from: "jurisdiction office window", to: "juristic office window" }
+];
+
 const HIGHLIGHT = "\u{1F536}"; // 🔶, used in the sheet's Site column to mark a host pick
 const ZERO_WIDTH = /[​-‍﻿]/g;
 
@@ -298,6 +340,16 @@ for (const m of MERGE) {
     console.log(`merged: ${m.drop} (${m.byCategory.drop}) into ${m.keep} (${m.byCategory.keep})`);
   }
 }
+
+for (const f of FIX) {
+  const p = places.find((x) => x.name === f.name);
+  if (!p || !p.comment.includes(f.from)) {
+    throw new Error(`FIX for "${f.name}" did not apply: "${f.from}" is not in its note. The sheet changed; update or drop the correction.`);
+  }
+  p.comment = p.comment.replace(f.from, f.to);
+}
+console.log(`fixed: ${FIX.length} note correction(s)`);
+
 
 // coordinates, cached by google link
 let resolved = 0;
