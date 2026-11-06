@@ -887,7 +887,7 @@ export const en = {
   hwExc7: "Your own personal-use admin and your own guests",
   // FAQ[0..7]. The same array feeds faqSchema(), so these keys also fix the FAQPage structured data, which was English on all three locales.
   hwFaq1Q: "What do you charge?",
-  hwFaq1A: "A percentage of room revenue for management, plus fixed fees for the one-off services you choose. The percentage is a little higher when you take housekeeping too, because that is where housekeeping is paid for; the turnover cleaning itself is passed on at cost. For a limited time the set-up fee is waived, and the first five properties to sign get a reduced management rate for their first year, in return for a case study and a reference. Exact figures are quoted against your property rather than read off a rate card.",
+  hwFaq1A: "Management fees start from 18% of room revenue. We take a share of what the property earns, so when it earns more, we both do. Contact us and we provide a custom made offer in accordance with your needs.",
   hwFaq2Q: "Do I have to take the study first?",
   hwFaq2A: "No. It is one service on the menu, not a gate. If your property is already listed and earning, your own numbers tell us more than a model would, and we will start from those instead. Where we think the study genuinely would change your decision, we will say so.",
   hwFaq3Q: "What if I do not have a licence, and do not want to apply for one?",
