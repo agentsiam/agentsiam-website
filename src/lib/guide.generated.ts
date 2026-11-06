@@ -1657,6 +1657,28 @@ export const GUIDE_PLACES: GuidePlace[] = [
     google: "https://maps.app.goo.gl/zuvty3tjUZSQ8Xts8",
     apple: "",
   },
+  {
+    name: "Bless Health Care Physiotherapy Clinic",
+    category: "Basics & Utilities",
+    highlight: false,
+    comment: "Physiotherapy clinic on Koaklang Road, good with sports and training injuries. Also does sports massage. Closed Tuesdays.",
+    lat: 18.7543767,
+    lng: 98.9980282,
+    area: null,
+    google: "https://maps.app.goo.gl/wjWGKojorCUje7q9A",
+    apple: "https://maps.apple.com/?q=Bless%20Health%20Care%20Physiotherapy%20Clinic&coordinate=18.7543767,98.9980282",
+  },
+  {
+    name: "Asta Clinic",
+    category: "Basics & Utilities",
+    highlight: false,
+    comment: "Acupressure and cupping clinic for joint and muscle pain, close to the house. Not a physiotherapy clinic. Open every day.",
+    lat: 18.7661033,
+    lng: 98.9920355,
+    area: "chang-khlan",
+    google: "https://maps.app.goo.gl/KBUfLjfzPngeyU46A",
+    apple: "",
+  },
 ];
 
 /** Keyed by property slug, then by place name. */
@@ -1809,6 +1831,8 @@ export const GUIDE_DISTANCES: Record<string, Record<string, GuideDistance>> = {
     "The Moon Eatery": { walk: 70, drive: 10, metres: 5259 },
     "Elefin Farm & Cafe": { walk: null, drive: 36, metres: 30487 },
     "Fran's Chiang Mai": { walk: 74, drive: 9, metres: 5579 },
+    "Bless Health Care Physiotherapy Clinic": { walk: 53, drive: 8, metres: 3976 },
+    "Asta Clinic": { walk: 37, drive: 5, metres: 2808 },
   },
   "cosmoshouse": {
     "7 Eleven": { walk: 6, drive: 1, metres: 456 },
@@ -1958,6 +1982,8 @@ export const GUIDE_DISTANCES: Record<string, Record<string, GuideDistance>> = {
     "The Moon Eatery": { walk: 70, drive: 10, metres: 5248 },
     "Elefin Farm & Cafe": { walk: null, drive: 36, metres: 30477 },
     "Fran's Chiang Mai": { walk: 74, drive: 9, metres: 5569 },
+    "Bless Health Care Physiotherapy Clinic": { walk: 53, drive: 8, metres: 3966 },
+    "Asta Clinic": { walk: 37, drive: 5, metres: 2798 },
   },
   "maerimhouse": {
     "7 Eleven": { walk: null, drive: 38, metres: 34315 },
@@ -2107,5 +2133,7 @@ export const GUIDE_DISTANCES: Record<string, Record<string, GuideDistance>> = {
     "The Moon Eatery": { walk: null, drive: 32, metres: 31352 },
     "Elefin Farm & Cafe": { walk: null, drive: 63, metres: 56270 },
     "Fran's Chiang Mai": { walk: null, drive: 33, metres: 31618 },
+    "Bless Health Care Physiotherapy Clinic": { walk: null, drive: 40, metres: 38037 },
+    "Asta Clinic": { walk: null, drive: 41, metres: 35976 },
   },
 };
