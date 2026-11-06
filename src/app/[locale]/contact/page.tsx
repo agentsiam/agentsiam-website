@@ -40,7 +40,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
         {t.contactTitle}
       </h1>
       <p className="mt-3.5 max-w-[560px] text-[15.5px] leading-relaxed text-body">
-        {t.contactSub}
+        {t.c2FormSub}
       </p>
       {/* This form is for owners. A guest who lands here is sent to the monthly request
           form rather than left to describe a stay in an owner's form. */}

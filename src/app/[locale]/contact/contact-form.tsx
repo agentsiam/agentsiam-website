@@ -69,12 +69,18 @@ export function ContactForm({
   const [error, setError] = useState<string | null>(null);
   const [propertyType, setPropertyType] = useState("");
   const [area, setArea] = useState("");
+  // The three ICP answers. Occupancy and nightly rate are deliberately not asked: they are
+  // read off the listing (next 60 days) at the reply step, Nils 06/11/2026.
+  const [listed, setListed] = useState("");
+  const [agency, setAgency] = useState("");
+  const [bedrooms, setBedrooms] = useState("");
 
   // English values, translated labels. The value is what reaches the mailbox, so an
   // enquiry reads the same whichever language it was written in.
   const types: [string, string][] = [
     ["House", t.typeHouse],
     ["Townhouse", t.typeTownhouse],
+    ["Small building", t.c2TypeSmallBuilding],
     ["Pool villa", t.typePoolVilla],
     ["Condo / apartment", t.typeCondoShort],
   ];
@@ -87,7 +93,13 @@ export function ContactForm({
     ["Hang Dong", t.areaHangDong],
     ["Mae Rim", t.areaMaeRim],
     ["San Sai", t.areaSanSai],
+    ["Elsewhere in Chiang Mai", t.c2AreaElsewhere],
   ];
+  const yesNo: [string, string][] = [
+    ["Yes", t.c2Yes],
+    ["No", t.c2No],
+  ];
+  const bedroomCounts = ["1", "2", "3", "4", "5+"];
 
   useEffect(() => {
     if (status === "sent") sentRef.current?.focus();
@@ -96,12 +108,21 @@ export function ContactForm({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+
+    const fields = Object.fromEntries(new FormData(event.currentTarget));
+    if (!String(fields.email ?? "").trim() && !String(fields.phone ?? "").trim()) {
+      setError(t.c2FormNeedContact);
+      return;
+    }
     setStatus("sending");
 
     const data = {
-      ...Object.fromEntries(new FormData(event.currentTarget)),
+      ...fields,
       propertyType,
       area,
+      listed,
+      agency: listed === "Yes" ? agency : "",
+      bedrooms,
       locale,
     };
 
@@ -186,7 +207,6 @@ export function ContactForm({
         <label className="grid gap-1.5 text-sm">
           <span className="sr-only">{t.labelEmail}</span>
           <input
-            required
             type="email"
             name="email"
             autoComplete="email"
@@ -202,9 +222,44 @@ export function ContactForm({
           name="phone"
           autoComplete="tel"
           className={field}
-          placeholder={`${t.contactWay} (${t.optional})`}
+          placeholder={t.c2FormPhoneLabel}
         />
       </label>
+
+      <p className="mt-2 text-xs text-muted">{t.c2FormReachHint}</p>
+
+      <fieldset className="mt-5.5">
+        <legend className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+          {t.c2FormListedQ}
+        </legend>
+        <div className="mt-2.5 flex flex-wrap gap-2">
+          {yesNo.map(([value, label]) => (
+            <Chip key={value} label={label} selected={listed === value} onSelect={() => setListed(value)} />
+          ))}
+        </div>
+      </fieldset>
+
+      {listed === "Yes" ? (
+        <>
+          <fieldset className="mt-5.5">
+            <legend className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              {t.c2FormAgencyQ}
+            </legend>
+            <div className="mt-2.5 flex flex-wrap gap-2">
+              {yesNo.map(([value, label]) => (
+                <Chip key={value} label={label} selected={agency === value} onSelect={() => setAgency(value)} />
+              ))}
+            </div>
+          </fieldset>
+          <label className="mt-5.5 grid gap-1.5 text-sm">
+            <span className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              {t.c2FormLinkLabel}{" "}
+              <span className="font-normal normal-case tracking-normal">({t.optional})</span>
+            </span>
+            <input type="url" name="listingUrl" className={field} placeholder="https://" />
+          </label>
+        </>
+      ) : null}
 
       <fieldset className="mt-5.5">
         <legend className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
@@ -250,21 +305,30 @@ export function ContactForm({
         </div>
       </fieldset>
 
+      <fieldset className="mt-5.5">
+        <legend className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+          {t.c2FormBedrooms}
+        </legend>
+        <div className="mt-2.5 flex flex-wrap gap-2">
+          {bedroomCounts.map((value) => (
+            <Chip key={value} label={value} selected={bedrooms === value} onSelect={() => setBedrooms(value)} />
+          ))}
+        </div>
+      </fieldset>
+
       {/* The label said "Anything else (optional)" on a field carrying `required`, so the
           browser refused the form over a field the label called optional. The field stays
-          required, because a lead with no message is not a lead; the label now says so.
+          optional since 06/11/2026: the ICP answers carry the lead, and a required free-text box is where people on phones give up.
           maxLength matches the server, which silently truncated at 4,000 characters and
           returned success. */}
       <label className="mt-5.5 grid gap-2.5 text-sm">
         <span className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
           {t.ctMessageLabel}{" "}
           <span className="font-normal normal-case tracking-normal">
-            ({t.ctRequired})
+            ({t.optional})
           </span>
         </span>
         <textarea
-          required
-          aria-required="true"
           maxLength={4000}
           name="message"
           rows={4}

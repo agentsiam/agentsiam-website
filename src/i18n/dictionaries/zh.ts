@@ -1153,4 +1153,18 @@ export const zh: Dictionary = {
   c2FaqNotListedA: "With the numbers. The feasibility study models what the property would earn and whether it beats a long-term let. If it does not, we tell you so.",
   c2CloseTitle: "Tell us where you are starting from.",
   c2CloseBody: "A few details about the property, and we come back to you with what we would do.",
+
+  // -- owner form as ICP filter (review build, English only) ---------------
+  c2FormListedQ: "Is the property listed on Airbnb or another platform now?",
+  c2Yes: "Yes",
+  c2No: "No",
+  c2FormAgencyQ: "Is it managed by an agency today?",
+  c2FormLinkLabel: "Link to the listing",
+  c2FormBedrooms: "Bedrooms",
+  c2TypeSmallBuilding: "Small building",
+  c2AreaElsewhere: "Elsewhere in Chiang Mai",
+  c2FormPhoneLabel: "Phone or LINE",
+  c2FormReachHint: "Email, or phone/LINE. At least one, so we can reply.",
+  c2FormSub: "A few things to start. Everything else we can cover on a call.",
+  c2FormNeedContact: "Please give an email, or a phone number or LINE ID, so we can reply.",
 };
