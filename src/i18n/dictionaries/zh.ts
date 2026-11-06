@@ -75,7 +75,7 @@ export const zh: Dictionary = {
 
   ownerHeroEyebrow: "房东服务·清迈",
   ownerHeroTitle: "需要的就选，不需要的不必选。",
-  ownerHeroSub: "六项服务，按您的房产来选，而不是打包出售。有的业主想先看数字，有的已经持有许可，有的只想把日常打理好。哪几项真正适用于您，我们会告诉您。",
+  ownerHeroSub: "问题很少出在价格上。真正的问题是，看到房源的合适客人太少，看到之后下单的人也太少。我们做的正是提升这两者的工作，并会告诉您，您的房产真正需要我们哪几项服务。",
   menuTitle: "服务菜单",
   menuForWho: "适合谁",
   routeTitle: "和您情况相似的业主通常从哪里开始",
@@ -931,7 +931,7 @@ export const zh: Dictionary = {
   ownerHeroProof1: "团队常驻清迈",
   ownerHeroProof2: "7大预订渠道，另有官网直订",
   ownerHeroProof3: "许可申请工作由我们负责",
-  ownerHeroProof4: "保洁与日常维护",
+  ownerHeroProof4: "保洁服务由我们提供",
   ownerHeroProof5: "无最短合约期",
 
   // -- monthly house rental and licence pages ------------------------------

@@ -94,7 +94,7 @@ export const en = {
   // -- /how-it-works ------------------------------------------------------
   ownerHeroEyebrow: "For property owners · Chiang Mai",
   ownerHeroTitle: "Take the parts you need. Leave the parts you do not.",
-  ownerHeroSub: "Six services, chosen against your property rather than sold as a package. Some owners need the numbers first. Some already hold a licence. Some just want the day-to-day run properly. We will tell you which ones actually apply to you.",
+  ownerHeroSub: "The problem is rarely the price. It is that too few of the right people see the property, and too few of those book. We run what moves both, and we will tell you which of our services your property actually needs.",
   menuTitle: "The menu",
   menuForWho: "Who it is for",
   routeTitle: "Where owners like you usually start",
@@ -1081,7 +1081,7 @@ export const en = {
   ownerHeroProof1: "Team based in Chiang Mai",
   ownerHeroProof2: "7 booking channels plus a direct site",
   ownerHeroProof3: "We handle the licensing work",
-  ownerHeroProof4: "Housekeeping and upkeep",
+  ownerHeroProof4: "Housekeeping, supplied by us",
   ownerHeroProof5: "No lock-in period",
 
   // -- monthly house rental and licence pages ------------------------------
