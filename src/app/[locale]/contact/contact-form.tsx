@@ -93,7 +93,7 @@ export function ContactForm({
     ["Hang Dong", t.areaHangDong],
     ["Mae Rim", t.areaMaeRim],
     ["San Sai", t.areaSanSai],
-    ["Elsewhere in Chiang Mai", t.c2AreaElsewhere],
+    ["Elsewhere", t.c2AreaElsewhere],
   ];
   const yesNo: [string, string][] = [
     ["Yes", t.c2Yes],
@@ -110,6 +110,12 @@ export function ContactForm({
     setError(null);
 
     const fields = Object.fromEntries(new FormData(event.currentTarget));
+    // Chips are buttons, not inputs, so the browser cannot enforce them. Required by Nils,
+    // 06/11/2026: listed, property type, where it is and bedrooms.
+    if (!listed || !propertyType || !area || !bedrooms) {
+      setError(t.c2FormNeedDetails);
+      return;
+    }
     if (!String(fields.email ?? "").trim() && !String(fields.phone ?? "").trim()) {
       setError(t.c2FormNeedContact);
       return;
