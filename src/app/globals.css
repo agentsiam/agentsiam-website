@@ -475,3 +475,26 @@ button {
     transform: none;
   }
 }
+
+/* Channel strip under the owner hero. Two copies of the list, moved by half the track's width,
+   so the loop has no seam. Edges fade so logos enter and leave rather than being cut. Pauses
+   under the pointer, and stands still for anyone who asks for reduced motion. */
+.marquee {
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee { mask-image: none; }
+  .marquee-track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; }
+  .marquee-track > ul[aria-hidden="true"] { display: none; }
+  .marquee-track > ul { flex-wrap: wrap; justify-content: center; row-gap: 12px; }
+}

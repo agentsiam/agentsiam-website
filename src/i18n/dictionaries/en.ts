@@ -1240,6 +1240,7 @@ export const en = {
   c2Proof2: "TM30 filed for every foreign guest",
   c2Proof3: "A guest guide for your property",
   c2Proof4: "A team that lives in Chiang Mai",
+  c2ChannelsLabel: "Where we list your property",
   c2WhyTitle: "Two numbers decide what a property earns",
   c2WhyBody: "How many of the right people see it, and how many of those book. Management runs both, and the permission that keeps the property on the platforms.",
   c2Why1Title: "Who sees it",

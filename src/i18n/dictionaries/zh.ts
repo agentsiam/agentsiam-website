@@ -1082,6 +1082,7 @@ export const zh: Dictionary = {
   c2Proof2: "每位外籍住客都完成TM30申报",
   c2Proof3: "为您的房产定制的住客指南",
   c2Proof4: "常驻清迈的团队",
+  c2ChannelsLabel: "我们为您的房产上架的平台",
   c2WhyTitle: "决定房产收入的两个数字",
   c2WhyBody: "有多少合适的客人看到它，其中又有多少人下单。日常管理同时负责这两者，以及让房产能留在平台上的经营许可。",
   c2Why1Title: "谁能看到它",
