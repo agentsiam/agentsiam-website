@@ -1251,8 +1251,8 @@ export const en = {
   homeSmokeBody: "From February to April, Chiang Mai's air can turn hazy from seasonal burning; at Lotus House the air-conditioning has a PM2.5 air-purifying function, so on hazy days you close the windows, let it run and stay comfortable inside.",
   longStay1Title: "Utilities and a weekly clean",
   longStay1Body: "At 28 nights or more, electricity and water are on fair use and the house is cleaned once a week. Both are in the rate, not added at the end.",
-  longStay2Title: "A desk, not the dining table",
-  longStay2Body: "If you work remotely, every house has somewhere to do it: a desk in each bedroom in the Chang Khlan houses, and a separate work room out at Mae Rim.",
+  longStay2Title: "500 Mbps fibre and a real desk",
+  longStay2Body: "If you work remotely, every house has 500 Mbps fibre and somewhere to work: a desk in each bedroom in the Chang Khlan houses, and a separate work room out at Mae Rim.",
   longStay3Title: "Close to the centre, or out in a garden",
   longStay3Body: "Chang Khlan is about two kilometres out, with the Night Bazaar and the Ping within walking distance. Mae Rim trades that for a garden and 1,412 m² of land around the house.",
 } as const;

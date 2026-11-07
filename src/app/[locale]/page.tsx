@@ -148,8 +148,9 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     ? getImageProps({ ...heroImage, src: heroGround.src }).props
     : null;
   const heroTall = getImageProps({ ...heroImage, src: heroPortrait }).props;
-  // The three checkable facts in the long-stay block. The internet line belongs here and is
-  // absent until there is a measured figure to put in it.
+  // The three checkable facts in the long-stay block. The internet line is the plan speed,
+  // 500 Mbps fibre at all three houses, recorded in each property profile (Paul, 07/11/2026);
+  // it is worded as the plan, not as a measured result.
   const longStay = [
     { title: t.longStay1Title, body: t.longStay1Body },
     { title: t.longStay2Title, body: t.longStay2Body },
