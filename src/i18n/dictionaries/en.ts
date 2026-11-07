@@ -41,7 +41,7 @@ export const en = {
   heroEyebrow: "Chiang Mai · by the night or the month",
   heroTitleA: "A home in Chiang Mai,",
   heroTitleB: "for a week or a year.",
-  heroSub: "Whole houses we run ourselves, by the night or the month, with people here who answer through your stay. Staying a month or longer and want somewhere else? We find privately owned homes and introduce you to the owner.",
+  heroSub: "Whole houses we run ourselves, by the night or the month, with people here who answer through your stay. Want somewhere else? We find privately owned homes for any length of stay and introduce you to the owner.",
   viewProperty: "See the houses",
 
   forGuests: "For guests",
@@ -1233,15 +1233,15 @@ export const en = {
   homeChoiceMonthCta: "See the houses",
   // Hero choice three. Links to the monthly request form on /house-for-rent-chiang-mai.
   homeChoiceFindTitle: "Find me a home",
-  homeChoiceFindBody: "Staying a month or longer? Tell us your dates, area and budget. We find privately owned homes that fit and introduce you to the owner, with the monthly price.",
-  homeFindTitle: "Staying a month or longer? We find the house.",
-  homeFindSub: "For stays of a month or more, in areas or at budgets our own houses do not cover.",
+  homeChoiceFindBody: "Want a house we do not run? Tell us your dates, area and budget. We find privately owned homes that fit and introduce you to the owner, with the price for your dates.",
+  homeFindTitle: "Want somewhere else? We find the house.",
+  homeFindSub: "For any length of stay, in areas or at budgets our own houses do not cover.",
   homeFind1Title: "Tell us what you need",
   homeFind1Body: "Your dates, the area and your budget, in one short form.",
   homeFind2Title: "We find homes that fit",
-  homeFind2Body: "Privately owned whole houses, each with the monthly price, and we introduce you to the owner.",
+  homeFind2Body: "Privately owned whole houses, each with the price for your dates, and we introduce you to the owner.",
   homeFind3Title: "You rent from the owner",
-  homeFind3Body: "The stay is the owner's to run, at their monthly rent, with no platform in between. You pay us nothing.",
+  homeFind3Body: "The stay is the owner's to run, at their price, with no platform in between. You pay us nothing.",
   homeGuideTitle: "The street around the house",
   homeGuideSub: "Host picks near Lotus House, with the walk from the door. Lotus House and Cosmos House each have a guide of their own.",
   homeGuideWalk: "{n} min walk",
@@ -1250,7 +1250,7 @@ export const en = {
   homeFaq2Q: "What if my plans change?",
   homeFaq3Q: "When do I get the address?",
   homeFaq4Q: "Can you find a house that is not one of yours?",
-  homeFaq4A: "Yes, for stays of a month or longer. Tell us your dates, area and budget, and we introduce you to owners of privately owned homes that fit. You rent from the owner directly and pay us nothing.",
+  homeFaq4A: "Yes, for any length of stay. Tell us your dates, area and budget, and we introduce you to owners of privately owned homes that fit. You rent from the owner directly and pay us nothing.",
 
   // -- Home page: the long-stay block, for guests here a month or more -----
   // Heading of the long-stay block. Guest register: คุณ, never ท่าน.

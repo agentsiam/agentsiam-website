@@ -546,10 +546,10 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       ) : null}
 
       {/* shape: numbered-sequence
-          -- G2, the introduction to a privately owned home AgentSiam does not run. For stays of a
-             month or longer only: the Hotel Act's definition excludes accommodation charged
-             monthly or longer, and introductions to shorter lets at unlicensed houses are untested
-             (consulting repo, as-work/2026-11-06-homepage-g1-g2/research.md). The third step says
+          -- G2, the introduction to a privately owned home AgentSiam does not run, for any length of
+             stay: a lawyer confirmed the nine questions in the consulting repo's
+             as-work/2026-11-06-homepage-g1-g2/research.md, and Paul opened G2 to every stay
+             length on 07/11/2026. The third step says
              plainly that the owner runs the stay, which is the narrative record's limit for G2,
              and nothing here promises anything about a house we do not run. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
