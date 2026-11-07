@@ -40,6 +40,7 @@
  * | `home_find_click`     | a homepage visitor chose "Find me a home", in the hero or the find block |
  * | `home_bar_dates_click`| "Check dates" on the homepage's mobile bar                 |
  * | `home_bar_find_click` | "Find me a home" on the homepage's mobile bar              |
+ * | `home_video_call_click` | "Book a video viewing" in the homepage's long-stay block |
  *
  * The five homepage clicks exist to test the 06/11/2026 layout: which way in guests choose,
  * and whether the mobile bar earns its place. A click is interest, not a lead; the form
@@ -74,7 +75,8 @@ export type AnalyticsEvent =
   | "home_month_click"
   | "home_find_click"
   | "home_bar_dates_click"
-  | "home_bar_find_click";
+  | "home_bar_find_click"
+  | "home_video_call_click";
 
 export function trackEvent(event: AnalyticsEvent): void {
   if (typeof window === "undefined" || typeof window.gtag !== "function") return;

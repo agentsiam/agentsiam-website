@@ -1085,6 +1085,12 @@ export const zh: Dictionary = {
   // -- Home page: the long-stay block, for guests here a month or more -----
   longStayTitle: "计划住一个月或更久？",
   longStaySub: "入住满28晚，房费包含什么？",
+  homeVideoCall: "预约视频看房",
+  homeVideoCallNote: "在您决定按月入住之前，我们可以通过视频带您看房。",
+  homeVideoCallPrefill: "您好 AgentSiam，我想预约视频通话，看一下适合长住的房子。",
+  homeSmokeEyebrow: "二月至四月",
+  homeSmokeTitle: "雾霾季，家里已备好",
+  homeSmokeBody: "二月至四月，清迈的空气可能因季节性焚烧而出现雾霾；Lotus House的空调带有PM2.5净化功能，雾霾天只需关好窗户、开着空调，就能在室内舒适度过。",
   longStay1Title: "水电费与每周清洁",
   longStay1Body: "入住满28晚，合理用量内的水电费和每周一次的清洁服务均包含在房费内。",
   longStay2Title: "有书桌，不必占用餐桌",

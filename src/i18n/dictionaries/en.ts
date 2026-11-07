@@ -1243,6 +1243,12 @@ export const en = {
   // Heading of the long-stay block. Guest register: คุณ, never ท่าน.
   longStayTitle: "Here for a month or more",
   longStaySub: "What a stay of 28 nights or more actually includes.",
+  homeVideoCall: "Book a video viewing",
+  homeVideoCallNote: "Before you commit to a month, we walk you through the house on a video call.",
+  homeVideoCallPrefill: "Hello AgentSiam, I would like to book a video call to see one of your houses for a longer stay.",
+  homeSmokeEyebrow: "February to April",
+  homeSmokeTitle: "Ready for smoke season",
+  homeSmokeBody: "From February to April, Chiang Mai's air can turn hazy from seasonal burning; at Lotus House the air-conditioning has a PM2.5 air-purifying function, so on hazy days you close the windows, let it run and stay comfortable inside.",
   longStay1Title: "Utilities and a weekly clean",
   longStay1Body: "At 28 nights or more, electricity and water are on fair use and the house is cleaned once a week. Both are in the rate, not added at the end.",
   longStay2Title: "A desk, not the dining table",

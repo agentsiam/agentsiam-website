@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getImageProps } from "next/image";
 import Link from "next/link";
 import { Faq } from "@/components/faq";
+import { IconChip } from "@/components/icon";
 import { TrackedLink } from "@/components/tracked-link";
 import { JsonLd } from "@/components/json-ld";
 import { faqSchema } from "@/lib/structured-data";
@@ -23,6 +24,7 @@ import {
   SITE_NAME,
   absoluteUrl,
   languageAlternates,
+  WHATSAPP_NUMBER,
 } from "@/lib/site";
 import { alt as ogAlt } from "./properties/opengraph-image";
 
@@ -171,6 +173,12 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     { q: t.homeFaq3Q, a: t.ga6 },
     { q: t.homeFaq4Q, a: t.homeFaq4A },
   ];
+
+  // The video viewing for a long stay: WhatsApp with the request already written where the
+  // number is configured, otherwise the monthly request form, so the button never leads nowhere.
+  const videoCallHref = WHATSAPP_NUMBER
+    ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(t.homeVideoCallPrefill)}`
+    : href("/house-for-rent-chiang-mai#request");
 
   // G2's three steps, in the order a renter experiences them.
   const findSteps = [
@@ -454,6 +462,41 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
                 </li>
               ))}
             </ul>
+
+            {/* The video viewing: a month's commitment is made from abroad, unseen, and most
+                renters want to see a place first (Apartments.com renter survey, 2024). */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-center">
+              <p className="text-[15px] text-white/80">{t.homeVideoCallNote}</p>
+              <TrackedLink
+                href={videoCallHref}
+                event="home_video_call_click"
+                className="pill-light whitespace-nowrap"
+                {...(WHATSAPP_NUMBER ? { target: "_blank", rel: "noreferrer" } : {})}
+              >
+                {t.homeVideoCall}
+              </TrackedLink>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* shape: highlight-panel
+          -- Smoke season, its own band, Paul 07/11/2026, positive in tone. The fact and what the
+             house does about it share one sentence (guest-copy-standard GC6), and the PM2.5
+             function is stated for Lotus House only, the one house whose profile records it
+             (disclosure burning-season-air, 23/10/2026). This reverses the 04/11/2026 decision to
+             keep the season off the homepage, at Paul's direction. */}
+      <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
+        <div className="grid items-center gap-6 rounded-[28px] bg-wash-green px-7 py-10 sm:px-12 min-[900px]:grid-cols-[auto_1fr]">
+          <span aria-hidden="true" className="scale-150 justify-self-start min-[900px]:mx-3">
+            <IconChip name="shield" tone="surface" />
+          </span>
+          <div>
+            <p className="eyebrow text-deep-green">{t.homeSmokeEyebrow}</p>
+            <h2 className="mt-2 font-display text-[clamp(22px,3.2vw,28px)] font-bold tracking-[-0.02em] text-ink">
+              {t.homeSmokeTitle}
+            </h2>
+            <p className="mt-2.5 max-w-[760px] text-[15.5px] leading-relaxed text-ink/85">{t.homeSmokeBody}</p>
           </div>
         </div>
       </section>
