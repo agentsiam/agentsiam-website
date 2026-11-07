@@ -908,7 +908,7 @@ export const en = {
   hwFaq3Q: "What if I do not have a licence, and do not want to apply for one?",
   hwFaq3A: "That is your choice, and there is still a lawful way to earn from your home. Under the published rules, stays of 30 nights or more need no hotel registration, so we can run your home for monthly guests only. If you later want shorter stays, a house or villa can be registered as non-hotel accommodation with the district office, and we handle that for you. A condo cannot use that route, so for a condo, monthly stays are the option. Rules change, so we confirm what applies to your property before you sign.",
   hwFaq4Q: "Am I locked into a contract?",
-  hwFaq4A: "No minimum term on management. Either side can end it with 60 days written notice. Bookings already confirmed are honoured, and you choose whether we run them to the end or hand them to you. We hand over the listings and calendars, and we do not hold your channel accounts hostage.",
+  hwFaq4A: "No minimum term on management. Either side can end it with 60 days written notice. Bookings already confirmed are honoured, and you choose whether we run them to the end or hand them to you. We hand the listings, calendars and channel accounts back to you, so everything the property has built stays yours.",
   hwFaq5Q: "What happens if a guest damages something?",
   hwFaq5A: "We inspect after every checkout and document anything found. On a channel booking we claim through that platform's own host cover, which is a guarantee programme with exclusions rather than insurance. A direct booking carries no such cover, which is why we recommend you hold your own policy, and why the feasibility study asks what it covers.",
   hwFaq6Q: "Can I still use the property myself?",
@@ -1312,7 +1312,7 @@ export const en = {
   c2ExcTitle: "Management does not include",
   c2Exc1: "Cleaning and upkeep, unless you add housekeeping",
   c2Exc2: "Insurance",
-  c2Exc3: "The building work itself. We advise on it and cost it, but do not carry it out",
+  c2Exc3: "The building work itself. We advise on it and cost it, and your chosen contractor carries it out",
   c2Exc4: "Long-term tenants",
   c2Exc5: "Your own tax filing",
   c2HkTitle: "Housekeeping adds",
@@ -1364,7 +1364,7 @@ export const en = {
 
   // -- Concept 2 exclusions, full list -------------------------------------
   c2Exc6: "Property sale or valuation",
-  c2Exc7: "Legal representation. We coordinate with counsel rather than advising",
+  c2Exc7: "Legal representation. We coordinate with your lawyer, who gives you the legal advice",
   c2Exc8: "Your own personal-use admin and your own guests",
 } as const;
 
