@@ -33,7 +33,7 @@ export const zh: Dictionary = {
   heroEyebrow: "清迈 · 按晚或按月入住",
   heroTitleA: "在清迈有个家，",
   heroTitleB: "住一周或一年都可以。",
-  heroSub: "我们亲自运营的整栋房屋，可按晚或按月入住，入住期间由清迈本地团队随时回复。如果您要住一个月以上、想找其他房子，我们帮您寻找私人房屋，并介绍您直接认识房东。",
+  heroSub: "我们亲自运营的整栋房屋，可按晚或按月入住，入住期间都由清迈本地团队回复您。如果您要住一个月以上、想找其他房子，我们帮您寻找私人房屋，并介绍您直接认识房东。",
   viewProperty: "查看所有房源",
 
   forGuests: "给住客",
@@ -1071,7 +1071,7 @@ export const zh: Dictionary = {
   homeFind2Title: "我们找到合适的房子",
   homeFind2Body: "整栋私人房屋，附月租价格，并介绍您认识房东。",
   homeFind3Title: "直接向房东租住",
-  homeFind3Body: "入住由房东负责，按房东的月租，中间没有平台。您无需向我们付费。",
+  homeFind3Body: "入住事宜由房东负责，按房东定的月租租住，中间没有平台。您无需向我们付费。",
   homeGuideTitle: "房子周边",
   homeGuideSub: "Lotus House附近的房东推荐，附从门口步行所需时间。Lotus House和Cosmos House各有一份专属指南。",
   homeGuideWalk: "步行{n}分钟",
