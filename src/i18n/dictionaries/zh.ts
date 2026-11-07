@@ -56,6 +56,8 @@ export const zh: Dictionary = {
 
   guestReviews: "住客怎么说",
   guestReviewSource: "Airbnb住客评价",
+  ratingOn: "{source}评分{r}",
+  ratingAria: "{source}评分{r}分（满分5分）",
 
   ownerBandTitle: "在考虑把房子租出去？",
   ownerBandSub: "这是一份服务菜单，不是固定流程。房产需要哪几项就选哪几项，不需要的可以不选；哪些真正需要，我们会直说。",

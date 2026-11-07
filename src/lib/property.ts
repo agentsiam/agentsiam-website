@@ -104,6 +104,12 @@ export type Property = {
    * to a platform is worth nothing. It carries `lang` at the point of use instead.
    */
   reviews: { quote: string; lang: string; source: string }[];
+  /**
+   * The platform's overall guest rating, as given and dated. No review count is held, so
+   * no count is shown and no rating structured data is published: Google requires a count
+   * for that markup. Update `givenOn` whenever the value is re-read.
+   */
+  rating?: { value: number; source: string; givenOn: string };
 };
 
 export const LOTUS_HOUSE = {
@@ -154,6 +160,8 @@ export const LOTUS_HOUSE = {
   checkIn: "15:00",
   checkOut: "12:00",
   houseRuleKeys: ["ruleNoPets", "ruleLimitedMobility", "ruleWheelchair"],
+  // Paul, 07/11/2026: "my rating is 4.8 on AirBnB". Not re-read from the listing here.
+  rating: { value: 4.8, source: "Airbnb", givenOn: "2026-11-07" },
   reviews: [
     {
       quote:

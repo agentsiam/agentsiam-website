@@ -71,6 +71,8 @@ export const en = {
 
   guestReviews: "What guests said",
   guestReviewSource: "Airbnb guest review",
+  ratingOn: "{r} on {source}",
+  ratingAria: "Rated {r} out of 5 on {source}",
 
   ownerBandTitle: "Thinking of renting yours out?",
   ownerBandSub: "A menu, not a fixed path. Take the services your property needs and leave the ones it does not. We will tell you which is which.",

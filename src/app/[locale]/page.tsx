@@ -345,6 +345,22 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         <h2 className="mx-auto max-w-[816px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase">
           {t.guestReviews}
         </h2>
+        {property.rating ? (
+          <p
+            className="mx-auto mt-4 flex w-fit items-center gap-2 rounded-full bg-surface px-4 py-2 text-[14px]"
+            aria-label={t.ratingAria
+              .replace("{r}", property.rating.value.toFixed(1))
+              .replace("{source}", property.rating.source)}
+          >
+            <span aria-hidden="true" className="text-[16px] text-sand">★</span>
+            <span aria-hidden="true" className="font-semibold">
+              {t.ratingOn
+                .replace("{r}", property.rating.value.toFixed(1))
+                .replace("{source}", property.rating.source)}
+            </span>
+            <span aria-hidden="true" className="text-muted">· {property.title}</span>
+          </p>
+        ) : null}
 
         {property.reviews.length === 1 ? (
           <figure className="mx-auto mt-10 max-w-[720px] rounded-[28px] bg-pink px-7 py-8 sm:px-11 sm:py-11">

@@ -158,6 +158,23 @@ export function PropertyTile({
           </div>
         </dl>
 
+        {property.rating ? (
+          <p
+            className="mt-2 text-[13.5px]"
+            aria-label={t.ratingAria
+              .replace("{r}", property.rating.value.toFixed(1))
+              .replace("{source}", property.rating.source)}
+          >
+            <span aria-hidden="true" className="text-sand">★</span>{" "}
+            <span aria-hidden="true">
+              <span className="font-semibold">{property.rating.value.toFixed(1)}</span>{" "}
+              <span className="text-muted">
+                {t.ratingOn.replace("{r}", "").replace("{source}", property.rating.source).trim()}
+              </span>
+            </span>
+          </p>
+        ) : null}
+
         {price !== null ? (
           <p className="mt-3 text-[15px]">
             <span className="text-muted">{t.fromPrice} </span>
