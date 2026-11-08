@@ -29,7 +29,14 @@ export type Property = {
    * is live; see CITIES.
    */
   citySlug: string;
-  /** Where the pin goes, and what the distance-to-centre badge is measured from. */
+  /**
+   * A public point a few hundred metres from the house, never the house. Where the map pin
+   * goes and what the distance-to-centre badge is measured from. This module reaches the
+   * browser through client components, so an exact coordinate here is published in the
+   * JavaScript of every page. Exact coordinates are booking-confirmation material
+   * (as-context/03-systems/property-profile-schema.md in the consulting repo) and live in
+   * the property profile and Beds24, not here. Paul, 08/11/2026.
+   */
   lat: number;
   lng: number;
   /**
@@ -121,10 +128,9 @@ export const LOTUS_HOUSE = {
   taglineKey: "lotusTagline",
   areaSlug: "chang-khlan",
   citySlug: "chiang-mai",
-  // The Beds24 property record carries these; copied here so a map pin and a distance
-  // badge do not need an API call.
-  lat: 18.769995,
-  lng: 98.992787,
+  // Public point, not the house: see the type.
+  lat: 18.767,
+  lng: 98.9943,
   type: "townhouse",
   bedrooms: 2,
   bathrooms: 2,
@@ -184,11 +190,9 @@ export const COSMOS_HOUSE: Property = {
   taglineKey: "cosmosTagline",
   areaSlug: "chang-khlan",
   citySlug: "chiang-mai",
-  // The profile's maps_url pin. Routing input for the guide's walking and driving times
-  // and, through approxLocation, the public map; never rendered as is, for the same reason
-  // as the street address.
-  lat: 18.7700888,
-  lng: 98.9927484,
+  // Public point, not the house: see the type.
+  lat: 18.7663,
+  lng: 98.9927,
   type: "townhouse",
   bedrooms: 2,
   bathrooms: 2,
@@ -232,9 +236,9 @@ export const MAE_RIM_HOUSE: Property = {
   taglineKey: "maeRimTagline",
   areaSlug: "mae-rim",
   citySlug: "chiang-mai",
-  // The profile's maps_url pin. Never rendered as is; public maps get approxLocation().
-  lat: 19.0371944,
-  lng: 98.9430556,
+  // Public point, not the house: see the type.
+  lat: 19.0387,
+  lng: 98.9453,
   type: "house",
   bedrooms: 2,
   bathrooms: 2,
@@ -301,38 +305,6 @@ export const PROPERTIES: Property[] = [LOTUS_HOUSE, COSMOS_HOUSE, MAE_RIM_HOUSE]
  * every link and title; the hero imagery is a second edit in the same commit.
  */
 export const FEATURED_PROPERTY: Property = LOTUS_HOUSE;
-
-/**
- * An approximate point for a property, for any public map.
- *
- * Exact coordinates are `booking-confirmation` material under the visibility rule in
- * as-context/03-systems/property-profile-schema.md, the same as the street address. A pin
- * on a public results map is the address in another form: zoom in far enough and it names
- * the building.
- *
- * So public maps get a point offset by roughly 250 to 400 metres in a direction derived
- * from the slug. Deterministic on purpose -- the same property lands in the same wrong
- * place on every render, so the pin does not shimmer between page loads, and the offset
- * cannot be averaged away by reloading. Close enough to answer "is this the right part of
- * town", far enough that it does not answer "which house".
- *
- * Not a substitute for zooming out. It is one of two defences, the other being that the
- * exact address is not published either.
- */
-export function approxLocation(property: Property): { lat: number; lng: number } {
-  let hash = 0;
-  for (const character of property.slug) {
-    hash = (hash * 31 + character.charCodeAt(0)) >>> 0;
-  }
-  // ~0.0027 degrees latitude is about 300m; longitude is scaled by the cosine of the
-  // latitude so the offset is round in metres rather than in degrees.
-  const angle = (hash % 360) * (Math.PI / 180);
-  const metres = 250 + (hash % 150);
-  const dLat = (metres * Math.cos(angle)) / 111_320;
-  const dLng =
-    (metres * Math.sin(angle)) / (111_320 * Math.cos((property.lat * Math.PI) / 180));
-  return { lat: property.lat + dLat, lng: property.lng + dLng };
-}
 
 /**
  * The area a property sits in.
