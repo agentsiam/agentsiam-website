@@ -156,13 +156,9 @@ export const LOTUS_HOUSE = {
     { labelKey: "factRooftop", value: "1" },
   ],
   descriptionKeys: ["lotusDesc1", "lotusDesc2"],
-  /**
-   * The exact street address. NOT for the listing: it is released at
-   * booking-confirmation, like Airbnb's and Booking's. The property page shows the
-   * neighbourhood only. Kept here because the post-booking path needs it.
-   */
-  address:
-    "42 Soi 1, Tambon Chang Khlan, Amphoe Mueang Chiang Mai, Chang Wat Chiang Mai 50100, Thailand",
+  // Not here: this module reaches the browser. The address lives in the property profile
+  // and Beds24 and goes out in the booking confirmation. Paul, 08/11/2026.
+  address: null,
   checkIn: "15:00",
   checkOut: "12:00",
   houseRuleKeys: ["ruleNoPets", "ruleLimitedMobility", "ruleWheelchair"],
@@ -176,7 +172,7 @@ export const LOTUS_HOUSE = {
       source: "Airbnb guest review",
     },
   ],
-} satisfies Property & { beds24: NonNullable<Property["beds24"]>; address: string };
+} satisfies Property & { beds24: NonNullable<Property["beds24"]> };
 
 /**
  * Listed for enquiry only: not in Beds24 yet, so no IDs, no price and no booking panel.
