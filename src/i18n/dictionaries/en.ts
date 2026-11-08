@@ -349,7 +349,7 @@ export const en = {
   // -- local guide --------------------------------------------------------
   // Strings written for this site: the handoff has no guide.
   guideTitle: "Local guide",
-  guideIntro: "Places we have been to ourselves, with how long they take to reach from the house.",
+  guideIntro: "Places we have been to ourselves, with how long they take to reach.",
   guideCount: "{n} places",
   guideCountOne: "1 place",
   guideFilterCategory: "What for",
@@ -419,7 +419,7 @@ export const en = {
     "A three-storey townhouse with a rooftop terrace in Chang Khlan, Chiang Mai. Two king bedrooms, two bathrooms, a full kitchen and space for four guests.",
   metaGuideTitle: "{property} local guide",
   metaGuideDesc:
-    "{n} places around {property} in Chiang Mai, chosen by the hosts, with walking and driving times from the door.",
+    "{n} places around {property} in Chiang Mai, chosen by the hosts, with walking and driving times.",
   metaDestinationsTitle: "Chiang Mai neighbourhoods",
   metaDestinationsDesc: "Eight Chiang Mai neighbourhoods: Nimman, Old City, Santitham, Chang Khlan, Wat Ket, Hang Dong, Mae Rim and San Sai, and what each is like.",
   metaAreaTitle: "Staying in {area}, Chiang Mai",
@@ -469,12 +469,12 @@ export const en = {
   propertyEyebrow: "{area} · {type}",
   gettingAround: "Getting around",
   // The minutes come from GUIDE_DISTANCES, routed per property. Saying so is the source-in-the-same-unit rule.
-  gettingAroundBody: "Walking and driving times measured from the door, on the same routes the guide uses.",
+  gettingAroundBody: "Walking and driving times from the {place} a few minutes from the house, on the same routes the guide uses.",
   minWalk: "{n} min walk",
   minDrive: "{n} min drive",
   // The guide had no inbound link from anywhere on the site. 109 places, reachable only from the sitemap.
   guideCardTitle: "The local guide",
-  guideCardBody: "{n} places around the house, chosen by the hosts, with walking and driving times from the door. Coffee, street food, temples, markets and the places we send friends to.",
+  guideCardBody: "{n} places around the house, chosen by the hosts, with walking and driving times. Coffee, street food, temples, markets and the places we send friends to.",
   guideCardLink: "Open the local guide",
   guestFaqTitle: "Before you book",
   gq1: "What time is check-in?",
@@ -1243,7 +1243,7 @@ export const en = {
   homeFind3Title: "You rent from the owner",
   homeFind3Body: "The stay is the owner's to run, at their price, with no platform in between. You pay us nothing.",
   homeGuideTitle: "The street around the house",
-  homeGuideSub: "Host picks near Lotus House, with the walk from the door. Lotus House and Cosmos House each have a guide of their own.",
+  homeGuideSub: "Host picks near Lotus House, with the walk from the {place} near the house. Lotus House and Cosmos House each have a guide of their own.",
   homeGuideWalk: "{n} min walk",
   homeFaqTitle: "Before you book",
   homeFaq1Q: "Is booking direct safe?",
@@ -1366,6 +1366,12 @@ export const en = {
   c2Exc6: "Property sale or valuation",
   c2Exc7: "Legal representation. We coordinate with your lawyer, who gives you the legal advice",
   c2Exc8: "Your own personal-use admin and your own guests",
+
+  // -- Guide start point, 08/11/2026 ---------------------------------------
+  // Paul, 08/11/2026: no public route or time is measured from the house.
+  guideStartNote: "Every route and time starts at the {place} a few minutes' walk from the house. Your booking confirmation has the exact address and how to find the door.",
+  guideStartHere: "Directions start here",
+  guideStartPin: "Start: {place}",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

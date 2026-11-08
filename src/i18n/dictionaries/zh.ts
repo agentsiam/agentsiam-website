@@ -313,7 +313,7 @@ export const zh: Dictionary = {
 
   // -- local guide --------------------------------------------------------
   guideTitle: "周边指南",
-  guideIntro: "我们亲自去过的地方，并标注从住处出发所需的时间。",
+  guideIntro: "我们亲自去过的地方，并标注前往所需的时间。",
   guideCount: "{n}个地点",
   guideCountOne: "1个地点",
   guideFilterCategory: "类别",
@@ -371,7 +371,7 @@ export const zh: Dictionary = {
   metaLotusTitle: "清迈 Lotus House，夜市附近的私人联排住宅",
   metaLotusDesc: "清迈昌康区的三层联排住宅，带屋顶露台。两间特大床卧室、两间浴室、设备齐全的厨房，可住四人。",
   metaGuideTitle: "{property}周边指南",
-  metaGuideDesc: "{property}周边{n}个地点，由房东挑选，并列出从房源出发的步行和驾车时间。",
+  metaGuideDesc: "{property}周边{n}个地点，由房东挑选，并列出步行和驾车时间。",
   metaDestinationsTitle: "清迈区域指南",
   metaDestinationsDesc: "我们覆盖清迈八个区域：Nimman、Old City、Santitham、Chang Khlan、Wat Ket、Hang Dong、Mae Rim、San Sai，并如实介绍每个区域。",
   metaAreaTitle: "住在清迈{area}",
@@ -408,11 +408,11 @@ export const zh: Dictionary = {
   feature_soaking_tub: "屋顶泡池",
   propertyEyebrow: "{area} · {type}",
   gettingAround: "周边出行",
-  gettingAroundBody: "步行与驾车时间均从门口起算，使用与本地指南相同的路线。",
+  gettingAroundBody: "步行与驾车时间均从距住处几分钟的{place}起算，使用与本地指南相同的路线。",
   minWalk: "步行 {n} 分钟",
   minDrive: "驾车 {n} 分钟",
   guideCardTitle: "本地指南",
-  guideCardBody: "房子周边 {n} 个地点，由房东亲自挑选，附从门口出发的步行与驾车时间。咖啡、街头小吃、寺庙、market，以及我们会推荐给朋友的去处。",
+  guideCardBody: "房子周边 {n} 个地点，由房东亲自挑选，附步行与驾车时间。咖啡、街头小吃、寺庙、market，以及我们会推荐给朋友的去处。",
   guideCardLink: "打开本地指南",
   guestFaqTitle: "预订前须知",
   gq1: "几点可以入住？",
@@ -1086,7 +1086,7 @@ export const zh: Dictionary = {
   homeFind3Title: "直接向房东租住",
   homeFind3Body: "入住事宜由房东负责，按房东定的价格租住，中间没有平台。您无需向我们付费。",
   homeGuideTitle: "房子周边",
-  homeGuideSub: "Lotus House附近的房东推荐，附从门口步行所需时间。Lotus House和Cosmos House各有一份专属指南。",
+  homeGuideSub: "Lotus House附近的房东推荐，附从附近{place}步行所需时间。Lotus House和Cosmos House各有一份专属指南。",
   homeGuideWalk: "步行{n}分钟",
   homeFaqTitle: "预订前须知",
   homeFaq1Q: "官网直订安全吗？",
@@ -1208,4 +1208,9 @@ export const zh: Dictionary = {
   c2Exc6: "房产买卖或估价",
   c2Exc7: "法律代理。我们与您的律师协调，由律师为您提供法律意见",
   c2Exc8: "您本人自用的安排及您自己的客人",
+
+  // -- Guide start point, 08/11/2026 ---------------------------------------
+  guideStartNote: "所有路线和时间均从距住处步行几分钟的{place}起算。确切地址和如何找到大门，请见预订确认信。",
+  guideStartHere: "路线从这里出发",
+  guideStartPin: "起点：{place}",
 };

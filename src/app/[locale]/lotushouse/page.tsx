@@ -9,6 +9,7 @@ import { PhotoGallery } from "@/components/photo-gallery";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
+import { guideStart, guideStartLabel } from "@/lib/guide-start";
 import { FEATURE_ICONS, ORIENTATION_ANCHORS } from "@/lib/orientation";
 import { PHOTOS } from "@/lib/photos.generated";
 import { alt as ogAlt } from "./opengraph-image";
@@ -92,7 +93,10 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
   // this property, so the block states measured facts rather than a mood. An anchor whose
   // row has gone from the sheet drops out instead of rendering an empty line.
   const distances = GUIDE_DISTANCES[property.slug] ?? {};
-  const anchors = ORIENTATION_ANCHORS.map((anchor) => ({
+  // Measured from the guide's start point, never the house (src/lib/guide-start.ts), so the
+  // start point itself is not listed as a destination.
+  const start = guideStart(property.slug);
+  const anchors = ORIENTATION_ANCHORS.filter((anchor) => anchor.place !== start?.name).map((anchor) => ({
     ...anchor,
     text: t[anchor.label as keyof Dictionary] as string,
     distance: distances[anchor.place],
@@ -333,7 +337,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
               <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
                 {t.gettingAround}
               </h2>
-              <p className="mt-1.5 text-[13px] text-muted">{t.gettingAroundBody}</p>
+              <p className="mt-1.5 text-[13px] text-muted">{t.gettingAroundBody.replace("{place}", start ? guideStartLabel(start.name) : "")}</p>
               <ul className="mt-4 divide-y divide-hairline border-y border-hairline">
                 {anchors.map((anchor) => (
                   <li

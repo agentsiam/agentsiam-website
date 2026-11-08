@@ -13,6 +13,7 @@ import { JsonLd } from "@/components/json-ld";
 import { PrintButton } from "@/components/print-button";
 import { CRISP_WEBSITE_ID, SITE_NAME, WHATSAPP_NUMBER } from "@/lib/site";
 import { breadcrumbSchema, type Crumb } from "@/lib/structured-data";
+import { guideStart, guideStartLabel } from "@/lib/guide-start";
 
 /**
  * The guest local guide.
@@ -25,10 +26,11 @@ import { breadcrumbSchema, type Crumb } from "@/lib/structured-data";
  * impossible to send to someone. Every filter here is a link, the page is server-rendered,
  * and "coffee within walking distance" is a URL you can paste into a message.
  *
- * **Distances come from the property, not the sheet.** The sheet's own walk and drive
- * columns are hardcoded to Lotus House and are deliberately not imported. GUIDE_DISTANCES
- * is keyed by property, so when there is a second property this page serves it by looking
- * up a different key rather than by being rewritten.
+ * **Distances come from the property's start point, not the sheet and not the house.** The
+ * sheet's own walk and drive columns are hardcoded to Lotus House and are deliberately not
+ * imported. GUIDE_DISTANCES is keyed by property and measured from the public place named in
+ * src/lib/guide-start.ts. The house's own coordinate never reaches this page: not in a
+ * route, not on the map, not in the payload. Paul, 08/11/2026.
  */
 
 const NEARBY_MINUTES = 20;
@@ -47,8 +49,8 @@ const MAX_DISTANCE_M = 12_000;
  * endless list; the map still gets every filtered pin regardless, only the text list pages. */
 const PAGE_SIZE = 24;
 
-/** The house the guide is measured from. Lotus House and Cosmos House both pass theirs. */
-export type GuideProperty = { slug: string; title: string; lat: number; lng: number };
+/** The house the guide is for. No coordinate: the guide is measured from its start point. */
+export type GuideProperty = { slug: string; title: string };
 
 export function LocalGuide({
   locale,
@@ -73,6 +75,9 @@ export function LocalGuide({
   const picks = one(query.picks) === "1";
 
   const distances = GUIDE_DISTANCES[property.slug] ?? {};
+  const start = guideStart(property.slug);
+  const startLabel = start ? guideStartLabel(start.name) : "";
+  const isStart = (name: string) => name === start?.name;
 
   const places = GUIDE_PLACES.filter((place) => {
     const d = distances[place.name];
@@ -96,7 +101,7 @@ export function LocalGuide({
   const driveOf = (name: string) => distances[name]?.drive ?? null;
   // "3 min drive · 14 min walk": drive first, walk where there is one.
   const howFar = (name: string) =>
-    [
+    isStart(name) ? t.guideStartHere : [
       driveOf(name) != null ? t.guideDrive.replace("{n}", String(driveOf(name))) : null,
       walkOf(name) != null ? t.guideWalk.replace("{n}", String(walkOf(name))) : null,
     ]
@@ -165,20 +170,17 @@ export function LocalGuide({
     highlight: place.highlight,
   }));
 
-  // The house itself, not the neighbourhood centre. Paul's call, 11/09/2026, reversing the
-  // page's earlier position: the pin here used to be the area centroid, roughly 1.4km from
-  // the real house for Lotus House's own area, which read as a broken pin rather than a
-  // deliberately fuzzed one. Exact street address still stays booking-confirmation-only
-  // (property.ts, `address`) -- only the coordinate is published here, same as the plain
-  // lat/lng pair a Google Maps link already carries.
-  const origin = { lat: property.lat, lng: property.lng, label: property.title };
-  const home = origin;
+  // The start point, not the house. Paul, 08/11/2026, reversing 11/09/2026 when this pin was
+  // the house: every route and time here starts at a public place a few minutes away, so
+  // neither a guest nor a bot can work back to the door. A property with no start point
+  // gets no pin and no directions rather than a fallback to the house.
+  const home = start ? { lat: start.lat, lng: start.lng, label: t.guideStartPin.replace("{place}", startLabel) } : null;
   const propertyPhoto = (PHOTOS[property.slug] ?? [])[0];
   const walkableNow = places.filter((place) => {
     const walk = distances[place.name]?.walk;
     return walk != null && walk <= NEARBY_MINUTES;
   });
-  const frameOn = [home, ...(walkableNow.length ? walkableNow : places).map((p) => ({ lat: p.lat, lng: p.lng }))];
+  const frameOn = [...(home ? [home] : []), ...(walkableNow.length ? walkableNow : places).map((p) => ({ lat: p.lat, lng: p.lng }))];
 
   const filterHref = (patch: Record<string, string | null>) => {
     const next = new URLSearchParams();
@@ -279,6 +281,9 @@ export function LocalGuide({
         {t.guideTitleFor.replace("{property}", property.title)}
       </h1>
       <p className="mt-3 max-w-2xl text-body">{t.guideIntro}</p>
+      {start ? (
+        <p className="mt-2 max-w-2xl text-[14px] text-muted">{t.guideStartNote.replace("{place}", startLabel)}</p>
+      ) : null}
       <div className="mt-4 flex flex-wrap items-center gap-3">
         {/* The reach summary: how much is within a short walk, counted from the guide. */}
         <p className="rounded-full bg-surface px-4 py-2 text-[13.5px] font-semibold">
@@ -332,22 +337,25 @@ export function LocalGuide({
                   {p.comment ? <p className="mt-2 line-clamp-3 text-[13.5px] text-body">{p.comment}</p> : null}
                   <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 pt-3">
                     <span className="text-[12.5px] text-muted">
-                      {driveOf(p.name) != null ? (
+                      {isStart(p.name) ? t.guideStartHere : null}
+                      {!isStart(p.name) && driveOf(p.name) != null ? (
                         <span className="mr-1.5 rounded-full bg-wash-gold px-2.5 py-1 font-semibold text-ink">
                           {t.guideDrive.replace("{n}", String(driveOf(p.name)))}
                         </span>
                       ) : null}
-                      {walkOf(p.name) != null ? t.guideWalk.replace("{n}", String(walkOf(p.name))) : null}
+                      {!isStart(p.name) && walkOf(p.name) != null ? t.guideWalk.replace("{n}", String(walkOf(p.name))) : null}
                     </span>
-                    <span className="print:hidden">
-                      <DirectionsLinks
-                        from={{ lat: property.lat, lng: property.lng }}
-                        to={{ lat: p.lat, lng: p.lng }}
-                        mode={(walkOf(p.name) ?? Infinity) <= NEARBY_MINUTES ? "walking" : "driving"}
-                        place={p.name}
-                        labels={directionsLabels}
-                      />
-                    </span>
+                    {start && !isStart(p.name) ? (
+                      <span className="print:hidden">
+                        <DirectionsLinks
+                          from={{ lat: start.lat, lng: start.lng }}
+                          to={{ lat: p.lat, lng: p.lng }}
+                          mode={(walkOf(p.name) ?? Infinity) <= NEARBY_MINUTES ? "walking" : "driving"}
+                          place={p.name}
+                          labels={directionsLabels}
+                        />
+                      </span>
+                    ) : null}
                   </div>
                 </li>
               ))}
@@ -534,21 +542,27 @@ export function LocalGuide({
                     ) : null}
 
                     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted">
-                      <span>
-                        {d?.drive != null ? (
-                          <span className="rounded-full bg-wash-gold px-2.5 py-1 font-semibold text-ink">
-                            {t.guideDrive.replace("{n}", String(d.drive))}
-                          </span>
-                        ) : null}
-                        {` · ${d?.walk != null ? t.guideWalk.replace("{n}", String(d.walk)) : t.guideNoWalk}`}
-                      </span>
-                      <DirectionsLinks
-                        from={{ lat: origin.lat, lng: origin.lng }}
-                        to={{ lat: place.lat, lng: place.lng }}
-                        mode={d?.walk != null ? "walking" : "driving"}
-                        place={place.name}
-                        labels={directionsLabels}
-                      />
+                      {isStart(place.name) ? (
+                        <span className="font-semibold text-ink">{t.guideStartHere}</span>
+                      ) : (
+                        <span>
+                          {d?.drive != null ? (
+                            <span className="rounded-full bg-wash-gold px-2.5 py-1 font-semibold text-ink">
+                              {t.guideDrive.replace("{n}", String(d.drive))}
+                            </span>
+                          ) : null}
+                          {` · ${d?.walk != null ? t.guideWalk.replace("{n}", String(d.walk)) : t.guideNoWalk}`}
+                        </span>
+                      )}
+                      {start && !isStart(place.name) ? (
+                        <DirectionsLinks
+                          from={{ lat: start.lat, lng: start.lng }}
+                          to={{ lat: place.lat, lng: place.lng }}
+                          mode={d?.walk != null ? "walking" : "driving"}
+                          place={place.name}
+                          labels={directionsLabels}
+                        />
+                      ) : null}
                     </div>
                   </li>
                 );
