@@ -76,8 +76,6 @@ export const zh: Dictionary = {
   closingOwner: "在考虑把房子租出去？",
 
   ownerHeroEyebrow: "房东服务·清迈",
-  ownerHeroTitle: "需要的就选，不需要的不必选。",
-  ownerHeroSub: "六项服务，按您的房产来选，而不是打包出售。有的业主想先看数字，有的已经持有许可，有的只想把日常打理好。哪几项真正适用于您，我们会告诉您。",
   menuTitle: "服务菜单",
   menuForWho: "适合谁",
   routeTitle: "和您情况相似的业主通常从哪里开始",
@@ -361,7 +359,6 @@ export const zh: Dictionary = {
   metaMgmtDesc: "为{city}业主提供短租可行性研究、经营许可与物业管理，由清迈团队交付。",
   mgmtEyebrow: "致业主",
   mgmtHeroTitle: "{city}短租物业管理",
-  mgmtHeroSub: "与我们在清迈运营的三项服务相同，{city}通过咨询承接。房源需要哪几项就选哪几项。",
   mgmtServicesTitle: "AgentSiam 提供什么",
   mgmtScopeTitle: "我们在{city}的服务方式",
   mgmtCtaTitle: "正在考虑在{city}做短租？",

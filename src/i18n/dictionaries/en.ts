@@ -95,8 +95,6 @@ export const en = {
 
   // -- /how-it-works ------------------------------------------------------
   ownerHeroEyebrow: "For property owners · Chiang Mai",
-  ownerHeroTitle: "Take the parts you need. Leave the parts you do not.",
-  ownerHeroSub: "Six services, chosen against your property rather than sold as a package. Some owners need the numbers first. Some already hold a licence. Some just want the day-to-day run properly. We will tell you which ones actually apply to you.",
   menuTitle: "The menu",
   menuForWho: "Who it is for",
   routeTitle: "Where owners like you usually start",
@@ -406,7 +404,6 @@ export const en = {
   metaMgmtDesc: "Feasibility, vacation rental permission and management for short-term rentals in {city}, delivered from our Chiang Mai team.",
   mgmtEyebrow: "For owners",
   mgmtHeroTitle: "Short-term rental management in {city}",
-  mgmtHeroSub: "The same three services we run in Chiang Mai, available in {city} by enquiry. Take the ones your property needs.",
   mgmtServicesTitle: "What AgentSiam does",
   mgmtScopeTitle: "How we work in {city}",
   mgmtCtaTitle: "Thinking about short-term letting in {city}?",
