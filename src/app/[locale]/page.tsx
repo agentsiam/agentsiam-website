@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { Metadata } from "next";
 import { getImageProps } from "next/image";
 import Link from "next/link";
@@ -180,10 +181,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     { title: t.homeFind1Title, body: t.homeFind1Body },
     { title: t.homeFind2Title, body: t.homeFind2Body },
     { title: t.homeFind3Title, body: t.homeFind3Body },
-  ];
-  const why = [
-    { title: t.whyA, body: t.whyABody },
-    { title: t.whyB, body: t.whyBBody },
   ];
 
   return (
@@ -497,31 +494,26 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           <h2 className="font-display text-[clamp(22px,3.2vw,28px)] font-bold tracking-[-0.02em] text-ink">
             {t.homeStayTitle}
           </h2>
-          <ol className="mt-5 grid gap-5 min-[760px]:grid-cols-3">
-            {[t.homeStay1, t.homeStay2, t.homeStay3].map((step, i) => (
-              <li key={step} className="text-[15.5px] leading-relaxed text-ink/85">
-                <span className="block font-mono text-[13px] font-semibold text-deep-green">{i + 1}</span>
-                {step}
-              </li>
+          <ol className="mt-6 grid items-stretch gap-2 min-[900px]:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr]">
+            {[t.homeStay1, t.homeStay2, t.homeStay3, t.homeStay4].map((step, i) => (
+              <Fragment key={step}>
+                {i > 0 ? (
+                  <li
+                    aria-hidden="true"
+                    className="flex items-center justify-center text-[20px] font-semibold text-deep-green"
+                  >
+                    <span className="min-[900px]:hidden">↓</span>
+                    <span className="hidden min-[900px]:inline">→</span>
+                  </li>
+                ) : null}
+                <li className="flex items-center justify-center rounded-box bg-bg px-5 py-6 text-center font-display text-[15.5px] font-semibold leading-snug text-ink">
+                  {step}
+                </li>
+              </Fragment>
             ))}
           </ol>
         </div>
       </section>
-
-      {/* shape: value-glyph-grid -- Why book direct. */}
-      <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
-        <div className="grid gap-6.5 rounded-panel bg-surface px-8 py-7.5 sm:grid-cols-[repeat(auto-fit,minmax(230px,1fr))]">
-          {why.map((item) => (
-            <div key={item.title}>
-              <h3 className="text-[15px] font-semibold">{item.title}</h3>
-              <p className="mt-1.5 text-[13.5px] leading-normal text-muted">
-                {item.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
 
       {/* shape: fact-grid
           -- The street around the house, from the local guide: host picks with the routed
