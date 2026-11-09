@@ -25,7 +25,6 @@ import {
   SITE_NAME,
   absoluteUrl,
   languageAlternates,
-  WHATSAPP_NUMBER,
 } from "@/lib/site";
 import { alt as ogAlt } from "./properties/opengraph-image";
 
@@ -176,12 +175,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     { q: t.homeFaq3Q, a: t.ga6 },
     { q: t.homeFaq4Q, a: t.homeFaq4A },
   ];
-
-  // The video viewing for a long stay: WhatsApp with the request already written where the
-  // number is configured, otherwise the monthly request form, so the button never leads nowhere.
-  const videoCallHref = WHATSAPP_NUMBER
-    ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(t.homeVideoCallPrefill)}`
-    : href("/house-for-rent-chiang-mai#request");
 
   // G2's three steps, in the order a renter experiences them.
   const findSteps = [
@@ -495,20 +488,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
                 </li>
               ))}
             </ul>
-
-            {/* The video viewing: a month's commitment is made from abroad, unseen, and most
-                renters want to see a place first (Apartments.com renter survey, 2024). */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-center">
-              <p className="text-[15px] text-white/80">{t.homeVideoCallNote}</p>
-              <TrackedLink
-                href={videoCallHref}
-                event="home_video_call_click"
-                className="pill-light whitespace-nowrap"
-                {...(WHATSAPP_NUMBER ? { target: "_blank", rel: "noreferrer" } : {})}
-              >
-                {t.homeVideoCall}
-              </TrackedLink>
-            </div>
           </div>
         </div>
       </section>
