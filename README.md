@@ -638,6 +638,46 @@ Open [http://localhost:3000](http://localhost:3000). `/th` and `/zh` for the oth
 
 Environment variables are listed in `.env.example`.
 
+## Showing a preview to someone outside the team
+
+Every branch push builds a preview on Vercel, and every preview is locked: opening one without
+a Vercel login for the `agent-siam` team returns a redirect to Vercel's sign-in. Previews also
+carry a `noindex` header, so they stay out of Google.
+
+To let a partner, a designer or anyone else outside the team see one, issue a shareable link.
+In the Vercel dashboard open that branch's deployment, click Share, and set the dropdown to
+"Anyone with the link". The link that comes back carries `?_vercel_share=<token>` on the branch
+address, `https://agentsiam-website-git-<branch>-agent-siam.vercel.app`. It opens with no
+account, no password and no Vercel login, and the visitor can browse the rest of the branch
+from there. Every link issued is listed at Team Settings, Deployment Protection, External
+Access, with a Revoke button beside it.
+
+Verify before sending it. The dashboard saying a link is shared is not evidence:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" "<the shared link>"
+```
+
+200 means it is open. Fetch the same path without the token and confirm it still returns 302,
+so the wall is intact for anyone who does not hold the link.
+
+Three things not to do instead. Do not turn off Require Log In: that opens every preview and
+every generated production URL at once, for good. Do not turn on Password Protection: it costs
+20 US dollars per project each month, and scoped to All Deployments it puts a password in front
+of `www.agentsiam.com`, which 401s the Stripe and Beds24 webhooks. Do not fall back to an
+access request: the partner has to create a Vercel account before they see anything.
+
+Two cautions. A shared preview is readable by anyone the link reaches, so do not issue one for
+a branch carrying something that should not be forwarded. And the booking panel on a preview is
+live, because the Stripe keys are shared between Production and Preview while
+`BEDS24_ALLOW_WRITES` is unset, so a payment made on a preview takes money without producing a
+booking. Tell the visitor to look and not to book.
+
+Whether a link survives a fresh push to the same branch is unverified. Vercel's documentation
+describes a shareable link as belonging to one deployment, while the dashboard issues it against
+the branch address, which always points at the newest build. Check after a push and issue a new
+link if the old one has gone stale.
+
 ## Before this can be deployed
 
 `www.agentsiam.com` is **already live** and running the older business-consulting positioning
