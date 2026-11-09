@@ -7,7 +7,6 @@ import { ResultsMap } from "@/components/results-map";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS, cityBySlug, DEFAULT_CITY } from "@/lib/areas";
-import { approxLocation } from "@/lib/property";
 import {
   activeFilters,
   loosestFilter,
@@ -105,9 +104,9 @@ export default async function PropertiesPage({
   const pins = results.map((property) => ({
     slug: property.slug,
     title: property.title,
-    // Approximate, never the real point. See approxLocation in src/lib/property.ts.
-    lat: approxLocation(property).lat,
-    lng: approxLocation(property).lng,
+    // A public point, never the house. See `lat` on Property in src/lib/property.ts.
+    lat: property.lat,
+    lng: property.lng,
     price: property.fromPrice,
     currency: property.currency,
   }));

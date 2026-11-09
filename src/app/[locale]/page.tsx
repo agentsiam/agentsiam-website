@@ -7,6 +7,7 @@ import { TrackedLink } from "@/components/tracked-link";
 import { JsonLd } from "@/components/json-ld";
 import { faqSchema } from "@/lib/structured-data";
 import { GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
+import { guideStart, guideStartLabel } from "@/lib/guide-start";
 import { categoryIcon } from "@/lib/guide-icons";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
@@ -157,11 +158,12 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     { title: t.longStay3Title, body: t.longStay3Body },
   ];
   // The street around Lotus House: the host's own picks, nearest first, one per category, with
-  // the routed walking time from the door. Every value comes from the generated guide, so the
-  // block cannot say anything the guide does not.
+  // the routed walking time from the guide's start point, never the house (src/lib/guide-start.ts).
+  // Every value comes from the generated guide, so the block cannot say anything the guide does not.
   const guideDist = GUIDE_DISTANCES.lotushouse ?? {};
+  const lotusStart = guideStart("lotushouse");
   const seenCats = new Set<string>();
-  const guidePicks = GUIDE_PLACES.filter((p) => p.highlight && guideDist[p.name]?.walk != null)
+  const guidePicks = GUIDE_PLACES.filter((p) => p.highlight && p.name !== lotusStart?.name && guideDist[p.name]?.walk != null)
     .sort((a, b) => (guideDist[a.name].walk ?? 0) - (guideDist[b.name].walk ?? 0))
     .filter((p) => (seenCats.has(p.category) ? false : (seenCats.add(p.category), true)))
     .slice(0, 4);
@@ -523,7 +525,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       {guidePicks.length > 0 ? (
         <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
           <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">{t.homeGuideTitle}</h2>
-          <p className="mt-1.5 max-w-[640px] text-sm leading-relaxed text-muted">{t.homeGuideSub}</p>
+          <p className="mt-1.5 max-w-[640px] text-sm leading-relaxed text-muted">{t.homeGuideSub.replace("{place}", lotusStart ? guideStartLabel(lotusStart.name) : "")}</p>
           <ul className="mt-5.5 grid gap-4 min-[640px]:grid-cols-2 min-[900px]:grid-cols-4">
             {guidePicks.map((place) => (
               <li key={place.name} className="rounded-panel border border-hairline p-5">

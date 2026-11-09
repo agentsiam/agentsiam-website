@@ -28,9 +28,11 @@
  * actually new.
  *
  * The sheet stores distances hardcoded to Lotus House. Those columns are deliberately
- * NOT imported. Distance belongs to the pairing of a place and a property, not to the
- * place, which is the whole reason one guide can serve many properties later. Walking
- * and driving times are routed per property and cached the same way.
+ * NOT imported. Walking and driving times are routed from each property's public start
+ * point, a guide place near the house named in src/lib/guide-start.ts, and cached the same
+ * way. Never from the house: the times sit next to every place's exact coordinate, and
+ * times measured from the door can be worked back to the door. Paul, 08/11/2026. This
+ * script does not read the house coordinates at all.
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
@@ -258,13 +260,16 @@ const areasSrc = readFileSync(join(ROOT, "src", "lib", "areas.ts"), "utf8");
 const AREAS = [...areasSrc.matchAll(/slug:\s*"([a-z-]+)",[\s\S]*?lat:\s*([\d.]+),\s*\n\s*lng:\s*([\d.]+),/g)]
   .map((m) => ({ slug: m[1], lat: +m[2], lng: +m[3] }));
 
-const propSrc = readFileSync(join(ROOT, "src", "lib", "property.ts"), "utf8");
-const PROPERTIES = [...propSrc.matchAll(/slug:\s*"([a-z-]+)",[\s\S]*?lat:\s*(-?[\d.]+),\s*\n\s*lng:\s*(-?[\d.]+),/g)]
-  .map((m) => ({ slug: m[1], lat: +m[2], lng: +m[3] }))
-  .filter((p) => Number.isFinite(p.lat));
+// Where each property's guide starts, by guide place name. Read out of the site's own module
+// so the page and this script cannot disagree about the start.
+const startSrc = readFileSync(join(ROOT, "src", "lib", "guide-start.ts"), "utf8");
+const startBlock = startSrc.match(/GUIDE_START[^=]*=\s*\{([\s\S]*?)\};/);
+const PROPERTIES = startBlock
+  ? [...startBlock[1].matchAll(/^\s*"?([a-z-]+)"?:\s*"([^"]+)",?\s*$/gm)].map((m) => ({ slug: m[1], start: m[2] }))
+  : [];
 
 if (!AREAS.length) throw new Error("Could not read AREAS out of src/lib/areas.ts");
-if (!PROPERTIES.length) throw new Error("Could not read any property coordinates out of src/lib/property.ts");
+if (!PROPERTIES.length) throw new Error("Could not read any start points out of src/lib/guide-start.ts");
 
 console.log(`${AREAS.length} areas, ${PROPERTIES.length} propert${PROPERTIES.length === 1 ? "y" : "ies"}`);
 
@@ -401,18 +406,27 @@ for (const p of places) {
 }
 console.log(`neighbourhoods: ${places.filter((p) => p.area).length} assigned, ${places.filter((p) => !p.area).length} outside`);
 
-// routing per property, cached
+// routing from each start point, cached. Two properties sharing a start share its routes.
+const startOf = (prop) => {
+  const place = places.find((p) => p.name === prop.start);
+  if (!place) throw new Error(`Start point "${prop.start}" for ${prop.slug} is not a guide place. Fix src/lib/guide-start.ts.`);
+  return place;
+};
+const routeKey = (prop, p) => `start:${prop.start}|${p.google}`;
+// Routes measured from a house are dropped from the cache rather than kept beside the new ones.
+for (const key of Object.keys(cache.routes)) if (!key.startsWith("start:")) delete cache.routes[key];
 let routed = 0;
 for (const prop of PROPERTIES) {
+  const from = startOf(prop);
   for (const p of places) {
-    const key = `${prop.slug}|${p.google}`;
+    const key = routeKey(prop, p);
     if (cache.routes[key]) continue;
-    const foot = await route(prop, p, "walking");
-    const car = await route(prop, p, "driving").catch(() => null);
+    const foot = await route(from, p, "walking");
+    const car = await route(from, p, "driving").catch(() => null);
     cache.routes[key] = {
       walk: foot?.minutes ?? null,
       drive: car?.minutes ?? null,
-      metres: foot?.metres ?? car?.metres ?? Math.round(metres(prop, p)),
+      metres: foot?.metres ?? car?.metres ?? Math.round(metres(from, p)),
     };
     routed++;
     // Persist as we go. Routing is the slow part and it runs against community servers
@@ -498,13 +512,13 @@ ${places
   .join("\n")}
 ];
 
-/** Keyed by property slug, then by place name. */
+/** Keyed by property slug, then by place name. Measured from the property's start point, never the house. */
 export const GUIDE_DISTANCES: Record<string, Record<string, GuideDistance>> = {
 ${PROPERTIES.map(
   (prop) => `  ${q(prop.slug)}: {
 ${places
   .map((p) => {
-    const d = cache.routes[`${prop.slug}|${p.google}`] || { walk: null, drive: null, metres: Math.round(metres(prop, p)) };
+    const d = cache.routes[routeKey(prop, p)] || { walk: null, drive: null, metres: Math.round(metres(startOf(prop), p)) };
     return `    ${q(p.name)}: { walk: ${d.walk ?? "null"}, drive: ${d.drive ?? "null"}, metres: ${d.metres} },`;
   })
   .join("\n")}

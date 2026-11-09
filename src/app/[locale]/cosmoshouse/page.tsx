@@ -6,6 +6,7 @@ import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { IconChip } from "@/components/icon";
 import { GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
+import { guideStart, guideStartLabel } from "@/lib/guide-start";
 import { FEATURE_ICONS, ORIENTATION_ANCHORS } from "@/lib/orientation";
 import { PHOTOS } from "@/lib/photos.generated";
 import { AREAS } from "@/lib/areas";
@@ -71,7 +72,10 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
 
   // Routed from the profile's pin by scripts/build-guide.mjs, as for Lotus House.
   const distances = GUIDE_DISTANCES[property.slug] ?? {};
-  const anchors = ORIENTATION_ANCHORS.map((anchor) => ({
+  // Measured from the guide's start point, never the house (src/lib/guide-start.ts), so the
+  // start point itself is not listed as a destination.
+  const start = guideStart(property.slug);
+  const anchors = ORIENTATION_ANCHORS.filter((anchor) => anchor.place !== start?.name).map((anchor) => ({
     ...anchor,
     text: t[anchor.label as keyof Dictionary] as string,
     distance: distances[anchor.place],
@@ -193,7 +197,7 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
               <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
                 {t.gettingAround}
               </h2>
-              <p className="mt-1.5 text-[13px] text-muted">{t.gettingAroundBody}</p>
+              <p className="mt-1.5 text-[13px] text-muted">{t.gettingAroundBody.replace("{place}", start ? guideStartLabel(start.name) : "")}</p>
               <ul className="mt-4 divide-y divide-hairline border-y border-hairline">
                 {anchors.map((anchor) => (
                   <li key={anchor.place} className="flex items-center gap-3.5 py-3">
