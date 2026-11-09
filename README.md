@@ -338,6 +338,31 @@ The pipeline, so nobody has to think about image formats:
 
 ## Known gaps
 
+- **The two editorial outlets, and what is unreviewed in them (09/11/2026).**
+  `/journal` (Journal of Chiang Mai, guests) and `/host-newsletter` (Chiang Mai Host Newsletter,
+  owners) publish editorial prose from `src/lib/editorial.ts` rather than the dictionaries; that
+  file carries the full reasoning and the chrome/editorial split. Both are published in all three
+  languages. The ordering in `publishedIn` differs and is not cosmetic: the guest journal leads
+  with English because it was written in English, the owner outlet leads with Thai because it was
+  written in Thai and because Paul set the owner audience on 09/11/2026 as Thai, then English, then
+  Chinese, largest to smallest. The sitemap, the hreflang set and the canonical all read it.
+  Three things are open. A review came back on 09/11/2026 and was applied as one scripted patch:
+  it found four of the five published occupancy figures in the owner article stale, and every
+  figure in that table was then re-read off the provider's own page before it shipped. **Whether
+  that review was a native read is not established, so the Thai and Chinese have no confirmed
+  native sign-off.** The review file is
+  `as-work/2026-11-09-editorial-copy-review/copy-review.md` in agentsiam-consulting, 135 strings
+  regenerated from the live module after the patch, with a `PB:` line under each, and its README
+  records which of the reviewer's changes were not taken. The owner article is the
+  one to read hardest: it was written in Thai as primary copy, so there is no English original
+  behind it to check it against. Nothing routes a reader from the body of a relevant page into
+  either outlet yet: the only links in are the two footer entries and the cross-link between the
+  two indexes, so `/short-term-rental-licence-chiang-mai` and `/house-for-rent-chiang-mai` do not
+  point at the owner outlet, and the neighbourhood pages do not point at the journal. And **the
+  owner outlet is called a newsletter while no list, no signup and no sending path exists**; the
+  index says so in its standfirst rather than implying one, but the name still promises a cadence
+  that nothing delivers. Either an email capture is built or the name is reconsidered.
+
 - **Channel strip shows symbols, not wordmarks (owner-page-s3-1106, 06/11/2026).**
   `src/components/channel-marquee.tsx` uses Simple Icons symbols beside each name, and Agoda and
   Vrbo have no symbol at all. Paul decided the official wordmarks replace them, sourced from each

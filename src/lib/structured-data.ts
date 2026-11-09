@@ -248,3 +248,71 @@ export function faqSchema(items: { q: string; a: string }[]): Record<string, unk
     })),
   };
 }
+
+/**
+ * One published article, for the two editorial outlets.
+ *
+ * `Article` rather than `BlogPosting`: both are valid and Google treats them the same, and
+ * `Article` is the honest type for a researched piece with sources at the foot rather than
+ * a dated post in a stream.
+ *
+ * Four things this block does that the page body cannot do on its own:
+ *
+ * - **`author` is the organisation, by @id.** Not a person. No bylined author exists, and
+ *   inventing one is the kind of claim a reader could not check. Pointing at the same
+ *   `@id` the layout already emits is what ties an article to the company rather than
+ *   leaving it authorless, which is the signal an answer engine reads when it decides
+ *   whether a page is a source worth citing.
+ * - **`dateModified` is real or absent.** It comes from the article record, never from
+ *   `new Date()`. The sitemap dropped `lastmod` for exactly this reason: a date nothing
+ *   stands behind is worse than no date, because a crawler that catches one wrong stops
+ *   trusting the rest.
+ * - **`inLanguage` is the article's own language, not the visitor's locale.** A piece is
+ *   published in the locales its `publishedIn` names, and a visitor asking for one it does
+ *   not carry is served the fallback, so the markup has to state the language of the words
+ *   actually on the page rather than the language of the URL.
+ * - **`isAccessibleForFree`** is set, because it is, and because the opposite is what a
+ *   crawler assumes when a publisher stays silent about it.
+ */
+export function articleSchema({
+  headline,
+  description,
+  path,
+  locale,
+  datePublished,
+  dateModified,
+  inLanguage,
+  image,
+}: {
+  headline: string;
+  description: string;
+  /** The bare English route, e.g. "/journal/when-to-visit-chiang-mai". */
+  path: string;
+  /** The URL's locale, which decides the canonical. */
+  locale: Locale;
+  /** The locale the prose is actually written in, which may differ from the URL's. */
+  inLanguage: Locale;
+  /** ISO date, from the article record. */
+  datePublished: string;
+  /** ISO date. Omitted entirely rather than defaulted to the published date. */
+  dateModified?: string;
+  image?: string;
+}): Record<string, unknown> {
+  const url = absoluteUrl(locale, path);
+  return {
+    "@context": SCHEMA_CONTEXT,
+    "@type": "Article",
+    "@id": `${url}#article`,
+    mainEntityOfPage: url,
+    url,
+    headline,
+    description,
+    inLanguage: HTML_LANG[inLanguage],
+    isAccessibleForFree: true,
+    datePublished,
+    ...(dateModified ? { dateModified } : {}),
+    author: { "@id": ORGANIZATION_ID },
+    publisher: { "@id": ORGANIZATION_ID },
+    ...(image ? { image: assetUrl(image) } : {}),
+  };
+}

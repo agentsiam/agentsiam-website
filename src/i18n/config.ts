@@ -49,3 +49,21 @@ export function stripLocale(pathname: string): string {
   }
   return pathname;
 }
+
+/**
+ * The locale a page actually serves to a visitor who asked for `locale`.
+ *
+ * Every page lives under [locale], so a visitor can reach /zh/host-newsletter whether or
+ * not that piece exists in Chinese. Where it does not, they are served the fallback, and
+ * both the canonical and the body resolution have to agree on which that is.
+ *
+ * It lives here rather than in site.ts because src/lib/editorial.ts needs it too, and
+ * site.ts already imports editorial.ts at module scope to build ROUTES.
+ */
+export function resolvePublishedLocale(
+  locale: Locale,
+  locales: readonly Locale[],
+): Locale {
+  if (locales.includes(locale)) return locale;
+  return locales.includes(DEFAULT_LOCALE) ? DEFAULT_LOCALE : locales[0];
+}

@@ -1372,6 +1372,30 @@ export const en = {
   guideStartNote: "Every route and time starts at the {place} a few minutes' walk from the house. Your booking confirmation has the exact address and how to find the door.",
   guideStartHere: "Directions start here",
   guideStartPin: "Start: {place}",
+
+  // -- Editorial outlets ---------------------------------------------------
+  // Shown on the two editorial sections, which are published in English only. Rendered by TranslationNote, which prints nothing on the English locale.
+  editorialEnglishNote: "You are reading this in English. It has not been published in your language.",
+  // Footer label for the guest outlet. Carries its language in the Thai and Chinese labels so a reader is not sent to an English page unwarned.
+  footJournal: "Journal of Chiang Mai",
+  // Footer label for the owner outlet, in the Owners column.
+  footHostNews: "Host Newsletter",
+
+  // -- Editorial chrome, rendered around an article in the reader's own language ----
+  // The two editorial outlets. Chrome is localised even where a piece is not, because the frame around a page is navigation and navigation is always translated.
+  articleFaqTitle: "Questions people ask",
+  articleReadNext: "Read next",
+  articleLimitsTitle: "What this does not settle",
+  articleSourcesTitle: "Sources",
+  articlePublishedOn: "Published",
+  // Carries {date}, the date every figure in the piece was last checked.
+  articleCheckedOn: "Every figure checked {date}.",
+  articleOutletEyebrow: "Published by AgentSiam, Chiang Mai",
+  // Shown on the guest journal, pointing an owner at the owner outlet. Owner register: ท่าน.
+  articleOtherHost: "Own a property in Chiang Mai rather than visiting?",
+  articleOtherJournal: "Planning a stay in Chiang Mai rather than letting one?",
+  // Carries {outlet}, the masthead name in the reader's own language.
+  articleReadOutlet: "Read {outlet}",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

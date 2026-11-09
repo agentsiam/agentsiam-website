@@ -39,6 +39,10 @@ export function Footer({ locale }: { locale: Locale }) {
       links: [
         { href: href("/properties"), label: t.allProperties },
         { href: href("/lotushouse"), label: t.viewProperty },
+        // The guest outlet. Linked from every locale although it is English-only: an
+        // English article is more use to a Thai reader than one they cannot find, and the
+        // Thai and Chinese labels say which language it is in before they click.
+        { href: href("/journal"), label: t.footJournal },
       ],
     },
     {
@@ -72,6 +76,7 @@ export function Footer({ locale }: { locale: Locale }) {
         { href: href("/how-it-works"), label: t.footHow },
         { href: href("/contact"), label: t.navContact },
         { href: href("/business-services"), label: t.businessServices },
+        { href: href("/host-newsletter"), label: t.footHostNews },
       ],
     },
     {

@@ -1213,4 +1213,21 @@ export const th: Dictionary = {
   guideStartNote: "ทุกเส้นทางและเวลาเริ่มจาก {place} ซึ่งเดินจากบ้านไม่กี่นาที ที่อยู่และวิธีหาประตูบ้านจะอยู่ในอีเมลยืนยันการจอง",
   guideStartHere: "จุดเริ่มต้นเส้นทาง",
   guideStartPin: "จุดเริ่ม: {place}",
+
+  // -- Editorial outlets ---------------------------------------------------
+  editorialEnglishNote: "ท่านกำลังอ่านฉบับภาษาอังกฤษ เนื้อหานี้ยังไม่ได้เผยแพร่เป็นภาษาไทย",
+  footJournal: "วารสารเชียงใหม่",
+  footHostNews: "จดหมายข่าวสำหรับเจ้าของบ้าน",
+
+  // -- Editorial chrome, rendered around an article in the reader's own language ----
+  articleFaqTitle: "คำถามที่พบบ่อย",
+  articleReadNext: "อ่านต่อ",
+  articleLimitsTitle: "สิ่งที่บทความนี้ยังไม่ได้ข้อสรุป",
+  articleSourcesTitle: "แหล่งข้อมูล",
+  articlePublishedOn: "เผยแพร่เมื่อ",
+  articleCheckedOn: "ตรวจสอบตัวเลขทั้งหมดเมื่อ {date}",
+  articleOutletEyebrow: "เผยแพร่โดย AgentSiam เชียงใหม่",
+  articleOtherHost: "ท่านเป็นเจ้าของทรัพย์สินในเชียงใหม่ ไม่ใช่ผู้มาเยือนใช่หรือไม่",
+  articleOtherJournal: "กำลังวางแผนเข้าพักในเชียงใหม่ ไม่ใช่ปล่อยเช่าใช่หรือไม่",
+  articleReadOutlet: "อ่าน{outlet}",
 };

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
-import { ROUTES, absoluteUrl, assetUrl, englishOnlyAlternates, languageAlternates } from "@/lib/site";
+import { ROUTES, absoluteUrl, assetUrl, languageAlternates, localeAlternates } from "@/lib/site";
 import { PHOTOS } from "@/lib/photos.generated";
-import { DEFAULT_LOCALE, LOCALES } from "@/i18n/config";
+import { LOCALES } from "@/i18n/config";
 
 /**
  * Photo sets advertised per route, keyed by the bare English route and naming a set under
@@ -47,9 +47,9 @@ function setImages(set: string | undefined): string[] {
 export default function sitemap(): MetadataRoute.Sitemap {
   return ROUTES.filter((route) => !route.placeholder).flatMap((route) => {
     const images = setImages(ROUTE_PHOTO_SET[route.path]);
-    const locales = route.englishOnly ? [DEFAULT_LOCALE] : LOCALES;
-    const languages = route.englishOnly
-      ? englishOnlyAlternates(route.path)
+    const locales = route.publishedIn ?? LOCALES;
+    const languages = route.publishedIn
+      ? localeAlternates(route.path, route.publishedIn)
       : languageAlternates(route.path);
     return locales.map((locale) => ({
       url: absoluteUrl(locale, route.path),
