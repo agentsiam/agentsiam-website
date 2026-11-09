@@ -116,20 +116,20 @@
   --container-read: 820px;
 }
 
-/* The sticky header's height, published so the sticky filter bar can sit under it rather
-   than guessing. It guessed 66px, which is the header's *minimum*, and the bar's own
-   controls were sliced in half by the header on every phone.
+/* The sticky header's height, which the sticky filter bar on /properties sits under.
 
-   Measured in the browser at 09/11/2026, not estimated. Below 560 the header is a flat
-   137.25px at 320, 375, 414 and 520, and the same in all three languages, because the logo
-   band and the row under it each wrap the same way at every phone width. 138px covers it.
+   These two values are the FIRST PAINT ONLY. src/components/nav-height.tsx measures the real
+   header on mount and overwrites --nav-h on the root, then follows it. Keep these close to
+   the truth so nothing jumps before hydration, and do not add breakpoints: a constant cannot
+   be right here and that is the whole reason the probe exists. The header wraps when the nav
+   labels stop fitting, and the labels are a different length in each of the three languages,
+   so the height depends on the locale as well as the width. Measured 09/11/2026: 96.25px in
+   English at 640px wide against 66px in Chinese at the same width.
 
-   KNOWN WRONG BETWEEN 560 AND ABOUT 740, and it was before this was measured. The header
-   still wraps to two rows there while this says 66px: 96.25px in English at 640, and 66px
-   in Chinese at the same width. A media-query constant cannot be right about a height that
-   depends on how long the nav labels are in the locale being read, so the fix is to measure
-   the header at runtime and publish that, not to add another breakpoint here. Until then
-   the filter bar on /properties is overlapped in that band on the longer-label locales. */
+   Both figures below are measured, not estimated. Below 560 the header is a flat 137.25px at
+   320, 375, 414 and 520, and the same in all three languages, because the logo band and the
+   row under it each wrap the same way at every phone width. Above it, 66px is the one-row
+   height, which is right from about 740 up. */
 :root {
   --nav-h: 138px;
 }

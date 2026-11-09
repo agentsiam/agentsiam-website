@@ -27,6 +27,7 @@ import {
 import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 import { Nav } from "@/components/nav";
+import { NavHeight } from "@/components/nav-height";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
 import { CrispChat } from "@/components/crisp-chat";
@@ -205,6 +206,9 @@ export default async function RootLayout({
           {t.skipToContent}
         </a>
         <Nav locale={locale} />
+        {/* Corrects --nav-h from the header's real height once mounted. The constant in
+            globals.css is what the first paint uses. */}
+        <NavHeight />
         {/* The 404 boundary's strings, passed down rather than looked up. See
             src/components/not-found-strings.tsx: the boundary receives no params, and
             the alternative was a client component importing getDictionary, which put
