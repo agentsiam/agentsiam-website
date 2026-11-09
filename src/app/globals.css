@@ -235,20 +235,29 @@ button {
     border-radius: 0;
     /* Below 560 the badge is a band across the top and sets its own height, because as a
        left column it took 137px of a 375px screen and squeezed the nav until the Chinese
-       label and "Property Owners" both wrapped. */
-    padding: 13px 20px;
+       label and "Property Owners" both wrapped.
+
+       THE LEFT PADDING IS 3px SHORT OF THE RIGHT ON PURPOSE. Do not tidy it to a single
+       value. The wordmark opens on the diagonal of an A and closes on the flat stem of an m,
+       so mechanically equal padding reads as a gap on the left; measured at 20px each side it
+       still looked wrong to the eye, which is how it was caught. 3px is about a fifth of the
+       cap height at this size, which is the usual optical correction for a diagonal. */
+    padding: 13px 20px 13px 17px;
     background: var(--color-primary);
     /* Reversed out, so white rather than a ground token. Same literal the site footer's
        wordmark already uses. */
     color: #ffffff;
   }
   .logo-badge svg {
-    height: 15px;
+    /* 30 percent up from the 15px it shipped at on 09/11/2026. The block stretches, so this
+       does not change the header at one row; below 560, where the band sets its own height,
+       it takes the band from 41px to 45.5px and --nav-h follows it at runtime. */
+    height: 19.5px;
     width: auto;
   }
   @media (min-width: 560px) {
     .logo-badge {
-      padding: 0 20px;
+      padding: 0 20px 0 17px;
     }
   }
 
