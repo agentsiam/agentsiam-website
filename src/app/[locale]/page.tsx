@@ -488,6 +488,19 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
+      {/* shape: value-glyph-grid -- What makes us different, for guests. */}
+      <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">{t.diffTitle}</h2>
+        <ul className="mt-6 grid gap-4 min-[640px]:grid-cols-2 min-[1000px]:grid-cols-4">
+          {[{ title: t.homeDiff1Title, body: t.homeDiff1Body }, { title: t.homeDiff2Title, body: t.homeDiff2Body }, { title: t.homeDiff3Title, body: t.homeDiff3Body }, { title: t.homeDiff4Title, body: t.homeDiff4Body }].map((item) => (
+            <li key={item.title} className="rounded-panel border border-hairline px-6 py-6">
+              <h3 className="font-display text-[17px] font-semibold leading-snug">{item.title}</h3>
+              <p className="mt-2 text-[14.5px] leading-[1.55] text-muted">{item.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       {/* shape: numbered-sequence -- How a stay works, true of any place we run. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
         <div className="rounded-[28px] bg-wash-green px-7 py-10 sm:px-12">

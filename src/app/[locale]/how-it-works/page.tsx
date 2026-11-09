@@ -264,6 +264,19 @@ export default async function HowItWorksPage({
         </p>
       </section>
 
+      {/* shape: value-glyph-grid -- What makes us different, for owners. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-15">
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">{t.diffTitle}</h2>
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+          {[{ title: t.ownerDiff1Title, body: t.ownerDiff1Body }, { title: t.ownerDiff2Title, body: t.ownerDiff2Body }, { title: t.ownerDiff3Title, body: t.ownerDiff3Body }, { title: t.ownerDiff4Title, body: t.ownerDiff4Body }].map((item) => (
+            <li key={item.title} className="rounded-panel border border-hairline px-6 py-6">
+              <h3 className="font-display text-[17px] font-semibold leading-snug">{item.title}</h3>
+              <p className="mt-2 text-[14.5px] leading-[1.55] text-muted">{item.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       {/* shape: proof-block -- the house we run, then the people who run it. */}
       {proofPhotos.length > 0 ? (
         <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
