@@ -3,13 +3,15 @@
 Website for AgentSiam. Next.js 16 (App Router) + TypeScript + Tailwind v4, scaffolded
 28/07/2026. Rebuilt against the Claude Design handoff on 14/08/2026.
 
-**Status: built, not deployed.** Ten routes plus eight neighbourhood pages, all in three
-languages, the design system from `design_handoff_agentsiam_portal/`, a contact form
-delivering over Zoho SMTP, direct booking with Stripe payment against Beds24, and full
-metadata with hreflang. Not connected to Vercel, and **not ready to go live**: see "Before
-this can be deployed" below.
+**Status: live.** `www.agentsiam.com` serves this repo from Vercel, and `agentsiam.com`
+redirects to it. Ten routes plus eight neighbourhood pages, all in three languages, the design
+system from `design_handoff_agentsiam_portal/`, a contact form delivering over Zoho SMTP, direct
+booking with Stripe payment against Beds24, and full metadata with hreflang.
 
-Verified green on 18/08/2026: `next build`, `tsc --noEmit` and `eslint .` all clean.
+**"Known gaps" below is the live record.** What is unbuilt, unreviewed or deliberately held back
+is there and nowhere else in this file.
+
+Verified green on 09/11/2026: `next build`, `tsc --noEmit` and `eslint .` all clean.
 
 ## Routes
 
@@ -678,24 +680,26 @@ describes a shareable link as belonging to one deployment, while the dashboard i
 the branch address, which always points at the newest build. Check after a push and issue a new
 link if the old one has gone stale.
 
-## Before this can be deployed
+## What went live unverified
 
-`www.agentsiam.com` is **already live** and running the older business-consulting positioning
-("Scale your business in Thailand"), with Business Consulting / Digital & Online Presence /
-Operation Automation & AI / Business and Growth Alignment in the nav. This repo is a different
-site: short-term rental first, with those four services demoted to `/business-services`.
-Deploying to the apex domain replaces the live site. That is a positioning decision for Paul and
-Nils, not a deploy step.
+The positioning question this section used to hold open is settled by what is published: this
+site replaced the older business-consulting one, and those four services sit at
+`/business-services`.
 
-Hard blockers, in order. State as of 24/08/2026.
+Two things were written here on 24/08/2026 as hard blockers to clear before any deploy. The
+deploy happened and neither was ever recorded as closed, so **their state is unknown rather than
+good.** Establish it before trusting either path, and record the answer here.
 
-1. **Contact form delivery is unverified end to end.** The transport is Zoho SMTP, not
-   Resend: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` and `CONTACT_TO_EMAIL`
-   have to be set in Vercel and a real send tested. `.env.example` documents all seventeen
-   variables. Cannot be closed until the Vercel project exists.
-2. **A real Beds24 test booking has not been run end to end.** There is no Beds24 sandbox, so
-   it charges a real card against the live account and has to be cleaned up afterwards. The
-   procedure and the cost are in `as-work/2026-08-18-website-launch-blockers/test-booking-runbook.md`.
+1. **Contact form delivery, end to end.** The transport is Zoho SMTP, not Resend:
+   `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` and `CONTACT_TO_EMAIL` have to be set
+   in Vercel and a real send made. `.env.example` documents all seventeen variables. Whether
+   they are set in the Vercel project, and whether a real send has ever arrived, is not recorded
+   anywhere in this repo. The Vercel CLI account available to a session cannot read project
+   environment variables, so this one is answered from Paul's dashboard.
+2. **A real Beds24 test booking, end to end.** There is no Beds24 sandbox, so it charges a real
+   card against the live account and has to be cleaned up afterwards. The procedure and the cost
+   are in `as-work/2026-08-18-website-launch-blockers/test-booking-runbook.md`. Whether it has
+   ever been run is not recorded anywhere in this repo.
 
 The homepage fork panel photograph is in place: it asks for `team-group-portrait` and
 `src/photos/team/agentsiam-team-group-portrait.jpg` exists, so both panels render photographs.
