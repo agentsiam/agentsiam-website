@@ -687,15 +687,20 @@ site replaced the older business-consulting one, and those four services sit at
 `/business-services`.
 
 Two things were written here on 24/08/2026 as hard blockers to clear before any deploy. The
-deploy happened and neither was ever recorded as closed, so **their state is unknown rather than
-good.** Establish it before trusting either path, and record the answer here.
+deploy happened and neither was ever recorded as closed. The first is now tested and works. The
+second is still unknown rather than good; establish it before trusting that path, and record the
+answer here.
 
-1. **Contact form delivery, end to end.** The transport is Zoho SMTP, not Resend:
-   `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` and `CONTACT_TO_EMAIL` have to be set
-   in Vercel and a real send made. `.env.example` documents all seventeen variables. Whether
-   they are set in the Vercel project, and whether a real send has ever arrived, is not recorded
-   anywhere in this repo. The Vercel CLI account available to a session cannot read project
-   environment variables, so this one is answered from Paul's dashboard.
+1. **Contact form delivery, end to end: VERIFIED 09/11/2026.** A marked test enquiry was
+   submitted through the live form at `/contact` and arrived in the `hi@agentsiam.com` Zoho
+   inbox, subject "Website enquiry: TEST - delivery check, please ignore (ICP5, House)", with
+   every field intact: name, ICP, email, listed-now, bedrooms, property type, neighbourhood and
+   locale. `POST /api/contact` returned 200 and the page showed its success state. The transport
+   is Zoho SMTP, not Resend, and it sends from `paul@agentsiam.com` to `hi@agentsiam.com`, so
+   `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` and `CONTACT_TO_EMAIL` are all set in
+   Vercel. `.env.example` documents all seventeen variables. A mail from the monthly stay
+   request form is in the same inbox, so that path sends too, though it was not tested here.
+   The test enquiry is still in the inbox and wants deleting by hand.
 2. **A real Beds24 test booking, end to end.** There is no Beds24 sandbox, so it charges a real
    card against the live account and has to be cleaned up afterwards. The procedure and the cost
    are in `as-work/2026-08-18-website-launch-blockers/test-booking-runbook.md`. Whether it has
