@@ -83,9 +83,7 @@ export function organizationSchema(): Record<string, unknown> {
     logo: assetUrl("/agentsiam-logo.jpg"),
     address: {
       "@type": "PostalAddress",
-      streetAddress: POSTAL_ADDRESS.street,
       addressLocality: POSTAL_ADDRESS.locality,
-      postalCode: POSTAL_ADDRESS.postalCode,
       addressCountry: POSTAL_ADDRESS.countryCode,
     },
     // Chiang Mai is the live market; the other two are the markets that have their own

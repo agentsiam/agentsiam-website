@@ -108,14 +108,12 @@ export function Footer({ locale }: { locale: Locale }) {
             <h2 className="eyebrow text-gold-on-ink">
               {t.footContact}
             </h2>
-            {/* Name and address must match the Google Business Profile character for
-                character, or the two records compete in local search. */}
+            {/* District level only, never the street: see POSTAL_ADDRESS. A Google Business
+                Profile, once made, is a service-area business showing the same. */}
             <address className="text-[13.5px] not-italic leading-relaxed text-white/80">
               {POSTAL_ADDRESS.legalName}
               <br />
-              {POSTAL_ADDRESS.street}
-              <br />
-              {`${POSTAL_ADDRESS.locality} ${POSTAL_ADDRESS.postalCode}, ${POSTAL_ADDRESS.country}`}
+              {`${POSTAL_ADDRESS.district}, ${POSTAL_ADDRESS.locality}, ${POSTAL_ADDRESS.country}`}
             </address>
             <a
               href={`mailto:${CONTACT_EMAIL}`}

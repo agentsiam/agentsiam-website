@@ -47,11 +47,17 @@ export const CONTACT_TELEPHONE = "+66 98 482 5832";
  * property page still shows the neighbourhood only and still says the exact address
  * follows confirmation, because that is true of what the listing itself states.
  */
+/*
+ * Superseded 08/11/2026, Paul: the street is no longer published. The registered office is
+ * the Lotus House building, so publishing it located the house, against the rule that
+ * neither a guest nor a bot can pin a house down. No Google Business Profile existed to
+ * match; when one is made it is a service-area business with the address hidden, and the
+ * footer and schema stay at district level. The registered office remains public at the DBD.
+ */
 export const POSTAL_ADDRESS = {
   legalName: "AgentSiam Co., Ltd.",
-  street: "42 Soi 1, Wiang Ping Road, Chang Khlan",
+  district: "Chang Khlan",
   locality: "Chiang Mai",
-  postalCode: "50100",
   country: "Thailand",
   /** ISO 3166-1 alpha-2, for schema.org's addressCountry. */
   countryCode: "TH",
