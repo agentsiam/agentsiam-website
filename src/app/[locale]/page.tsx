@@ -192,7 +192,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   const why = [
     { title: t.whyA, body: t.whyABody },
     { title: t.whyB, body: t.whyBBody },
-    { title: t.whyC, body: t.whyCBody },
   ];
 
   return (
@@ -515,11 +514,9 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       </section>
 
       {/* shape: highlight-panel
-          -- Smoke season, its own band, Paul 07/11/2026, positive in tone. The fact and what the
-             house does about it share one sentence (guest-copy-standard GC6), and the PM2.5
-             function is stated for Lotus House only, the one house whose profile records it
-             (disclosure burning-season-air, 23/10/2026). This reverses the 04/11/2026 decision to
-             keep the season off the homepage, at Paul's direction. */}
+          -- Smoke season, its own band, Paul 07/11/2026. This page speaks for every house
+             AgentSiam will run, so it promises no equipment: what a given house has belongs on
+             that house's page, and the offer here is to go through it before booking. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
         <div className="grid items-center gap-6 rounded-[28px] bg-wash-green px-7 py-10 sm:px-12 min-[900px]:grid-cols-[auto_1fr]">
           <span aria-hidden="true" className="scale-150 justify-self-start min-[900px]:mx-3">
@@ -569,20 +566,12 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               </li>
             ))}
           </ul>
-          <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
-            {[
-              { slug: "lotushouse", name: "Lotus House" },
-              { slug: "cosmoshouse", name: "Cosmos House" },
-            ].map((guide) => (
-              <Link
-                key={guide.slug}
-                href={href(`/${guide.slug}/local-guide`)}
-                className="hit inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
-              >
-                {t.metaGuideTitle.replace("{property}", guide.name)} →
-              </Link>
-            ))}
-          </div>
+          <Link
+            href={href(`/${property.slug}/local-guide`)}
+            className="hit mt-5 inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
+          >
+            {t.metaGuideTitle.replace("{property}", property.title)} →
+          </Link>
         </section>
       ) : null}
 
