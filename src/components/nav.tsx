@@ -34,20 +34,32 @@ export function Nav({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 print:hidden border-b border-hairline bg-bg px-5">
+    <header className="sticky top-0 z-40 print:hidden border-b border-hairline bg-bg">
       {/* Named, because the breadcrumb on the property and area pages is a second
-          navigation landmark and two unnamed ones are indistinguishable in a landmark list. */}
+          navigation landmark and two unnamed ones are indistinguishable in a landmark list.
+
+          The badge is a column of the nav rather than an item inside the wrapping row, and
+          the row carries the padding the header used to. That is what lets the badge sit
+          flush in the corner and stretch to whatever height the row ends up at, including
+          the taller wrapped header on a phone, without adding any height of its own. */}
       <nav
         aria-label={t.mainNav}
-        className="mx-auto flex min-h-[66px] max-w-(--container-chrome) flex-wrap items-center gap-x-6 gap-y-3 py-2.5"
+        className="mx-auto flex max-w-(--container-chrome) flex-wrap items-stretch"
       >
         {/* The accessible name is the destination. It read "AgentSiam — Guests" until
             06/09/2026, naming the page two links to its right rather than the homepage it
             actually goes to. */}
-        <Link href={href("/")} aria-label={t.homeLink} className="hit">
-          <Logo className="h-[15px] w-auto text-text" />
+        {/* No .hit here: the badge is the full height of the header and already clears the
+            24px minimum .hit exists to reach. */}
+        <Link
+          href={href("/")}
+          aria-label={t.homeLink}
+          className="logo-badge w-full min-[560px]:w-auto"
+        >
+          <Logo className="w-auto" />
         </Link>
 
+        <div className="flex min-h-[66px] w-full flex-wrap items-center gap-x-6 gap-y-3 px-5 py-2.5 min-[560px]:w-auto min-[560px]:flex-1">
         <ul className="order-last flex basis-full items-center gap-5 text-[13.5px] font-medium min-[560px]:order-none min-[560px]:basis-auto">
           {links.map((link) => (
             <li key={link.href}>
@@ -80,6 +92,7 @@ export function Nav({ locale }: { locale: Locale }) {
           >
             {t.navContact}
           </Link>
+        </div>
         </div>
       </nav>
     </header>
