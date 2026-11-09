@@ -117,11 +117,21 @@
 }
 
 /* The sticky header's height, published so the sticky filter bar can sit under it rather
-   than guessing. It guessed 66px, which is the header's *minimum*: below 560px the header
-   wraps to two rows and stands at 93px, so the bar's own controls were sliced in half by
-   the header on every phone. Measured, not estimated: 66px at one row, 93px at two. */
+   than guessing. It guessed 66px, which is the header's *minimum*, and the bar's own
+   controls were sliced in half by the header on every phone.
+
+   Measured in the browser at 09/11/2026, not estimated. Below 560 the header is a flat
+   137.25px at 320, 375, 414 and 520, and the same in all three languages, because the logo
+   band and the row under it each wrap the same way at every phone width. 138px covers it.
+
+   KNOWN WRONG BETWEEN 560 AND ABOUT 740, and it was before this was measured. The header
+   still wraps to two rows there while this says 66px: 96.25px in English at 640, and 66px
+   in Chinese at the same width. A media-query constant cannot be right about a height that
+   depends on how long the nav labels are in the locale being read, so the fix is to measure
+   the header at runtime and publish that, not to add another breakpoint here. Until then
+   the filter bar on /properties is overlapped in that band on the longer-label locales. */
 :root {
-  --nav-h: 93px;
+  --nav-h: 138px;
 }
 
 @media (min-width: 560px) {
@@ -204,6 +214,42 @@ button {
      written as utilities at a third size; this is the same chip in a different fill. */
   .icon-chip-sand {
     background: var(--color-sand);
+  }
+
+  /* Logo badge. The filed wordmark reversed out of primary, so the header, the browser tab
+     icon and the Facebook page picture read as one company. Until 09/11/2026 the bare
+     wordmark was the only lockup on file, and design-system.html section 07 still says so;
+     this is the second, added on Paul's approval and logged in
+     as-context/00-company/decisions-log.md.
+
+     Square on purpose, and flush into the corner: no radius, and the header's horizontal
+     padding moved onto the row beside it so nothing sits between the badge and the edge.
+
+     It takes its height by stretching to the row, never by setting one. That matters: the
+     header wraps to two and three rows on a phone, and a badge with a height of its own
+     added 18px to every wrapped row and pushed --nav-h further out of true than it already
+     is. Stretching costs nothing. Do not give this a height. */
+  .logo-badge {
+    display: flex;
+    align-items: center;
+    border-radius: 0;
+    /* Below 560 the badge is a band across the top and sets its own height, because as a
+       left column it took 137px of a 375px screen and squeezed the nav until the Chinese
+       label and "Property Owners" both wrapped. */
+    padding: 13px 20px;
+    background: var(--color-primary);
+    /* Reversed out, so white rather than a ground token. Same literal the site footer's
+       wordmark already uses. */
+    color: #ffffff;
+  }
+  .logo-badge svg {
+    height: 15px;
+    width: auto;
+  }
+  @media (min-width: 560px) {
+    .logo-badge {
+      padding: 0 20px;
+    }
   }
 
   /* Grows a text link's hit area to the 24px AA minimum without moving it. Applied to the
