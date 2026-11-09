@@ -41,8 +41,8 @@ export const en = {
   heroEyebrow: "Vacation rental management and stays in Chiang Mai",
   heroTitleA: "A home in Chiang Mai,",
   heroTitleB: "for a week or a year.",
-  heroSub: "We are a vacation rental management company in Chiang Mai. Stay in a house we run, by the night or the month, ask us to find you another, or have us manage yours.",
-  viewProperty: "See the houses",
+  heroSub: "We are a vacation rental management company in Chiang Mai. Stay in a home we run, by the night or the month, ask us to find you another, or have us manage yours.",
+  viewProperty: "See the homes",
 
   forGuests: "For guests",
   forOwners: "For owners",
@@ -55,13 +55,13 @@ export const en = {
   ownerPanelLink: "See how management works",
 
   featuredTitle: "Our properties",
-  featuredSub: "{n} houses in Chiang Mai. Book online, or send us a message and we will take it from there.",
+  featuredSub: "{n} homes in Chiang Mai. Book online, or send us a message and we will take it from there.",
 
   whyA: "Everything clear before you pay",
   whyABody:
     "You see the total and the cancellation terms before you pay, and you deal with us directly from your first message.",
-  whyB: "The people who run your house",
-  whyBBody: "We live in Chiang Mai, answer your messages ourselves, and can be at the house when you need us.",
+  whyB: "The people who run your home",
+  whyBBody: "We live in Chiang Mai, answer your messages ourselves, and can be there when you need us.",
   whyC: "TM30 filed for you",
   // Was "Phone or LINE, 24/7": neither is published anywhere on the site, and the
   // WhatsApp CTA that was meant to carry this is dark in production, NEXT_PUBLIC_WHATSAPP_NUMBER
@@ -399,7 +399,7 @@ export const en = {
   // itself (they come from AREAS, which has no locale axis), so a translated name in the
   // snippet would not match what the visitor lands on.
   metaHomeTitle: "AgentSiam | Stays in Chiang Mai, by the night or the month",
-  metaHomeDesc: "Whole houses in Chiang Mai, booked direct from the team that runs them, by the night or the month. Want somewhere else? We find privately owned homes and introduce you to the owner.",
+  metaHomeDesc: "Homes in Chiang Mai, booked direct from the team that runs them, by the night or the month. Want somewhere else? We find privately owned homes and introduce you to the owner.",
   metaHowTitle: "Vacation rental management in Chiang Mai",
   metaHowDesc: "Six services, chosen against your property rather than sold as a package. Feasibility, the non-hotel exemption filing, and OTA and direct booking management.",
   metaMgmtTitle: "Short-term rental management in {city}",
@@ -1225,31 +1225,31 @@ export const en = {
   // -- homepage, renter hero choices ---------------------------------------
   // Hero choice one of three, by length of stay. Links to Lotus House.
   homeChoiceNightsTitle: "A few nights",
-  homeChoiceNightsBody: "Book direct, at the rate without the platform markup.",
+  homeChoiceNightsBody: "A place of your own, run by the team that answers your messages.",
   homeChoiceNightsCta: "Check dates",
   // Hero choice two. Facts from hfrAns2A: 28 nights or more, utilities on fair use, one clean a week.
   homeChoiceMonthTitle: "A month or more",
   homeChoiceMonthBody: "Stay 28 nights or more, with utilities on fair use and a weekly clean included.",
-  homeChoiceMonthCta: "See the houses",
+  homeChoiceMonthCta: "See the homes",
   // Hero choice three. Links to the monthly request form on /house-for-rent-chiang-mai.
   homeChoiceFindTitle: "Find me a home",
-  homeChoiceFindBody: "Want a house we do not run? Tell us your dates, area and budget. We find privately owned homes that fit and introduce you to the owner, with the price for your dates.",
-  homeFindTitle: "Want somewhere else? We find the house.",
-  homeFindSub: "For any length of stay, in areas or at budgets our own houses do not cover.",
+  homeChoiceFindBody: "Want a home we do not run? Tell us your dates, area and budget. We find privately owned homes that fit and introduce you to the owner, with the price for your dates.",
+  homeFindTitle: "Want somewhere else? We find the home.",
+  homeFindSub: "For any length of stay, in areas or at budgets our own homes do not cover.",
   homeFind1Title: "Tell us what you need",
   homeFind1Body: "Your dates, the area and your budget, in one short form.",
   homeFind2Title: "We find homes that fit",
-  homeFind2Body: "Privately owned whole houses, each with the price for your dates, and we introduce you to the owner.",
+  homeFind2Body: "Privately owned homes, each with the price for your dates, and we introduce you to the owner.",
   homeFind3Title: "You rent from the owner",
   homeFind3Body: "The stay is the owner's to run, at their price, with no platform in between. You pay us nothing.",
-  homeGuideTitle: "A local guide for every house",
-  homeGuideSub: "Every house comes with its own local guide, written by our hosts. Here are a few picks from the Lotus House guide, with the walk from the {place} near the house.",
+  homeGuideTitle: "A local guide for every home",
+  homeGuideSub: "Every home comes with its own local guide, written by our hosts. Here are a few picks from the Lotus House guide, with the walk from the {place} nearby.",
   homeGuideWalk: "{n} min walk",
   homeFaqTitle: "Before you book",
   homeFaq1Q: "Is booking direct safe?",
   homeFaq2Q: "What if my plans change?",
   homeFaq3Q: "When do I get the address?",
-  homeFaq4Q: "Can you find a house that is not one of yours?",
+  homeFaq4Q: "Can you find a home that is not one of yours?",
   homeFaq4A: "Yes, for any length of stay. Tell us your dates, area and budget, and we introduce you to owners of privately owned homes that fit. You rent from the owner directly and pay us nothing.",
 
   // -- Home page: the long-stay block, for guests here a month or more -----
@@ -1264,11 +1264,11 @@ export const en = {
   homeStay2: "Get the address and arrival details on confirmation",
   homeStay3: "Message us for anything you might need during your stay",
   longStay1Title: "Utilities and a weekly clean",
-  longStay1Body: "At 28 nights or more, electricity and water are on fair use and the house is cleaned once a week. Both are in the rate, not added at the end.",
-  longStay2Title: "Details for each house, up front",
-  longStay2Body: "Each house has its own page listing what it offers, such as internet, workspace, kitchen and outdoor space, so you can judge how it suits a longer stay.",
+  longStay1Body: "At 28 nights or more, electricity and water are on fair use and the home is cleaned once a week. Both are in the rate, not added at the end.",
+  longStay2Title: "Details for each home, up front",
+  longStay2Body: "Each home has its own page listing what it offers, such as internet, workspace, kitchen and outdoor space, so you can judge how it suits a longer stay.",
   longStay3Title: "Choose the neighbourhood first",
-  longStay3Body: "Our neighbourhood guides describe each part of Chiang Mai and who it suits, so you can decide where you want to live before choosing a house.",
+  longStay3Body: "Our neighbourhood guides describe each part of Chiang Mai and who it suits, so you can decide where you want to live before choosing a home.",
 
   // -- how-it-works Concept 2 (review build, English only) -----------------
   c2HeroTitle: "Your Chiang Mai property, run properly.",

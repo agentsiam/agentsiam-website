@@ -1070,7 +1070,7 @@ export const zh: Dictionary = {
 
   // -- homepage, renter hero choices ---------------------------------------
   homeChoiceNightsTitle: "住几晚",
-  homeChoiceNightsBody: "直接向我们预订，房价不含平台加价。",
+  homeChoiceNightsBody: "属于您的私密住处，由亲自回复您消息的团队运营。",
   homeChoiceNightsCta: "查看可订日期",
   homeChoiceMonthTitle: "住一个月以上",
   homeChoiceMonthBody: "入住满28晚，房费包含合理用量内的水电费和每周一次的清洁服务。",

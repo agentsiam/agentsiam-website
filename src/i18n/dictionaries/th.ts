@@ -1070,7 +1070,7 @@ export const th: Dictionary = {
 
   // -- homepage, renter hero choices ---------------------------------------
   homeChoiceNightsTitle: "พักไม่กี่คืน",
-  homeChoiceNightsBody: "จองตรงกับเราในราคาที่ไม่บวกเพิ่มผ่านแพลตฟอร์ม",
+  homeChoiceNightsBody: "ที่พักเป็นส่วนตัวของคุณ ดูแลโดยทีมที่ตอบข้อความของคุณเอง",
   homeChoiceNightsCta: "เช็กวันว่าง",
   homeChoiceMonthTitle: "พักหนึ่งเดือนขึ้นไป",
   homeChoiceMonthBody: "เมื่อพักตั้งแต่ 28 คืนขึ้นไป ราคาที่พักรวมค่าน้ำและค่าไฟภายใต้เงื่อนไขการใช้งานตามสมควร และบริการทำความสะอาดสัปดาห์ละครั้ง",
