@@ -34,7 +34,11 @@ export function Nav({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 print:hidden border-b border-hairline bg-bg">
+    // data-nav-root is what src/components/nav-height.tsx measures to publish --nav-h.
+    <header
+      data-nav-root
+      className="sticky top-0 z-40 print:hidden border-b border-hairline bg-bg"
+    >
       {/* Named, because the breadcrumb on the property and area pages is a second
           navigation landmark and two unnamed ones are indistinguishable in a landmark list.
 
