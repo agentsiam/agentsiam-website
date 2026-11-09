@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { getImageProps } from "next/image";
 import Link from "next/link";
 import { Faq } from "@/components/faq";
-import { IconChip } from "@/components/icon";
 import { TrackedLink } from "@/components/tracked-link";
 import { JsonLd } from "@/components/json-ld";
 import { faqSchema } from "@/lib/structured-data";
@@ -492,22 +491,20 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      {/* shape: highlight-panel
-          -- Smoke season, its own band, Paul 07/11/2026. This page speaks for every house
-             AgentSiam will run, so it promises no equipment: what a given house has belongs on
-             that house's page, and the offer here is to go through it before booking. */}
+      {/* shape: numbered-sequence -- How a stay works, true of any place we run. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
-        <div className="grid items-center gap-6 rounded-[28px] bg-wash-green px-7 py-10 sm:px-12 min-[900px]:grid-cols-[auto_1fr]">
-          <span aria-hidden="true" className="scale-150 justify-self-start min-[900px]:mx-3">
-            <IconChip name="shield" tone="surface" />
-          </span>
-          <div>
-            <p className="eyebrow text-deep-green">{t.homeSmokeEyebrow}</p>
-            <h2 className="mt-2 font-display text-[clamp(22px,3.2vw,28px)] font-bold tracking-[-0.02em] text-ink">
-              {t.homeSmokeTitle}
-            </h2>
-            <p className="mt-2.5 max-w-[760px] text-[15.5px] leading-relaxed text-ink/85">{t.homeSmokeBody}</p>
-          </div>
+        <div className="rounded-[28px] bg-wash-green px-7 py-10 sm:px-12">
+          <h2 className="font-display text-[clamp(22px,3.2vw,28px)] font-bold tracking-[-0.02em] text-ink">
+            {t.homeStayTitle}
+          </h2>
+          <ol className="mt-5 grid gap-5 min-[760px]:grid-cols-3">
+            {[t.homeStay1, t.homeStay2, t.homeStay3].map((step, i) => (
+              <li key={step} className="text-[15.5px] leading-relaxed text-ink/85">
+                <span className="block font-mono text-[13px] font-semibold text-deep-green">{i + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
