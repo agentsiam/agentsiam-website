@@ -1213,4 +1213,21 @@ export const zh: Dictionary = {
   guideStartNote: "所有路线和时间均从距住处步行几分钟的{place}起算。确切地址和如何找到大门，请见预订确认信。",
   guideStartHere: "路线从这里出发",
   guideStartPin: "起点：{place}",
+
+  // -- Editorial outlets ---------------------------------------------------
+  editorialEnglishNote: "您正在阅读英文版本，本文尚未发布中文版。",
+  footJournal: "清迈纪事",
+  footHostNews: "房东通讯",
+
+  // -- Editorial chrome, rendered around an article in the reader's own language ----
+  articleFaqTitle: "常见问题",
+  articleReadNext: "延伸阅读",
+  articleLimitsTitle: "本文未能解答的部分",
+  articleSourcesTitle: "资料来源",
+  articlePublishedOn: "发布于",
+  articleCheckedOn: "所有数据核对于 {date}。",
+  articleOutletEyebrow: "由 AgentSiam 发布，清迈",
+  articleOtherHost: "在清迈拥有房产，而非前来旅行？",
+  articleOtherJournal: "计划来清迈住宿，而非出租房产？",
+  articleReadOutlet: "阅读{outlet}",
 };

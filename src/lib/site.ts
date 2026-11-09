@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
-import { DEFAULT_LOCALE, HTML_LANG, LOCALES, localePath, type Locale } from "@/i18n/config";
+import {
+  DEFAULT_LOCALE,
+  HTML_LANG,
+  LOCALES,
+  localePath,
+  resolvePublishedLocale,
+  type Locale,
+} from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
+import { ARTICLES, articlePath, HOST_LOCALES, JOURNAL_LOCALES } from "@/lib/editorial";
 import { MANAGEMENT_CITIES } from "@/lib/management-cities";
 
 // Single source for the site's canonical URL, share copy and route list.
@@ -121,12 +129,28 @@ export const POLICY_UPDATED = "2026-08-14";
 // them moved.
 export const PRIVACY_WITH_ANALYTICS_UPDATED = "2026-09-17";
 
-/** The policy date written the way the reader's own locale writes dates. */
-export function policyUpdated(locale: string, iso: string = POLICY_UPDATED): string {
+/**
+ * An ISO date written the way the reader's own locale writes dates.
+ *
+ * `th-TH-u-ca-gregory` is not decoration. Plain `th-TH` formats in the Buddhist era, so
+ * 2026 renders as 2569 and a Thai reader is told the figures were checked 43 years from
+ * now. The calendar has to be pinned every time.
+ *
+ * Anything printing a date a reader can read goes through here. Hand-rolling
+ * `${day}/${month}/${year}` prints an English convention inside Thai and Chinese
+ * sentences, which this site has now done three times: the policy pages in 09/2026, then
+ * both editorial components in 11/2026.
+ */
+export function localeDate(locale: string, iso: string): string {
   const tag = locale === "th" ? "th-TH-u-ca-gregory" : locale === "zh" ? "zh-Hans" : "en-GB";
   return new Intl.DateTimeFormat(tag, { dateStyle: "long", timeZone: "UTC" }).format(
     new Date(iso + "T00:00:00Z"),
   );
+}
+
+/** The policy date, which is the one date with a default. */
+export function policyUpdated(locale: string, iso: string = POLICY_UPDATED): string {
+  return localeDate(locale, iso);
 }
 
 // No Beds24 booking-page URL here on purpose. Payment is taken by Stripe on this site's
@@ -139,8 +163,19 @@ type RouteMeta = {
   path: string;
   /** Excluded from the sitemap and marked noindex. Use for placeholder pages. */
   placeholder?: boolean;
-  /** Rendered in English only: the sitemap lists the one URL and hreflang names English alone. */
-  englishOnly?: boolean;
+  /**
+   * The locales this route is actually published in. Omitted means all three.
+   *
+   * It replaced a boolean `englishOnly`, which could only say "English" and could not say
+   * "Thai and English". The owner material needs the second: `service-model.md` in
+   * agentsiam-consulting makes Thai owners the primary owner audience and foreign owners
+   * the secondary one, so an owner page that exists only in English is addressing the
+   * smaller half of its own market.
+   *
+   * The first entry is the language the page was written in. The sitemap lists one URL per
+   * published locale and every entry repeats the same hreflang set.
+   */
+  publishedIn?: readonly Locale[];
   changeFrequency: "yearly" | "monthly" | "weekly";
   priority: number;
 };
@@ -182,6 +217,26 @@ export const ROUTES: RouteMeta[] = [
   { path: "/house-for-rent-chiang-mai", changeFrequency: "monthly", priority: 0.7 },
   // Owner page for "do I need a licence to rent out my condo short term in Chiang Mai".
   { path: "/short-term-rental-licence-chiang-mai", changeFrequency: "monthly", priority: 0.7 },
+  // The two editorial outlets and their articles, all English-only. See src/lib/editorial.ts
+  // for why the prose is not in the dictionaries and what that costs. The index pages are
+  // listed ahead of their articles so a crawler meets the hub first, and every article route
+  // is derived from ARTICLES rather than written out, so publishing a piece puts it in the
+  // sitemap and nothing has to be remembered here.
+  { path: "/journal", changeFrequency: "monthly", priority: 0.6, publishedIn: JOURNAL_LOCALES },
+  {
+    path: "/host-newsletter",
+    changeFrequency: "monthly",
+    priority: 0.6,
+    publishedIn: HOST_LOCALES,
+  },
+  ...ARTICLES.map(
+    (article): RouteMeta => ({
+      path: articlePath(article),
+      changeFrequency: "yearly",
+      priority: 0.5,
+      publishedIn: article.publishedIn,
+    }),
+  ),
   { path: "/contact", changeFrequency: "yearly", priority: 0.7 },
   { path: "/business-services", changeFrequency: "monthly", priority: 0.6 },
   { path: "/terms-and-conditions", changeFrequency: "yearly", priority: 0.3 },
@@ -249,11 +304,24 @@ export function languageAlternates(path: string): Record<string, string> {
   return languages;
 }
 
-/** hreflang map for a page published in English only: English plus x-default, nothing else. */
-export function englishOnlyAlternates(path: string): Record<string, string> {
-  const url = absoluteUrl(DEFAULT_LOCALE, path);
-  return { [HTML_LANG[DEFAULT_LOCALE]]: url, "x-default": url };
+/**
+ * hreflang map for a page published in some but not all locales.
+ *
+ * x-default points at English wherever English is published, because it is the fallback for
+ * a reader whose language the page does not carry, and English is the one the site treats as
+ * international. Where a page is not in English at all it points at the language it was
+ * written in, which is the only honest answer available.
+ */
+export function localeAlternates(path: string, locales: readonly Locale[]): Record<string, string> {
+  const languages: Record<string, string> = {};
+  for (const locale of locales) {
+    languages[HTML_LANG[locale]] = absoluteUrl(locale, path);
+  }
+  const fallback = locales.includes(DEFAULT_LOCALE) ? DEFAULT_LOCALE : locales[0];
+  languages["x-default"] = absoluteUrl(fallback, path);
+  return languages;
 }
+
 
 /**
  * The share card for one specific route, replacing the site-wide OG_IMAGE.
@@ -290,6 +358,7 @@ export function pageMeta({
   path,
   locale,
   placeholder = false,
+  publishedIn,
   image = OG_IMAGE,
 }: {
   title: string;
@@ -298,14 +367,28 @@ export function pageMeta({
   path: string;
   locale: Locale;
   placeholder?: boolean;
+  /**
+   * The locales this page is published in, matching its ROUTES entry. Omitted means all three.
+   *
+   * Two things change when it is set, and they have to change together with the sitemap or
+   * the page and the sitemap contradict each other on the same URLs. hreflang names only the
+   * published locales plus x-default, matching localeAlternates(). And the canonical points
+   * at the URL of the language the visitor was actually served, because a locale the page
+   * does not carry falls back to English and would otherwise publish a second URL for text
+   * that already exists at the first.
+   */
+  publishedIn?: readonly Locale[];
   image?: { url: string; width: number; height: number; alt: string };
 }): Metadata {
   return {
     title,
     description,
     alternates: {
-      canonical: absoluteUrl(locale, path),
-      languages: languageAlternates(path),
+      canonical: absoluteUrl(
+        publishedIn ? resolvePublishedLocale(locale, publishedIn) : locale,
+        path,
+      ),
+      languages: publishedIn ? localeAlternates(path, publishedIn) : languageAlternates(path),
     },
     ...(placeholder ? NOINDEX : {}),
     openGraph: {
