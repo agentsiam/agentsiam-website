@@ -38,7 +38,7 @@ export function Footer({ locale }: { locale: Locale }) {
       heading: t.footStay,
       links: [
         { href: href("/properties"), label: t.allProperties },
-        { href: href("/lotushouse"), label: t.viewProperty },
+        { href: href("/house-for-rent-chiang-mai#request"), label: t.homeChoiceFindTitle },
       ],
     },
     {

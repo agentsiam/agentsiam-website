@@ -30,10 +30,10 @@ export const zh: Dictionary = {
 
   pendingNote: "房源描述、法律条款页面以及下方房东部分的详细信息目前提供英文版本。",  // adapted from the handoff
 
-  heroEyebrow: "清迈 · 按晚或按月入住",
+  heroEyebrow: "清迈度假租赁管理与住宿",
   heroTitleA: "在清迈有个家，",
   heroTitleB: "住一周或一年都可以。",
-  heroSub: "我们亲自运营的整栋房屋，可按晚或按月入住，入住期间都由清迈本地团队回复您。想找其他房子？无论住多久，我们都能帮您寻找私人房屋，并介绍您直接认识房东。",
+  heroSub: "我们是清迈的度假租赁管理公司。您可以按晚或按月入住我们运营的房屋，请我们帮您寻找其他房屋，或把您的房子交给我们管理。",
   viewProperty: "查看所有房源",
 
   forGuests: "给住客",
@@ -49,8 +49,8 @@ export const zh: Dictionary = {
 
   whyA: "官网直订，无平台加价",
   whyABody: "付款前看到的总价就是实际扣款金额：没有平台服务费，结账时也不会另加费用。",
-  whyB: "真正打理房子的人",
-  whyBBody: "不是其他时区的客服中心。我们就住在清迈，亲自回复您的消息，也能到房子现场。",
+  whyB: "真正打理您所住房子的人",
+  whyBBody: "我们就住在清迈，亲自回复您的消息，需要时也能到房子现场。",
   whyC: "TM30由我们申报",
   whyCBody: "每位外籍住客的TM30移民局申报都由我们亲自办理，不必您操心。",
 
@@ -306,7 +306,7 @@ export const zh: Dictionary = {
   mapLabel: "我们管理房源的地图",
 
   allProperties: "全部房源",
-  footAreas: "我们管理的区域",
+  footAreas: "清迈街区",
   footCities: "我们服务的城市",
   homeCity: "清迈",
 
@@ -354,7 +354,7 @@ export const zh: Dictionary = {
   guideJump: "跳转到",
   // -- page metadata ------------------------------------------------------
   metaHomeTitle: "AgentSiam｜清迈住宿，按晚或按月",
-  metaHomeDesc: "直订清迈的私人房屋，按晚或按月入住。我们上架的每一套，都由清迈本地团队照应。",
+  metaHomeDesc: "清迈整栋房屋，向运营团队直接预订，可按晚或按月入住。想找其他房子？我们帮您寻找私人房屋，并介绍您认识房东。",
   metaHowTitle: "清迈短租托管",
   metaHowDesc: "六项服务，按您的房产来选，而不是打包出售：可行性研究、短租许可办理，以及主要OTA和官网直订的日常管理。",
   metaMgmtTitle: "{city}短租物业管理",
@@ -901,7 +901,7 @@ export const zh: Dictionary = {
 
   // -- homepage neighbourhood strip ----------------------------------------
   homeAreasTitle: "清迈的哪一区",
-  homeAreasSub: "住在哪个街区，往往比选哪套房更影响旅行体验。这里介绍清迈8个街区，看看住在各处是什么样。",
+  homeAreasSub: "清迈8个街区，以及各自适合什么样的人。",
   homeAreasLink: "查看全部八个区域",
 
   // -- live chat, privacy policy sentence ----------------------------------
@@ -1065,7 +1065,7 @@ export const zh: Dictionary = {
   areaFaqSuitsQ: "{area}适合什么样的人？",
   areaFaqMonthQ: "可以在{area}按月租房吗？",
   areaFaqMonthA: "可以。通过我们的月租需求表单发送您的日期、户型和预算，我们会在{area}寻找合适的私人房屋。如果找不到，我们会直接告诉您。",
-  areaFaqMonthLink: "申请月租房屋",
+  areaFaqMonthLink: "请我们帮您找房",
   contactGuestNote: "如果您是想找住处，请通过我们的月租需求表单发送日期、户型、区域和预算。",
 
   // -- homepage, renter hero choices ---------------------------------------
@@ -1085,8 +1085,8 @@ export const zh: Dictionary = {
   homeFind2Body: "整栋私人房屋，附您所选日期的价格，并介绍您认识房东。",
   homeFind3Title: "直接向房东租住",
   homeFind3Body: "入住事宜由房东负责，按房东定的价格租住，中间没有平台。您无需向我们付费。",
-  homeGuideTitle: "房子周边",
-  homeGuideSub: "Lotus House附近的房东推荐，附从附近{place}步行所需时间。Lotus House和Cosmos House各有一份专属指南。",
+  homeGuideTitle: "我们的本地指南",
+  homeGuideSub: "Lotus House和Cosmos House各有一份由我们房东编写的本地指南。以下是Lotus House附近的几处推荐，附从附近{place}步行所需时间。",
   homeGuideWalk: "步行{n}分钟",
   homeFaqTitle: "预订前须知",
   homeFaq1Q: "官网直订安全吗？",
@@ -1103,7 +1103,7 @@ export const zh: Dictionary = {
   homeVideoCallPrefill: "您好 AgentSiam，我想预约视频通话，看一下适合长住的房子。",
   homeSmokeEyebrow: "二月至四月",
   homeSmokeTitle: "雾霾季，家里已备好",
-  homeSmokeBody: "二月至四月，清迈的空气可能因季节性焚烧而出现雾霾；Lotus House的空调带有PM2.5净化功能，雾霾天只需关好窗户、开着空调，就能在室内舒适度过。",
+  homeSmokeBody: "二月至四月，清迈的空气可能因季节性焚烧而出现雾霾。我们运营的每套房子都配有空调，雾霾天只需关好窗户，就能在室内舒适度过；Lotus House的空调还带有PM2.5净化功能。",
   longStay1Title: "水电费与每周清洁",
   longStay1Body: "入住满28晚，合理用量内的水电费和每周一次的清洁服务均包含在房费内。",
   longStay2Title: "500 Mbps光纤和真正的书桌",

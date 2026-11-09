@@ -38,10 +38,10 @@ export const en = {
     "Property descriptions, legal pages and the detailed owner information below are currently available in English.",
 
   // -- home ---------------------------------------------------------------
-  heroEyebrow: "Chiang Mai · by the night or the month",
+  heroEyebrow: "Vacation rental management and stays in Chiang Mai",
   heroTitleA: "A home in Chiang Mai,",
   heroTitleB: "for a week or a year.",
-  heroSub: "Whole houses we run ourselves, by the night or the month, with people here who answer through your stay. Want somewhere else? We find privately owned homes for any length of stay and introduce you to the owner.",
+  heroSub: "We are a vacation rental management company in Chiang Mai. Stay in a house we run, by the night or the month, ask us to find you another, or have us manage yours.",
   viewProperty: "See the houses",
 
   forGuests: "For guests",
@@ -60,8 +60,8 @@ export const en = {
   whyA: "Direct rate, no platform markup",
   whyABody:
     "The total you see before you pay is what is charged: no platform service fee, nothing added at checkout.",
-  whyB: "The people who run the house",
-  whyBBody: "Not a call centre in another timezone. We live in Chiang Mai, answer your messages ourselves, and can be at the house.",
+  whyB: "The people who run your house",
+  whyBBody: "We live in Chiang Mai, answer your messages ourselves, and can be at the house when you need us.",
   whyC: "TM30 filed for you",
   // Was "Phone or LINE, 24/7": neither is published anywhere on the site, and the
   // WhatsApp CTA that was meant to carry this is dark in production, NEXT_PUBLIC_WHATSAPP_NUMBER
@@ -341,7 +341,7 @@ export const en = {
   mapLabel: "Map of the places we manage",
 
   allProperties: "All properties",
-  footAreas: "Areas we manage",
+  footAreas: "Chiang Mai neighbourhoods",
   footCities: "Cities we cover",
   homeCity: "Chiang Mai",
 
@@ -399,7 +399,7 @@ export const en = {
   // itself (they come from AREAS, which has no locale axis), so a translated name in the
   // snippet would not match what the visitor lands on.
   metaHomeTitle: "AgentSiam | Stays in Chiang Mai, by the night or the month",
-  metaHomeDesc: "Book a privately owned home in Chiang Mai direct, by the night or the month. One team on the ground, looking after every house we list.",
+  metaHomeDesc: "Whole houses in Chiang Mai, booked direct from the team that runs them, by the night or the month. Want somewhere else? We find privately owned homes and introduce you to the owner.",
   metaHowTitle: "Vacation rental management in Chiang Mai",
   metaHowDesc: "Six services, chosen against your property rather than sold as a package. Feasibility, the non-hotel exemption filing, and OTA and direct booking management.",
   metaMgmtTitle: "Short-term rental management in {city}",
@@ -1049,7 +1049,7 @@ export const en = {
   // -- homepage neighbourhood strip ----------------------------------------
   // The eight neighbourhood pages became substantial on 06/09/2026 and the homepage pointed at none of them: they were reachable from the nav and the footer only. This is the third route the spec names.
   homeAreasTitle: "Where in Chiang Mai",
-  homeAreasSub: "The neighbourhood decides the holiday more than the house does. Eight of them, described as they actually are.",
+  homeAreasSub: "Eight Chiang Mai neighbourhoods, and who each one suits.",
   homeAreasLink: "All eight neighbourhoods",
 
   // -- live chat, privacy policy sentence ----------------------------------
@@ -1218,7 +1218,7 @@ export const en = {
   areaFaqSuitsQ: "Who is {area} a good fit for?",
   areaFaqMonthQ: "Can I rent a house in {area} by the month?",
   areaFaqMonthA: "Yes, ask. Send your dates, size and budget through our monthly request form, and we look for privately owned homes in {area} that fit. If we cannot find one, we tell you plainly.",
-  areaFaqMonthLink: "Ask for a monthly house",
+  areaFaqMonthLink: "Ask us to find a home",
   // /contact is the owner form; this points guests to the monthly request form instead.
   contactGuestNote: "Looking for a place to stay instead? Send your dates, size, area and budget through our monthly request form.",
 
@@ -1242,8 +1242,8 @@ export const en = {
   homeFind2Body: "Privately owned whole houses, each with the price for your dates, and we introduce you to the owner.",
   homeFind3Title: "You rent from the owner",
   homeFind3Body: "The stay is the owner's to run, at their price, with no platform in between. You pay us nothing.",
-  homeGuideTitle: "The street around the house",
-  homeGuideSub: "Host picks near Lotus House, with the walk from the {place} near the house. Lotus House and Cosmos House each have a guide of their own.",
+  homeGuideTitle: "Our local guides",
+  homeGuideSub: "Lotus House and Cosmos House each have a local guide written by our hosts. Here are a few picks near Lotus House, with the walk from the {place} near the house.",
   homeGuideWalk: "{n} min walk",
   homeFaqTitle: "Before you book",
   homeFaq1Q: "Is booking direct safe?",
@@ -1255,13 +1255,13 @@ export const en = {
   // -- Home page: the long-stay block, for guests here a month or more -----
   // Heading of the long-stay block. Guest register: คุณ, never ท่าน.
   longStayTitle: "Here for a month or more",
-  longStaySub: "What a stay of 28 nights or more actually includes.",
+  longStaySub: "What a stay of 28 nights or more includes.",
   homeVideoCall: "Book a video viewing",
   homeVideoCallNote: "Before you commit to a month, we walk you through the house on a video call.",
   homeVideoCallPrefill: "Hello AgentSiam, I would like to book a video call to see one of your houses for a longer stay.",
   homeSmokeEyebrow: "February to April",
   homeSmokeTitle: "Ready for smoke season",
-  homeSmokeBody: "From February to April, Chiang Mai's air can turn hazy from seasonal burning; at Lotus House the air-conditioning has a PM2.5 air-purifying function, so on hazy days you close the windows, let it run and stay comfortable inside.",
+  homeSmokeBody: "From February to April, Chiang Mai's air can turn hazy from seasonal burning. Every house we run is air-conditioned, so on hazy days you close the windows and stay comfortable inside. At Lotus House the units also have a PM2.5 air-purifying function.",
   longStay1Title: "Utilities and a weekly clean",
   longStay1Body: "At 28 nights or more, electricity and water are on fair use and the house is cleaned once a week. Both are in the rate, not added at the end.",
   longStay2Title: "500 Mbps fibre and a real desk",

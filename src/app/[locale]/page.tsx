@@ -294,6 +294,14 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               </li>
             ))}
           </ul>
+
+          {/* The owner route, in the hero but below the three guest choices: the page is
+              led by guests and says at the top that management is what we do. */}
+          <div className="relative mt-5">
+            <Link href={href("/how-it-works")} className="pill-light">
+              {t.navListProperty} →
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -329,6 +337,29 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               locale={locale as Locale}
             />
           ))}
+        </div>
+      </section>
+
+      {/* shape: audience-fork
+          -- Owner signpost. One line and one link to /how-it-works in the visitor's
+             language, which is where owners are sent from every page. */}
+      <section className="mx-auto max-w-(--container-chrome) px-5 pt-16">
+        <div className="flex flex-wrap items-center justify-between gap-6 rounded-panel bg-ink px-8 py-8 sm:px-12">
+          <div className="max-w-[620px]">
+            <span className="eyebrow text-gold-on-ink">{t.forOwners}</span>
+            <h2 className="mt-3 font-display text-[clamp(22px,3vw,26px)] font-bold tracking-[-0.015em] text-white">
+              {t.ownerBandTitle}
+            </h2>
+            <p className="mt-2 text-[15px] leading-relaxed text-white/80">
+              {t.ownerPanelBody}
+            </p>
+          </div>
+          <Link
+            href={href("/how-it-works")}
+            className="pill-light whitespace-nowrap"
+          >
+            {t.ownerPanelLink}
+          </Link>
         </div>
       </section>
 
@@ -538,12 +569,20 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               </li>
             ))}
           </ul>
-          <Link
-            href={href(`/${property.slug}/local-guide`)}
-            className="hit mt-5 inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
-          >
-            {t.guideCardLink} →
-          </Link>
+          <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
+            {[
+              { slug: "lotushouse", name: "Lotus House" },
+              { slug: "cosmoshouse", name: "Cosmos House" },
+            ].map((guide) => (
+              <Link
+                key={guide.slug}
+                href={href(`/${guide.slug}/local-guide`)}
+                className="hit inline-block text-[14.5px] font-semibold underline underline-offset-4 hover:text-primary"
+              >
+                {t.metaGuideTitle.replace("{property}", guide.name)} →
+              </Link>
+            ))}
+          </div>
         </section>
       ) : null}
 
@@ -637,29 +676,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">{t.homeFaqTitle}</h2>
         <Faq items={homeFaq} />
         <JsonLd data={faqSchema(homeFaq)} />
-      </section>
-
-      {/* shape: audience-fork
-          -- Owner signpost. One line and one link to /how-it-works in the visitor's
-             language, which is where owners are sent from every page. */}
-      <section className="mx-auto max-w-(--container-chrome) px-5 pt-16">
-        <div className="flex flex-wrap items-center justify-between gap-6 rounded-panel bg-ink px-8 py-8 sm:px-12">
-          <div className="max-w-[620px]">
-            <span className="eyebrow text-gold-on-ink">{t.forOwners}</span>
-            <h2 className="mt-3 font-display text-[clamp(22px,3vw,26px)] font-bold tracking-[-0.015em] text-white">
-              {t.ownerBandTitle}
-            </h2>
-            <p className="mt-2 text-[15px] leading-relaxed text-white/80">
-              {t.ownerPanelBody}
-            </p>
-          </div>
-          <Link
-            href={href("/how-it-works")}
-            className="pill-light whitespace-nowrap"
-          >
-            {t.ownerPanelLink}
-          </Link>
-        </div>
       </section>
 
       {/* shape: closing-cta

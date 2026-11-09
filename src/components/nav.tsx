@@ -72,13 +72,16 @@ export function Nav({ locale }: { locale: Locale }) {
             {t.navListProperty}
           </Link>
 
-          {/* Contact is the renter route: the monthly request. Owners have "Property
+          {/* The renter route: the request form. Owners have "Property
               Owners" in the nav list and the button beside this one, both owner-only. */}
           <Link
             href={href("/house-for-rent-chiang-mai#request")}
             className="pill-compact"
           >
-            {t.navContact}
+            {/* The short label below 560px: the longer one wraps the header to a third
+                row, and --nav-h is measured for two. */}
+            <span className="min-[560px]:hidden">{t.navContact}</span>
+            <span className="hidden min-[560px]:inline">{t.homeChoiceFindTitle}</span>
           </Link>
         </div>
       </nav>
