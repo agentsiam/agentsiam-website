@@ -5,7 +5,7 @@ import { ResultsMap, type Pin } from "@/components/results-map";
 import { WhatsAppCta } from "@/components/whatsapp-cta";
 import { getDictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
-import { areaBySlug } from "@/lib/areas";
+import { areaName } from "@/lib/area-content";
 import { categoryIcon } from "@/lib/guide-icons";
 import { tagLabel, tagsInFamily } from "@/lib/guide-vocabulary";
 import { PHOTOS } from "@/lib/photos.generated";
@@ -513,7 +513,7 @@ export function LocalGuide({
             href={filterHref({ area: slug })}
             className={chip(area === slug)}
           >
-            {areaBySlug(slug)?.name ?? slug}
+            {areaName(t, slug)}
           </Link>
         ))}
         {hasOutside ? (
@@ -544,7 +544,9 @@ export function LocalGuide({
             <ul className="grid gap-3">
               {visiblePlaces.map((place, index) => {
                 const d = distances[place.name];
-                const areaName = place.area ? areaBySlug(place.area)?.name : null;
+                // Shadowing the imported helper would be a silent bug, so the local
+                // keeps the longer name.
+                const placeArea = place.area ? areaName(t, place.area) : null;
                 return (
                   <li
                     key={place.name}
@@ -571,7 +573,7 @@ export function LocalGuide({
 
                     <p className="eyebrow mt-1">
                       {place.category}
-                      {areaName ? ` · ${areaName}` : ` · ${t.guideOutsideAreas}`}
+                      {placeArea ? ` · ${placeArea}` : ` · ${t.guideOutsideAreas}`}
                     </p>
 
                     {/* Food tags are links, because the filter above accepts them and a
