@@ -353,6 +353,9 @@ export const en = {
   guideCount: "{n} places",
   guideCountOne: "1 place",
   guideFilterCategory: "What for",
+  // Labels the food-tag filter row. "Food" rather than "Cuisine": the row holds Bakery,
+  // Dessert and Wine as well as Thai and Italian, and none of those is a cuisine.
+  guideFilterTags: "Food",
   guideFilterArea: "Neighbourhood",
   guideAll: "Everything",
   guideNearby: "Walkable",

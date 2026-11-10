@@ -7,8 +7,9 @@ import { getDictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { areaBySlug } from "@/lib/areas";
 import { categoryIcon } from "@/lib/guide-icons";
+import { tagLabel, tagsInFamily } from "@/lib/guide-vocabulary";
 import { PHOTOS } from "@/lib/photos.generated";
-import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
+import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES, GUIDE_TAGS } from "@/lib/guide.generated";
 import { JsonLd } from "@/components/json-ld";
 import { PrintButton } from "@/components/print-button";
 import { CRISP_WEBSITE_ID, SITE_NAME, WHATSAPP_NUMBER } from "@/lib/site";
@@ -71,6 +72,9 @@ export function LocalGuide({
 
   const category = GUIDE_CATEGORIES.includes(one(query.for) ?? "") ? one(query.for)! : null;
   const area = one(query.area) ?? null;
+  // Checked against GUIDE_TAGS rather than the vocabulary, so ?tag= with a real but unused
+  // slug reads as no filter instead of an empty page.
+  const tag = GUIDE_TAGS.includes(one(query.tag) ?? "") ? one(query.tag)! : null;
   const nearby = one(query.near) === "1";
   const picks = one(query.picks) === "1";
 
@@ -84,6 +88,7 @@ export function LocalGuide({
     if (d?.metres != null && d.metres > MAX_DISTANCE_M) return false;
     if (category && place.category !== category) return false;
     if (area && (area === "outside" ? place.area !== null : place.area !== area)) return false;
+    if (tag && !place.tags.includes(tag)) return false;
     if (nearby && !(d?.walk !== null && d?.walk !== undefined && d.walk <= NEARBY_MINUTES)) return false;
     if (picks && !place.highlight) return false;
     return true;
@@ -96,7 +101,7 @@ export function LocalGuide({
 
   // The default view, before any filter: the five blocks added 06/11/2026 (consulting repo,
   // as-work/2026-11-06-local-guide/), each derived from the generated guide and nothing else.
-  const isDefault = !category && !area && !nearby && !picks && !one(query.n);
+  const isDefault = !category && !area && !tag && !nearby && !picks && !one(query.n);
   const walkOf = (name: string) => distances[name]?.walk ?? null;
   const driveOf = (name: string) => distances[name]?.drive ?? null;
   // "3 min drive · 14 min walk": drive first, walk where there is one.
@@ -157,6 +162,7 @@ export function LocalGuide({
   // Only the neighbourhoods that actually contain something, so the filter never offers a
   // choice that leads to an empty page.
   const areasPresent = [...new Set(GUIDE_PLACES.map((p) => p.area).filter((a): a is string => a !== null))];
+  const foodTags = tagsInFamily(GUIDE_TAGS, "food");
   const hasOutside = GUIDE_PLACES.some((p) => p.area === null);
 
   const pins: Pin[] = places.map((place) => ({
@@ -187,6 +193,7 @@ export function LocalGuide({
     const current: Record<string, string | null> = {
       for: category,
       area,
+      tag,
       near: nearby ? "1" : null,
       picks: picks ? "1" : null,
       ...patch,
@@ -199,7 +206,7 @@ export function LocalGuide({
   // How many cards are on the page right now. `n` rides the same URL-state pattern as
   // every filter here (filterHref above already forwards an arbitrary patch, `n` included,
   // so this needed no new plumbing) -- which also means changing a filter chip drops back
-  // to PAGE_SIZE for free, since filterHref only ever sets the four filter keys it knows
+  // to PAGE_SIZE for free, since filterHref only ever sets the five filter keys it knows
   // about and never carries `n` over from the current URL. A guest who pastes a guide link
   // mid-scroll still gets the fuller list back, because the count travels in the URL too.
   const requestedCount = Number(one(query.n));
@@ -457,6 +464,36 @@ export function LocalGuide({
         ))}
       </div>
 
+      {/* Food tags only. Dietary and practical tags show on the card but are never offered
+          as a filter: narrowing the whole guide to the places that take only cash is not a
+          question a guest asks, and every extra row of chips costs the rows above it
+          attention. GUIDE_TAGS is already in vocabulary order, so these never reshuffle. */}
+      {foodTags.length ? (
+        <div
+          role="group"
+          aria-label={t.guideFilterTags}
+          className="mt-3 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 print:hidden"
+        >
+          <Link
+            aria-current={chipCurrent(!tag)}
+            href={filterHref({ tag: null })}
+            className={chip(!tag)}
+          >
+            {t.guideFilterTags}: {t.guideAll}
+          </Link>
+          {foodTags.map((slug) => (
+            <Link
+              key={slug}
+              aria-current={chipCurrent(tag === slug)}
+              href={filterHref({ tag: slug })}
+              className={chip(tag === slug)}
+            >
+              {tagLabel(slug, locale)}
+            </Link>
+          ))}
+        </div>
+      ) : null}
+
       <div
         role="group"
         aria-label={t.guideFilterArea}
@@ -536,6 +573,36 @@ export function LocalGuide({
                       {place.category}
                       {areaName ? ` · ${areaName}` : ` · ${t.guideOutsideAreas}`}
                     </p>
+
+                    {/* Food tags are links, because the filter above accepts them and a
+                        guest who sees "Northern Thai" on one card wants the others. Dietary
+                        and practical tags are plain text: there is no filter to send them
+                        to, and a chip that looks like a link and is not is worse than a
+                        label. */}
+                    {place.tags.length ? (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {tagsInFamily(place.tags, "food").map((slug) => (
+                          <Link
+                            key={slug}
+                            href={filterHref({ tag: slug })}
+                            className="rounded-full border border-hairline px-2 py-0.5 text-[11px] text-muted transition-colors hover:border-ink hover:text-ink print:hidden"
+                          >
+                            {tagLabel(slug, locale)}
+                          </Link>
+                        ))}
+                        {[
+                          ...tagsInFamily(place.tags, "dietary"),
+                          ...tagsInFamily(place.tags, "practical"),
+                        ].map((slug) => (
+                          <span
+                            key={slug}
+                            className="rounded-full bg-wash-gold px-2 py-0.5 text-[11px] text-muted"
+                          >
+                            {tagLabel(slug, locale)}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
 
                     {place.comment ? (
                       <p className="mt-2 text-[14px] text-body">{place.comment}</p>

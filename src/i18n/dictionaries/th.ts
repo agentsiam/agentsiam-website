@@ -315,6 +315,7 @@ export const th: Dictionary = {
   guideCount: "{n} แห่ง",
   guideCountOne: "1 แห่ง",
   guideFilterCategory: "ประเภท",
+  guideFilterTags: "อาหาร",
   guideFilterArea: "ย่าน",
   guideAll: "ทั้งหมด",
   guideNearby: "เดินไปได้",

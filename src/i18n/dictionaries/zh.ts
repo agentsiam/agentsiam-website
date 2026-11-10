@@ -317,6 +317,7 @@ export const zh: Dictionary = {
   guideCount: "{n}个地点",
   guideCountOne: "1个地点",
   guideFilterCategory: "类别",
+  guideFilterTags: "餐饮",
   guideFilterArea: "区域",
   guideAll: "全部",
   guideNearby: "步行可达",

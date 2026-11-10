@@ -43,6 +43,8 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
 const CACHE_PATH = join(HERE, "guide-cache.json");
 const OUT_PATH = join(ROOT, "src", "lib", "guide.generated.ts");
+const VOCABULARY_PATH = join(ROOT, "src", "lib", "guide-vocabulary.json");
+const TAGS_PATH = join(HERE, "guide-tags.json");
 
 const SHEET_CSV =
   "https://docs.google.com/spreadsheets/d/1WmFb9ZdmDt_ku4cF49-KoYoaabeTaDwJYImmlI-BXbU/export?format=csv";
@@ -274,6 +276,20 @@ function similarName(a, b) {
   return editDistance(x, y) / Math.max(x.length, y.length) <= 0.4;
 }
 
+/**
+ * Scored as a proportion of the longer string rather than an absolute edit count. Three
+ * edits is a typo in "Japanes Ramen" and a different word entirely in "Tapas", which an
+ * absolute rule happily matches to "Thai". A confidently wrong suggestion is worse than
+ * none, so anything past a third of the string suggests nothing.
+ */
+function didYouMean(unknown, candidates) {
+  const key = normaliseKey(unknown);
+  const best = candidates
+    .map((c) => ({ c, ratio: editDistance(key, normaliseKey(c)) / Math.max(key.length, normaliseKey(c).length) }))
+    .sort((x, y) => x.ratio - y.ratio)[0];
+  return best && best.ratio <= 0.34 ? best.c : null;
+}
+
 // --- resolution --------------------------------------------------------------
 
 function coordsFromAppleLink(url = "") {
@@ -333,6 +349,41 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const cache = existsSync(CACHE_PATH) ? JSON.parse(readFileSync(CACHE_PATH, "utf8")) : { coords: {}, routes: {} };
 cache.coords ??= {};
 cache.routes ??= {};
+
+/**
+ * The tag vocabulary and the assignments, both read and checked before any network work.
+ *
+ * Tags are an allowlist: a slug not in the vocabulary stops the build rather than being
+ * dropped, because a silently dropped tag is a filter that quietly returns the wrong
+ * places. The vocabulary is also what the app reads for labels, so the two cannot drift.
+ */
+const VOCABULARY = JSON.parse(readFileSync(VOCABULARY_PATH, "utf8")).tags;
+const TAG_SLUGS = VOCABULARY.map((tag) => tag.slug);
+const TAG_ASSIGNMENTS = JSON.parse(readFileSync(TAGS_PATH, "utf8")).tags;
+
+if (!Array.isArray(VOCABULARY) || !VOCABULARY.length) {
+  throw new Error(`No tags in ${VOCABULARY_PATH}. The app reads the same file for labels.`);
+}
+
+{
+  const unknown = new Map();
+  for (const [name, slugs] of Object.entries(TAG_ASSIGNMENTS)) {
+    for (const slug of slugs) if (!TAG_SLUGS.includes(slug) && !unknown.has(slug)) unknown.set(slug, name);
+  }
+  if (unknown.size) {
+    const lines = [...unknown].map(([slug, where]) => {
+      const guess = didYouMean(slug, TAG_SLUGS);
+      return `  "${slug}" (on ${where})${guess ? `, did you mean "${guess}"?` : ""}`;
+    });
+    throw new Error(
+      `${unknown.size} tag(s) are not in the vocabulary:\n${lines.join("\n")}\n\n` +
+        `Either fix the slug in scripts/guide-tags.json, or add the tag to ` +
+        `src/lib/guide-vocabulary.json with its Thai and Chinese label.`,
+    );
+  }
+  const families = [...new Set(VOCABULARY.map((tag) => tag.family))];
+  console.log(`vocabulary: ${VOCABULARY.length} tags in ${families.length} famil${families.length === 1 ? "y" : "ies"}`);
+}
 
 const areasSrc = readFileSync(join(ROOT, "src", "lib", "areas.ts"), "utf8");
 const AREAS = [...areasSrc.matchAll(/slug:\s*"([a-z-]+)",[\s\S]*?lat:\s*([\d.]+),\s*\n\s*lng:\s*([\d.]+),/g)]
@@ -432,6 +483,39 @@ for (const f of FIX) {
   p.comment = p.comment.replace(f.from, f.to);
 }
 console.log(`fixed: ${FIX.length} note correction(s)`);
+
+/**
+ * Tags onto places, by name.
+ *
+ * A name in guide-tags.json that matches nothing stops the build, the same way a FIX that
+ * no longer applies does. Both guard the same failure: a place gets renamed, its entry here
+ * goes quiet, and the tag disappears from the filter with nothing saying so. RENAME above
+ * has already run, so a renamed place is keyed here by the name a guest sees.
+ */
+{
+  const byName = new Map(places.map((p) => [p.name, p]));
+  const orphans = [];
+  for (const [name, slugs] of Object.entries(TAG_ASSIGNMENTS)) {
+    const place = byName.get(name);
+    if (!place) { orphans.push(name); continue; }
+    // Vocabulary order, so reordering a place's list is not a diff in the generated file.
+    place.tags = TAG_SLUGS.filter((slug) => slugs.includes(slug));
+  }
+  if (orphans.length) {
+    const lines = orphans.map((name) => {
+      const guess = didYouMean(name, places.map((p) => p.name));
+      return `  "${name}"${guess ? `, did you mean "${guess}"?` : ""}`;
+    });
+    throw new Error(
+      `${orphans.length} name(s) in scripts/guide-tags.json match no place:\n${lines.join("\n")}\n\n` +
+        `Either the place was renamed or removed, or the name is mistyped. Tags are keyed by ` +
+        `the name after RENAME, which is the name a guest sees.`,
+    );
+  }
+  for (const p of places) p.tags ??= [];
+  const tagged = places.filter((p) => p.tags.length).length;
+  console.log(`tags: ${tagged} of ${places.length} places tagged, ${places.length - tagged} untagged`);
+}
 
 /**
  * Two places pointing at one Maps link.
@@ -649,6 +733,8 @@ export type GuidePlace = {
   lng: number;
   /** Slug from src/lib/areas.ts, or null when the place is outside every area we cover. */
   area: string | null;
+  /** Slugs from src/lib/guide-vocabulary.json. Empty is normal: a tag is a checked claim. */
+  tags: string[];
   google: string;
   apple: string;
 };
@@ -657,6 +743,16 @@ export type GuidePlace = {
 export type GuideDistance = { walk: number | null; drive: number | null; metres: number };
 
 export const GUIDE_CATEGORIES: string[] = ${JSON.stringify(categories, null, 2)};
+
+/**
+ * Every tag actually in use, in vocabulary order. A vocabulary entry nothing carries is
+ * left out, so a filter built from this never offers a chip that leads to an empty page.
+ */
+export const GUIDE_TAGS: string[] = ${JSON.stringify(
+  TAG_SLUGS.filter((slug) => places.some((p) => p.tags.includes(slug))),
+  null,
+  2,
+)};
 
 export const GUIDE_PLACES: GuidePlace[] = [
 ${places
@@ -669,6 +765,7 @@ ${places
     lat: ${p.lat},
     lng: ${p.lng},
     area: ${p.area ? q(p.area) : "null"},
+    tags: ${JSON.stringify(p.tags)},
     google: ${q(p.google)},
     apple: ${q(p.apple)},
   },`,
@@ -693,4 +790,8 @@ ${places
 
 writeFileSync(OUT_PATH, out);
 console.log(`\nwrote ${OUT_PATH}`);
-console.log(`     ${places.length} places, ${categories.length} categories, ${places.filter((p) => p.highlight).length} highlighted`);
+console.log(
+  `     ${places.length} places, ${categories.length} categories, ` +
+    `${places.filter((p) => p.highlight).length} highlighted, ` +
+    `${TAG_SLUGS.filter((slug) => places.some((p) => p.tags.includes(slug))).length} tags in use`,
+);
