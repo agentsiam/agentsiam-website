@@ -613,8 +613,10 @@ The pipeline, so nobody has to think about image formats:
   link. The branch's price bands were not imported: no other note in the guide carries a dollar
   sign and nothing on the page explains the scale, so the descriptive half of each note was
   kept and the band dropped, which leaves five of the thirteen with an empty note. Forty of the
-  other 149 already have one. Still outstanding from the branch: the sheet-as-inbox importer,
-  `npm run guide:import`, and its runbook.
+  other 149 already have one. The sheet stopped being a build input the same day, which closed
+  the branch out: `scripts/guide-places.csv` is the library, `npm run guide:import` proposes
+  rows from the sheet and writes nothing without `--apply`, and `GUIDE-RUNBOOK.md` is the
+  procedure. Nothing in the repository fetches a spreadsheet any more.
 - **`/lotushouse/local-guide` drops any place more than 12km away, and paginates the rest.**
   Both Paul's decisions, 11/09/2026. Before this the guide showed every place in
   `GUIDE_PLACES` regardless of distance, sorted into the "Further out" filter rather than

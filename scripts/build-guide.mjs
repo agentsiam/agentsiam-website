@@ -1,31 +1,34 @@
 /**
- * Builds src/lib/guide.generated.ts from the Lotus House Sites & Tips sheet.
+ * Builds src/lib/guide.generated.ts from scripts/guide-places.csv.
  *
  * WHY THIS IS NOT PART OF `prebuild`
  *
  * The photo manifest runs before every build because it only reads the local disk.
- * This one talks to Google Sheets, Google Maps and a routing service, so making it a
- * build step would mean a deploy fails whenever a third party is slow, rate-limits us,
- * or Nils has the sheet open in a state that will not export. Instead its output and
- * its cache are both committed, and this is run by hand when the guide changes:
+ * This one talks to Google Maps and a routing service, so making it a build step would
+ * mean a deploy fails whenever a third party is slow or rate-limits us. Instead its
+ * output and its cache are both committed, and this is run by hand when the guide
+ * changes:
  *
  *     npm run guide
  *
  * A Vercel build therefore does no network work for the guide at all. It reads a
- * checked-in TypeScript file, which is also why the guide still renders if the sheet
- * is ever deleted.
+ * checked-in TypeScript file.
  *
- * WHAT THE SHEET IS AND IS NOT
+ * WHERE THE PLACES COME FROM
  *
- * The sheet is today's input, not infrastructure this repo commits to. src/lib/guide.
- * generated.ts is the guide's source of truth (CLAUDE.md R11); the sheet is a free
- * resource Paul happens to share to enrich it, spent once its rows are merged in and
- * the guide is regenerated. Nothing here re-fetches it on a schedule or expects it to
- * stay in sync -- the next enrichment may be a different sheet entirely, a different
- * kind of source, or a direct edit to this file's own inputs. A row still never carries
- * a hand-typed coordinate; this script resolves the Google Maps link once and remembers
- * it in scripts/guide-cache.json, keyed by link, so a rerun only touches rows that are
- * actually new.
+ * scripts/guide-places.csv, in the repository, reviewed in a diff. Nothing here fetches
+ * a spreadsheet: the Google Sheet is an inbox that proposes rows through
+ * `npm run guide:import`, which prints a diff and writes nothing without --apply. That
+ * is what CLAUDE.md R11 means by the sheet being spent input rather than a source.
+ *
+ * Until 10/11/2026 this script fetched the sheet on every run, which meant an edit made
+ * in a spreadsheet cell reached the guide with nobody reviewing it, and four lists in
+ * this file (REMOVE, RENAME, MERGE and thirty note corrections) existed only to patch a
+ * source we could not edit. Those are gone: the rows in the CSV are simply correct.
+ *
+ * A row never carries a hand-typed coordinate. This script resolves the Google Maps link
+ * once and remembers it in scripts/guide-cache.json, keyed by link, so a rerun only
+ * touches rows that are actually new.
  *
  * The sheet stores distances hardcoded to Lotus House. Those columns are deliberately
  * NOT imported. Walking and driving times are routed from each property's public start
@@ -46,8 +49,7 @@ const OUT_PATH = join(ROOT, "src", "lib", "guide.generated.ts");
 const VOCABULARY_PATH = join(ROOT, "src", "lib", "guide-vocabulary.json");
 const EXTRAS_PATH = join(HERE, "guide-extras.json");
 
-const SHEET_CSV =
-  "https://docs.google.com/spreadsheets/d/1WmFb9ZdmDt_ku4cF49-KoYoaabeTaDwJYImmlI-BXbU/export?format=csv";
+const PLACES_PATH = join(HERE, "guide-places.csv");
 
 /**
  * Routers, one per travel mode, and they must be different servers.
@@ -127,88 +129,6 @@ const NOT_DUPLICATES = [
     names: ["Tops Supermarket", "Rimping Supermarket"],
     why: "Two different supermarket chains a few hundred metres apart. Only the word Supermarket is shared.",
   },
-];
-
-/**
- * Places entered twice that are genuinely one place.
- *
- * Deliberately an explicit list and not an automatic rule. Merging by coordinates would
- * be wrong here: Shangri-La Health Club and Shangri-La Hotel Pool share both a coordinate
- * AND a Google Maps link, because they are two facilities inside one building, and a
- * guest paying for a pool day pass is not buying a gym day pass. Merging by Google place
- * id fails for the same reason. So a human decides, and records why.
- *
- * Wiang Kum Kam: verified as one place, not two. Both rows resolve to Google feature id
- * 0x30da303ad30599ad:0x475d9f34359213a3 and Knowledge Graph id /m/08tft3.
- */
-const MERGE = [
-  { keep: "Wiang Kum Kam", drop: "Wiang Kum Kam", byCategory: { keep: "Temple", drop: "Museum/Gallery" } },
-];
-
-/**
- * Rows whose sheet name is ambiguous to a guest. The sheet is left alone; the
- * disambiguation lives here so it can be reviewed in a diff.
- */
-const RENAME = [
-  {
-    match: (r) => r.name.startsWith("Baggage storage, AIRPORTELs") && r.sheetArea === "Airport",
-    to: "Baggage storage, AIRPORTELs (airport terminal)",
-  },
-  {
-    match: (r) => r.name.startsWith("Baggage storage, AIRPORTELs") && r.sheetArea === "Urban",
-    to: "Baggage storage, AIRPORTELs (Central Airport Mall)",
-  },
-];
-
-/**
- * Places that have closed or must not be recommended, removed after the sheet and
- * guide-extra.csv are merged. The sheet is left alone; the removal lives here so it can be
- * reviewed in a diff, the same way as RENAME.
- */
-const REMOVE = [
-  { name: "ตราบุญ Coffee Station", why: "closed down, reported by Nils 06/11/2026" },
-];
-
-/**
- * Spelling and grammar corrections to the hosts' notes, applied after the merge. The sheet is
- * left alone (R11: it is a spent resource, not a maintained source), so the correction lives
- * here where it can be reviewed in a diff, the same way as RENAME and REMOVE. Wording, opinion
- * and the hosts' voice are never changed, only clear errors. Paul asked for it, 06/11/2026.
- *
- * Each `from` must be found exactly in that place's note or the build stops: a correction that
- * silently stops applying because the sheet changed is how a typo comes back.
- */
-const FIX = [
-  { name: "7 Eleven", from: "Convinience store", to: "Convenience store" },
-  { name: "Lotus's Go Fresh", from: "Convinience store", to: "Convenience store" },
-  { name: "Pharmacy ขวัญดาวเภสัช", from: "Near by pharamacy", to: "Nearby pharmacy" },
-  { name: "Pharmacy ร้านยาเวียงพิงค์เภสัช สาขาตลาดต้นพยอม2", from: "Pharamacy next door to 7 eleven", to: "Pharmacy next door to 7-Eleven" },
-  { name: "Wat Hua Fai", from: "Close by temple.", to: "Nearby temple." },
-  { name: "More Morning", from: "coffe place", to: "coffee place" },
-  { name: "ก๋วยเตี๋ยวโบราณ คุณยายปากแดง", from: "heathy", to: "healthy" },
-  { name: "Wooden Door Cafe", from: "Our preffered western brunch place close by the house (ther's a short cut on Google Map if you're walking)", to: "Our preferred western brunch place close to the house (there's a shortcut on Google Maps if you're walking)" },
-  { name: "Heartwork the Sharing Space", from: "The charge a very small fee for the usage of (with work desks equipeed) co-working space and you have to grab a coffee or some food.", to: "They charge a very small fee for the co-working space (equipped with work desks), and you have to grab a coffee or some food." },
-  { name: "Maajoy Cafe & Tailor", from: "good food(Limited options)", to: "good food (limited options)" },
-  { name: "Cherry Burmese", from: "excellent burmese kitchen. Staff speaks english.", to: "excellent Burmese kitchen. Staff speak English." },
-  { name: "Kad Kom Market", from: "vegtables", to: "vegetables" },
-  { name: "Khao Soi Lung Prakit Kad Kom", from: "National known", to: "Nationally known" },
-  { name: "Thai Akha Kitchen", from: "Excellent thai cooking school", to: "Excellent Thai cooking school" },
-  { name: "The Home Massage and Spa", from: "Luxuary", to: "Luxury" },
-  { name: "Antique Massage Chiangmai", from: "traditional thai building. CALL 091-566-5569 TO BOOK FREE SHUTTLE TAXI OF THE MASSAGE PLACE", to: "traditional Thai building. Call 091-566-5569 to book the massage place's free shuttle taxi." },
-  { name: "Wua Lai Walking Street", from: "Only on saturday evenings", to: "Only on Saturday evenings" },
-  { name: "Chiang Mai Night Bazar & Kalare Night Bazaar", from: "Near to Kalare Night Bazar so you can visit both:", to: "Next to Kalare Night Bazaar, so you can visit both:" },
-  { name: "Chiang Mai University Art Center", from: "Modern Art Exhibtion Centre", to: "Modern art exhibition centre" },
-  { name: "Deck 1", from: "with thai food", to: "with Thai food" },
-  { name: "Beam&Col. coffee bar", from: "Life Music", to: "live music" },
-  { name: "River View Bar", from: "Relaxed thai-style", to: "Relaxed Thai-style" },
-  { name: "River View Bar", from: "Often with life musi, coffering refreshing drinks", to: "Often with live music, offering refreshing drinks" },
-  { name: "Sunday Night Market", from: "Only on sunday evenings, Nearest entry point", to: "Only on Sunday evenings. The nearest entry point" },
-  { name: "The North Gate Jazz Co-Op", from: "is long standing \"institution\" for every night life music, go when it opens at 7PM to get a spot.", to: "is a long-standing \"institution\" for live music every night. Go when it opens at 7PM to get a spot." },
-  { name: "The White Rabbit", from: "Speakeasy type Cocktailbar", to: "Speakeasy-style cocktail bar" },
-  { name: "Rimping Supermarket", from: "with a national and international products", to: "with national and international products" },
-  { name: "Sereephap Muay Thai", from: "Renown", to: "Renowned" },
-  { name: "Marriott Hotel Pool", from: "Marriot Hotel offers non-hotel guest", to: "Marriott Hotel offers non-hotel guests" },
-  { name: "Karnkanok 19 Pool", from: "jurisdiction office window", to: "juristic office window" }
 ];
 
 const HIGHLIGHT = "\u{1F536}"; // 🔶, used in the sheet's Site column to mark a host pick
@@ -417,7 +337,7 @@ function rowsFromCsv(csv, source) {
   const rows = parseCsv(csv);
   const head = rows[0].map((h) => h.trim());
   const idx = (n) => head.indexOf(n);
-  const iSite = idx("Site"), iCat = idx("Category"), iArea = idx("Area");
+  const iSite = idx("Site"), iCat = idx("Category");
   const iG = idx("Google Maps"), iA = idx("Apple Maps"), iC = idx("Comment");
   if (iSite < 0 || iG < 0) throw new Error(`Unexpected columns in ${source}: ${head.join(", ")}`);
 
@@ -429,7 +349,6 @@ function rowsFromCsv(csv, source) {
         name: raw.replace(HIGHLIGHT, "").replace(/\s+/g, " ").trim(),
         highlight: raw.includes(HIGHLIGHT),
         category: (r[iCat] || "").trim(),
-        sheetArea: (r[iArea] || "").trim(),
         google: (r[iG] || "").trim(),
         apple: (r[iA] || "").trim(),
         comment: (r[iC] || "").trim(),
@@ -437,56 +356,8 @@ function rowsFromCsv(csv, source) {
     });
 }
 
-const csv = await fetch(SHEET_CSV).then((r) => {
-  if (!r.ok) throw new Error(`Sheet fetch failed (${r.status}). Still shared to anyone with the link?`);
-  return r.text();
-});
-
-let places = rowsFromCsv(csv, "the sheet");
-
-/**
- * Local, git-tracked enrichment, same column shape as the sheet. This is what R11 means by
- * "a direct edit to this file's own inputs": a place someone found and shared, added here
- * instead of into a spreadsheet nobody commits to keeping. Runs through the identical
- * resolution, dedup, area-assignment and routing logic below as every sheet row does, so a
- * duplicate or a bad link is caught the same way either source made it.
- */
-const EXTRA_PATH = join(HERE, "guide-extra.csv");
-if (existsSync(EXTRA_PATH)) {
-  const extra = rowsFromCsv(readFileSync(EXTRA_PATH, "utf8"), "guide-extra.csv");
-  places = places.concat(extra);
-  console.log(`guide-extra.csv: ${extra.length} place(s) added to the sheet's ${places.length - extra.length}`);
-}
-
-for (const r of REMOVE) {
-  const before = places.length;
-  places = places.filter((p) => p.name !== r.name);
-  console.log(before === places.length ? `remove: ${r.name} not found` : `removed: ${r.name} (${r.why})`);
-}
-
-for (const rule of RENAME) {
-  for (const p of places) if (rule.match(p)) p.name = rule.to;
-}
-
-for (const m of MERGE) {
-  const keep = places.find((p) => p.name === m.keep && p.category === m.byCategory.keep);
-  const drop = places.find((p) => p.name === m.drop && p.category === m.byCategory.drop);
-  if (keep && drop) {
-    keep.highlight ||= drop.highlight;
-    if (drop.comment.length > keep.comment.length) keep.comment = drop.comment;
-    places = places.filter((p) => p !== drop);
-    console.log(`merged: ${m.drop} (${m.byCategory.drop}) into ${m.keep} (${m.byCategory.keep})`);
-  }
-}
-
-for (const f of FIX) {
-  const p = places.find((x) => x.name === f.name);
-  if (!p || !p.comment.includes(f.from)) {
-    throw new Error(`FIX for "${f.name}" did not apply: "${f.from}" is not in its note. The sheet changed; update or drop the correction.`);
-  }
-  p.comment = p.comment.replace(f.from, f.to);
-}
-console.log(`fixed: ${FIX.length} note correction(s)`);
+const places = rowsFromCsv(readFileSync(PLACES_PATH, "utf8"), "guide-places.csv");
+console.log(`library: ${places.length} places`);
 
 /**
  * The extras onto places, by name.
@@ -736,9 +607,11 @@ const q = (s) => JSON.stringify(s);
 
 const out = `// GENERATED by scripts/build-guide.mjs. Do not edit by hand.
 //
-// Source: the "Lotus House Sites & Tips" sheet. Edit there, then run \`npm run guide\`.
-// Distances are NOT from the sheet: they are routed per property, so one guide can serve
-// any property. See the script for why this is not a build step.
+// Source: scripts/guide-places.csv, plus scripts/guide-extras.json for tags and websites.
+// Edit those, then run \`npm run guide\`. New places are proposed by the Google Sheet
+// through \`npm run guide:import\`, which writes nothing without --apply; see
+// GUIDE-RUNBOOK.md. Distances are in neither file: they are routed per property, so one
+// guide can serve any property. See the script for why this is not a build step.
 
 export type GuidePlace = {
   name: string;

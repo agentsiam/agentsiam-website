@@ -126,14 +126,14 @@ dash ban (C29). Everywhere else in this repo, and in anything written to Paul, t
 is the same exemption as R21 in `/Users/paulb/code/agentsiam/agentsiam-consulting`, stated here
 because C29 requires each repo to state its own.
 
-**R11.** The guide's source of truth is `src/lib/guide.generated.ts` (GENERATED, R5), never a
-spreadsheet. A Google Sheet that feeds `npm run guide` is a free resource Paul happens to share to
-enrich the guide, not a system this repo maintains. Once a sheet's rows are merged and the guide is
-regenerated, the sheet is spent: nothing here re-fetches it on a schedule, links to it as a live
-reference, or expects it to stay in sync going forward. The next enrichment may be a different sheet
-entirely, or no sheet at all: `scripts/guide-extra.csv`, git-tracked and in the same column shape,
-is where a place found some other way goes, and `build-guide.mjs` merges it in before resolution and
-routing run, so it gets the same coordinate lookup and duplicate check as a sheet row would.
+**R11.** The guide's library is `scripts/guide-places.csv`, with tags and websites beside it in
+`scripts/guide-extras.json`; `src/lib/guide.generated.ts` is what the site reads and is GENERATED
+from those two (R5). **No build step fetches a spreadsheet.** A Google Sheet is an inbox: it
+proposes rows through `npm run guide:import`, which prints a diff, writes nothing without
+`--apply`, never deletes, and matches a place by its Google Maps link rather than its name, because
+names in the library have been edited on purpose. A row we decline goes in that script's `DECLINED`
+list with the reason, or it is proposed again on every run. Procedure, including everything the
+build refuses to do, is `GUIDE-RUNBOOK.md`; do not restate it here.
 
 ## 6. Tooling and commands
 
@@ -142,6 +142,8 @@ routing run, so it gets the same coordinate lookup and duplicate check as a shee
   On Paul's Mac only, see R7.
 - `npm run typecheck` and `npm run lint`. Both valid from a sandbox.
 - `npm run photos` and `npm run guide`.
+- `npm run guide:import`, which reads the Google Sheet and writes nothing without `--apply`.
+  See `GUIDE-RUNBOOK.md`, which owns the guide's procedure.
 - Absolute path for any Terminal block (C8): `/Users/paulb/code/agentsiam/agentsiam-website`.
 
 ## 7. Traps
@@ -158,6 +160,10 @@ routing run, so it gets the same coordinate lookup and duplicate check as a shee
   working exactly as designed.
 - `src/lib/site.ts` uses `??` for `NEXT_PUBLIC_SITE_URL`, so an **empty** value in `.env` kills the
   build with `ERR_INVALID_URL` while an unset one is fine.
+- The guide drops any place routing more than 12km from the property's start point, so thirteen
+  places sit in `guide.generated.ts` and on no page, Doi Suthep and Doi Inthanon among them. The
+  build says nothing about it and neither does the page. `MAX_DISTANCE_M` in
+  `src/components/local-guide.tsx`.
 - `not-found.tsx` renders **client-side only in production**. `next dev` server-renders it,
   `next start` does not: `/nope` returns a 404 with the full page under JavaScript and an
   empty `<body>` without it. Every real page server-renders correctly, so a blank 404 is not

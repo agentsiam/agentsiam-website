@@ -12,7 +12,8 @@
     "lint": "eslint",
     "guide": "node scripts/build-guide.mjs",
     "keys": "node scripts/add-dictionary-keys.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "guide:import": "node scripts/import-guide-sheet.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.8.1",
