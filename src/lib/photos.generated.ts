@@ -129,7 +129,7 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: areas_4, file: "old-city.jpeg", alt: "A quiet lane of shophouses behind a laterite wall inside the Old City moat, Chiang Mai" },
     { src: areas_5, file: "san-sai.jpeg", alt: "A modern two-storey house behind a clipped hedge on a suburban street, San Sai, Chiang Mai" },
     { src: areas_6, file: "santitham.jpeg", alt: "A two-storey townhouse with a shaded forecourt on a residential street, Santitham, Chiang Mai" },
-    { src: areas_7, file: "wat-ket.jpeg", alt: "A timber garden house and a jetty on the bank of the Ping river, Riverside, Chiang Mai" },
+    { src: areas_7, file: "wat-ket.jpeg", alt: "A timber garden house and a jetty on the bank of the Ping river, Wat Ket, Chiang Mai" },
   ],
   "cosmoshouse": [
     { src: cosmoshouse_0, file: "01-b14bc0ac-4aec-4214-98a0-ce08ad9c2105.jpeg", alt: "" },
