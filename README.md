@@ -713,8 +713,9 @@ site replaced the older business-consulting one, and those four services sit at
 
 Two things were written here on 24/08/2026 as hard blockers to clear before any deploy. The
 deploy happened and neither was ever recorded as closed. The first is now tested and works. The
-second is still unknown rather than good; establish it before trusting that path, and record the
-answer here.
+second is now half answered: the request path is verified, the paid path is not, and the wiring
+is not what this section long said it was. Read item 2 before trusting that path, and record the
+paid run here when it happens.
 
 1. **Contact form delivery, end to end: VERIFIED 09/11/2026.** A marked test enquiry was
    submitted through the live form at `/contact` and arrived in the `hi@agentsiam.com` Zoho
@@ -726,28 +727,57 @@ answer here.
    Vercel. `.env.example` documents all seventeen variables. A mail from the monthly stay
    request form is in the same inbox, so that path sends too, though it was not tested here.
    The test enquiry is still in the inbox and wants deleting by hand.
-2. **A real Beds24 test booking, end to end.** There is no Beds24 sandbox, so it charges a real
-   card against the live account and has to be cleaned up afterwards. The procedure and the cost
-   are in `as-work/2026-08-18-website-launch-blockers/test-booking-runbook.md`. Whether it has
-   ever been run is not recorded anywhere in this repo. What has changed since that runbook was
-   written, and which half of it is still runnable, is in `stripe-beds24-handover.md` beside it.
+2. **A real Beds24 test booking, end to end. The request half is VERIFIED 10/11/2026; the paid
+   half is not.** Part A of the runbook was run on production, where the request path needs no
+   Stripe: booking 95951578 for 12 to 14 October 2027, two adults and one child, quoted THB 5,800.
+   Every step passed. The Beds24 booking carried status `request`, `numAdult 2` / `numChild 1`,
+   the `Website request` flag and the right notes; the notification mail reached
+   `hi@agentsiam.com` with "2 adults, 1 children" rather than 3 adults; no guest mail was sent,
+   which is correct because `notifyGuest` is off on that path; the two nights came off the public
+   calendar and came back after the cancel. Full write-up in
+   `as-work/2026-08-18-website-launch-blockers/findings.md`.
 
-   **The publishable key in production is a live-mode key, verified 09/11/2026.** It is served in
-   two of the twenty six JavaScript chunks the live `/lotushouse` page loads, alongside
-   `loadStripe` and `PaymentElement`, so the pay option renders and `PAYMENTS_ENABLED` is true on
-   the live site. Searching the page source and only some of those chunks is how an earlier pass
-   concluded the opposite. Whether `STRIPE_SECRET_KEY` is live mode too was not checked, and a
-   mismatched pair fails at confirmation rather than taking money. Until that is established,
-   treat a checkout on the live site as able to take a real payment, and exercise the paid path on
-   a preview deployment with test-mode keys instead. The runbook's "the money is not" belongs to
-   that preview, not here.
+   Two things that run established about the history. **Both website paths had already run** and
+   nothing recorded it. Seven website bookings exist on the account, all cancelled, and three
+   carry a `custom1` beginning `stripe:`: one created 14/08/2026 and two on 24/08/2026. Since
+   `attachPaymentIntent` writes that marker in the same request flow as the hold, this site was
+   creating live Stripe PaymentIntents on both dates. **Second, the Stripe webhook handler almost
+   certainly ran at some point**, because `cancelBooking` writes its reason into `flagText` and
+   `Payment failed` exists in only one place in this codebase,
+   `src/app/api/stripe/webhook/route.ts`. The date cannot be fixed: the whole 24/08 cluster was
+   modified again on 28/09/2026 and `modifiedTime` holds only the last touch, and a flag can be
+   hand-typed, as `TEST - cancelled` on one booking shows. None of it proves the webhook works
+   today, no payment has ever succeeded, and no booking carries the sweep's own `Unpaid, released
+   after 30 minutes` flag, so the hold sweep has never released anything.
 
-   **Open, and a Stripe dashboard check.** Whether the live account has a webhook registered
-   against `https://www.agentsiam.com/api/stripe/webhook` whose signing secret matches the one set
-   on this project. `src/app/api/stripe/webhook/route.ts` is what flips a paid hold to confirmed,
-   and `STRIPE_WEBHOOK_SECRET` being set proves nothing about the endpoint existing at Stripe's
-   end. With it missing or mismatched, a guest who pays gets a charge, no confirmation, and a hold
-   the sweep then declines to cancel.
+   **The wiring, checked 09/11/2026. The publishable key in production is a live-mode key.** It is
+   served in two of the twenty six JavaScript chunks the live `/lotushouse` page loads, alongside
+   `loadStripe` and `PaymentElement`, so `PAYMENTS_ENABLED` is true and the page renders its "Book
+   now, pay online" button. Searching the page source, and only some of those chunks, is how an
+   earlier pass concluded the opposite, which is why the method is written down here.
+   `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and the Beds24 refresh token are set too: an
+   unparseable POST to `/api/booking/checkout` answers 400 rather than 503, and an unsigned POST
+   to `/api/stripe/webhook` answers 400 `Unsigned.` rather than 503. Neither probe writes
+   anything. So the live site can take a real card.
+
+   The distinction that matters, because there is no Beds24 sandbox: **production charges a real
+   card, the procedure does not.** Where to run the paid path, and why it is not the preview
+   deployment the runbook assumes, is in
+   `as-work/2026-08-18-website-launch-blockers/part-b-handoff.md`: the Stripe keys are shared
+   between Production and Preview, so a test key saved at the wrong scope puts the live site into
+   test mode, and a Stripe webhook cannot get past a preview's login wall.
+
+   Three things remain unknown, and each needs a dashboard rather than the code. Whether the live
+   Stripe account **still** has a webhook endpoint registered against
+   `https://www.agentsiam.com/api/stripe/webhook`, subscribed to `payment_intent.succeeded`, with
+   a signing secret matching the one set here. `STRIPE_WEBHOOK_SECRET` being set here proves
+   nothing about an endpoint existing at Stripe's end, and that endpoint is what flips a paid hold
+   to confirmed, so with it missing or mismatched a guest who pays gets a charge, no confirmation,
+   and a hold the sweep then declines to cancel. Note the `www`, because the bare domain
+   308-redirects and Stripe does not follow redirects on delivery. Whether `STRIPE_SECRET_KEY` is
+   itself live mode, since a mismatched pair fails at confirmation rather than taking money. And
+   whether `CRON_SECRET` is set as opposed to only `BEDS24_WEBHOOK_SECRET`, because only the first
+   makes Vercel's scheduled request authenticate and the hold sweep 401s in silence otherwise.
 
 The homepage fork panel photograph is in place: it asks for `team-group-portrait` and
 `src/photos/team/agentsiam-team-group-portrait.jpg` exists, so both panels render photographs.
