@@ -3,6 +3,7 @@ import { Logo } from "./logo";
 import { getDictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
+import { areaName } from "@/lib/area-content";
 import { MANAGEMENT_CITIES } from "@/lib/management-cities";
 import { CONTACT_EMAIL, POSTAL_ADDRESS } from "@/lib/site";
 
@@ -49,7 +50,10 @@ export function Footer({ locale }: { locale: Locale }) {
       heading: t.footAreas,
       links: AREAS.map((area) => ({
         href: href(`/destinations/${area.slug}`),
-        label: area.name,
+        // areas.ts carries one English name per area. areaName resolves the dictionary
+        // label for the locale and falls back to that English name, so the footer stops
+        // printing "Nimman" and "Old City" on /th and /zh beside a translated heading.
+        label: areaName(t, area.slug),
       })),
     },
     {
