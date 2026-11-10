@@ -265,7 +265,12 @@ async function notify(request: Notification): Promise<void> {
     ["Arrival", request.arrival],
     ["Departure", request.departure],
     ["Nights", String(nights)],
-    ["Guests", `${request.adults} adults, ${request.children} children`],
+    // A noun label and a bare number, like every other row here, rather than a sentence
+    // that has to agree with the count. "Adults 1" and "Children 1" are correct at any
+    // number; "1 adults, 1 children" was not, and a pluralising helper would be one more
+    // thing to get right in three languages later.
+    ["Adults", String(request.adults)],
+    ["Children", String(request.children)],
     ["Quoted total", money],
     ["Name", `${request.firstName} ${request.lastName}`],
     ["Email", request.email],
