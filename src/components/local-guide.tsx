@@ -6,8 +6,7 @@ import { WhatsAppCta } from "@/components/whatsapp-cta";
 import { getDictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { areaName } from "@/lib/area-content";
-import { categoryIcon } from "@/lib/guide-icons";
-import { tagLabel, tagsInFamily } from "@/lib/guide-vocabulary";
+import { categoryIcon, categoryLabel, tagLabel, tagsInFamily } from "@/lib/guide-vocabulary";
 import { PHOTOS } from "@/lib/photos.generated";
 import { GUIDE_CATEGORIES, GUIDE_DISTANCES, GUIDE_PLACES, GUIDE_TAGS } from "@/lib/guide.generated";
 import { JsonLd } from "@/components/json-ld";
@@ -340,7 +339,7 @@ export function LocalGuide({
                     <span aria-hidden="true" className="mr-1.5">{categoryIcon(p.category)}</span>
                     {p.name}
                   </p>
-                  <p className="eyebrow mt-1">{p.category}</p>
+                  <p className="eyebrow mt-1">{categoryLabel(p.category, locale)}</p>
                   {p.comment ? <p className="mt-2 line-clamp-3 text-[13.5px] text-body">{p.comment}</p> : null}
                   <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 pt-3">
                     <span className="text-[12.5px] text-muted">
@@ -459,7 +458,7 @@ export function LocalGuide({
             className={chip(category === name)}
           >
             <span aria-hidden="true" className="mr-1.5">{categoryIcon(name)}</span>
-            {name}
+            {categoryLabel(name, locale)}
           </Link>
         ))}
       </div>
@@ -572,7 +571,7 @@ export function LocalGuide({
                     </div>
 
                     <p className="eyebrow mt-1">
-                      {place.category}
+                      {categoryLabel(place.category, locale)}
                       {placeArea ? ` · ${placeArea}` : ` · ${t.guideOutsideAreas}`}
                     </p>
 

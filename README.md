@@ -549,11 +549,18 @@ The pipeline, so nobody has to think about image formats:
   renders a `notFound()` boundary this way; forcing the catch-all dynamic was tried and
   changed nothing. Fixing it properly means the proxy matching the route table and rewriting
   to a real page with a 404 status, which is more machinery than the problem is worth today.
-- **Guide place names, categories and host notes are English on every locale.** They come
+- **Guide place names and host notes are English on every locale.** They come
   from `src/lib/guide.generated.ts`, built from an English sheet and never hand-edited. Since
   06/09/2026 the guide carries its own note saying so, and the copies on `/destinations/*`
   are wrapped in `lang="en"` so a Thai voice engine does not read English aloud in Thai. The
-  real fix is in the sheet.
+  real fix is in the sheet. **Categories left this gap on 10/11/2026**, Paul's call: they are
+  a closed set of fifteen values rather than sheet prose, so they moved into
+  `src/lib/guide-vocabulary.json` with Thai and Chinese labels, came out of the note, and lost
+  their `lang="en"`. Tags, added the same day, carried all three languages from the start. The
+  English name stays the key in both cases, so a `?for=` or `?tag=` link means the same thing
+  in any locale. The fifteen category labels and the forty-one tag labels in Thai and Chinese
+  were written by a session and have had no native read, like the other unreviewed strings
+  recorded in this section.
 - **The vacation rental rich result is forfeited, not broken.** Google requires `geo` on a
   `VacationRental`, and exact coordinates are booking-confirmation material under the same
   rule the property page and the results map already follow. Checked against the Rich Results

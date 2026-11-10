@@ -806,8 +806,16 @@ export const en = {
   bkCardNote: "Card details go straight to our payment provider and are never stored on this site.",
 
   // -- guide translation state ---------------------------------------------
-  // The guide is 551 English text nodes on /th with no note at all: place names, categories and the hosts' own comments all come from an English sheet that is never hand-edited. Its own note rather than the site-wide one, which names property descriptions and legal pages and does not describe this page.
-  guidePendingNote: "Place names, categories and the hosts' notes on this page are written in English by the hosts. The walking and driving times work in any language.",
+  // The guide was 551 English text nodes on /th with no note at all: place names,
+  // categories and the hosts' own comments all came from an English sheet that is never
+  // hand-edited. Its own note rather than the site-wide one, which names property
+  // descriptions and legal pages and does not describe this page.
+  //
+  // Categories came out of this note when they were translated: they are a closed set of
+  // fifteen values in guide-vocabulary.json, not sheet prose, so there is nothing left to
+  // disclose about them. Place names and the hosts' notes still come from the sheet as
+  // written, and the note names those two and nothing else.
+  guidePendingNote: "Place names and the hosts' notes on this page are written in English by the hosts. The walking and driving times work in any language.",
 
   // -- contact form states -------------------------------------------------
   // The success and error states were hardcoded English on the owner conversion point: a Thai owner who submitted successfully was answered with "Got it."

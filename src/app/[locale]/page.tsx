@@ -8,7 +8,7 @@ import { JsonLd } from "@/components/json-ld";
 import { faqSchema } from "@/lib/structured-data";
 import { GUIDE_DISTANCES, GUIDE_PLACES } from "@/lib/guide.generated";
 import { guideStart, guideStartLabel } from "@/lib/guide-start";
-import { categoryIcon } from "@/lib/guide-icons";
+import { categoryIcon, categoryLabel } from "@/lib/guide-vocabulary";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
@@ -531,7 +531,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
               <li key={place.name} className="rounded-panel border border-hairline p-5">
                 <span aria-hidden="true" className="text-[22px]">{categoryIcon(place.category)}</span>
                 <p className="mt-2 font-display text-[16px] font-semibold leading-snug">{place.name}</p>
-                <p className="mt-1 text-[13px] text-muted">{place.category}</p>
+                <p className="mt-1 text-[13px] text-muted">{categoryLabel(place.category, locale)}</p>
                 <p className="mt-3 text-[13.5px] font-semibold text-primary">
                   {t.homeGuideWalk.replace("{n}", String(guideDist[place.name].walk))}
                 </p>

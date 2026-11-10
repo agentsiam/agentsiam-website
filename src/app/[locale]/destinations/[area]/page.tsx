@@ -17,7 +17,7 @@ import {
   guidePlacesInArea,
 } from "@/lib/area-content";
 import { pickPhoto } from "@/lib/photos";
-import { categoryIcon } from "@/lib/guide-icons";
+import { categoryIcon, categoryLabel } from "@/lib/guide-vocabulary";
 import { propertiesInArea } from "@/lib/property";
 import { searchToQuery } from "@/lib/search";
 import { pageMeta, routeOgImage } from "@/lib/site";
@@ -244,18 +244,17 @@ export default async function AreaPage({
                   </span>
                   <span lang={locale === "en" ? undefined : "en"}>{place.name}</span>
                 </h3>
-                {/* The place name, its category and the host's note all come from the
-                    generated guide, which is built from an English sheet and is never
-                    hand-edited, so all three stay English on /th and /zh. lang="en" is
-                    the honest markup for that: a Thai voice engine reading English aloud
-                    in Thai is the failure this attribute exists to prevent. The section
-                    intro already says the notes are the hosts' own. */}
-                <p
-                  className="eyebrow mt-1.5"
-                  lang={locale === "en" ? undefined : "en"}
-                >
-                  {place.category}
-                </p>
+                {/* The place name and the host's note come from the generated guide,
+                    which is built from an English sheet and is never hand-edited, so both
+                    stay English on /th and /zh. lang="en" is the honest markup for that: a
+                    Thai voice engine reading English aloud in Thai is the failure this
+                    attribute exists to prevent. The section intro already says the notes
+                    are the hosts' own.
+
+                    The category is not one of them. It is a closed set of fifteen values
+                    translated in guide-vocabulary.json, so it carries no lang and reads in
+                    the guest's own language. */}
+                <p className="eyebrow mt-1.5">{categoryLabel(place.category, locale)}</p>
                 {place.comment ? (
                   <p
                     lang={locale === "en" ? undefined : "en"}

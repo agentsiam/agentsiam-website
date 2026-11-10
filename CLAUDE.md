@@ -158,9 +158,6 @@ routing run, so it gets the same coordinate lookup and duplicate check as a shee
   working exactly as designed.
 - `src/lib/site.ts` uses `??` for `NEXT_PUBLIC_SITE_URL`, so an **empty** value in `.env` kills the
   build with `ERR_INVALID_URL` while an unset one is fine.
-- The local guide's neighbourhood filter chips render `AREAS[].name` from `src/lib/areas.ts`, which
-  is English only, so they stay English on every locale. Its category and tag labels are localised
-  correctly, so only half that page's chips are affected. Not a copy bug, and still open.
 - `not-found.tsx` renders **client-side only in production**. `next dev` server-renders it,
   `next start` does not: `/nope` returns a 404 with the full page under JavaScript and an
   empty `<body>` without it. Every real page server-renders correctly, so a blank 404 is not
