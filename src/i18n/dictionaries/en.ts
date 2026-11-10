@@ -599,7 +599,7 @@ export const en = {
   bsEmailCta: "Email us directly",
   // /management/[city] hero. Replaces the wording that said three services when there are six. {city} is the English city name.
   mgmt2HeroSub: "The same services we run in Chiang Mai, available in {city} when the work comes. Take the ones your property needs and leave the rest.",
-  mgmt2ServicesIntro: "A menu, not a fixed path. Six services, and most owners take two or three. Neither the study nor the permission is a step you have to pass before the next one, and we will tell you which ones apply to your property.",
+  mgmt2ServicesIntro: "A menu, not a fixed path. Six services. Neither the study nor the permission is a step you have to pass before the next one, and we will tell you which ones apply to your property.",
   mgmt2Svc1Body: "A site visit, a written analysis and an hour on a call going through it. We model the property against real comparables and end on a straight Go or No-Go. A projection is not a promise, so we show you the conservative case and judge on that one.",
   mgmt2Svc2Body: "Short-stay letting in Thailand is governed by the Hotel Act and the non-hotel accommodation framework. We assess what the property is allowed to do, prepare the documents and file under power of attorney. We handle the application. We cannot guarantee the government's decision, and the route differs for a condominium, where the building's own written permission is the basis rather than the exemption.",
   mgmt2Svc3Body: "Listings across the main OTA channels, a direct booking site so not every night pays commission, channel and rate management, guest communication, review management, and compliance upkeep including TM30 reporting.",
