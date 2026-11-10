@@ -83,6 +83,51 @@ const MAX_WALK_MINUTES = 90;
 const AREA_CAP_M = 2000;
 
 /**
+ * Everything the guide serves is in or around Chiang Mai. A place outside this box is a
+ * link pointing at the wrong business, not a place we are 20km off about.
+ *
+ * Generous on purpose: Doi Inthanon is 86km out and legitimate, so the box is the province
+ * and its neighbours, not the city.
+ */
+const BOUNDS = { minLat: 17.5, maxLat: 20.5, minLng: 97.5, maxLng: 100.5 };
+
+/**
+ * Distance is the loose half of the same-place-twice check; the name comparison is the
+ * sharp half. 400m rather than something tighter because two pins on one temple complex
+ * can be that far apart.
+ */
+const NEAR_DUPLICATE_M = 400;
+
+/**
+ * Rows that share one Google Maps link and are still two different places.
+ *
+ * Sharing a link is normally a copy-paste error and stops the build. These are the
+ * exceptions, and each one is a human decision recorded rather than a rule inferred.
+ */
+const SHARED_LINKS = [
+  {
+    link: "https://maps.app.goo.gl/EonAu9mmRSNANvJz5",
+    why: "Shangri-La Health Club and Shangri-La Hotel Pool: two facilities in one building, covered by one Maps listing. The same reason MERGE below leaves them as two places.",
+  },
+];
+
+/**
+ * Pairs the same-place-twice check flags that a human has already confirmed are two
+ * places. Without this list the same warnings print on every run, and a warning that is
+ * always there is a warning nobody reads.
+ */
+const NOT_DUPLICATES = [
+  {
+    names: ["Baggage storage, AIRPORTELs (Central Airport Mall)", "Central Airport"],
+    why: "A baggage counter inside a shopping mall, and the mall itself. The names only look alike because one contains the other.",
+  },
+  {
+    names: ["Tops Supermarket", "Rimping Supermarket"],
+    why: "Two different supermarket chains a few hundred metres apart. Only the word Supermarket is shared.",
+  },
+];
+
+/**
  * Places entered twice that are genuinely one place.
  *
  * Deliberately an explicit list and not an automatic rule. Merging by coordinates would
@@ -194,6 +239,39 @@ function metres(a, b) {
   const dp = p2 - p1, dl = ((b.lng - a.lng) * Math.PI) / 180;
   const h = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+// --- names -------------------------------------------------------------------
+
+/** Case, space and hyphen insensitive, so "Wat Umong" and "wat-umong" compare equal. */
+function normaliseKey(s) {
+  return s.toLowerCase().replace(/[\s_-]+/g, "");
+}
+
+/** Levenshtein, only ever run on the handful of pairs already known to be close together. */
+function editDistance(a, b) {
+  const rows = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 0; j <= b.length; j++) rows[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      rows[i][j] = Math.min(
+        rows[i - 1][j] + 1,
+        rows[i][j - 1] + 1,
+        rows[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+  }
+  return rows[a.length][b.length];
+}
+
+/**
+ * Scored as a proportion of the longer name rather than an absolute edit count. Three
+ * edits is a typo in a long name and a different business entirely in a short one.
+ */
+function similarName(a, b) {
+  const x = normaliseKey(a), y = normaliseKey(b);
+  if (x.includes(y) || y.includes(x)) return true;
+  return editDistance(x, y) / Math.max(x.length, y.length) <= 0.4;
 }
 
 // --- resolution --------------------------------------------------------------
@@ -355,6 +433,36 @@ for (const f of FIX) {
 }
 console.log(`fixed: ${FIX.length} note correction(s)`);
 
+/**
+ * Two places pointing at one Maps link.
+ *
+ * Almost always a copy-paste error, and a silent one: coordinates below are cached by
+ * link, so both rows resolve to the same point and one of the two is pinned somewhere it
+ * is not, with nothing anywhere saying so. Real exceptions go in SHARED_LINKS.
+ *
+ * Deliberately above the resolution loop. Nothing here needs the network, so a bad link
+ * fails in a second rather than after a hundred and fifty requests.
+ */
+{
+  const allowed = new Set(SHARED_LINKS.map((s) => s.link));
+  const byLink = new Map();
+  for (const p of places) {
+    if (!p.google || allowed.has(p.google)) continue;
+    if (!byLink.has(p.google)) byLink.set(p.google, []);
+    byLink.get(p.google).push(p.name);
+  }
+  const clashes = [...byLink].filter(([, names]) => names.length > 1);
+  if (clashes.length) {
+    const lines = clashes.map(([link, names]) => `  ${names.join(" + ")}\n    ${link}`);
+    throw new Error(
+      `${clashes.length} Google Maps link(s) are used by more than one place:\n${lines.join("\n")}\n\n` +
+        `One of each pair is pinned where it is not. Correct the link in ` +
+        `scripts/guide-extra.csv, or add it to SHARED_LINKS in this script with the reason ` +
+        `it is genuinely one listing.`,
+    );
+  }
+}
+
 
 // coordinates, cached by google link
 let resolved = 0;
@@ -372,6 +480,27 @@ console.log(`coordinates: ${places.length - resolved} cached, ${resolved} newly 
 
 const missing = places.filter((p) => !Number.isFinite(p.lat));
 if (missing.length) throw new Error(`${missing.length} place(s) without coordinates; refusing to write a partial guide`);
+
+/**
+ * A link that resolved somewhere no guest is going. See BOUNDS.
+ *
+ * This is the failure a cache cannot notice: a wrong link resolves cleanly, gets cached,
+ * and every later run reads the cache and agrees with itself.
+ */
+{
+  const strays = places.filter(
+    (p) => p.lat < BOUNDS.minLat || p.lat > BOUNDS.maxLat || p.lng < BOUNDS.minLng || p.lng > BOUNDS.maxLng,
+  );
+  if (strays.length) {
+    const lines = strays.map((p) => `  ${p.name} -> ${p.lat},${p.lng}\n    ${p.google}`);
+    throw new Error(
+      `${strays.length} place(s) resolved outside Chiang Mai:\n${lines.join("\n")}\n\n` +
+        `That is a wrong link, not a distant place. Find the business in Maps again and ` +
+        `replace the link. scripts/guide-cache.json is keyed by link, so a corrected link ` +
+        `resolves fresh and the stale entry is simply never read again.`,
+    );
+  }
+}
 
 /**
  * GUIDE_DISTANCES is keyed by place name, so two places sharing one would collide and a
@@ -392,6 +521,41 @@ if (missing.length) throw new Error(`${missing.length} place(s) without coordina
         `Either they are one place (add to MERGE) or two (add to RENAME). Refusing to drop one silently.`,
     );
   }
+}
+
+/**
+ * The same place entered twice under two names, which the check above cannot see.
+ *
+ * Proximity alone cannot see it either: in a dense Chiang Mai street an ATM sits a metre
+ * from the 7-Eleven containing it and a pharmacy 23m from another pharmacy, which is sixty
+ * warnings nobody reads. The signal is proximity AND a similar name, so distance is the
+ * loose filter and the name is the sharp one.
+ *
+ * Warns rather than throws. Shangri-La Health Club and Shangri-La Hotel Pool share a
+ * coordinate and are deliberately two entries, so the judgement stays with a person;
+ * pairs already judged are in NOT_DUPLICATES and stay quiet.
+ */
+{
+  const settled = new Set(
+    NOT_DUPLICATES.map((n) => [...n.names].map(normaliseKey).sort().join("|")),
+  );
+  let found = 0;
+  for (let i = 0; i < places.length; i++) {
+    for (let j = i + 1; j < places.length; j++) {
+      const a = places[i], b = places[j];
+      if (settled.has([normaliseKey(a.name), normaliseKey(b.name)].sort().join("|"))) continue;
+      const d = metres(a, b);
+      if (d <= NEAR_DUPLICATE_M && similarName(a.name, b.name)) {
+        console.warn(`  ! ${Math.round(d)}m apart and similarly named: "${a.name}" / "${b.name}"`);
+        found++;
+      }
+    }
+  }
+  console.log(
+    found
+      ? `  ! ${found} possible duplicate(s); confirm each is really two places, then add it to NOT_DUPLICATES`
+      : `duplicates: none beyond the ${NOT_DUPLICATES.length} already settled`,
+  );
 }
 
 // neighbourhood, capped
