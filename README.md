@@ -338,6 +338,19 @@ The pipeline, so nobody has to think about image formats:
 
 ## Known gaps
 
+- **The owner copy pass, and its unreviewed Thai and Chinese (10/11/2026).** The pass that took
+  the stated management fee off the site and removed the claims a one-house portfolio cannot
+  support was written on 06/11/2026 in all three languages, and both of its commits say the Thai
+  and Chinese need a native read. They have not had one, so the English is the reviewed half and
+  the other two are not. What it changed: the hero leads on the core claim, the fee answer names
+  no percentage, per decisions 55 and 79 in the consulting repo's decisions log, and "most owners
+  take two or three", "most owners have never been told" and "the service most owners come for"
+  are gone. The first of those also survived in `mgmt2ServicesIntro`, which is the copy a reader
+  actually sees on `/management/phuket` and `/management/bangkok`, and was removed separately.
+  One claim of the same class is still standing on purpose: `hwExtra5Body` says most owners'
+  photographs were taken to remember a room rather than to let it. That is a claim about amateur
+  photography rather than about AgentSiam's owners, so it wants a decision rather than a deletion.
+
 - **The two editorial outlets, and what is unreviewed in them (09/11/2026).**
   `/journal` (Journal of Chiang Mai, guests) and `/host-newsletter` (Chiang Mai Host Newsletter,
   owners) publish editorial prose from `src/lib/editorial.ts` rather than the dictionaries; that
