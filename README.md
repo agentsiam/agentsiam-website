@@ -599,6 +599,22 @@ The pipeline, so nobody has to think about image formats:
   unknown and it was left out rather than guessed. Two candidates, Ferment Space and
   Friend's Table, resolved correctly but route more than 12km from the house and are
   excluded by the guide's own cutoff, not an error.
+- ~~The guide library researched in August was never merged.~~ Resolved, 10/11/2026, and
+  re-implemented on `main` in three pieces rather than cherry-picked: the branch predates the
+  08/11 routing rewrite and conflicts in seven files, and one of its commits would have undone
+  routing from the public start point. The build guards landed first, then the tag vocabulary,
+  then the data: thirteen places (six bars, two Sanmai Ramen branches, two viewpoints, a sauna,
+  a zipline booking office and an archery range) and twenty-two websites. 162 places in the
+  data, up from 149; 149 on the page, up from 138. Two of the thirteen, Chiang Mai Sauna Ice
+  Bath Eudemonia at 13.6km and Huay Tueng Thao Reservoir at 15.6km, route past the 12km cutoff
+  and sit in the data without appearing, the same as Ferment Space and Friend's Table. "San
+  Mai", left out on 12/09/2026 because it shared a Maps link with "B Sam Cook" and its location
+  was unknown, is back as `Sanmai Ramen Nimman` and `Sanmai Ramen Suriwong`, each with its own
+  link. The branch's price bands were not imported: no other note in the guide carries a dollar
+  sign and nothing on the page explains the scale, so the descriptive half of each note was
+  kept and the band dropped, which leaves five of the thirteen with an empty note. Forty of the
+  other 149 already have one. Still outstanding from the branch: the sheet-as-inbox importer,
+  `npm run guide:import`, and its runbook.
 - **`/lotushouse/local-guide` drops any place more than 12km away, and paginates the rest.**
   Both Paul's decisions, 11/09/2026. Before this the guide showed every place in
   `GUIDE_PLACES` regardless of distance, sorted into the "Further out" filter rather than

@@ -631,6 +631,23 @@ export function LocalGuide({
                           labels={directionsLabels}
                         />
                       ) : null}
+                      {/* Quieter than the directions buttons on purpose. Where a guest is
+                          standing is the question this page answers; a menu or an opening
+                          time is the question the business's own page answers, and only a
+                          seventh of the guide has one. Named for a screen reader the same
+                          way the directions links are, because a list of twenty-two links
+                          all reading "Website" is not a list anyone can pick from. */}
+                      {place.website ? (
+                        <a
+                          href={place.website}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`${t.guideWebsiteOf.replace("{place}", place.name)}, ${t.newTab}`}
+                          className="underline underline-offset-2 transition-colors hover:text-ink print:hidden"
+                        >
+                          {t.guideWebsite}
+                        </a>
+                      ) : null}
                     </div>
                   </li>
                 );

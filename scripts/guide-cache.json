@@ -749,6 +749,71 @@
       "lat": 18.7661033,
       "lng": 98.9920355,
       "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/3Wi1opCdBTfAtDRu9": {
+      "lat": 18.78291,
+      "lng": 98.99801,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/2m7QgJycCbrFPuVT9": {
+      "lat": 18.7852702,
+      "lng": 99.0026149,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/tqEHng79KUDmT4ae9": {
+      "lat": 18.7889544,
+      "lng": 98.9879476,
+      "via": "apple-link"
+    },
+    "https://www.google.com/maps/place/SALT+%26+FIRE+Rooftop+Bar/@18.796678,98.981099,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bc8a103dde7:0xf660630854a5dc45!8m2!3d18.796678!4d98.981099": {
+      "lat": 18.796678,
+      "lng": 98.981099,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/X8zkAJbLJuEpxJNZ7": {
+      "lat": 18.7847636,
+      "lng": 99.003033,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/yGPTzhcUUUjtG4sw7": {
+      "lat": 18.7983727,
+      "lng": 98.9707212,
+      "via": "apple-link"
+    },
+    "https://www.google.com/maps/place/Chiang+Mai+Sauna+Ice+Bath+Eudemonia/@18.7366909,98.9009549,17z/data=!3m1!4b1!4m6!3m5!1s0x30da37456ec1f00b:0x26607b70c5f40bc6!8m2!3d18.7366909!4d98.9009549": {
+      "lat": 18.7366909,
+      "lng": 98.9009549,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/ztXcPKbfnbHUuyea6": {
+      "lat": 18.8665946,
+      "lng": 98.9448834,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/B24VTnK7PR5ed7oR8": {
+      "lat": 18.79632,
+      "lng": 98.94347,
+      "via": "apple-link"
+    },
+    "https://www.google.com/maps/place/Sanmai+Ramen+Nimman/@18.7967975,98.9685472,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bb756f4bc13:0x8c38135119dcb318!8m2!3d18.7967975!4d98.9685472": {
+      "lat": 18.7967975,
+      "lng": 98.9685472,
+      "via": "google-pin"
+    },
+    "https://www.google.com/maps/place/Sanmai+Ramen+Suriwong/@18.7810633,98.9978176,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bde2ec1a445:0x95928e6825a76341!8m2!3d18.7810633!4d98.9978176": {
+      "lat": 18.7810633,
+      "lng": 98.9978176,
+      "via": "google-pin"
+    },
+    "https://maps.app.goo.gl/St8pqsTyogDMTRHq8": {
+      "lat": 18.7843634,
+      "lng": 98.9827745,
+      "via": "apple-link"
+    },
+    "https://maps.app.goo.gl/x7RksPK1hQnK5ePL6": {
+      "lat": 18.8077714,
+      "lng": 99.0198017,
+      "via": "apple-link"
     }
   },
   "routes": {
@@ -1491,6 +1556,71 @@
       "walk": 30,
       "drive": 4,
       "metres": 2232
+    },
+    "start:7 Eleven|https://maps.app.goo.gl/3Wi1opCdBTfAtDRu9": {
+      "walk": 20,
+      "drive": 3,
+      "metres": 1536
+    },
+    "start:7 Eleven|https://maps.app.goo.gl/2m7QgJycCbrFPuVT9": {
+      "walk": 26,
+      "drive": 4,
+      "metres": 1964
+    },
+    "start:7 Eleven|https://maps.app.goo.gl/tqEHng79KUDmT4ae9": {
+      "walk": 35,
+      "drive": 5,
+      "metres": 2594
+    },
+    "start:7 Eleven|https://www.google.com/maps/place/SALT+%26+FIRE+Rooftop+Bar/@18.796678,98.981099,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bc8a103dde7:0xf660630854a5dc45!8m2!3d18.796678!4d98.981099": {
+      "walk": 58,
+      "drive": 9,
+      "metres": 4366
+    },
+    "start:7 Eleven|https://maps.app.goo.gl/X8zkAJbLJuEpxJNZ7": {
+      "walk": 26,
+      "drive": 4,
+      "metres": 1945
+    },
+    "start:7 Eleven|https://maps.app.goo.gl/yGPTzhcUUUjtG4sw7": {
+      "walk": 68,
+      "drive": 8,
+      "metres": 5072
+    },
+    "start:7 Eleven|https://www.google.com/maps/place/Chiang+Mai+Sauna+Ice+Bath+Eudemonia/@18.7366909,98.9009549,17z/data=!3m1!4b1!4m6!3m5!1s0x30da37456ec1f00b:0x26607b70c5f40bc6!8m2!3d18.7366909!4d98.9009549": {
+      "walk": null,
+      "drive": 15,
+      "metres": 13643
+    },
+    "start:7 Eleven|https://maps.app.goo.gl/ztXcPKbfnbHUuyea6": {
+      "walk": null,
+      "drive": 23,
+      "metres": 15579
+    },
+    "start:7 Eleven|https://maps.app.goo.gl/B24VTnK7PR5ed7oR8": {
+      "walk": null,
+      "drive": 12,
+      "metres": 7600
+    },
+    "start:7 Eleven|https://www.google.com/maps/place/Sanmai+Ramen+Nimman/@18.7967975,98.9685472,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bb756f4bc13:0x8c38135119dcb318!8m2!3d18.7967975!4d98.9685472": {
+      "walk": 69,
+      "drive": 9,
+      "metres": 5158
+    },
+    "start:7 Eleven|https://www.google.com/maps/place/Sanmai+Ramen+Suriwong/@18.7810633,98.9978176,17z/data=!3m1!4b1!4m6!3m5!1s0x30da3bde2ec1a445:0x95928e6825a76341!8m2!3d18.7810633!4d98.9978176": {
+      "walk": 19,
+      "drive": 3,
+      "metres": 1404
+    },
+    "start:7 Eleven|https://maps.app.goo.gl/St8pqsTyogDMTRHq8": {
+      "walk": 34,
+      "drive": 5,
+      "metres": 2557
+    },
+    "start:7 Eleven|https://maps.app.goo.gl/x7RksPK1hQnK5ePL6": {
+      "walk": 75,
+      "drive": 9,
+      "metres": 5633
     }
   }
 }

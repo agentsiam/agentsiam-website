@@ -356,6 +356,11 @@ export const en = {
   // Labels the food-tag filter row. "Food" rather than "Cuisine": the row holds Bakery,
   // Dessert and Wine as well as Thai and Italian, and none of those is a cuisine.
   guideFilterTags: "Food",
+  // The visible label stays one word because it sits in a row beside the drive time and
+  // the two directions buttons. guideWebsiteOf is the accessible name, the same split the
+  // directions links already make.
+  guideWebsite: "Website",
+  guideWebsiteOf: "Website for {place}",
   guideFilterArea: "Neighbourhood",
   guideAll: "Everything",
   guideNearby: "Walkable",

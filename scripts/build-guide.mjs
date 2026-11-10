@@ -44,7 +44,7 @@ const ROOT = join(HERE, "..");
 const CACHE_PATH = join(HERE, "guide-cache.json");
 const OUT_PATH = join(ROOT, "src", "lib", "guide.generated.ts");
 const VOCABULARY_PATH = join(ROOT, "src", "lib", "guide-vocabulary.json");
-const TAGS_PATH = join(HERE, "guide-tags.json");
+const EXTRAS_PATH = join(HERE, "guide-extras.json");
 
 const SHEET_CSV =
   "https://docs.google.com/spreadsheets/d/1WmFb9ZdmDt_ku4cF49-KoYoaabeTaDwJYImmlI-BXbU/export?format=csv";
@@ -351,7 +351,7 @@ cache.coords ??= {};
 cache.routes ??= {};
 
 /**
- * The tag vocabulary and the assignments, both read and checked before any network work.
+ * The vocabulary and the per-place extras, both read and checked before any network work.
  *
  * Tags are an allowlist: a slug not in the vocabulary stops the build rather than being
  * dropped, because a silently dropped tag is a filter that quietly returns the wrong
@@ -361,7 +361,7 @@ const VOCABULARY_FILE = JSON.parse(readFileSync(VOCABULARY_PATH, "utf8"));
 const VOCABULARY = VOCABULARY_FILE.tags;
 const CATEGORY_NAMES = new Set(VOCABULARY_FILE.categories.map((c) => c.name));
 const TAG_SLUGS = VOCABULARY.map((tag) => tag.slug);
-const TAG_ASSIGNMENTS = JSON.parse(readFileSync(TAGS_PATH, "utf8")).tags;
+const EXTRAS = JSON.parse(readFileSync(EXTRAS_PATH, "utf8")).places;
 
 if (!Array.isArray(VOCABULARY) || !VOCABULARY.length) {
   throw new Error(`No tags in ${VOCABULARY_PATH}. The app reads the same file for labels.`);
@@ -369,8 +369,10 @@ if (!Array.isArray(VOCABULARY) || !VOCABULARY.length) {
 
 {
   const unknown = new Map();
-  for (const [name, slugs] of Object.entries(TAG_ASSIGNMENTS)) {
-    for (const slug of slugs) if (!TAG_SLUGS.includes(slug) && !unknown.has(slug)) unknown.set(slug, name);
+  for (const [name, extra] of Object.entries(EXTRAS)) {
+    for (const slug of extra.tags ?? []) {
+      if (!TAG_SLUGS.includes(slug) && !unknown.has(slug)) unknown.set(slug, name);
+    }
   }
   if (unknown.size) {
     const lines = [...unknown].map(([slug, where]) => {
@@ -379,7 +381,7 @@ if (!Array.isArray(VOCABULARY) || !VOCABULARY.length) {
     });
     throw new Error(
       `${unknown.size} tag(s) are not in the vocabulary:\n${lines.join("\n")}\n\n` +
-        `Either fix the slug in scripts/guide-tags.json, or add the tag to ` +
+        `Either fix the slug in scripts/guide-extras.json, or add the tag to ` +
         `src/lib/guide-vocabulary.json with its Thai and Chinese label.`,
     );
   }
@@ -487,21 +489,22 @@ for (const f of FIX) {
 console.log(`fixed: ${FIX.length} note correction(s)`);
 
 /**
- * Tags onto places, by name.
+ * The extras onto places, by name.
  *
- * A name in guide-tags.json that matches nothing stops the build, the same way a FIX that
+ * A name in guide-extras.json that matches nothing stops the build, the same way a FIX that
  * no longer applies does. Both guard the same failure: a place gets renamed, its entry here
- * goes quiet, and the tag disappears from the filter with nothing saying so. RENAME above
- * has already run, so a renamed place is keyed here by the name a guest sees.
+ * goes quiet, and its tags and website disappear with nothing saying so. RENAME above has
+ * already run, so a renamed place is keyed here by the name a guest sees.
  */
 {
   const byName = new Map(places.map((p) => [p.name, p]));
   const orphans = [];
-  for (const [name, slugs] of Object.entries(TAG_ASSIGNMENTS)) {
+  for (const [name, extra] of Object.entries(EXTRAS)) {
     const place = byName.get(name);
     if (!place) { orphans.push(name); continue; }
     // Vocabulary order, so reordering a place's list is not a diff in the generated file.
-    place.tags = TAG_SLUGS.filter((slug) => slugs.includes(slug));
+    place.tags = TAG_SLUGS.filter((slug) => (extra.tags ?? []).includes(slug));
+    place.website = extra.website ?? "";
   }
   if (orphans.length) {
     const lines = orphans.map((name) => {
@@ -509,14 +512,15 @@ console.log(`fixed: ${FIX.length} note correction(s)`);
       return `  "${name}"${guess ? `, did you mean "${guess}"?` : ""}`;
     });
     throw new Error(
-      `${orphans.length} name(s) in scripts/guide-tags.json match no place:\n${lines.join("\n")}\n\n` +
-        `Either the place was renamed or removed, or the name is mistyped. Tags are keyed by ` +
-        `the name after RENAME, which is the name a guest sees.`,
+      `${orphans.length} name(s) in scripts/guide-extras.json match no place:\n${lines.join("\n")}\n\n` +
+        `Either the place was renamed or removed, or the name is mistyped. Extras are keyed ` +
+        `by the name after RENAME, which is the name a guest sees.`,
     );
   }
-  for (const p of places) p.tags ??= [];
+  for (const p of places) { p.tags ??= []; p.website ??= ""; }
   const tagged = places.filter((p) => p.tags.length).length;
-  console.log(`tags: ${tagged} of ${places.length} places tagged, ${places.length - tagged} untagged`);
+  const sites = places.filter((p) => p.website).length;
+  console.log(`extras: ${tagged} of ${places.length} places tagged, ${sites} with a website`);
 }
 
 /**
@@ -748,6 +752,8 @@ export type GuidePlace = {
   area: string | null;
   /** Slugs from src/lib/guide-vocabulary.json. Empty is normal: a tag is a checked claim. */
   tags: string[];
+  /** The business's own page, never a directory listing of it. Empty where we have none. */
+  website: string;
   google: string;
   apple: string;
 };
@@ -779,6 +785,7 @@ ${places
     lng: ${p.lng},
     area: ${p.area ? q(p.area) : "null"},
     tags: ${JSON.stringify(p.tags)},
+    website: ${q(p.website)},
     google: ${q(p.google)},
     apple: ${q(p.apple)},
   },`,
@@ -806,5 +813,6 @@ console.log(`\nwrote ${OUT_PATH}`);
 console.log(
   `     ${places.length} places, ${categories.length} categories, ` +
     `${places.filter((p) => p.highlight).length} highlighted, ` +
-    `${TAG_SLUGS.filter((slug) => places.some((p) => p.tags.includes(slug))).length} tags in use`,
+    `${TAG_SLUGS.filter((slug) => places.some((p) => p.tags.includes(slug))).length} tags in use, ` +
+    `${places.filter((p) => p.website).length} websites`,
 );
