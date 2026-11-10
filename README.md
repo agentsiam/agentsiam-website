@@ -729,7 +729,25 @@ answer here.
 2. **A real Beds24 test booking, end to end.** There is no Beds24 sandbox, so it charges a real
    card against the live account and has to be cleaned up afterwards. The procedure and the cost
    are in `as-work/2026-08-18-website-launch-blockers/test-booking-runbook.md`. Whether it has
-   ever been run is not recorded anywhere in this repo.
+   ever been run is not recorded anywhere in this repo. What has changed since that runbook was
+   written, and which half of it is still runnable, is in `stripe-beds24-handover.md` beside it.
+
+   **The publishable key in production is a live-mode key, verified 09/11/2026.** It is served in
+   two of the twenty six JavaScript chunks the live `/lotushouse` page loads, alongside
+   `loadStripe` and `PaymentElement`, so the pay option renders and `PAYMENTS_ENABLED` is true on
+   the live site. Searching the page source and only some of those chunks is how an earlier pass
+   concluded the opposite. Whether `STRIPE_SECRET_KEY` is live mode too was not checked, and a
+   mismatched pair fails at confirmation rather than taking money. Until that is established,
+   treat a checkout on the live site as able to take a real payment, and exercise the paid path on
+   a preview deployment with test-mode keys instead. The runbook's "the money is not" belongs to
+   that preview, not here.
+
+   **Open, and a Stripe dashboard check.** Whether the live account has a webhook registered
+   against `https://www.agentsiam.com/api/stripe/webhook` whose signing secret matches the one set
+   on this project. `src/app/api/stripe/webhook/route.ts` is what flips a paid hold to confirmed,
+   and `STRIPE_WEBHOOK_SECRET` being set proves nothing about the endpoint existing at Stripe's
+   end. With it missing or mismatched, a guest who pays gets a charge, no confirmation, and a hold
+   the sweep then declines to cancel.
 
 The homepage fork panel photograph is in place: it asks for `team-group-portrait` and
 `src/photos/team/agentsiam-team-group-portrait.jpg` exists, so both panels render photographs.
