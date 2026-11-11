@@ -383,6 +383,79 @@ machine and the admin reads and writes the working tree directly, which is also 
 tested. Those writes are not committed by the admin: `git status` in that repository shows
 them.
 
+### Setting it up on Vercel
+
+Done once, and none of it lives in this repository: a GitHub token, and four variables in the
+Vercel project. Until both exist, `/admin` on any deployment answers a sign-in form that says it
+is not configured.
+
+**1. The token.** GitHub, Settings, Developer settings, Personal access tokens, Fine-grained
+tokens, Generate new token. Resource owner is the account that owns `agentsiam-consulting`.
+Repository access is Only select repositories, and that one repository alone. Permissions is
+Repository permissions, Contents, Read and write, and nothing else; GitHub adds Metadata read by
+itself and that is expected. Set an expiry and put the date in "Known gaps", because the day it
+lapses every read and every save in the admin starts failing. Copy the `github_pat_` value while
+it is on screen, because GitHub does not show it again.
+
+Scoped that narrowly, the worst a leaked token can do is commit to the document store, which has
+git history. A token with access to every repository would be a different object entirely, so
+this is the one setting not to be generous with.
+
+**2. The three secrets.** `ADMIN_COOKIE_SECRET` is any 32 characters or more, and under 32 is
+treated as unset rather than as weak:
+
+```bash
+openssl rand -base64 32
+```
+
+The two passphrases are one each for Paul and Nils, never shared between them, because which
+passphrase signed in is what the admin writes against a candidate as `added_by` and `updated_by`.
+Shared passphrases make that field a lie.
+
+**3. The variables.** Vercel, the project, Settings, Environment Variables. Four of them:
+`ADMIN_COOKIE_SECRET`, `ADMIN_PASSPHRASE_PAUL`, `ADMIN_PASSPHRASE_NILS` and `CRM_GITHUB_TOKEN`.
+Tick Preview to test on a branch, and Production when it goes live; the two can hold different
+passphrases and the same token. Mark them Sensitive so they cannot be read back out of the
+dashboard. Leave `CRM_LOCAL_PATH` unset there: it is a path on a laptop, it means nothing on
+Vercel, and the token takes precedence over it anyway.
+
+**4. Redeploy.** A deployment carries the variables it was built with, so adding one does not
+reach a build that already exists. Deployments, the branch's newest build, Redeploy.
+
+**5. Verify in the browser, in this order.** Each row proves a different half, and a failure in
+one tells you nothing about the rows below it.
+
+| Step | Proves | If it fails |
+|---|---|---|
+| `/admin` shows a sign-in form that does not say it is not configured | The variables reached this deployment | They are on the wrong environment, or nothing has been redeployed since they were set |
+| The passphrase signs in, and a wrong one does not | The cookie is being signed and read | `ADMIN_COOKIE_SECRET` is under 32 characters, which counts as unset |
+| `G-0003` lists three candidates | The GitHub read path works | The token cannot see the repository, or those files are not on `main` |
+| A saved change to a candidate is accepted | The GitHub write path works, which nothing else proves | Read the message on screen: it names the file and the repository |
+| A `poolvillachiangmai.directstays.com` link is refused and names the operator | `blocked-operators.json` is read on every save | That file is not on `main` |
+
+A save that worked puts a commit in `agentsiam-consulting` within a second or two, authored
+`agentsiam <hi@agentsiam.com>`, with a message like `Shortlist G-0003: add Villa 89 (Nils via the
+admin)`. That commit is the proof. The screen saying it saved is not.
+
+Wrong passphrases are rate limited to ten tries in ten minutes per address, so a tester who
+fat-fingers it repeatedly waits rather than concluding it is broken.
+
+**The signed-out check cannot be done with `curl` against a preview.** Every preview sits behind
+the Vercel login, so a redirect out of one is Vercel's wall rather than the admin's and the two
+are indistinguishable from outside. Do it in a browser that is signed in to Vercel and signed out
+of the admin: every admin page must bounce to the sign-in form, and every `/api/admin` route must
+answer 401.
+
+**A shareable preview link opens the admin's front door.** The link described in "Showing a
+preview to someone outside the team" opens the whole branch to anyone holding it, `/admin`
+included, which leaves the passphrase as the only wall. Do not issue one for a branch that
+carries the admin.
+
+**Rotating and revoking.** Changing `ADMIN_COOKIE_SECRET` and redeploying signs both people out,
+which is how a session is revoked. Deleting the token on GitHub stops reads and saves together:
+sign-in still works and every page then shows a store error, which is the quickest way to shut
+the admin without touching a deployment.
+
 ## Known gaps
 
 - **The renter shortlist admin has never run on Vercel (11/11/2026).** It was built and
@@ -392,11 +465,13 @@ them.
   page and a 401 from every API route. **The GitHub backend has not run once**, so the one
   thing standing between this and production is a path nothing has exercised: the token, the
   contents API, and what a conflict does. Nothing is set in the Vercel project yet, so `/admin`
-  on a preview today answers the sign-in page saying it is not configured. Two readings in it
-  are mine rather than the brief's, and both are visible on screen rather than buried: "ready
-  to send" treats availability as `yes` rather than merely answered, because a property the
-  owner has said is not free cannot be sent, and a licence of `unknown` still counts as filled
-  in, because whether that is good enough to send is a judgement for whoever presses send.
+  on a preview today answers the sign-in page saying it is not configured; the steps for setting
+  it are above, under "Setting it up on Vercel", and the files it reads are on `main` as of
+  11/11/2026. Two readings in it are mine rather than the brief's, and both are visible on
+  screen rather than buried: "ready to send" treats availability as `yes` rather than merely
+  answered, because a property the owner has said is not free cannot be sent, and a licence of
+  `unknown` still counts as filled in, because whether that is good enough to send is a
+  judgement for whoever presses send.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.

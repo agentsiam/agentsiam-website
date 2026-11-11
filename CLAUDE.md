@@ -48,6 +48,7 @@ duplicate one into the other.
 | How the three languages work, and which URL each locale gets | `README.md`, "How the three languages work" |
 | What the booking flow does, and in what order | `README.md`, "Booking" and "The ordering is the design" |
 | How photography is selected, ordered and re-encoded | `README.md`, "Photography" |
+| How the renter shortlist admin is configured, and what keeps it shut | `README.md`, "The renter shortlist admin" |
 | Which DNS and mail records exist, and which must never be touched | `DNS-EMAIL-RUNBOOK.md` |
 | What runs on a schedule in production | `vercel.json` |
 | What is unbuilt or unreviewed right now | `README.md`, "Known gaps" |
