@@ -458,20 +458,22 @@ the admin without touching a deployment.
 
 ## Known gaps
 
-- **The renter shortlist admin has never run on Vercel (11/11/2026).** It was built and
+- **The renter shortlist admin has never run against GitHub (11/11/2026).** It was built and
   verified against a local checkout of the document store, with `CRM_LOCAL_PATH` set: sign-in,
   the lead list, adding and changing a candidate, the readiness gate, the blocked refusal on
   both a link and a handle, removal, and a signed-out visitor getting a redirect from every
-  page and a 401 from every API route. **The GitHub backend has not run once**, so the one
-  thing standing between this and production is a path nothing has exercised: the token, the
-  contents API, and what a conflict does. Nothing is set in the Vercel project yet, so `/admin`
-  on a preview today answers the sign-in page saying it is not configured; the steps for setting
-  it are above, under "Setting it up on Vercel", and the files it reads are on `main` as of
-  11/11/2026. Two readings in it are mine rather than the brief's, and both are visible on
-  screen rather than buried: "ready to send" treats availability as `yes` rather than merely
-  answered, because a property the owner has said is not free cannot be sent, and a licence of
-  `unknown` still counts as filled in, because whether that is good enough to send is a
-  judgement for whoever presses send.
+  page and a 401 from every API route. Two things are verified on Vercel as of 11/11/2026: the
+  branch deploys, and with no variables set the preview answers a form saying it is not
+  configured, which is the failing-closed path running on a real deployment rather than on a
+  laptop. **The GitHub backend has not run once**, so what stands between this and production
+  is still a path nothing has exercised: the token, the contents API, and what a conflict does.
+  The four variables are unset in the Vercel project, the steps for setting them are above
+  under "Setting it up on Vercel", and the files the admin reads are on `main`. Two readings in
+  it are mine rather than the brief's, and both are visible on screen rather than buried:
+  "ready to send" treats availability as `yes` rather than merely answered, because a property
+  the owner has said is not free cannot be sent, and a licence of `unknown` still counts as
+  filled in, because whether that is good enough to send is a judgement for whoever presses
+  send.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.
