@@ -336,8 +336,74 @@ The pipeline, so nobody has to think about image formats:
 
 `npm run photos` regenerates on demand. Hand-editing a generated file is R5 in `CLAUDE.md`.
 
+## The renter shortlist admin
+
+A private area at `/admin` where Paul and Nils open a renter lead, build its shortlist of
+candidate properties, take each candidate to a decision, and see which are complete enough to
+send. Nothing in it is public, indexed or in the sitemap.
+
+**The data is files in the document store, not a database.** Paul's decision of 11/11/2026.
+`as-salesmarketing/01-crm/guest-leads.csv` in `agentsiam-consulting` stays the source of truth
+for the lead itself: the admin reads it and never writes it, so stages and next actions are
+still worked in the CSV and through Claude. The candidates live one JSON file per lead in
+`as-salesmarketing/01-crm/shortlists/`, and the blocked-operator list is
+`as-salesmarketing/01-crm/blocked-operators.json` beside them. Every save from the admin is a
+commit to that repository, so git history is the audit trail and Claude can still read a
+candidate. `as-salesmarketing/01-crm/shortlists/README.md` is the field list.
+
+**Five environment variables, all server-side**, documented in `.env.example`:
+`ADMIN_COOKIE_SECRET`, `ADMIN_PASSPHRASE_PAUL`, `ADMIN_PASSPHRASE_NILS`, and then either
+`CRM_GITHUB_TOKEN` for production or `CRM_LOCAL_PATH` for local development. Unset, the admin
+fails closed: the sign-in page says it is not configured and nothing else answers. The token is
+a fine-grained GitHub token with Contents read and write on `agentsiam-consulting` and nothing
+else.
+
+**What keeps it shut.** Three things, and only the first two actually stop anybody.
+`src/proxy.ts` reads the session cookie and turns a signed-out visitor away before any page
+renders. Every admin page and every `/api/admin` route then checks the session again for
+itself, because an edge check that reads a cookie cannot be the only thing between a URL and
+the document store. On top of that the pages are `noindex, nofollow, nocache` and `robots.ts`
+disallows `/admin` and `/api/admin`, which keeps a well-behaved crawler away and nothing else:
+that line also publishes the fact that the path exists.
+
+**The blocked-operator check.** AgentSiam goes to owners directly and never sources through
+another management company's channels. Saving a candidate matches its links and its contact
+against the list, and a match refuses the save and names the operator and the outlet. An outlet
+can be added from `/admin/blocked`; removing one is a decision about who AgentSiam deals with
+and is made in the document store with a commit message saying why. One case no check can
+catch is on the list and said out loud on screen: a blocked operator co-hosting on an owner's
+own Airbnb account produces a listing that reads as the owner's.
+
+**Ready to send** is computed, never typed: available `yes`, a total price, a licence status,
+and at least one photo link. A status that asserts the candidate can go to a guest, `ready to
+send`, `sent to guest` or `booked`, is refused while any of the four is missing.
+
+**Running it locally.** Set `CRM_LOCAL_PATH` to the checkout of `agentsiam-consulting` on this
+machine and the admin reads and writes the working tree directly, which is also how it is
+tested. Those writes are not committed by the admin: `git status` in that repository shows
+them.
+
 ## Known gaps
 
+- **The renter shortlist admin has never run on Vercel (11/11/2026).** It was built and
+  verified against a local checkout of the document store, with `CRM_LOCAL_PATH` set: sign-in,
+  the lead list, adding and changing a candidate, the readiness gate, the blocked refusal on
+  both a link and a handle, removal, and a signed-out visitor getting a redirect from every
+  page and a 401 from every API route. **The GitHub backend has not run once**, so the one
+  thing standing between this and production is a path nothing has exercised: the token, the
+  contents API, and what a conflict does. Nothing is set in the Vercel project yet, so `/admin`
+  on a preview today answers the sign-in page saying it is not configured. Two readings in it
+  are mine rather than the brief's, and both are visible on screen rather than buried: "ready
+  to send" treats availability as `yes` rather than merely answered, because a property the
+  owner has said is not free cannot be sent, and a licence of `unknown` still counts as filled
+  in, because whether that is good enough to send is a judgement for whoever presses send.
+- **The lead list reads every shortlist file on every page load.** Five leads is five extra
+  reads, which is nothing locally and five GitHub requests in production. It is fine at this
+  size and is the first thing to change if the CRM grows to dozens of open renter leads.
+- **`guest-leads.csv` has no `notes` and no `history` column**, although the CRM README says
+  every lead row carries both and the owner file `leads.csv` does. That is why G-0003's
+  shortlist was living in its `requirements` cell. The admin does not fix it: it reads the
+  columns that exist.
 - **The owner copy pass, and its unreviewed Thai and Chinese (10/11/2026).** The pass that took
   the stated management fee off the site and removed the claims a one-house portfolio cannot
   support was written on 06/11/2026 in all three languages, and both of its commits say the Thai
