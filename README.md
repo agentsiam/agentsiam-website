@@ -467,13 +467,16 @@ the admin without touching a deployment.
   configured, which is the failing-closed path running on a real deployment rather than on a
   laptop. **The GitHub backend has not run once**, so what stands between this and production
   is still a path nothing has exercised: the token, the contents API, and what a conflict does.
-  The four variables are unset in the Vercel project, the steps for setting them are above
-  under "Setting it up on Vercel", and the files the admin reads are on `main`. Two readings in
-  it are mine rather than the brief's, and both are visible on screen rather than buried:
-  "ready to send" treats availability as `yes` rather than merely answered, because a property
-  the owner has said is not free cannot be sent, and a licence of `unknown` still counts as
-  filled in, because whether that is good enough to send is a judgement for whoever presses
-  send.
+  No code is outstanding for it. `src/lib/admin/store.ts` holds the GitHub read, the write with
+  its `sha` check and the three-attempt conflict retry, every save route goes through that one
+  function, and there is no stub or TODO anywhere in it, so this entry closes with one
+  successful save rather than with a build. The four variables are unset in the Vercel project,
+  the steps for setting them are above under "Setting it up on Vercel", and the files the admin
+  reads are on `main`. Two readings in it are mine rather than the brief's, and both are visible
+  on screen rather than buried: "ready to send" treats availability as `yes` rather than merely
+  answered, because a property the owner has said is not free cannot be sent, and a licence of
+  `unknown` still counts as filled in, because whether that is good enough to send is a
+  judgement for whoever presses send.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.
