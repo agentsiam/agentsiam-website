@@ -1283,8 +1283,13 @@ export const zh: Dictionary = {
   // -- Pool villas: bed configuration and the Before you book answers ------
   threeKingBeds: "3 张特大床",
   fourKingBeds: "4 张特大床",
-  villaFaqParkingA: "院内有门禁车位，大约可停两辆车。您咨询时我们会确认确切的停车空间。",
+  villaFaqParkingA: "院内设有门禁车位。各栋别墅的车位数量不同，您咨询时我们会为您确认。",
   villaFaqPetsA: "业主尚未为这栋别墅设定宠物政策。如果您带宠物同行，请告诉我们，我们会在确定行程前为您确认。",
   villaFaqExactQ: "本页上的数字有多准确？",
-  villaFaqExactA: "卧室数量、泳池和驾车时间均已核实，其中距离是按实际路线测量而非估算。入住人数、床位、卫浴和停车位是我们根据业主提供的资料所作的判断，您咨询时我们会以书面形式确认，然后再敲定任何安排。",
+  villaFaqExactA: "入住人数、卧室、床位和卫浴均为业主就这栋别墅自行公布的数字。驾车时间由我们按实际路线测量，而非估算。您咨询时我们会以书面形式确认全部信息，然后再敲定任何安排。",
+
+  // -- Pool villas: bed configurations as the owner's own listings state them ----
+  threeDoubleBeds: "3 张双人床",
+  threeBedsUnstated: "3 张床",
+  fourKingOrQueenBeds: "4 张特大床或大床",
 };

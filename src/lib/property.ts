@@ -331,16 +331,16 @@ export const COURTYARD_VILLA: Property = {
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 3,
-  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
-  // per bedroom and two guests per bedroom. No source states either.
-  bathrooms: 3,
-  maxGuests: 6,
+  // The owner's own Airbnb listing for this villa states both, read 11/11/2026. They
+  // replace an estimate that was materially wrong in each direction.
+  bathrooms: 3.5,
+  maxGuests: 9,
   features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
   facts: [
-    { labelKey: "guests", value: "6" },
+    { labelKey: "guests", value: "9" },
     { labelKey: "bedrooms", value: "3" },
-    { labelKey: "beds", valueKey: "threeKingBeds" },
-    { labelKey: "bathrooms", value: "3" },
+    { labelKey: "beds", valueKey: "threeDoubleBeds" },
+    { labelKey: "bathrooms", value: "3.5" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
@@ -349,6 +349,7 @@ export const COURTYARD_VILLA: Property = {
     { labelKey: "nearThaPhaeGate", driveMinutes: 11, km: 7.3 },
     { labelKey: "nearCnxAirport", driveMinutes: 17, km: 11.4 },
   ],
+  rating: { value: 4.75, source: "Airbnb", givenOn: "2026-11-11" },
   descriptionKeys: ["courtyardDesc1", "courtyardDesc2"],
 };
 
@@ -378,16 +379,16 @@ export const JASMINE_VILLA: Property = {
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 3,
-  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
-  // per bedroom and two guests per bedroom. No source states either.
-  bathrooms: 3,
-  maxGuests: 6,
+  // The owner's own Airbnb listing for this villa states both, read 11/11/2026. They
+  // replace an estimate that was materially wrong in each direction.
+  bathrooms: 3.5,
+  maxGuests: 9,
   features: ["pool", "kitchen", "bbq", "wifi", "tv"],
   facts: [
-    { labelKey: "guests", value: "6" },
+    { labelKey: "guests", value: "9" },
     { labelKey: "bedrooms", value: "3" },
-    { labelKey: "beds", valueKey: "threeKingBeds" },
-    { labelKey: "bathrooms", value: "3" },
+    { labelKey: "beds", valueKey: "threeDoubleBeds" },
+    { labelKey: "bathrooms", value: "3.5" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
@@ -396,6 +397,7 @@ export const JASMINE_VILLA: Property = {
     { labelKey: "nearThaPhaeGate", driveMinutes: 11, km: 7.3 },
     { labelKey: "nearCnxAirport", driveMinutes: 17, km: 11.4 },
   ],
+  rating: { value: 5.0, source: "Airbnb", givenOn: "2026-11-11" },
   descriptionKeys: ["jasmineDesc1", "jasmineDesc2"],
 };
 
@@ -425,16 +427,16 @@ export const SILVER_OAK_VILLA: Property = {
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 3,
-  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
-  // per bedroom and two guests per bedroom. No source states either.
-  bathrooms: 3,
-  maxGuests: 6,
+  // The owner's own Airbnb listing for this villa states both, read 11/11/2026. They
+  // replace an estimate that was materially wrong in each direction.
+  bathrooms: 4,
+  maxGuests: 10,
   features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
   facts: [
-    { labelKey: "guests", value: "6" },
+    { labelKey: "guests", value: "10" },
     { labelKey: "bedrooms", value: "3" },
     { labelKey: "beds", valueKey: "threeKingBeds" },
-    { labelKey: "bathrooms", value: "3" },
+    { labelKey: "bathrooms", value: "4" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
@@ -443,6 +445,7 @@ export const SILVER_OAK_VILLA: Property = {
     { labelKey: "nearThaPhaeGate", driveMinutes: 11, km: 7.3 },
     { labelKey: "nearCnxAirport", driveMinutes: 17, km: 11.4 },
   ],
+  rating: { value: 4.64, source: "Airbnb", givenOn: "2026-11-11" },
   descriptionKeys: ["silverOakDesc1", "silverOakDesc2"],
 };
 
@@ -473,16 +476,16 @@ export const MID_CENTURY_VILLA: Property = {
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 3,
-  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
-  // per bedroom and two guests per bedroom. No source states either.
-  bathrooms: 3,
-  maxGuests: 6,
+  // The owner's own Airbnb listing for this villa states both, read 11/11/2026. They
+  // replace an estimate that was materially wrong in each direction.
+  bathrooms: 4,
+  maxGuests: 9,
   features: ["pool", "kitchen", "bbq", "wifi", "tv"],
   facts: [
-    { labelKey: "guests", value: "6" },
+    { labelKey: "guests", value: "9" },
     { labelKey: "bedrooms", value: "3" },
-    { labelKey: "beds", valueKey: "threeKingBeds" },
-    { labelKey: "bathrooms", value: "3" },
+    { labelKey: "beds", valueKey: "threeBedsUnstated" },
+    { labelKey: "bathrooms", value: "4" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
@@ -491,6 +494,7 @@ export const MID_CENTURY_VILLA: Property = {
     { labelKey: "nearThaPhaeGate", driveMinutes: 11, km: 6.3 },
     { labelKey: "nearCnxAirport", driveMinutes: 17, km: 10.5 },
   ],
+  rating: { value: 5.0, source: "Airbnb", givenOn: "2026-11-11" },
   descriptionKeys: ["midCenturyDesc1", "midCenturyDesc2"],
 };
 
@@ -521,16 +525,16 @@ export const ATRIUM_VILLA: Property = {
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 4,
-  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
-  // per bedroom and two guests per bedroom. No source states either.
-  bathrooms: 4,
-  maxGuests: 8,
+  // The owner's own Airbnb listing for this villa states both, read 11/11/2026. They
+  // replace an estimate that was materially wrong in each direction.
+  bathrooms: 5,
+  maxGuests: 12,
   features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
   facts: [
-    { labelKey: "guests", value: "8" },
+    { labelKey: "guests", value: "12" },
     { labelKey: "bedrooms", value: "4" },
-    { labelKey: "beds", valueKey: "fourKingBeds" },
-    { labelKey: "bathrooms", value: "4" },
+    { labelKey: "beds", valueKey: "fourKingOrQueenBeds" },
+    { labelKey: "bathrooms", value: "5" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
@@ -539,6 +543,7 @@ export const ATRIUM_VILLA: Property = {
     { labelKey: "nearThaPhaeGate", driveMinutes: 10, km: 7.3 },
     { labelKey: "nearNimmanhaemin", driveMinutes: 10, km: 7.6 },
   ],
+  rating: { value: 4.25, source: "Airbnb", givenOn: "2026-11-11" },
   descriptionKeys: ["atriumDesc1", "atriumDesc2"],
 };
 

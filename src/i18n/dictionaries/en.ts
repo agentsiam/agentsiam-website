@@ -1470,12 +1470,20 @@ export const en = {
   threeKingBeds: "3 king",
   fourKingBeds: "4 king",
   // Parking is an estimate off the flyer's gated frontage, so the answer says the number is confirmed rather than stating it flat.
-  villaFaqParkingA: "Gated parking on the property, room for about two cars. We confirm the exact space when you enquire.",
+  villaFaqParkingA: "Gated parking on the property. The number of spaces differs by villa, and we confirm it for yours when you enquire.",
   // Deliberately not guessed. A pet rule is the owner's policy rather than a fact about the building, and inventing one is a claim about what somebody else permits.
   villaFaqPetsA: "The owner has not set a pet policy for this villa yet. Tell us if you are travelling with one and we will confirm before anything is agreed.",
   villaFaqExactQ: "How exact are the numbers on this page?",
   // The honest compensation for having estimated. It names which figures are checked and which are read off the owner's material, and gives the route to a confirmed answer, in the same breath rather than a paragraph later.
-  villaFaqExactA: "The bedroom count, the pool and the driving times are checked: the distances were measured on a route rather than looked up. Guests, beds, bathrooms and parking are our best reading of the owner's own material, and we confirm them in writing when you enquire, before anything is agreed.",
+  villaFaqExactA: "Guests, bedrooms, beds and bathrooms are the owner's own published figures for this villa. The driving times we measured ourselves, on a route rather than looked up. We confirm everything in writing when you enquire, before anything is agreed.",
+
+  // -- Pool villas: bed configurations as the owner's own listings state them ----
+  // Casa Sol H1 and Casa Jasmine H2 both state three 6-foot double beds. Not a guess: their Airbnb listings say it.
+  threeDoubleBeds: "3 double",
+  // Horizon J1's listing gives a bed count and no configuration, so the strip gives the count and no configuration either.
+  threeBedsUnstated: "3 beds",
+  // The Most M2 and Hillmont M1 state king or queen without saying which room is which.
+  fourKingOrQueenBeds: "4 king or queen",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
