@@ -42,24 +42,19 @@ import courtyardvilla_1 from "@/photos/courtyardvilla/02-bedroom.jpg";
 import courtyardvilla_2 from "@/photos/courtyardvilla/03-pool-and-courtyard.jpg";
 import courtyardvilla_3 from "@/photos/courtyardvilla/04-pool-at-dusk.jpg";
 import courtyardvilla_4 from "@/photos/courtyardvilla/05-living-and-dining.jpg";
-import courtyardvilla_5 from "@/photos/courtyardvilla/06-living-room.jpg";
-import courtyardvilla_6 from "@/photos/courtyardvilla/07-living-room-through-the-screen.jpg";
-import courtyardvilla_7 from "@/photos/courtyardvilla/08-living-room-from-the-pool.jpg";
-import courtyardvilla_8 from "@/photos/courtyardvilla/09-pool-along-the-house.jpg";
-import courtyardvilla_9 from "@/photos/courtyardvilla/10-dining-table.jpg";
-import courtyardvilla_10 from "@/photos/courtyardvilla/11-kitchen.jpg";
-import courtyardvilla_11 from "@/photos/courtyardvilla/12-kitchen-hob.jpg";
-import courtyardvilla_12 from "@/photos/courtyardvilla/13-bedroom-with-courtyard.jpg";
-import courtyardvilla_13 from "@/photos/courtyardvilla/14-bedroom-window.jpg";
-import courtyardvilla_14 from "@/photos/courtyardvilla/15-bedroom-courtyard-planting.jpg";
-import courtyardvilla_15 from "@/photos/courtyardvilla/16-bathroom-skylight.jpg";
-import courtyardvilla_16 from "@/photos/courtyardvilla/17-bathroom-basin.jpg";
-import courtyardvilla_17 from "@/photos/courtyardvilla/18-shower.jpg";
-import courtyardvilla_18 from "@/photos/courtyardvilla/19-outdoor-lounge.jpg";
-import courtyardvilla_19 from "@/photos/courtyardvilla/20-entrance-courtyard.jpg";
-import courtyardvilla_20 from "@/photos/courtyardvilla/21-garden-planting.jpg";
-import courtyardvilla_21 from "@/photos/courtyardvilla/22-bedroom-storage.jpg";
-import courtyardvilla_22 from "@/photos/courtyardvilla/Floor Plan/floor-plan.jpg";
+import courtyardvilla_5 from "@/photos/courtyardvilla/06-dining-table.jpg";
+import courtyardvilla_6 from "@/photos/courtyardvilla/07-kitchen.jpg";
+import courtyardvilla_7 from "@/photos/courtyardvilla/08-kitchen-hob.jpg";
+import courtyardvilla_8 from "@/photos/courtyardvilla/09-bedroom-with-courtyard.jpg";
+import courtyardvilla_9 from "@/photos/courtyardvilla/10-bedroom-window.jpg";
+import courtyardvilla_10 from "@/photos/courtyardvilla/11-bathroom-skylight.jpg";
+import courtyardvilla_11 from "@/photos/courtyardvilla/12-bathroom-basin.jpg";
+import courtyardvilla_12 from "@/photos/courtyardvilla/13-shower.jpg";
+import courtyardvilla_13 from "@/photos/courtyardvilla/14-outdoor-lounge.jpg";
+import courtyardvilla_14 from "@/photos/courtyardvilla/15-entrance-courtyard.jpg";
+import courtyardvilla_15 from "@/photos/courtyardvilla/16-garden-planting.jpg";
+import courtyardvilla_16 from "@/photos/courtyardvilla/17-bedroom-storage.jpg";
+import courtyardvilla_17 from "@/photos/courtyardvilla/Floor Plan/floor-plan.jpg";
 import lotushouse_0 from "@/photos/lotushouse/Terrace/IMG_4991_editedfinal.jpg";
 import lotushouse_1 from "@/photos/lotushouse/Bed - 1st Floor/IMG_5578_edited.jpg";
 import lotushouse_2 from "@/photos/lotushouse/Bed - 2nd Floor/IMG_5687_edited.jpg";
@@ -179,29 +174,24 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: cosmoshouse_21, file: "fd440265-075c-4624-9ab9-04345fac693f.jpeg", alt: "" },
   ],
   "courtyardvilla": [
-    { src: courtyardvilla_0, file: "01-living-room-sofa.jpg", alt: "" },
-    { src: courtyardvilla_1, file: "02-bedroom.jpg", alt: "" },
-    { src: courtyardvilla_2, file: "03-pool-and-courtyard.jpg", alt: "" },
-    { src: courtyardvilla_3, file: "04-pool-at-dusk.jpg", alt: "" },
-    { src: courtyardvilla_4, file: "05-living-and-dining.jpg", alt: "" },
-    { src: courtyardvilla_5, file: "06-living-room.jpg", alt: "" },
-    { src: courtyardvilla_6, file: "07-living-room-through-the-screen.jpg", alt: "" },
-    { src: courtyardvilla_7, file: "08-living-room-from-the-pool.jpg", alt: "" },
-    { src: courtyardvilla_8, file: "09-pool-along-the-house.jpg", alt: "" },
-    { src: courtyardvilla_9, file: "10-dining-table.jpg", alt: "" },
-    { src: courtyardvilla_10, file: "11-kitchen.jpg", alt: "" },
-    { src: courtyardvilla_11, file: "12-kitchen-hob.jpg", alt: "" },
-    { src: courtyardvilla_12, file: "13-bedroom-with-courtyard.jpg", alt: "" },
-    { src: courtyardvilla_13, file: "14-bedroom-window.jpg", alt: "" },
-    { src: courtyardvilla_14, file: "15-bedroom-courtyard-planting.jpg", alt: "" },
-    { src: courtyardvilla_15, file: "16-bathroom-skylight.jpg", alt: "" },
-    { src: courtyardvilla_16, file: "17-bathroom-basin.jpg", alt: "" },
-    { src: courtyardvilla_17, file: "18-shower.jpg", alt: "" },
-    { src: courtyardvilla_18, file: "19-outdoor-lounge.jpg", alt: "" },
-    { src: courtyardvilla_19, file: "20-entrance-courtyard.jpg", alt: "" },
-    { src: courtyardvilla_20, file: "21-garden-planting.jpg", alt: "" },
-    { src: courtyardvilla_21, file: "22-bedroom-storage.jpg", alt: "" },
-    { src: courtyardvilla_22, file: "Floor Plan/floor-plan.jpg", alt: "", room: "Floor Plan" },
+    { src: courtyardvilla_0, file: "01-living-room-sofa.jpg", alt: "Living room with a pale sectional sofa and a glass coffee table against a board-marked concrete wall, the kitchen beyond" },
+    { src: courtyardvilla_1, file: "02-bedroom.jpg", alt: "Bedroom with a slatted timber headboard wall, white bedding and a dark wood floor" },
+    { src: courtyardvilla_2, file: "03-pool-and-courtyard.jpg", alt: "The pool in its courtyard, with planting along one side and full-height glass down the house" },
+    { src: courtyardvilla_3, file: "04-pool-at-dusk.jpg", alt: "The pool at dusk, lit from inside the house, with the garden wall behind it" },
+    { src: courtyardvilla_4, file: "05-living-and-dining.jpg", alt: "Dining table set with glassware beside the living area and its wall-mounted television" },
+    { src: courtyardvilla_5, file: "06-dining-table.jpg", alt: "Dining area under a timber ceiling, looking through to the kitchen" },
+    { src: courtyardvilla_6, file: "07-kitchen.jpg", alt: "Kitchen with a marble worktop, dark cabinets and utensils standing by the hob" },
+    { src: courtyardvilla_7, file: "08-kitchen-hob.jpg", alt: "Kitchen counter with a gas hob and a window above it" },
+    { src: courtyardvilla_8, file: "09-bedroom-with-courtyard.jpg", alt: "Bedroom with a wall-mounted television and full-height glass onto its own garden courtyard" },
+    { src: courtyardvilla_9, file: "10-bedroom-window.jpg", alt: "Bedroom with curtains drawn back from a full-height window, beside a timber door" },
+    { src: courtyardvilla_10, file: "11-bathroom-skylight.jpg", alt: "Bathroom lined in dark stone, with daylight crossing the wall from a skylight above" },
+    { src: courtyardvilla_11, file: "12-bathroom-basin.jpg", alt: "Bathroom vanity with a white counter basin and a black tap" },
+    { src: courtyardvilla_12, file: "13-shower.jpg", alt: "Walk-in shower behind a glass screen, lined in dark stone" },
+    { src: courtyardvilla_13, file: "14-outdoor-lounge.jpg", alt: "Outdoor sofa with cushions and a glass coffee table on a paved terrace" },
+    { src: courtyardvilla_14, file: "15-entrance-courtyard.jpg", alt: "Courtyard with a tree against a pierced breeze-block screen, steps leading up beside it" },
+    { src: courtyardvilla_15, file: "16-garden-planting.jpg", alt: "Planting bed of white flowers and foliage against a concrete wall" },
+    { src: courtyardvilla_16, file: "17-bedroom-storage.jpg", alt: "Timber storage unit in a bedroom with sunlight falling across it" },
+    { src: courtyardvilla_17, file: "Floor Plan/floor-plan.jpg", alt: "Colour floor plan of the villa seen from above", room: "Floor Plan" },
   ],
   "lotushouse": [
     { src: lotushouse_0, file: "Terrace/IMG_4991_editedfinal.jpg", alt: "The soaking tub and a wicker lounger on the roof terrace at sunset", room: "Terrace" },
