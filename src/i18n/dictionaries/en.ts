@@ -1452,6 +1452,18 @@ export const en = {
   atriumDesc2: "The kitchen has a barbecue, and Wi-Fi, a television, towels, soap and shampoo are included.",
   metaAtriumTitle: "Atrium Villa, Pa Daet, Chiang Mai",
   metaAtriumDesc: "A four-bedroom private pool villa in Pa Daet, Chiang Mai, with a double-height living room opening to the garden and pool. Enquire for dates and a price.",
+
+  // -- Pool villas: landmarks, getting around and the pool disclosure ------
+  // Landmark labels for the villas' nearby lists. The minutes beside them are measured map routes from a public point, recorded in each unit's property profile with the date.
+  nearNimmanhaemin: "Nimmanhaemin",
+  nearMaya: "Maya Lifestyle Shopping Center",
+  nearThaPhaeGate: "Tha Phae Gate and the Old City",
+  nearCnxAirport: "Chiang Mai International Airport",
+  nearCentralAirport: "Central Chiangmai Airport",
+  // Says where the times are measured from, which is the same source-in-the-same-unit rule the Lotus House line follows. Never the house: a time measured from the door can be worked back to the door.
+  villaGettingAroundBody: "Driving times from a public point a few minutes from the house, measured on a map route rather than looked up.",
+  // The one safety disclosure every villa carries, from the private-pool-supervision entry in each unit's property profile. It claims nothing about fencing, because no source states whether there is any. Reword it the day the owner answers.
+  villaPoolSupervision: "The villa has its own pool. Children need an adult with them around it, and it is not overlooked from every room.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

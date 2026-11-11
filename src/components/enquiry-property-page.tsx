@@ -57,6 +57,13 @@ export function EnquiryPropertyPage({
       Boolean(item.label),
     );
 
+  // The profile's `proximity` block, resolved. Absent where nothing has been measured, and
+  // the section then does not render rather than printing a heading over nothing.
+  const nearby = (property.nearby ?? []).map((place) => ({
+    ...place,
+    text: t[place.labelKey] as string,
+  }));
+
   return (
     <div>
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-9">
@@ -136,6 +143,25 @@ export function EnquiryPropertyPage({
             </section>
           ) : null}
 
+          {/* The honest section, in the handoff's own order: after what the place has and
+              before where it is. Every villa carries the pool line, which is the
+              private-pool-supervision disclosure in its property profile. A safety
+              disclosure belongs in the listing itself, before payment, never only in a
+              message after it. */}
+          <section className="mt-8">
+            <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
+              {t.whatThisPlaceIsNot}
+            </h2>
+            <ul className="mt-4 space-y-2.5 text-[15px] leading-relaxed text-body">
+              <li className="flex gap-3">
+                <span aria-hidden="true" className="text-muted">
+                  &middot;
+                </span>
+                <span>{t.villaPoolSupervision}</span>
+              </li>
+            </ul>
+          </section>
+
           <section className="mt-8">
             <h2 className="eyebrow">{t.whereYoullBe}</h2>
             <p className="mt-2 text-sm leading-relaxed text-body">
@@ -144,6 +170,27 @@ export function EnquiryPropertyPage({
             <p className="mt-1.5 text-[13px] text-muted">{areaVibe(t, area)}</p>
             <p className="mt-1.5 text-[13px] text-muted">{t.addressAfterBooking}</p>
           </section>
+
+          {nearby.length > 0 ? (
+            <section className="mt-8">
+              <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
+                {t.gettingAround}
+              </h2>
+              <p className="mt-1.5 text-[13px] text-muted">{t.villaGettingAroundBody}</p>
+              <ul className="mt-4 divide-y divide-hairline border-y border-hairline">
+                {nearby.map((place) => (
+                  <li key={place.labelKey} className="flex items-center gap-3.5 py-3">
+                    <IconChip name="transfer" />
+                    <span className="flex-1 text-[15px] text-body">{place.text}</span>
+                    <span className="shrink-0 text-right text-[13px] text-muted">
+                      {t.minDrive.replace("{n}", String(place.driveMinutes))} ·{" "}
+                      {t.kmShort.replace("{n}", String(place.km))}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
         </div>
 
         <section className="rounded-panel bg-surface p-6">

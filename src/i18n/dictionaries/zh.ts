@@ -1270,4 +1270,13 @@ export const zh: Dictionary = {
   atriumDesc2: "厨房配烧烤设备，并提供 Wi-Fi、电视、毛巾、香皂与洗发水。",
   metaAtriumTitle: "Atrium Villa，清迈 Pa Daet",
   metaAtriumDesc: "位于清迈 Pa Daet 的四卧室私人泳池别墅，挑高起居室通向花园与泳池。欢迎咨询日期与价格。",
+
+  // -- Pool villas: landmarks, getting around and the pool disclosure ------
+  nearNimmanhaemin: "尼曼路",
+  nearMaya: "Maya 购物中心",
+  nearThaPhaeGate: "塔佩门与古城",
+  nearCnxAirport: "清迈国际机场",
+  nearCentralAirport: "清迈机场中央购物中心",
+  villaGettingAroundBody: "以距住宅几分钟车程的一个公共地点为起点的驾车时间，按地图实际路线测得，而非估算。",
+  villaPoolSupervision: "别墅设有私人泳池。儿童在泳池周边需有成人陪同，且并非每个房间都能看到泳池。",
 };

@@ -293,6 +293,15 @@ export const MAE_RIM_HOUSE: Property = {
  *
  * Every value here is a field in that villa's property profile in the consulting repo under
  * as-operations/properties/. What the profile does not assert is not here.
+ *
+ * `nearby` is the profile's `proximity` block: driving times routed on 11/11/2026 from the
+ * public point above, never from the house, against the same OSRM hosts the guide build
+ * uses. The three Chang Khian villas share one set because they share one address.
+ *
+ * Every one of them carries the same safety disclosure, `villaPoolSupervision`, which the
+ * page prints under "Limits to know before booking". It is the private-pool-supervision
+ * entry in each profile. It says nothing about whether a pool is fenced because no source
+ * states it; the day the owner answers, the profile changes and that string with it.
  */
 export const COURTYARD_VILLA: Property = {
   slug: "courtyardvilla",
@@ -328,6 +337,12 @@ export const COURTYARD_VILLA: Property = {
   facts: [
     { labelKey: "bedrooms", value: "3" },
     { labelKey: "factPool", value: "1" },
+  ],
+  nearby: [
+    { labelKey: "nearNimmanhaemin", driveMinutes: 7, km: 4.9 },
+    { labelKey: "nearMaya", driveMinutes: 6, km: 4.3 },
+    { labelKey: "nearThaPhaeGate", driveMinutes: 11, km: 7.3 },
+    { labelKey: "nearCnxAirport", driveMinutes: 17, km: 11.4 },
   ],
   descriptionKeys: ["courtyardDesc1", "courtyardDesc2"],
 };
@@ -365,6 +380,12 @@ export const JASMINE_VILLA: Property = {
     { labelKey: "bedrooms", value: "3" },
     { labelKey: "factPool", value: "1" },
   ],
+  nearby: [
+    { labelKey: "nearNimmanhaemin", driveMinutes: 7, km: 4.9 },
+    { labelKey: "nearMaya", driveMinutes: 6, km: 4.3 },
+    { labelKey: "nearThaPhaeGate", driveMinutes: 11, km: 7.3 },
+    { labelKey: "nearCnxAirport", driveMinutes: 17, km: 11.4 },
+  ],
   descriptionKeys: ["jasmineDesc1", "jasmineDesc2"],
 };
 
@@ -400,6 +421,12 @@ export const SILVER_OAK_VILLA: Property = {
   facts: [
     { labelKey: "bedrooms", value: "3" },
     { labelKey: "factPool", value: "1" },
+  ],
+  nearby: [
+    { labelKey: "nearNimmanhaemin", driveMinutes: 7, km: 4.9 },
+    { labelKey: "nearMaya", driveMinutes: 6, km: 4.3 },
+    { labelKey: "nearThaPhaeGate", driveMinutes: 11, km: 7.3 },
+    { labelKey: "nearCnxAirport", driveMinutes: 17, km: 11.4 },
   ],
   descriptionKeys: ["silverOakDesc1", "silverOakDesc2"],
 };
@@ -438,6 +465,12 @@ export const MID_CENTURY_VILLA: Property = {
     { labelKey: "bedrooms", value: "3" },
     { labelKey: "factPool", value: "1" },
   ],
+  nearby: [
+    { labelKey: "nearNimmanhaemin", driveMinutes: 6, km: 4.1 },
+    { labelKey: "nearMaya", driveMinutes: 6, km: 3.4 },
+    { labelKey: "nearThaPhaeGate", driveMinutes: 11, km: 6.3 },
+    { labelKey: "nearCnxAirport", driveMinutes: 17, km: 10.5 },
+  ],
   descriptionKeys: ["midCenturyDesc1", "midCenturyDesc2"],
 };
 
@@ -474,6 +507,12 @@ export const ATRIUM_VILLA: Property = {
   facts: [
     { labelKey: "bedrooms", value: "4" },
     { labelKey: "factPool", value: "1" },
+  ],
+  nearby: [
+    { labelKey: "nearCentralAirport", driveMinutes: 5, km: 3.9 },
+    { labelKey: "nearCnxAirport", driveMinutes: 8, km: 5.4 },
+    { labelKey: "nearThaPhaeGate", driveMinutes: 10, km: 7.3 },
+    { labelKey: "nearNimmanhaemin", driveMinutes: 10, km: 7.6 },
   ],
   descriptionKeys: ["atriumDesc1", "atriumDesc2"],
 };
