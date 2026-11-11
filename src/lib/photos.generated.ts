@@ -37,30 +37,29 @@ import cosmoshouse_18 from "@/photos/cosmoshouse/e819da08-d32d-4619-8ef0-41605af
 import cosmoshouse_19 from "@/photos/cosmoshouse/e9988d8c-b136-4a22-9a6f-73d3e172d0d6.jpeg";
 import cosmoshouse_20 from "@/photos/cosmoshouse/ed79a427-347e-4c77-9857-9519c875c4da.jpeg";
 import cosmoshouse_21 from "@/photos/cosmoshouse/fd440265-075c-4624-9ab9-04345fac693f.jpeg";
-import courtyardvilla_0 from "@/photos/courtyardvilla/659441619.jpg";
-import courtyardvilla_1 from "@/photos/courtyardvilla/659441697.jpg";
-import courtyardvilla_2 from "@/photos/courtyardvilla/659441702.jpg";
-import courtyardvilla_3 from "@/photos/courtyardvilla/659441705.jpg";
-import courtyardvilla_4 from "@/photos/courtyardvilla/659441711.jpg";
-import courtyardvilla_5 from "@/photos/courtyardvilla/659441717.jpg";
-import courtyardvilla_6 from "@/photos/courtyardvilla/659441723.jpg";
-import courtyardvilla_7 from "@/photos/courtyardvilla/659441731.jpg";
-import courtyardvilla_8 from "@/photos/courtyardvilla/659441739.jpg";
-import courtyardvilla_9 from "@/photos/courtyardvilla/659441745.jpg";
-import courtyardvilla_10 from "@/photos/courtyardvilla/659441751.jpg";
-import courtyardvilla_11 from "@/photos/courtyardvilla/659441756.jpg";
-import courtyardvilla_12 from "@/photos/courtyardvilla/659441764.jpg";
-import courtyardvilla_13 from "@/photos/courtyardvilla/659441770.jpg";
-import courtyardvilla_14 from "@/photos/courtyardvilla/659441774.jpg";
-import courtyardvilla_15 from "@/photos/courtyardvilla/659441781.jpg";
-import courtyardvilla_16 from "@/photos/courtyardvilla/659441789.jpg";
-import courtyardvilla_17 from "@/photos/courtyardvilla/659441797.jpg";
-import courtyardvilla_18 from "@/photos/courtyardvilla/659441837.jpg";
-import courtyardvilla_19 from "@/photos/courtyardvilla/659441845.jpg";
-import courtyardvilla_20 from "@/photos/courtyardvilla/659441867.jpg";
-import courtyardvilla_21 from "@/photos/courtyardvilla/659441871.jpg";
-import courtyardvilla_22 from "@/photos/courtyardvilla/659441882.jpg";
-import courtyardvilla_23 from "@/photos/courtyardvilla/659441928.jpg";
+import courtyardvilla_0 from "@/photos/courtyardvilla/01-living-room-sofa.jpg";
+import courtyardvilla_1 from "@/photos/courtyardvilla/02-bedroom.jpg";
+import courtyardvilla_2 from "@/photos/courtyardvilla/03-pool-and-courtyard.jpg";
+import courtyardvilla_3 from "@/photos/courtyardvilla/04-pool-at-dusk.jpg";
+import courtyardvilla_4 from "@/photos/courtyardvilla/05-living-and-dining.jpg";
+import courtyardvilla_5 from "@/photos/courtyardvilla/06-living-room.jpg";
+import courtyardvilla_6 from "@/photos/courtyardvilla/07-living-room-through-the-screen.jpg";
+import courtyardvilla_7 from "@/photos/courtyardvilla/08-living-room-from-the-pool.jpg";
+import courtyardvilla_8 from "@/photos/courtyardvilla/09-pool-along-the-house.jpg";
+import courtyardvilla_9 from "@/photos/courtyardvilla/10-dining-table.jpg";
+import courtyardvilla_10 from "@/photos/courtyardvilla/11-kitchen.jpg";
+import courtyardvilla_11 from "@/photos/courtyardvilla/12-kitchen-hob.jpg";
+import courtyardvilla_12 from "@/photos/courtyardvilla/13-bedroom-with-courtyard.jpg";
+import courtyardvilla_13 from "@/photos/courtyardvilla/14-bedroom-window.jpg";
+import courtyardvilla_14 from "@/photos/courtyardvilla/15-bedroom-courtyard-planting.jpg";
+import courtyardvilla_15 from "@/photos/courtyardvilla/16-bathroom-skylight.jpg";
+import courtyardvilla_16 from "@/photos/courtyardvilla/17-bathroom-basin.jpg";
+import courtyardvilla_17 from "@/photos/courtyardvilla/18-shower.jpg";
+import courtyardvilla_18 from "@/photos/courtyardvilla/19-outdoor-lounge.jpg";
+import courtyardvilla_19 from "@/photos/courtyardvilla/20-entrance-courtyard.jpg";
+import courtyardvilla_20 from "@/photos/courtyardvilla/21-garden-planting.jpg";
+import courtyardvilla_21 from "@/photos/courtyardvilla/22-bedroom-storage.jpg";
+import courtyardvilla_22 from "@/photos/courtyardvilla/Floor Plan/floor-plan.jpg";
 import lotushouse_0 from "@/photos/lotushouse/Terrace/IMG_4991_editedfinal.jpg";
 import lotushouse_1 from "@/photos/lotushouse/Bed - 1st Floor/IMG_5578_edited.jpg";
 import lotushouse_2 from "@/photos/lotushouse/Bed - 2nd Floor/IMG_5687_edited.jpg";
@@ -180,30 +179,29 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: cosmoshouse_21, file: "fd440265-075c-4624-9ab9-04345fac693f.jpeg", alt: "" },
   ],
   "courtyardvilla": [
-    { src: courtyardvilla_0, file: "659441619.jpg", alt: "" },
-    { src: courtyardvilla_1, file: "659441697.jpg", alt: "" },
-    { src: courtyardvilla_2, file: "659441702.jpg", alt: "" },
-    { src: courtyardvilla_3, file: "659441705.jpg", alt: "" },
-    { src: courtyardvilla_4, file: "659441711.jpg", alt: "" },
-    { src: courtyardvilla_5, file: "659441717.jpg", alt: "" },
-    { src: courtyardvilla_6, file: "659441723.jpg", alt: "" },
-    { src: courtyardvilla_7, file: "659441731.jpg", alt: "" },
-    { src: courtyardvilla_8, file: "659441739.jpg", alt: "" },
-    { src: courtyardvilla_9, file: "659441745.jpg", alt: "" },
-    { src: courtyardvilla_10, file: "659441751.jpg", alt: "" },
-    { src: courtyardvilla_11, file: "659441756.jpg", alt: "" },
-    { src: courtyardvilla_12, file: "659441764.jpg", alt: "" },
-    { src: courtyardvilla_13, file: "659441770.jpg", alt: "" },
-    { src: courtyardvilla_14, file: "659441774.jpg", alt: "" },
-    { src: courtyardvilla_15, file: "659441781.jpg", alt: "" },
-    { src: courtyardvilla_16, file: "659441789.jpg", alt: "" },
-    { src: courtyardvilla_17, file: "659441797.jpg", alt: "" },
-    { src: courtyardvilla_18, file: "659441837.jpg", alt: "" },
-    { src: courtyardvilla_19, file: "659441845.jpg", alt: "" },
-    { src: courtyardvilla_20, file: "659441867.jpg", alt: "" },
-    { src: courtyardvilla_21, file: "659441871.jpg", alt: "" },
-    { src: courtyardvilla_22, file: "659441882.jpg", alt: "" },
-    { src: courtyardvilla_23, file: "659441928.jpg", alt: "" },
+    { src: courtyardvilla_0, file: "01-living-room-sofa.jpg", alt: "" },
+    { src: courtyardvilla_1, file: "02-bedroom.jpg", alt: "" },
+    { src: courtyardvilla_2, file: "03-pool-and-courtyard.jpg", alt: "" },
+    { src: courtyardvilla_3, file: "04-pool-at-dusk.jpg", alt: "" },
+    { src: courtyardvilla_4, file: "05-living-and-dining.jpg", alt: "" },
+    { src: courtyardvilla_5, file: "06-living-room.jpg", alt: "" },
+    { src: courtyardvilla_6, file: "07-living-room-through-the-screen.jpg", alt: "" },
+    { src: courtyardvilla_7, file: "08-living-room-from-the-pool.jpg", alt: "" },
+    { src: courtyardvilla_8, file: "09-pool-along-the-house.jpg", alt: "" },
+    { src: courtyardvilla_9, file: "10-dining-table.jpg", alt: "" },
+    { src: courtyardvilla_10, file: "11-kitchen.jpg", alt: "" },
+    { src: courtyardvilla_11, file: "12-kitchen-hob.jpg", alt: "" },
+    { src: courtyardvilla_12, file: "13-bedroom-with-courtyard.jpg", alt: "" },
+    { src: courtyardvilla_13, file: "14-bedroom-window.jpg", alt: "" },
+    { src: courtyardvilla_14, file: "15-bedroom-courtyard-planting.jpg", alt: "" },
+    { src: courtyardvilla_15, file: "16-bathroom-skylight.jpg", alt: "" },
+    { src: courtyardvilla_16, file: "17-bathroom-basin.jpg", alt: "" },
+    { src: courtyardvilla_17, file: "18-shower.jpg", alt: "" },
+    { src: courtyardvilla_18, file: "19-outdoor-lounge.jpg", alt: "" },
+    { src: courtyardvilla_19, file: "20-entrance-courtyard.jpg", alt: "" },
+    { src: courtyardvilla_20, file: "21-garden-planting.jpg", alt: "" },
+    { src: courtyardvilla_21, file: "22-bedroom-storage.jpg", alt: "" },
+    { src: courtyardvilla_22, file: "Floor Plan/floor-plan.jpg", alt: "", room: "Floor Plan" },
   ],
   "lotushouse": [
     { src: lotushouse_0, file: "Terrace/IMG_4991_editedfinal.jpg", alt: "The soaking tub and a wicker lounger on the roof terrace at sunset", room: "Terrace" },
