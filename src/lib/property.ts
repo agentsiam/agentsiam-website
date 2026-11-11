@@ -547,6 +547,56 @@ export const ATRIUM_VILLA: Property = {
   descriptionKeys: ["atriumDesc1", "atriumDesc2"],
 };
 
+export const GARDEN_VILLA: Property = {
+  slug: "gardenvilla",
+  title: "Garden Villa",
+  taglineKey: "gardenTagline",
+  areaSlug: "pa-daet",
+  // Public point, not the house, and deliberately the same one as Atrium Villa: this is
+  // 89/1 Pa Daet Road and that is 89, so they are neighbours and a separate point would
+  // draw a distinction the street numbers do not support.
+  lat: 18.7572,
+  lng: 98.976,
+  citySlug: "chiang-mai",
+  type: "villa",
+  fromPrice: 9000,
+  beds24: null,
+  currency: "THB",
+  // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
+  // until this villa has a Beds24 room of its own.
+  minStay: 2,
+  maxStay: 90,
+  fill: "bg-primary",
+  onFill: "text-white",
+  address: null,
+  // What the owner advertises, from his own post, not an agreed AgentSiam time. The
+  // cleaning file for each unit deliberately still carries AgentSiam's 15:00 and 12:00.
+  checkIn: "14:00",
+  checkOut: "11:00",
+  houseRuleKeys: [],
+  reviews: [],
+  bedrooms: 4,
+  // The owner's own Airbnb listing for this villa states both, read 11/11/2026.
+  bathrooms: 5,
+  maxGuests: 12,
+  features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
+  nearby: [
+    { labelKey: "nearCentralAirport", driveMinutes: 5, km: 3.9 },
+    { labelKey: "nearCnxAirport", driveMinutes: 8, km: 5.4 },
+    { labelKey: "nearThaPhaeGate", driveMinutes: 10, km: 7.3 },
+    { labelKey: "nearNimmanhaemin", driveMinutes: 10, km: 7.6 },
+  ],
+  facts: [
+    { labelKey: "guests", value: "12" },
+    { labelKey: "bedrooms", value: "4" },
+    { labelKey: "beds", valueKey: "fourKingOrQueenBeds" },
+    { labelKey: "bathrooms", value: "5" },
+    { labelKey: "factPool", value: "1" },
+  ],
+  rating: { value: 4.63, source: "Airbnb", givenOn: "2026-11-11" },
+  descriptionKeys: ["gardenDesc1", "gardenDesc2"],
+};
+
 export const PROPERTIES: Property[] = [
   LOTUS_HOUSE,
   COSMOS_HOUSE,
@@ -556,6 +606,7 @@ export const PROPERTIES: Property[] = [
   SILVER_OAK_VILLA,
   MID_CENTURY_VILLA,
   ATRIUM_VILLA,
+  GARDEN_VILLA,
 ];
 
 /**

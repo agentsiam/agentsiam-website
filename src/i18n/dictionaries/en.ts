@@ -1484,6 +1484,14 @@ export const en = {
   threeBedsUnstated: "3 beds",
   // The Most M2 and Hillmont M1 state king or queen without saying which room is which.
   fourKingOrQueenBeds: "4 king or queen",
+
+  // -- Garden Villa --------------------------------------------------------
+  gardenTagline: "Four bedrooms, a private garden and a large pool in Pa Daet, Chiang Mai",
+  // Every fact here is a field in the property profile, which took them from the owner's own Airbnb listing: two storeys, the pool's dimensions, the bedroom and bathroom counts.
+  gardenDesc1: "Garden Villa is a four-bedroom pool villa in Pa Daet, south of the centre. It stands over two storeys around a nine by four metre saltwater pool, with the living space opening onto its own garden.",
+  gardenDesc2: "Five bathrooms and parking for three cars. The kitchen has a barbecue, and Wi-Fi, a television, towels, soap and shampoo are included.",
+  metaGardenTitle: "Garden Villa, Pa Daet, Chiang Mai",
+  metaGardenDesc: "A four-bedroom private pool villa in Pa Daet, Chiang Mai, over two storeys with its own garden. Enquire for dates and a price.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

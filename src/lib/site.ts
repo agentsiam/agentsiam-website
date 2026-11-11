@@ -206,6 +206,7 @@ export const ROUTES: RouteMeta[] = [
   { path: "/silveroakvilla", changeFrequency: "weekly", priority: 0.8 },
   { path: "/midcenturyvilla", changeFrequency: "weekly", priority: 0.8 },
   { path: "/atriumvilla", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/gardenvilla", changeFrequency: "weekly", priority: 0.8 },
   { path: "/destinations", changeFrequency: "monthly", priority: 0.7 },
   // One entry per neighbourhood. These are the pages organic search is meant to land on
   // -- "where to stay in Nimman" is a question people actually type -- so they are listed

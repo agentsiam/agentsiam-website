@@ -1292,4 +1292,11 @@ export const zh: Dictionary = {
   threeDoubleBeds: "3 张双人床",
   threeBedsUnstated: "3 张床",
   fourKingOrQueenBeds: "4 张特大床或大床",
+
+  // -- Garden Villa --------------------------------------------------------
+  gardenTagline: "清迈 Pa Daet，四间卧室，私人花园与大泳池",
+  gardenDesc1: "Garden Villa 是一栋位于市中心以南 Pa Daet 的四卧室泳池别墅。两层楼环绕一座 9 x 4 米的盐水泳池，起居空间直接通向自家花园。",
+  gardenDesc2: "五间卫浴，可停三辆车。厨房配烧烤设备，并提供 Wi-Fi、电视、毛巾、香皂与洗发水。",
+  metaGardenTitle: "Garden Villa，清迈 Pa Daet",
+  metaGardenDesc: "位于清迈 Pa Daet 的四卧室私人泳池别墅，两层楼并带自家花园。欢迎咨询日期与价格。",
 };
