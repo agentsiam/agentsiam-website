@@ -22,6 +22,9 @@ const VIBE_KEYS: Record<string, keyof Dictionary> = {
   "hang-dong": "vibeHangDong",
   "mae-rim": "vibeMaeRim",
   "san-sai": "vibeSanSai",
+  "chang-khian": "vibeChangKhian",
+  "chang-phueak": "vibeChangPhueak",
+  "pa-daet": "vibePaDaet",
 };
 
 export function areaVibe(

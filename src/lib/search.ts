@@ -152,7 +152,11 @@ function matches(property: Property, state: SearchState): boolean {
   if (state.areas.length && !state.areas.includes(property.areaSlug)) return false;
   if (state.types.length && !state.types.includes(property.type)) return false;
   if (state.bedrooms && property.bedrooms < state.bedrooms) return false;
-  if (state.bathrooms && property.bathrooms < state.bathrooms) return false;
+  // Same shape as the guest filter below: a property whose profile does not state a
+  // bathroom count is not excluded by the bathroom filter, because excluding it would
+  // be answering a question nobody has asked the owner yet.
+  if (state.bathrooms && property.bathrooms !== null && property.bathrooms < state.bathrooms)
+    return false;
   if (state.guests && property.maxGuests !== null && property.maxGuests < state.guests)
     return false;
   if (state.features.length && !state.features.every((f) => property.features.includes(f))) {

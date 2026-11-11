@@ -62,4 +62,9 @@ export const FEATURE_ICONS: Record<string, string> = {
   workspace: "screen",
   washer: "broom",
   "pet-friendly": "house",
+  // The pool villas. "bbq" and "garden" share icons with the nearest thing in the
+  // set rather than inventing two glyphs for six listings.
+  tv: "screen",
+  bbq: "kitchen",
+  garden: "terrace",
 };

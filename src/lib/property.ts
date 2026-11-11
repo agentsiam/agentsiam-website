@@ -45,7 +45,12 @@ export type Property = {
    */
   type: "apartment" | "townhouse" | "house" | "villa";
   bedrooms: number;
-  bathrooms: number;
+  /**
+   * Null where the profile does not state one, for the same reason as `maxGuests`:
+   * the tile then prints no bathroom count and the bathroom filter does not exclude
+   * the house, rather than publishing a number nobody gave.
+   */
+  bathrooms: number | null;
   /**
    * Nightly rate floor, for the "from ฿x" on a tile. A guide only: the real number for a
    * real stay comes from Beds24 via /api/booking/quote, and nothing here is ever shown as
@@ -271,7 +276,218 @@ export const MAE_RIM_HOUSE: Property = {
   reviews: [],
 };
 
-export const PROPERTIES: Property[] = [LOTUS_HOUSE, COSMOS_HOUSE, MAE_RIM_HOUSE];
+/**
+ * K. Mike's pool villas, listed for enquiry only as Cosmos House and Mae Rim House are: no
+ * Beds24 room, no booking panel, no quote.
+ *
+ * They carry a price where those two do not. `fromPrice` is 9000 on every one of them,
+ * which is the floor of the 9,000 to 18,000 a night the owner advertises across the whole
+ * collection rather than a figure for any single villa. Paul set it on 11/11/2026 knowing
+ * that, and the tile says "by enquiry only" under the price so a reader is not shown a rate
+ * that looks bookable.
+ *
+ * Courtyard, Jasmine and Silver Oak are three units in one development in Chang Khian and
+ * share a street address and a map pin. The public point below is deliberately identical on
+ * all three: they are in one place, and separating them on the map would draw a distinction
+ * that does not exist.
+ *
+ * Every value here is a field in that villa's property profile in the consulting repo under
+ * as-operations/properties/. What the profile does not assert is not here.
+ */
+export const COURTYARD_VILLA: Property = {
+  slug: "courtyardvilla",
+  title: "Courtyard Villa",
+  taglineKey: "courtyardTagline",
+  areaSlug: "chang-khian",
+  // Public point, not the house: see the type. The development sits a few hundred metres
+  // south-west of it.
+  lat: 18.8265,
+  lng: 98.959,
+  citySlug: "chiang-mai",
+  type: "villa",
+  fromPrice: 9000,
+  beds24: null,
+  currency: "THB",
+  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
+  // blank, so the tile prints neither and neither filter excludes the villa.
+  bathrooms: null,
+  maxGuests: null,
+  // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
+  // until this villa has a Beds24 room of its own.
+  minStay: 2,
+  maxStay: 90,
+  fill: "bg-primary",
+  onFill: "text-white",
+  address: null,
+  checkIn: "",
+  checkOut: "",
+  houseRuleKeys: [],
+  reviews: [],
+  bedrooms: 3,
+  features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
+  facts: [
+    { labelKey: "bedrooms", value: "3" },
+    { labelKey: "factPool", value: "1" },
+  ],
+  descriptionKeys: ["courtyardDesc1", "courtyardDesc2"],
+};
+
+export const JASMINE_VILLA: Property = {
+  slug: "jasminevilla",
+  title: "Jasmine Villa",
+  taglineKey: "jasmineTagline",
+  areaSlug: "chang-khian",
+  lat: 18.8265,
+  lng: 98.959,
+  citySlug: "chiang-mai",
+  type: "villa",
+  fromPrice: 9000,
+  beds24: null,
+  currency: "THB",
+  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
+  // blank, so the tile prints neither and neither filter excludes the villa.
+  bathrooms: null,
+  maxGuests: null,
+  // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
+  // until this villa has a Beds24 room of its own.
+  minStay: 2,
+  maxStay: 90,
+  fill: "bg-primary",
+  onFill: "text-white",
+  address: null,
+  checkIn: "",
+  checkOut: "",
+  houseRuleKeys: [],
+  reviews: [],
+  bedrooms: 3,
+  features: ["pool", "kitchen", "bbq", "wifi", "tv"],
+  facts: [
+    { labelKey: "bedrooms", value: "3" },
+    { labelKey: "factPool", value: "1" },
+  ],
+  descriptionKeys: ["jasmineDesc1", "jasmineDesc2"],
+};
+
+export const SILVER_OAK_VILLA: Property = {
+  slug: "silveroakvilla",
+  title: "Silver Oak Villa",
+  taglineKey: "silverOakTagline",
+  areaSlug: "chang-khian",
+  lat: 18.8265,
+  lng: 98.959,
+  citySlug: "chiang-mai",
+  type: "villa",
+  fromPrice: 9000,
+  beds24: null,
+  currency: "THB",
+  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
+  // blank, so the tile prints neither and neither filter excludes the villa.
+  bathrooms: null,
+  maxGuests: null,
+  // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
+  // until this villa has a Beds24 room of its own.
+  minStay: 2,
+  maxStay: 90,
+  fill: "bg-primary",
+  onFill: "text-white",
+  address: null,
+  checkIn: "",
+  checkOut: "",
+  houseRuleKeys: [],
+  reviews: [],
+  bedrooms: 3,
+  features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
+  facts: [
+    { labelKey: "bedrooms", value: "3" },
+    { labelKey: "factPool", value: "1" },
+  ],
+  descriptionKeys: ["silverOakDesc1", "silverOakDesc2"],
+};
+
+export const MID_CENTURY_VILLA: Property = {
+  slug: "midcenturyvilla",
+  title: "Mid-Century Villa",
+  taglineKey: "midCenturyTagline",
+  areaSlug: "chang-phueak",
+  // Public point, not the house: see the type.
+  lat: 18.818,
+  lng: 98.969,
+  citySlug: "chiang-mai",
+  type: "villa",
+  fromPrice: 9000,
+  beds24: null,
+  currency: "THB",
+  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
+  // blank, so the tile prints neither and neither filter excludes the villa.
+  bathrooms: null,
+  maxGuests: null,
+  // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
+  // until this villa has a Beds24 room of its own.
+  minStay: 2,
+  maxStay: 90,
+  fill: "bg-primary",
+  onFill: "text-white",
+  address: null,
+  checkIn: "",
+  checkOut: "",
+  houseRuleKeys: [],
+  reviews: [],
+  bedrooms: 3,
+  features: ["pool", "kitchen", "bbq", "wifi", "tv"],
+  facts: [
+    { labelKey: "bedrooms", value: "3" },
+    { labelKey: "factPool", value: "1" },
+  ],
+  descriptionKeys: ["midCenturyDesc1", "midCenturyDesc2"],
+};
+
+export const ATRIUM_VILLA: Property = {
+  slug: "atriumvilla",
+  title: "Atrium Villa",
+  taglineKey: "atriumTagline",
+  areaSlug: "pa-daet",
+  // Public point, not the house: see the type.
+  lat: 18.7572,
+  lng: 98.976,
+  citySlug: "chiang-mai",
+  type: "villa",
+  fromPrice: 9000,
+  beds24: null,
+  currency: "THB",
+  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
+  // blank, so the tile prints neither and neither filter excludes the villa.
+  bathrooms: null,
+  maxGuests: null,
+  // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
+  // until this villa has a Beds24 room of its own.
+  minStay: 2,
+  maxStay: 90,
+  fill: "bg-primary",
+  onFill: "text-white",
+  address: null,
+  checkIn: "",
+  checkOut: "",
+  houseRuleKeys: [],
+  reviews: [],
+  bedrooms: 4,
+  features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
+  facts: [
+    { labelKey: "bedrooms", value: "4" },
+    { labelKey: "factPool", value: "1" },
+  ],
+  descriptionKeys: ["atriumDesc1", "atriumDesc2"],
+};
+
+export const PROPERTIES: Property[] = [
+  LOTUS_HOUSE,
+  COSMOS_HOUSE,
+  MAE_RIM_HOUSE,
+  COURTYARD_VILLA,
+  JASMINE_VILLA,
+  SILVER_OAK_VILLA,
+  MID_CENTURY_VILLA,
+  ATRIUM_VILLA,
+];
 
 /**
  * The one house that stands for the company wherever a page needs a single property and

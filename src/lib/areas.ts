@@ -92,6 +92,33 @@ export const AREAS: Area[] = [
     lng: 99.045,
     radius: 0.03,
   },
+  // The three below were added for K. Mike's pool villas. Each centre is the
+  // neighbourhood's own, read off the area rather than off a property: an area centre that
+  // sits on a house is a house published as a landmark.
+  {
+    slug: "chang-khian",
+    name: "Chang Khian",
+    vibe: "quiet lanes at the foot of Doi Suthep, a short drive from Nimman",
+    lat: 18.823,
+    lng: 98.96,
+    radius: 0.012,
+  },
+  {
+    slug: "chang-phueak",
+    name: "Chang Phueak",
+    vibe: "north of the old city, markets and the university quarter",
+    lat: 18.81,
+    lng: 98.972,
+    radius: 0.012,
+  },
+  {
+    slug: "pa-daet",
+    name: "Pa Daet",
+    vibe: "south of the centre, near Central Airport and the ring road",
+    lat: 18.758,
+    lng: 98.98,
+    radius: 0.015,
+  },
 ];
 
 export function areaBySlug(slug: string): Area | undefined {

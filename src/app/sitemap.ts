@@ -18,6 +18,13 @@ const ROUTE_PHOTO_SET: Record<string, string> = {
   "/lotushouse": "lotushouse",
   "/cosmoshouse": "cosmoshouse",
   "/maerimhouse": "maerimhouse",
+  // The villas render their whole set in the gallery, as the three above do. Each is
+  // empty until K. Mike's photographs land, and an empty set contributes no <image:loc>.
+  "/courtyardvilla": "courtyardvilla",
+  "/jasminevilla": "jasminevilla",
+  "/silveroakvilla": "silveroakvilla",
+  "/midcenturyvilla": "midcenturyvilla",
+  "/atriumvilla": "atriumvilla",
 };
 
 /**

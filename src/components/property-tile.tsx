@@ -152,10 +152,12 @@ export function PropertyTile({
             <dt>{t.bedrooms}</dt>
             <dd className="font-semibold text-text">{property.bedrooms}</dd>
           </div>
-          <div className="flex gap-1.5">
-            <dt>{t.bathrooms}</dt>
-            <dd className="font-semibold text-text">{property.bathrooms}</dd>
-          </div>
+          {property.bathrooms !== null ? (
+            <div className="flex gap-1.5">
+              <dt>{t.bathrooms}</dt>
+              <dd className="font-semibold text-text">{property.bathrooms}</dd>
+            </div>
+          ) : null}
         </dl>
 
         {property.rating ? (
@@ -183,8 +185,17 @@ export function PropertyTile({
             </span>
             <span className="text-muted"> {t.perNight}</span>
           </p>
-        ) : property.beds24 === null ? (
-          <p className="mt-3 text-[15px] text-muted">{t.tileNotOpen}</p>
+        ) : null}
+
+        {/* Under the price, not only in place of one. K. Mike's villas carry a from-price
+            and have no Beds24 room behind them, and a rate with nothing qualifying it reads
+            as bookable. */}
+        {property.beds24 === null ? (
+          <p
+            className={`text-[15px] text-muted ${price !== null ? "mt-1" : "mt-3"}`}
+          >
+            {t.tileNotOpen}
+          </p>
         ) : null}
       </div>
     </Link>

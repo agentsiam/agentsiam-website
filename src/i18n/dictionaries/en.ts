@@ -1412,6 +1412,46 @@ export const en = {
   articleOtherJournal: "Planning a stay in Chiang Mai rather than letting one?",
   // Carries {outlet}, the masthead name in the reader's own language.
   articleReadOutlet: "Read {outlet}",
+
+  // -- K. Mike's pool villas: areas, features and per-villa copy -----------
+  // Chang Khian is not Chang Khlan. Different neighbourhood, one letter apart, and Lotus House and Cosmos House are in the other one.
+  vibeChangKhian: "quiet lanes at the foot of Doi Suthep, a short drive from Nimman",
+  vibeChangPhueak: "north of the old city, markets and the university quarter",
+  vibePaDaet: "south of the centre, near Central Airport and the ring road",
+  // Television, not smart TV. The owner's post says only that there is one.
+  feature_tv: "Television",
+  feature_bbq: "Barbecue",
+  feature_garden: "Private garden",
+  factPool: "Private pool",
+  // One set of three keys for all the villas, rather than three keys each. The words do not differ by house.
+  villaEnquireTitle: "Booking by enquiry",
+  villaEnquireBody: "Send us your arrival and departure dates and the number of guests. We'll reply personally with availability and a price for your stay.",
+  villaEnquire: "Enquire about availability",
+  courtyardTagline: "Three bedrooms and a private pool in Chang Khian, Chiang Mai",
+  courtyardDesc1: "Courtyard Villa is a three-bedroom pool villa in Chang Khian, at the foot of Doi Suthep. Every bedroom opens onto a garden courtyard of its own, and the pool sits at the centre of the house.",
+  courtyardDesc2: "It is one of three villas in the same Chang Khian development, with Jasmine Villa and Silver Oak Villa, and each has a pool of its own. The kitchen has a barbecue, and Wi-Fi, a television, towels, soap and shampoo are included.",
+  metaCourtyardTitle: "Courtyard Villa, Chang Khian, Chiang Mai",
+  metaCourtyardDesc: "A three-bedroom private pool villa in Chang Khian, Chiang Mai, with a garden courtyard off every bedroom. Enquire for dates and a price.",
+  jasmineTagline: "Three bedrooms, a large pool and a poolside terrace in Chang Khian, Chiang Mai",
+  jasmineDesc1: "Jasmine Villa is a three-bedroom pool villa in Chang Khian, at the foot of Doi Suthep. It has a large private pool with a terrace running beside it.",
+  jasmineDesc2: "It is one of three villas in the same Chang Khian development, with Courtyard Villa and Silver Oak Villa, and each has a pool of its own. The kitchen has a barbecue, and Wi-Fi, a television, towels, soap and shampoo are included.",
+  metaJasmineTitle: "Jasmine Villa, Chang Khian, Chiang Mai",
+  metaJasmineDesc: "A three-bedroom private pool villa in Chang Khian, Chiang Mai, with a large pool and a terrace beside it. Enquire for dates and a price.",
+  silverOakTagline: "Three bedrooms, a very large pool and a sunken lounge in Chang Khian, Chiang Mai",
+  silverOakDesc1: "Silver Oak Villa is a three-bedroom pool villa in Chang Khian, at the foot of Doi Suthep. It has a very large private pool, a silver oak garden, and a sunken lounge beside the water for coffee or a barbecue.",
+  silverOakDesc2: "It is one of three villas in the same Chang Khian development, with Courtyard Villa and Jasmine Villa, and each has a pool of its own. The kitchen has a barbecue, and Wi-Fi, a television, towels, soap and shampoo are included.",
+  metaSilverOakTitle: "Silver Oak Villa, Chang Khian, Chiang Mai",
+  metaSilverOakDesc: "A three-bedroom private pool villa in Chang Khian, Chiang Mai, with a very large pool and a sunken lounge beside it. Enquire for dates and a price.",
+  midCenturyTagline: "Three bedrooms and a large private pool in Chang Phueak, Chiang Mai",
+  midCenturyDesc1: "Mid-Century Villa is a three-bedroom pool villa in Chang Phueak, north of the old city. It is built in a modern mid-century style, with open living space and a large private pool.",
+  midCenturyDesc2: "The kitchen has a barbecue, and Wi-Fi, a television, towels, soap and shampoo are included.",
+  metaMidCenturyTitle: "Mid-Century Villa, Chang Phueak, Chiang Mai",
+  metaMidCenturyDesc: "A three-bedroom private pool villa in Chang Phueak, Chiang Mai, in a modern mid-century style. Enquire for dates and a price.",
+  atriumTagline: "Four bedrooms, a double-height living room and a private pool in Pa Daet, Chiang Mai",
+  atriumDesc1: "Atrium Villa is a four-bedroom pool villa in Pa Daet, south of the centre. The living room is double height and opens onto the private garden and the pool.",
+  atriumDesc2: "The kitchen has a barbecue, and Wi-Fi, a television, towels, soap and shampoo are included.",
+  metaAtriumTitle: "Atrium Villa, Pa Daet, Chiang Mai",
+  metaAtriumDesc: "A four-bedroom private pool villa in Pa Daet, Chiang Mai, with a double-height living room opening to the garden and pool. Enquire for dates and a price.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

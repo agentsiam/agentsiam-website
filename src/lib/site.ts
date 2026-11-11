@@ -199,6 +199,13 @@ export const ROUTES: RouteMeta[] = [
   { path: "/cosmoshouse", changeFrequency: "weekly", priority: 0.8 },
   { path: "/cosmoshouse/local-guide", changeFrequency: "monthly", priority: 0.6 },
   { path: "/maerimhouse", changeFrequency: "weekly", priority: 0.8 },
+  // K. Mike's pool villas. No local guide on any of them: the guide is built outwards
+  // from Chang Khlan and reaches none of these three neighbourhoods.
+  { path: "/courtyardvilla", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/jasminevilla", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/silveroakvilla", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/midcenturyvilla", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/atriumvilla", changeFrequency: "weekly", priority: 0.8 },
   { path: "/destinations", changeFrequency: "monthly", priority: 0.7 },
   // One entry per neighbourhood. These are the pages organic search is meant to land on
   // -- "where to stay in Nimman" is a question people actually type -- so they are listed
