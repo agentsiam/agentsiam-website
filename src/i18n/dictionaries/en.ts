@@ -1464,6 +1464,18 @@ export const en = {
   villaGettingAroundBody: "Driving times from a public point a few minutes from the house, measured on a map route rather than looked up.",
   // The one safety disclosure every villa carries, from the private-pool-supervision entry in each unit's property profile. It claims nothing about fencing, because no source states whether there is any. Reword it the day the owner answers.
   villaPoolSupervision: "The villa has its own pool. Children need an adult with them around it, and it is not overlooked from every room.",
+
+  // -- Pool villas: bed configuration and the Before you book answers ------
+  // Bed configurations for the villas. Estimates, recorded as ESTIMATE in each unit's property profile: the photographs show king beds and the count follows the bedrooms. villaFaqExactA is what tells a reader which numbers on the page are of that kind.
+  threeKingBeds: "3 king",
+  fourKingBeds: "4 king",
+  // Parking is an estimate off the flyer's gated frontage, so the answer says the number is confirmed rather than stating it flat.
+  villaFaqParkingA: "Gated parking on the property, room for about two cars. We confirm the exact space when you enquire.",
+  // Deliberately not guessed. A pet rule is the owner's policy rather than a fact about the building, and inventing one is a claim about what somebody else permits.
+  villaFaqPetsA: "The owner has not set a pet policy for this villa yet. Tell us if you are travelling with one and we will confirm before anything is agreed.",
+  villaFaqExactQ: "How exact are the numbers on this page?",
+  // The honest compensation for having estimated. It names which figures are checked and which are read off the owner's material, and gives the route to a confirmed answer, in the same breath rather than a paragraph later.
+  villaFaqExactA: "The bedroom count, the pool and the driving times are checked: the distances were measured on a route rather than looked up. Guests, beds, bathrooms and parking are our best reading of the owner's own material, and we confirm them in writing when you enquire, before anything is agreed.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

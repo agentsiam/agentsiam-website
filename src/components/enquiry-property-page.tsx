@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { Faq } from "@/components/faq";
 import { IconChip } from "@/components/icon";
+import { JsonLd } from "@/components/json-ld";
 import { PhotoGallery } from "@/components/photo-gallery";
+import { faqSchema } from "@/lib/structured-data";
 import { getDictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { areaVibe } from "@/i18n/area-vibe";
@@ -64,8 +67,31 @@ export function EnquiryPropertyPage({
     text: t[place.labelKey] as string,
   }));
 
+  /**
+   * Before you book. Five of these are the questions Lotus House answers, interpolated from
+   * this property rather than copied, and three are the villas' own.
+   *
+   * The last one exists because several figures above it are estimates: it names which of
+   * them are checked and which are read off the owner's material, and gives the route to a
+   * confirmed answer. A page that guesses without saying so is the thing worth avoiding,
+   * not the guess.
+   */
+  const guestFaq = [
+    {
+      q: t.gq1,
+      a: t.ga1.replace("{in}", property.checkIn).replace("{out}", property.checkOut),
+    },
+    { q: t.gq2, a: t.villaFaqParkingA },
+    { q: t.gq3, a: t.villaFaqPetsA },
+    { q: t.gq4, a: t.ga4.replace("{n}", String(property.maxGuests)) },
+    { q: t.gq5, a: t.ga5.replace("{n}", String(property.minStay)) },
+    { q: t.gq6, a: t.ga6 },
+    { q: t.villaFaqExactQ, a: t.villaFaqExactA },
+  ];
+
   return (
     <div>
+      <JsonLd data={faqSchema(guestFaq)} />
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-9">
         <nav aria-label={t.breadcrumbLabel} className="eyebrow">
           <Link href={href("/")} className="hit hover:text-primary">
@@ -191,6 +217,13 @@ export function EnquiryPropertyPage({
               </ul>
             </section>
           ) : null}
+
+          <section className="mt-9">
+            <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
+              {t.guestFaqTitle}
+            </h2>
+            <Faq items={guestFaq} />
+          </section>
         </div>
 
         <section className="rounded-panel bg-surface p-6">

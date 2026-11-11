@@ -317,10 +317,6 @@ export const COURTYARD_VILLA: Property = {
   fromPrice: 9000,
   beds24: null,
   currency: "THB",
-  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
-  // blank, so the tile prints neither and neither filter excludes the villa.
-  bathrooms: null,
-  maxGuests: null,
   // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
   // until this villa has a Beds24 room of its own.
   minStay: 2,
@@ -328,14 +324,23 @@ export const COURTYARD_VILLA: Property = {
   fill: "bg-primary",
   onFill: "text-white",
   address: null,
-  checkIn: "",
-  checkOut: "",
+  // What the owner advertises, from his own post, not an agreed AgentSiam time. The
+  // cleaning file for each unit deliberately still carries AgentSiam's 15:00 and 12:00.
+  checkIn: "14:00",
+  checkOut: "11:00",
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 3,
+  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
+  // per bedroom and two guests per bedroom. No source states either.
+  bathrooms: 3,
+  maxGuests: 6,
   features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
   facts: [
+    { labelKey: "guests", value: "6" },
     { labelKey: "bedrooms", value: "3" },
+    { labelKey: "beds", valueKey: "threeKingBeds" },
+    { labelKey: "bathrooms", value: "3" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
@@ -359,10 +364,6 @@ export const JASMINE_VILLA: Property = {
   fromPrice: 9000,
   beds24: null,
   currency: "THB",
-  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
-  // blank, so the tile prints neither and neither filter excludes the villa.
-  bathrooms: null,
-  maxGuests: null,
   // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
   // until this villa has a Beds24 room of its own.
   minStay: 2,
@@ -370,14 +371,23 @@ export const JASMINE_VILLA: Property = {
   fill: "bg-primary",
   onFill: "text-white",
   address: null,
-  checkIn: "",
-  checkOut: "",
+  // What the owner advertises, from his own post, not an agreed AgentSiam time. The
+  // cleaning file for each unit deliberately still carries AgentSiam's 15:00 and 12:00.
+  checkIn: "14:00",
+  checkOut: "11:00",
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 3,
+  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
+  // per bedroom and two guests per bedroom. No source states either.
+  bathrooms: 3,
+  maxGuests: 6,
   features: ["pool", "kitchen", "bbq", "wifi", "tv"],
   facts: [
+    { labelKey: "guests", value: "6" },
     { labelKey: "bedrooms", value: "3" },
+    { labelKey: "beds", valueKey: "threeKingBeds" },
+    { labelKey: "bathrooms", value: "3" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
@@ -401,10 +411,6 @@ export const SILVER_OAK_VILLA: Property = {
   fromPrice: 9000,
   beds24: null,
   currency: "THB",
-  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
-  // blank, so the tile prints neither and neither filter excludes the villa.
-  bathrooms: null,
-  maxGuests: null,
   // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
   // until this villa has a Beds24 room of its own.
   minStay: 2,
@@ -412,14 +418,23 @@ export const SILVER_OAK_VILLA: Property = {
   fill: "bg-primary",
   onFill: "text-white",
   address: null,
-  checkIn: "",
-  checkOut: "",
+  // What the owner advertises, from his own post, not an agreed AgentSiam time. The
+  // cleaning file for each unit deliberately still carries AgentSiam's 15:00 and 12:00.
+  checkIn: "14:00",
+  checkOut: "11:00",
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 3,
+  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
+  // per bedroom and two guests per bedroom. No source states either.
+  bathrooms: 3,
+  maxGuests: 6,
   features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
   facts: [
+    { labelKey: "guests", value: "6" },
     { labelKey: "bedrooms", value: "3" },
+    { labelKey: "beds", valueKey: "threeKingBeds" },
+    { labelKey: "bathrooms", value: "3" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
@@ -444,10 +459,6 @@ export const MID_CENTURY_VILLA: Property = {
   fromPrice: 9000,
   beds24: null,
   currency: "THB",
-  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
-  // blank, so the tile prints neither and neither filter excludes the villa.
-  bathrooms: null,
-  maxGuests: null,
   // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
   // until this villa has a Beds24 room of its own.
   minStay: 2,
@@ -455,14 +466,23 @@ export const MID_CENTURY_VILLA: Property = {
   fill: "bg-primary",
   onFill: "text-white",
   address: null,
-  checkIn: "",
-  checkOut: "",
+  // What the owner advertises, from his own post, not an agreed AgentSiam time. The
+  // cleaning file for each unit deliberately still carries AgentSiam's 15:00 and 12:00.
+  checkIn: "14:00",
+  checkOut: "11:00",
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 3,
+  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
+  // per bedroom and two guests per bedroom. No source states either.
+  bathrooms: 3,
+  maxGuests: 6,
   features: ["pool", "kitchen", "bbq", "wifi", "tv"],
   facts: [
+    { labelKey: "guests", value: "6" },
     { labelKey: "bedrooms", value: "3" },
+    { labelKey: "beds", valueKey: "threeKingBeds" },
+    { labelKey: "bathrooms", value: "3" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
@@ -487,10 +507,6 @@ export const ATRIUM_VILLA: Property = {
   fromPrice: 9000,
   beds24: null,
   currency: "THB",
-  // Not stated by the flyer or by the owner's post. A number nobody gave is worse than a
-  // blank, so the tile prints neither and neither filter excludes the villa.
-  bathrooms: null,
-  maxGuests: null,
   // Only the booking flow reads these and it reads Lotus House's. They match Cosmos House's
   // until this villa has a Beds24 room of its own.
   minStay: 2,
@@ -498,14 +514,23 @@ export const ATRIUM_VILLA: Property = {
   fill: "bg-primary",
   onFill: "text-white",
   address: null,
-  checkIn: "",
-  checkOut: "",
+  // What the owner advertises, from his own post, not an agreed AgentSiam time. The
+  // cleaning file for each unit deliberately still carries AgentSiam's 15:00 and 12:00.
+  checkIn: "14:00",
+  checkOut: "11:00",
   houseRuleKeys: [],
   reviews: [],
   bedrooms: 4,
+  // ESTIMATE, Paul 11/11/2026, and marked so in the property profile: one bathroom
+  // per bedroom and two guests per bedroom. No source states either.
+  bathrooms: 4,
+  maxGuests: 8,
   features: ["pool", "garden", "kitchen", "bbq", "wifi", "tv"],
   facts: [
+    { labelKey: "guests", value: "8" },
     { labelKey: "bedrooms", value: "4" },
+    { labelKey: "beds", valueKey: "fourKingBeds" },
+    { labelKey: "bathrooms", value: "4" },
     { labelKey: "factPool", value: "1" },
   ],
   nearby: [
