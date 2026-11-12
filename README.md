@@ -336,8 +336,163 @@ The pipeline, so nobody has to think about image formats:
 
 `npm run photos` regenerates on demand. Hand-editing a generated file is R5 in `CLAUDE.md`.
 
+## The renter shortlist admin
+
+A private area at `/admin` where Paul and Nils open a renter lead, build its shortlist of
+candidate properties, take each candidate to a decision, and see which are complete enough to
+send. Nothing in it is public, indexed or in the sitemap.
+
+**The data is files in the document store, not a database.** Paul's decision of 11/11/2026.
+`as-salesmarketing/01-crm/guest-leads.csv` in `agentsiam-consulting` stays the source of truth
+for the lead itself: the admin reads it and never writes it, so stages and next actions are
+still worked in the CSV and through Claude. The candidates live one JSON file per lead in
+`as-salesmarketing/01-crm/shortlists/`, and the blocked-operator list is
+`as-salesmarketing/01-crm/blocked-operators.json` beside them. Every save from the admin is a
+commit to that repository, so git history is the audit trail and Claude can still read a
+candidate. `as-salesmarketing/01-crm/shortlists/README.md` is the field list.
+
+**Five environment variables, all server-side**, documented in `.env.example`:
+`ADMIN_COOKIE_SECRET`, `ADMIN_PASSPHRASE_PAUL`, `ADMIN_PASSPHRASE_NILS`, and then either
+`CRM_GITHUB_TOKEN` for production or `CRM_LOCAL_PATH` for local development. Unset, the admin
+fails closed: the sign-in page says it is not configured and nothing else answers. The token is
+a fine-grained GitHub token with Contents read and write on `agentsiam-consulting` and nothing
+else.
+
+**What keeps it shut.** Three things, and only the first two actually stop anybody.
+`src/proxy.ts` reads the session cookie and turns a signed-out visitor away before any page
+renders. Every admin page and every `/api/admin` route then checks the session again for
+itself, because an edge check that reads a cookie cannot be the only thing between a URL and
+the document store. On top of that the pages are `noindex, nofollow, nocache` and `robots.ts`
+disallows `/admin` and `/api/admin`, which keeps a well-behaved crawler away and nothing else:
+that line also publishes the fact that the path exists.
+
+**The blocked-operator check.** AgentSiam goes to owners directly and never sources through
+another management company's channels. Saving a candidate matches its links and its contact
+against the list, and a match refuses the save and names the operator and the outlet. An outlet
+can be added from `/admin/blocked`; removing one is a decision about who AgentSiam deals with
+and is made in the document store with a commit message saying why. One case no check can
+catch is on the list and said out loud on screen: a blocked operator co-hosting on an owner's
+own Airbnb account produces a listing that reads as the owner's.
+
+**Ready to send** is computed, never typed: available `yes`, a total price, a licence status,
+and at least one photo link. A status that asserts the candidate can go to a guest, `ready to
+send`, `sent to guest` or `booked`, is refused while any of the four is missing.
+
+**Running it locally.** Set `CRM_LOCAL_PATH` to the checkout of `agentsiam-consulting` on this
+machine and the admin reads and writes the working tree directly, which is also how it is
+tested. Those writes are not committed by the admin: `git status` in that repository shows
+them.
+
+### Setting it up on Vercel
+
+Done once, and none of it lives in this repository: a GitHub token, and four variables in the
+Vercel project. Until both exist, `/admin` on any deployment answers a sign-in form that says it
+is not configured.
+
+**1. The token.** GitHub, Settings, Developer settings, Personal access tokens, Fine-grained
+tokens, Generate new token. Resource owner is the account that owns `agentsiam-consulting`.
+Repository access is Only select repositories, and that one repository alone. Permissions is
+Repository permissions, Contents, Read and write, and nothing else; GitHub adds Metadata read by
+itself and that is expected. Set an expiry and put the date in "Known gaps", because the day it
+lapses every read and every save in the admin starts failing. Copy the `github_pat_` value while
+it is on screen, because GitHub does not show it again.
+
+Scoped that narrowly, the worst a leaked token can do is commit to the document store, which has
+git history. A token with access to every repository would be a different object entirely, so
+this is the one setting not to be generous with.
+
+**2. The three secrets.** `ADMIN_COOKIE_SECRET` is any 32 characters or more, and under 32 is
+treated as unset rather than as weak:
+
+```bash
+openssl rand -base64 32
+```
+
+The two passphrases are one each for Paul and Nils, never shared between them, because which
+passphrase signed in is what the admin writes against a candidate as `added_by` and `updated_by`.
+Shared passphrases make that field a lie.
+
+**3. The variables.** Vercel, the project, Settings, Environment Variables. Four of them:
+`ADMIN_COOKIE_SECRET`, `ADMIN_PASSPHRASE_PAUL`, `ADMIN_PASSPHRASE_NILS` and `CRM_GITHUB_TOKEN`.
+Tick Preview to test on a branch, and Production when it goes live; the two can hold different
+passphrases and the same token. Mark them Sensitive so they cannot be read back out of the
+dashboard. Leave `CRM_LOCAL_PATH` unset there: it is a path on a laptop, it means nothing on
+Vercel, and the token takes precedence over it anyway.
+
+**4. Redeploy.** A deployment carries the variables it was built with, so adding one does not
+reach a build that already exists. Deployments, the branch's newest build, Redeploy.
+
+**5. Verify in the browser, in this order.** Each row proves a different half, and a failure in
+one tells you nothing about the rows below it.
+
+| Step | Proves | If it fails |
+|---|---|---|
+| `/admin` shows a sign-in form that does not say it is not configured | The variables reached this deployment | They are on the wrong environment, or nothing has been redeployed since they were set |
+| The passphrase signs in, and a wrong one does not | The cookie is being signed and read | `ADMIN_COOKIE_SECRET` is under 32 characters, which counts as unset |
+| `G-0003` lists three candidates | The GitHub read path works | The token cannot see the repository, or those files are not on `main` |
+| A saved change to a candidate is accepted | The GitHub write path works, which nothing else proves | Read the message on screen: it names the file and the repository |
+| A `poolvillachiangmai.directstays.com` link is refused and names the operator | `blocked-operators.json` is read on every save | That file is not on `main` |
+
+A save that worked puts a commit in `agentsiam-consulting` within a second or two, authored
+`agentsiam <hi@agentsiam.com>`, with a message like `Shortlist G-0003: add Villa 89 (Nils via the
+admin)`. That commit is the proof. The screen saying it saved is not.
+
+Wrong passphrases are rate limited to ten tries in ten minutes per address, so a tester who
+fat-fingers it repeatedly waits rather than concluding it is broken.
+
+**The signed-out check cannot be done with `curl` against a preview.** Every preview sits behind
+the Vercel login, so a redirect out of one is Vercel's wall rather than the admin's and the two
+are indistinguishable from outside. Do it in a browser that is signed in to Vercel and signed out
+of the admin: every admin page must bounce to the sign-in form, and every `/api/admin` route must
+answer 401.
+
+**A shareable preview link opens the admin's front door.** The link described in "Showing a
+preview to someone outside the team" opens the whole branch to anyone holding it, `/admin`
+included, which leaves the passphrase as the only wall. Do not issue one for a branch that
+carries the admin.
+
+**Rotating and revoking.** Changing `ADMIN_COOKIE_SECRET` and redeploying signs both people out,
+which is how a session is revoked. Deleting the token on GitHub stops reads and saves together:
+sign-in still works and every page then shows a store error, which is the quickest way to shut
+the admin without touching a deployment.
+
 ## Known gaps
 
+- **The renter shortlist admin has never run against GitHub (11/11/2026).** It was built and
+  verified against a local checkout of the document store, with `CRM_LOCAL_PATH` set: sign-in,
+  the lead list, adding and changing a candidate, the readiness gate, the blocked refusal on
+  both a link and a handle, removal, and a signed-out visitor getting a redirect from every
+  page and a 401 from every API route. Two things are verified on Vercel as of 11/11/2026: the
+  branch deploys, and with no variables set the preview answers a form saying it is not
+  configured, which is the failing-closed path running on a real deployment rather than on a
+  laptop. **The GitHub backend has not run once**, so what stands between this and production
+  is still a path nothing has exercised: the token, the contents API, and what a conflict does.
+  No code is outstanding for it. `src/lib/admin/store.ts` holds the GitHub read, the write with
+  its `sha` check and the three-attempt conflict retry, every save route goes through that one
+  function, and there is no stub or TODO anywhere in it, so this entry closes with one
+  successful save rather than with a build. Two of the four variables are set in Preview as of
+  12/11/2026, `ADMIN_COOKIE_SECRET` and `CRM_BRANCH`, which points at the throwaway branch
+  `admin-write-test` rather than `main`; the two passphrases and `CRM_GITHUB_TOKEN` are not set,
+  so a preview still answers the not-configured form. The newest preview deployment, 12/11/2026
+  09:19, does carry those two: they were created two minutes before it was built. The steps for
+  the rest are above under "Setting it up on Vercel". Two readings in it are mine rather than
+  the brief's, and both are visible on screen rather than buried: "ready to send" treats
+  availability as `yes` rather than merely answered, because a property the owner has said is
+  not free cannot be sent, and a licence of `unknown` still counts as filled in, because
+  whether that is good enough to send is a judgement for whoever presses send.
+- **Nils cannot open a preview deployment (12/11/2026).** Deployment Protection on the Vercel
+  project is SSO on every deployment except custom domains, with no password protection and no
+  bypass, and the team has two members: `agentsiam` and the PunProfile bot
+  `punprofilecareer-droid`. Nils holds neither, so a preview URL stops him at a Vercel login
+  whatever the admin's own variables say. The only surface that does not ask is `agentsiam.com`
+  itself, which means production, which means `main`.
+- **The lead list reads every shortlist file on every page load.** Five leads is five extra
+  reads, which is nothing locally and five GitHub requests in production. It is fine at this
+  size and is the first thing to change if the CRM grows to dozens of open renter leads.
+- **`guest-leads.csv` has no `notes` and no `history` column**, although the CRM README says
+  every lead row carries both and the owner file `leads.csv` does. That is why G-0003's
+  shortlist was living in its `requirements` cell. The admin does not fix it: it reads the
+  columns that exist.
 - **The owner copy pass, and its unreviewed Thai and Chinese (10/11/2026).** The pass that took
   the stated management fee off the site and removed the claims a one-house portfolio cannot
   support was written on 06/11/2026 in all three languages, and both of its commits say the Thai

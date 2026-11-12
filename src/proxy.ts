@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { DEFAULT_LOCALE, LOCALES } from "@/i18n/config";
+import { ADMIN_COOKIE, readSession } from "@/lib/admin/session";
+import { ADMIN_ROOT, ADMIN_SIGN_IN } from "@/lib/admin/routes";
 
 // `proxy` is Next 16's rename of `middleware`. Same file position, same API.
 //
@@ -13,11 +15,42 @@ import { DEFAULT_LOCALE, LOCALES } from "@/i18n/config";
 // Deliberately no Accept-Language redirect. A visitor who follows a link to an English
 // page should land on that page; a browser language header is a weaker signal than the URL
 // someone chose, and auto-redirecting breaks shared links and confuses crawlers.
+//
+// /admin is the exception to all of it. It is not localised, so it is answered before the
+// locale rules and never rewritten, and it is the one part of the site that refuses a
+// visitor who is not signed in.
 
 const PREFIXED = LOCALES.filter((locale) => locale !== DEFAULT_LOCALE);
 
-export function proxy(request: NextRequest) {
+/**
+ * The admin's first gate. It reads the cookie and nothing else, which is all an edge check
+ * should do, so every admin page and every /api/admin route verifies the session again for
+ * itself. This one exists so a signed-out visitor never reaches a page at all, and so the
+ * locale rewrite below never touches /admin: without this branch, /admin would be rewritten
+ * to /en/admin, which nothing serves.
+ */
+async function admin(request: NextRequest, pathname: string) {
+  if (pathname === ADMIN_SIGN_IN) return NextResponse.next();
+
+  const session = await readSession(request.cookies.get(ADMIN_COOKIE)?.value);
+  if (session) return NextResponse.next();
+
+  // Sent back to where they were going, once they are in. Nothing else is carried: the
+  // original query string could hold anything, and the sign-in page only honours a path
+  // inside /admin anyway.
+  const url = request.nextUrl.clone();
+  url.pathname = ADMIN_SIGN_IN;
+  url.search = "";
+  if (pathname !== ADMIN_ROOT) url.searchParams.set("next", pathname);
+  return NextResponse.redirect(url);
+}
+
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (pathname === ADMIN_ROOT || pathname.startsWith(`${ADMIN_ROOT}/`)) {
+    return admin(request, pathname);
+  }
 
   // /en/... is the internal shape, never the public one.
   if (pathname === `/${DEFAULT_LOCALE}` || pathname.startsWith(`/${DEFAULT_LOCALE}/`)) {
