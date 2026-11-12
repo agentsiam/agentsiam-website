@@ -45,6 +45,12 @@ function Field({
               {option}
             </option>
           ))}
+          {/* A value the file holds and this list does not know shows as itself rather
+              than as an empty box. Saving is still safe, because an untouched field is
+              not posted at all. */}
+          {value && !(field.options ?? []).includes(value) ? (
+            <option value={value}>{value} (not in this list)</option>
+          ) : null}
         </select>
       ) : (
         <input
@@ -88,6 +94,25 @@ export function RowForm({
   const hasHistory = spec.kind === "owner";
   const hasBody = spec.kind === "client" && body !== undefined;
 
+  /**
+   * What this save actually changes, rather than everything the form was shown.
+   *
+   * It matters for more than tidiness. These files predate the admin and hold values its
+   * vocabularies do not know: the pool reaches one owner through `Airbnb`, which was not a
+   * contact channel here until 12/11/2026. Posting every field would send that value back
+   * and have it refused, which made a record the admin could display and could not save.
+   * Sending only what was touched means a vocabulary this admin has not caught up with can
+   * sit in a cell it never writes.
+   */
+  function changed(): Values {
+    if (isNew) return form;
+    const diff: Values = {};
+    for (const [key, value] of Object.entries(form)) {
+      if (value !== (values[key] ?? "")) diff[key] = value;
+    }
+    return diff;
+  }
+
   async function save(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
@@ -99,7 +124,7 @@ export function RowForm({
         body: JSON.stringify({
           kind: spec.kind,
           id: isNew ? undefined : form[spec.idColumn],
-          changes: form,
+          changes: changed(),
           historyEntry: hasHistory ? historyEntry : undefined,
           body: hasBody && !isNew ? prose : undefined,
         }),

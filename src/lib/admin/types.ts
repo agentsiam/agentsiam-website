@@ -20,7 +20,14 @@ export type CandidateStatus = (typeof CANDIDATE_STATUSES)[number];
 
 /** The channels an owner or manager is actually reached on. Blank is allowed: the lead row
  * sometimes records a handle without saying which channel it belongs to. */
-export const CONTACT_CHANNELS = ["LINE", "phone", "WhatsApp", "Facebook", "email"] as const;
+export const CONTACT_CHANNELS = [
+  "LINE",
+  "phone",
+  "WhatsApp",
+  "Facebook",
+  "email",
+  "Airbnb",
+] as const;
 
 export const POOL_KINDS = ["private", "shared", "none"] as const;
 
