@@ -13,6 +13,7 @@
     "guide": "node scripts/build-guide.mjs",
     "keys": "node scripts/add-dictionary-keys.mjs",
     "typecheck": "tsc --noEmit",
+    "check:csv": "node scripts/check-csv-roundtrip.mjs",
     "guide:import": "node scripts/import-guide-sheet.mjs"
   },
   "dependencies": {
