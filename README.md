@@ -419,6 +419,20 @@ passphrases and the same token. Mark them Sensitive so they cannot be read back 
 dashboard. Leave `CRM_LOCAL_PATH` unset there: it is a path on a laptop, it means nothing on
 Vercel, and the token takes precedence over it anyway.
 
+Sensitive is a one-way door, and the cost is worth knowing before paying it: afterwards nothing
+can read the value back, not the dashboard, not the API with `decrypt=true`, not
+`vercel env pull`. A passphrase that does not work therefore cannot be diagnosed, only
+overwritten. When that happens, write it again from the command line, where the bytes going in
+are under your eye, and redeploy:
+
+```bash
+printf '%s' 'the-passphrase' | vercel env add ADMIN_PASSPHRASE_PAUL production --sensitive --force
+```
+
+`printf '%s'` rather than `echo` matters: a newline inside the stored value was once enough to
+shut someone out. `whoSignedIn` now trims both the stored value and the typed one, so it is no
+longer enough, but the habit costs nothing.
+
 **4. Redeploy.** A deployment carries the variables it was built with, so adding one does not
 reach a build that already exists. Deployments, the branch's newest build, Redeploy.
 
@@ -428,7 +442,7 @@ one tells you nothing about the rows below it.
 | Step | Proves | If it fails |
 |---|---|---|
 | `/admin` shows a sign-in form that does not say it is not configured | The variables reached this deployment | They are on the wrong environment, or nothing has been redeployed since they were set |
-| The passphrase signs in, and a wrong one does not | The cookie is being signed and read | `ADMIN_COOKIE_SECRET` is under 32 characters, which counts as unset |
+| The passphrase signs in, and a wrong one does not | The cookie is being signed and read | `ADMIN_COOKIE_SECRET` is under 32 characters, which counts as unset, or the stored passphrase is not the string you believe it is: it cannot be read back, so overwrite it |
 | `G-0003` lists three candidates | The GitHub read path works | The token cannot see the repository, or those files are not on `main` |
 | A saved change to a candidate is accepted | The GitHub write path works, which nothing else proves | Read the message on screen: it names the file and the repository |
 | A `poolvillachiangmai.directstays.com` link is refused and names the operator | `blocked-operators.json` is read on every save | That file is not on `main` |
@@ -490,6 +504,16 @@ the admin without touching a deployment.
   and the team has two members: `agentsiam` and the PunProfile bot `punprofilecareer-droid`.
   Nils holds neither, so no preview URL can reach him. The live domain is the one surface that
   does not ask, which is why the admin went to `main` without a preview review.
+- **Both production passphrases were wrong on the first attempt (12/11/2026), and why cannot be
+  established.** The two variables were created at 15:23 and the live deployment at 16:01, so it
+  was built with them, and the live `/api/admin/session` answered 401 rather than 503, which
+  means it read non-empty values that simply did not match the strings handed over. Both are
+  Sensitive, so nothing can read back what they actually held and the cause is gone with them: a
+  trailing newline from how they were written, and a stale pair from an earlier round, both fit
+  everything observed. Fixed by overwriting both from the command line and by trimming
+  whitespace at both ends of the comparison in `src/lib/admin/session.ts`, so a value carrying a
+  newline, or a phone keyboard's trailing space, can no longer shut anyone out. The lesson is
+  the one now in the setup section: Sensitive buys secrecy at the price of ever diagnosing it.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.

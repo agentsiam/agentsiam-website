@@ -49,6 +49,9 @@ export function SignInForm({ next }: { next: string }) {
         name="passphrase"
         type="password"
         autoComplete="current-password"
+        autoCapitalize="off"
+        autoCorrect="off"
+        spellCheck={false}
         value={passphrase}
         onChange={(event) => setPassphrase(event.target.value)}
         className="mt-1 w-full rounded-box border border-border bg-bg px-3 py-2 text-sm text-text"

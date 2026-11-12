@@ -30,10 +30,16 @@ const SECRET = process.env.ADMIN_COOKIE_SECRET ?? "";
  * Written as literals rather than looked up by a computed key, because Next inlines
  * process.env references into the edge bundle at build time and a dynamic lookup resolves
  * to undefined there.
+ *
+ * Trimmed at both ends, here and on the way in. Whitespace around a passphrase is never
+ * part of it: a value pasted into the Vercel field can arrive with a newline, a phone
+ * keyboard adds a space after a word, and a copied string carries whatever came with it.
+ * None of those should shut two people out of a live admin, and the set of passphrases
+ * that differ only by the space around them has one member.
  */
 const PEOPLE: ReadonlyArray<{ who: string; passphrase: string }> = [
-  { who: "Paul", passphrase: process.env.ADMIN_PASSPHRASE_PAUL ?? "" },
-  { who: "Nils", passphrase: process.env.ADMIN_PASSPHRASE_NILS ?? "" },
+  { who: "Paul", passphrase: (process.env.ADMIN_PASSPHRASE_PAUL ?? "").trim() },
+  { who: "Nils", passphrase: (process.env.ADMIN_PASSPHRASE_NILS ?? "").trim() },
 ];
 
 /** A secret shorter than this is a typo, not a secret. `openssl rand -base64 32` gives 44
@@ -96,9 +102,10 @@ function sameString(left: string, right: string): boolean {
 /** The name the passphrase belongs to, or null. Every passphrase is checked even after one
  * matches, so a wrong guess takes the same time whichever person it was aimed at. */
 export function whoSignedIn(passphrase: string): string | null {
+  const typed = passphrase.trim();
   let matched: string | null = null;
   for (const person of PEOPLE) {
-    if (person.passphrase.length > 0 && sameString(person.passphrase, passphrase)) {
+    if (person.passphrase.length > 0 && sameString(person.passphrase, typed)) {
       matched = person.who;
     }
   }
