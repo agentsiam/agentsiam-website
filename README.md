@@ -470,22 +470,26 @@ the admin without touching a deployment.
   No code is outstanding for it. `src/lib/admin/store.ts` holds the GitHub read, the write with
   its `sha` check and the three-attempt conflict retry, every save route goes through that one
   function, and there is no stub or TODO anywhere in it, so this entry closes with one
-  successful save rather than with a build. Two of the four variables are set in Preview as of
-  12/11/2026, `ADMIN_COOKIE_SECRET` and `CRM_BRANCH`, which points at the throwaway branch
-  `admin-write-test` rather than `main`; the two passphrases and `CRM_GITHUB_TOKEN` are not set,
-  so a preview still answers the not-configured form. The newest preview deployment, 12/11/2026
-  09:19, does carry those two: they were created two minutes before it was built. The steps for
-  the rest are above under "Setting it up on Vercel". Two readings in it are mine rather than
+  successful save rather than with a build. It is live in production as of 12/11/2026. All five
+  variables are set in Production, four of them sensitive, with `CRM_BRANCH` there set to `main`
+  rather than the throwaway `admin-write-test` that Preview still points at. What is verified on
+  the live domain, all of it without signing in: `/admin` redirects to the sign-in form, that
+  form is the real one rather than the not-configured one, a POST and a DELETE to
+  `/api/admin/candidates` are both refused with 401, and `robots.txt` disallows `/admin` and
+  `/api/admin`. What is not verified is the thing this entry is about. No save has run, so the
+  token, the contents API and the conflict retry are all still untried, and the first real save
+  is the test. The setup steps are above under "Setting it up on Vercel". Two readings in it are
+  mine rather than
   the brief's, and both are visible on screen rather than buried: "ready to send" treats
   availability as `yes` rather than merely answered, because a property the owner has said is
   not free cannot be sent, and a licence of `unknown` still counts as filled in, because
   whether that is good enough to send is a judgement for whoever presses send.
-- **Nils cannot open a preview deployment (12/11/2026).** Deployment Protection on the Vercel
-  project is SSO on every deployment except custom domains, with no password protection and no
-  bypass, and the team has two members: `agentsiam` and the PunProfile bot
-  `punprofilecareer-droid`. Nils holds neither, so a preview URL stops him at a Vercel login
-  whatever the admin's own variables say. The only surface that does not ask is `agentsiam.com`
-  itself, which means production, which means `main`.
+- ~~**Nils cannot open a preview deployment (12/11/2026).**~~ Resolved 12/11/2026 by going to
+  production rather than by giving him an account. Deployment Protection on the Vercel project
+  is SSO on every deployment except custom domains, with no password protection and no bypass,
+  and the team has two members: `agentsiam` and the PunProfile bot `punprofilecareer-droid`.
+  Nils holds neither, so no preview URL can reach him. The live domain is the one surface that
+  does not ask, which is why the admin went to `main` without a preview review.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.
