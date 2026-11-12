@@ -510,10 +510,12 @@ the admin without touching a deployment.
   means it read non-empty values that simply did not match the strings handed over. Both are
   Sensitive, so nothing can read back what they actually held and the cause is gone with them: a
   trailing newline from how they were written, and a stale pair from an earlier round, both fit
-  everything observed. Fixed by overwriting both from the command line and by trimming
-  whitespace at both ends of the comparison in `src/lib/admin/session.ts`, so a value carrying a
-  newline, or a phone keyboard's trailing space, can no longer shut anyone out. The lesson is
-  the one now in the setup section: Sensitive buys secrecy at the price of ever diagnosing it.
+  everything observed. Both were overwritten from the command line at 17:35, and the comparison
+  in `src/lib/admin/session.ts` now trims whitespace at both ends, so a value carrying a newline,
+  or a phone keyboard's trailing space, can no longer shut anyone out. That is the remedy and not
+  yet the proof: the entry stays open until a sign-in on the live domain actually succeeds. The
+  lesson is the one now in the setup section: Sensitive buys secrecy at the price of ever
+  diagnosing it.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.
