@@ -505,59 +505,62 @@ the admin without touching a deployment.
 
 ## Known gaps
 
-- **The CRM admin has never run against GitHub (11/11/2026).** It was built and
-  verified against a local checkout of the document store, with `CRM_LOCAL_PATH` set: sign-in,
-  the lead list, adding and changing a candidate, the readiness gate, the blocked refusal on
-  both a link and a handle, removal, and a signed-out visitor getting a redirect from every
-  page and a 401 from every API route. Two things are verified on Vercel as of 11/11/2026: the
-  branch deploys, and with no variables set the preview answers a form saying it is not
-  configured, which is the failing-closed path running on a real deployment rather than on a
-  laptop. **The GitHub backend has not run once**, so what stands between this and production
-  is still a path nothing has exercised: the token, the contents API, and what a conflict does.
-  No code is outstanding for it. `src/lib/admin/store.ts` holds the GitHub read, the write with
+- **The CRM admin has never saved to GitHub (11/11/2026).** The read path works in production
+  and the write path has never run once, which is the whole of this gap. A token holding
+  Contents read but not write looks exactly like a working admin until someone presses save,
+  so what closes this entry is one successful save, not a build and not a page that loads. No
+  code is outstanding for it: `src/lib/admin/store.ts` holds the GitHub read, the write with
   its `sha` check and the three-attempt conflict retry, every save route goes through that one
-  function, and there is no stub or TODO anywhere in it, so this entry closes with one
-  successful save rather than with a build. It is live in production as of 12/11/2026. All five
-  variables are set in Production, four of them sensitive, with `CRM_BRANCH` there set to `main`
-  rather than the throwaway `admin-write-test` that Preview still points at. What is verified on
-  the live domain, all of it without signing in: `/admin` redirects to the sign-in form, that
-  form is the real one rather than the not-configured one, a POST and a DELETE to
-  `/api/admin/candidates` are both refused with 401, and `robots.txt` disallows `/admin` and
-  `/api/admin`. What is not verified is the thing this entry is about. No save has run, so the
-  token, the contents API and the conflict retry are all still untried, and the first real save
-  is the test. Signing in on the live domain works as of 12/11/2026, and the first GitHub read
-  then failed: every path came back 404, including `guest-leads.csv`, which is certainly on
-  `main`. The cause is not established from here, but one reading fits everything seen and the
-  token page in the screenshot showed it, which is that `CRM_GITHUB_TOKEN` was left on
-  Repository access "Public repositories" while the document store is private. `readStored` no
-  longer reports that as a missing file: on a 404 it asks after the repository itself and says
-  plainly when the token cannot see it. Everything the admin does against the GitHub backend
-  is therefore still untried, the four screens added on 12/11/2026 included. All of it is
-  exercised against a local checkout, which is the same code with a different two functions
-  under it, and none of that touches the token, the contents API or the conflict retry. The setup steps are above under "Setting it up on Vercel". Two readings in it are
-  mine rather than
-  the brief's, and both are visible on screen rather than buried: "ready to send" treats
-  availability as `yes` rather than merely answered, because a property the owner has said is
-  not free cannot be sent, and a licence of `unknown` still counts as filled in, because
-  whether that is good enough to send is a judgement for whoever presses send.
+  function, and there is no stub or TODO anywhere in it. Everything is verified against a
+  local checkout with `CRM_LOCAL_PATH` set, which is the same code with two different
+  functions under it and touches neither the token nor the contents API: sign-in, the lead
+  list, adding and changing a candidate, the readiness gate, the blocked refusal on both a
+  link and a handle, removal, and a signed-out visitor getting a redirect from every page and
+  a 401 from every API route. What is verified on the live domain: all five variables are set
+  in Production, four of them sensitive, with `CRM_BRANCH` set to `main` rather than the
+  throwaway `admin-write-test` that Preview still points at; `/admin` redirects to the real
+  sign-in form rather than the not-configured one; a POST and a DELETE to
+  `/api/admin/candidates` are both refused with 401; `robots.txt` disallows `/admin` and
+  `/api/admin`; sign-in works; and the renter leads load, which is Paul's report on
+  12/11/2026 and not something a session watched. The first GitHub read before that failed
+  with a 404 on every path, `guest-leads.csv` included, because the token was left on
+  Repository access "Public repositories" while the document store is private. Widening it to
+  `agentsiam-consulting` fixed it, and `readStored` no longer reports a repository it cannot
+  see as a missing file: on a 404 it asks after the repository itself and says which of the
+  two it is. The setup steps are above under "Setting it up on Vercel". Two readings in it
+  are mine rather than the brief's, and both are visible on screen rather than buried: "ready
+  to send" treats availability as `yes` rather than merely answered, because a property the
+  owner has said is not free cannot be sent, and a licence of `unknown` still counts as filled
+  in, because whether that is good enough to send is a judgement for whoever presses send.
 - ~~**Nils cannot open a preview deployment (12/11/2026).**~~ Resolved 12/11/2026 by going to
   production rather than by giving him an account. Deployment Protection on the Vercel project
   is SSO on every deployment except custom domains, with no password protection and no bypass,
   and the team has two members: `agentsiam` and the PunProfile bot `punprofilecareer-droid`.
   Nils holds neither, so no preview URL can reach him. The live domain is the one surface that
   does not ask, which is why the admin went to `main` without a preview review.
-- **Both production passphrases were wrong on the first attempt (12/11/2026), and why cannot be
-  established.** The two variables were created at 15:23 and the live deployment at 16:01, so it
-  was built with them, and the live `/api/admin/session` answered 401 rather than 503, which
-  means it read non-empty values that simply did not match the strings handed over. Both are
-  Sensitive, so nothing can read back what they actually held and the cause is gone with them: a
-  trailing newline from how they were written, and a stale pair from an earlier round, both fit
-  everything observed. Both were overwritten from the command line at 17:35, and the comparison
-  in `src/lib/admin/session.ts` now trims whitespace at both ends, so a value carrying a newline,
-  or a phone keyboard's trailing space, can no longer shut anyone out. That is the remedy and not
-  yet the proof: the entry stays open until a sign-in on the live domain actually succeeds. The
-  lesson is the one now in the setup section: Sensitive buys secrecy at the price of ever
-  diagnosing it.
+- ~~**Both production passphrases were wrong on the first attempt (12/11/2026).**~~
+  Resolved 12/11/2026 by overwriting both from the command line and by trimming whitespace
+  at both ends of the comparison in `src/lib/admin/session.ts`, so a value carrying a
+  newline, or a phone keyboard's trailing space, can no longer shut anyone out. Sign-in on
+  the live domain works, which is the proof this entry was waiting for. Why the first pair
+  failed cannot be established and never will be: both variables are Sensitive, so nothing
+  can read back what they held. The two were created at 15:23 and the live deployment at
+  16:01, so it was built with them, and the live `/api/admin/session` answered 401 rather
+  than 503, which means it read non-empty values that simply did not match the strings
+  handed over. A trailing newline and a stale pair from an earlier round both fit everything
+  observed. The lesson is the one now in the setup section: Sensitive buys secrecy at the
+  price of ever diagnosing it.
+- **The GitHub token's expiry is not written down (12/11/2026).** Whatever expiry it carries
+  is the day the admin stops working, and it stops all at once: every read and every save
+  begins failing. The failure is at least legible, because `readStored` passes GitHub's own
+  status and message through, and an expired token answers 401 with "Bad credentials"
+  rather than the 404 a scope problem gives. What is missing is the warning: nothing watches
+  the date, so the first notice is someone opening the admin and finding it dead. The date
+  is not known to this repository, which is the gap. If the token was created on 12/11/2026
+  and kept GitHub's 30-day default it lapses on 12/12/2026, which is an inference from that
+  default rather than a reading of the token page. Rotating it is the command under
+  "Setting it up on Vercel" above, plus a redeploy, because a Vercel variable binds when a
+  deployment is created.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.
