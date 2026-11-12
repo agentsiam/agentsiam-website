@@ -72,9 +72,11 @@ export type Shortlist = {
 };
 
 /**
- * A renter lead, exactly the sixteen columns of guest-leads.csv. The admin reads this file
- * and never writes it: the CSV stays the source of truth for the lead, worked there and
- * through Claude as it is today.
+ * A renter lead, exactly the sixteen columns of guest-leads.csv.
+ *
+ * Editable in the admin since 12/11/2026. The file is still worked by hand and by Claude,
+ * so a save writes only the cells the form changed and leaves the rest of the row as it
+ * found it; `updateCsvRow` in ./csv.ts is what guarantees that.
  *
  * There is no notes column and no history column, although the CRM README says every lead
  * row carries both and the owner file leads.csv does. That gap is recorded in the README's
@@ -181,5 +183,188 @@ export function emptyCandidate(): Candidate {
     added_on: "",
     updated_by: "",
     updated_on: "",
+  };
+}
+
+/* ---------------------------------------------------------------------------------------
+ * The owner pipeline, leads.csv.
+ * ------------------------------------------------------------------------------------- */
+
+/** The eight stages in the CRM README's stage table, in its order. `nurture` is last there
+ * and last here: it is the one people skip and then regret. */
+export const OWNER_STAGES = [
+  "new",
+  "contacted",
+  "engaged",
+  "qualified",
+  "proposal",
+  "won",
+  "lost",
+  "nurture",
+] as const;
+
+/** A, B or C, graded by judgement against the CRM README's qualification section. Blank
+ * until there is enough to grade, which is a real state and not a missing value. */
+export const QUALIFICATIONS = ["A", "B", "C"] as const;
+
+export const OWNER_SEGMENTS = [
+  "condo_investor",
+  "pool_villa_owner",
+  "townhouse_owner",
+  "new_buyer",
+] as const;
+
+export const TIERS = ["essential", "full", "landed"] as const;
+
+export const LEAD_SOURCES = [
+  "personal-network",
+  "referral",
+  "facebook-group",
+  "line",
+  "seo",
+  "agent-partner",
+  "inbound",
+] as const;
+
+/** An owner lead, exactly the twenty columns of leads.csv. */
+export type OwnerLead = {
+  lead_id: string;
+  name: string;
+  segment: string;
+  property_type: string;
+  area: string;
+  units: string;
+  contact_channel: string;
+  contact_info: string;
+  source: string;
+  referred_by: string;
+  qualification: string;
+  stage: string;
+  tier_target: string;
+  est_monthly_revenue_thb: string;
+  next_action: string;
+  next_action_date: string;
+  last_contact_date: string;
+  lost_reason: string;
+  notes: string;
+  history: string;
+};
+
+/** Dated contacts inside a `history` cell, newest last, separated by ` || `. The CRM README
+ * defines the separator; this is the only place that knows it. */
+export const HISTORY_SEPARATOR = " || ";
+
+export function historyEntries(history: string): string[] {
+  return history
+    .split(HISTORY_SEPARATOR)
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
+}
+
+/** A dated line added to the end, because the CRM keeps history newest last. */
+export function appendHistory(history: string, entry: string): string {
+  const trimmed = entry.trim();
+  if (!trimmed) return history;
+  const line = `${today()}: ${trimmed}`;
+  return historyEntries(history).concat(line).join(HISTORY_SEPARATOR);
+}
+
+/* ---------------------------------------------------------------------------------------
+ * The property pool, property-pool.csv.
+ * ------------------------------------------------------------------------------------- */
+
+/** A property AgentSiam does not manage, found while sourcing for a renter lead, kept after
+ * the lead closes so the next renter starts from what is already known. Exactly the
+ * twenty-three columns of property-pool.csv. */
+export type PoolProperty = {
+  property_id: string;
+  name: string;
+  run_by: string;
+  contact_channel: string;
+  contact_handle: string;
+  area: string;
+  map_link: string;
+  property_type: string;
+  bedrooms: string;
+  bathrooms: string;
+  bed_setup: string;
+  pool: string;
+  walkable: string;
+  short_stay_licence: string;
+  nightly_rate_thb: string;
+  monthly_rate_thb: string;
+  g2_terms_agreed: string;
+  source: string;
+  first_contact_date: string;
+  last_contact_date: string;
+  offered_to: string;
+  status: string;
+  notes: string;
+};
+
+/** `offered_to` lists the `G-####` leads a property was put to, comma separated. */
+export function offeredTo(value: string): string[] {
+  return value
+    .split(",")
+    .map((id) => id.trim())
+    .filter((id) => id.length > 0);
+}
+
+export function addOfferedTo(value: string, leadId: string): string {
+  const current = offeredTo(value);
+  if (current.includes(leadId)) return value;
+  return current.concat(leadId).join(", ");
+}
+
+export function emptyPoolProperty(): PoolProperty {
+  return {
+    property_id: "",
+    name: "",
+    run_by: "",
+    contact_channel: "",
+    contact_handle: "",
+    area: "",
+    map_link: "",
+    property_type: "",
+    bedrooms: "",
+    bathrooms: "",
+    bed_setup: "",
+    pool: "",
+    walkable: "",
+    short_stay_licence: "unknown",
+    nightly_rate_thb: "",
+    monthly_rate_thb: "",
+    g2_terms_agreed: "no",
+    source: "",
+    first_contact_date: "",
+    last_contact_date: "",
+    offered_to: "",
+    status: "",
+    notes: "",
+  };
+}
+
+export function emptyOwnerLead(): OwnerLead {
+  return {
+    lead_id: "",
+    name: "",
+    segment: "",
+    property_type: "",
+    area: "",
+    units: "",
+    contact_channel: "",
+    contact_info: "",
+    source: "",
+    referred_by: "",
+    qualification: "",
+    stage: "new",
+    tier_target: "",
+    est_monthly_revenue_thb: "",
+    next_action: "",
+    next_action_date: "",
+    last_contact_date: "",
+    lost_reason: "",
+    notes: "",
+    history: "",
   };
 }

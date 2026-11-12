@@ -26,9 +26,9 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { CONTACT_EMAIL } from "@/lib/site";
-import { parseCsvObjects } from "./csv";
+import { appendCsvRow, csvColumn, nextId, parseCsvObjects, updateCsvRow } from "./csv";
 import type { BlockedList } from "./blocked";
-import type { Lead, Shortlist } from "./types";
+import type { Lead, OwnerLead, PoolProperty, Shortlist } from "./types";
 
 const REPO = process.env.CRM_REPO ?? "agentsiam/agentsiam-consulting";
 const BRANCH = process.env.CRM_BRANCH ?? "main";
@@ -39,12 +39,19 @@ const LOCAL = process.env.CRM_LOCAL_PATH ?? "";
 const CRM = "as-salesmarketing/01-crm";
 
 export const LEADS_FILE = `${CRM}/guest-leads.csv`;
+export const OWNERS_FILE = `${CRM}/leads.csv`;
+export const POOL_FILE = `${CRM}/property-pool.csv`;
 export const BLOCKED_FILE = `${CRM}/blocked-operators.json`;
 
 /** Lead IDs are `G-####` and nothing else. This is the only thing standing between a
  * crafted URL and an arbitrary path in the document store, so it is strict rather than
  * tolerant. */
 export const LEAD_ID = /^G-\d{4}$/;
+
+/** Owner leads and pool properties, the same shape and the same rule: assigned once, never
+ * reused, so a deleted row does not hand its id to the next one. */
+export const OWNER_ID = /^L-\d{4}$/;
+export const PROPERTY_ID = /^P-\d{4}$/;
 
 export function shortlistFile(leadId: string): string {
   if (!LEAD_ID.test(leadId)) throw new StoreError(`Not a lead ID: ${leadId}`);
@@ -342,6 +349,170 @@ export async function updateBlocked(
     },
     change,
     message,
+  );
+}
+
+/**
+ * Change cells in one row of a CSV, with the same three-attempt conflict retry `updateJson`
+ * uses, and the same refusal to write a file that would come out identical.
+ *
+ * The change is expressed as a text transform rather than as parsed rows, because a retry
+ * has to run against the newer file and `updateCsvRow` is what keeps the untouched cells
+ * untouched. Writing parsed rows back would rewrite every cell in the file and turn one
+ * person's edit into a diff across every row.
+ */
+async function updateCsv(
+  path: string,
+  change: (text: string) => string,
+  message: string,
+): Promise<void> {
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const stored = await readStored(path);
+    if (!stored) {
+      throw new StoreError(`${path} is not in the document store, so there is nothing to change.`);
+    }
+    const text = change(stored.text);
+    if (text === stored.text) return;
+    try {
+      await writeStored(path, text, message, stored.sha);
+      return;
+    } catch (error) {
+      if (!(error instanceof ConflictError)) throw error;
+      lastError = error;
+    }
+  }
+  throw lastError instanceof Error
+    ? lastError
+    : new StoreError(`Could not write ${path} after three attempts.`);
+}
+
+/**
+ * Add a row and give it the next id in the file. The id is worked out inside the retry, so
+ * a conflict with someone else's new row produces the id after theirs rather than a
+ * duplicate.
+ */
+async function appendWithId(
+  path: string,
+  idColumn: string,
+  prefix: string,
+  values: Record<string, string>,
+  message: (id: string) => string,
+): Promise<string> {
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const stored = await readStored(path);
+    if (!stored) {
+      throw new StoreError(`${path} is not in the document store, so nothing can be added to it.`);
+    }
+    const id = nextId(csvColumn(stored.text, idColumn), prefix);
+    const text = appendCsvRow(stored.text, { ...values, [idColumn]: id });
+    try {
+      await writeStored(path, text, message(id), stored.sha);
+      return id;
+    } catch (error) {
+      if (!(error instanceof ConflictError)) throw error;
+      lastError = error;
+    }
+  }
+  throw lastError instanceof Error
+    ? lastError
+    : new StoreError(`Could not add a row to ${path} after three attempts.`);
+}
+
+async function readRows(path: string, what: string): Promise<Record<string, string>[]> {
+  const stored = await readStored(path);
+  if (!stored) {
+    throw new StoreError(`${path} is not in the document store, so there are no ${what} to show.`);
+  }
+  return parseCsvObjects(stored.text);
+}
+
+/** Change cells in a renter lead's row in guest-leads.csv. */
+export async function updateLead(
+  leadId: string,
+  changes: Partial<Lead>,
+  who: string,
+): Promise<void> {
+  if (!LEAD_ID.test(leadId)) throw new StoreError(`Not a lead ID: ${leadId}`);
+  await updateCsv(
+    LEADS_FILE,
+    (text) => updateCsvRow(text, "lead_id", leadId, changes as Record<string, string>),
+    `Renter lead ${leadId} edited in the admin by ${who}`,
+  );
+}
+
+/* ---------------------------------------------------------------------------------------
+ * The owner pipeline.
+ * ------------------------------------------------------------------------------------- */
+
+export async function readOwnerLeads(): Promise<OwnerLead[]> {
+  const rows = await readRows(OWNERS_FILE, "owner leads");
+  return rows.filter((row) => OWNER_ID.test(row.lead_id ?? "")) as OwnerLead[];
+}
+
+export async function readOwnerLead(leadId: string): Promise<OwnerLead | null> {
+  const leads = await readOwnerLeads();
+  return leads.find((lead) => lead.lead_id === leadId) ?? null;
+}
+
+export async function updateOwnerLead(
+  leadId: string,
+  changes: Partial<OwnerLead>,
+  who: string,
+): Promise<void> {
+  if (!OWNER_ID.test(leadId)) throw new StoreError(`Not an owner lead ID: ${leadId}`);
+  await updateCsv(
+    OWNERS_FILE,
+    (text) => updateCsvRow(text, "lead_id", leadId, changes as Record<string, string>),
+    `Owner lead ${leadId} edited in the admin by ${who}`,
+  );
+}
+
+export async function addOwnerLead(values: Partial<OwnerLead>, who: string): Promise<string> {
+  return appendWithId(
+    OWNERS_FILE,
+    "lead_id",
+    "L",
+    values as Record<string, string>,
+    (id) => `Owner lead ${id}, ${values.name || "no name yet"}, added in the admin by ${who}`,
+  );
+}
+
+/* ---------------------------------------------------------------------------------------
+ * The property pool.
+ * ------------------------------------------------------------------------------------- */
+
+export async function readProperties(): Promise<PoolProperty[]> {
+  const rows = await readRows(POOL_FILE, "properties");
+  return rows.filter((row) => PROPERTY_ID.test(row.property_id ?? "")) as PoolProperty[];
+}
+
+export async function readProperty(propertyId: string): Promise<PoolProperty | null> {
+  const properties = await readProperties();
+  return properties.find((property) => property.property_id === propertyId) ?? null;
+}
+
+export async function updateProperty(
+  propertyId: string,
+  changes: Partial<PoolProperty>,
+  who: string,
+): Promise<void> {
+  if (!PROPERTY_ID.test(propertyId)) throw new StoreError(`Not a property ID: ${propertyId}`);
+  await updateCsv(
+    POOL_FILE,
+    (text) => updateCsvRow(text, "property_id", propertyId, changes as Record<string, string>),
+    `Property ${propertyId} edited in the admin by ${who}`,
+  );
+}
+
+export async function addProperty(values: Partial<PoolProperty>, who: string): Promise<string> {
+  return appendWithId(
+    POOL_FILE,
+    "property_id",
+    "P",
+    values as Record<string, string>,
+    (id) => `Property ${id}, ${values.name || "no name yet"}, added to the pool in the admin by ${who}`,
   );
 }
 
