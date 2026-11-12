@@ -6,6 +6,7 @@ import { SignOut } from "@/components/admin/sign-out";
 import { currentSession } from "@/lib/admin/guard";
 import {
   ADMIN_BLOCKED,
+  ADMIN_CLIENTS,
   ADMIN_OWNERS,
   ADMIN_PROPERTIES,
   ADMIN_ROOT,
@@ -85,6 +86,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   </Link>
                   <Link href={ADMIN_PROPERTIES} className="text-primary hover:underline">
                     Property pool
+                  </Link>
+                  <Link href={ADMIN_CLIENTS} className="text-primary hover:underline">
+                    Clients
                   </Link>
                   <Link href={ADMIN_BLOCKED} className="text-primary hover:underline">
                     Blocked operators

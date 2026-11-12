@@ -39,6 +39,9 @@ export const WALKABLE = ["yes", "no"] as const;
 
 export type Candidate = {
   id: string;
+  /** The `P-####` row in property-pool.csv this candidate is, or "" for a candidate saved
+   * before the two were linked. The admin fills it on the next save. */
+  property_id: string;
   property_name: string;
   source_link: string;
   contact_channel: string;
@@ -159,6 +162,7 @@ export function today(): string {
 export function emptyCandidate(): Candidate {
   return {
     id: "",
+    property_id: "",
     property_name: "",
     source_link: "",
     contact_channel: "",
@@ -368,3 +372,57 @@ export function emptyOwnerLead(): OwnerLead {
     history: "",
   };
 }
+
+/* ---------------------------------------------------------------------------------------
+ * A shortlist candidate and a pool property are the same building.
+ * ------------------------------------------------------------------------------------- */
+
+/**
+ * A property name reduced to what is left when punctuation and case stop mattering, so
+ * "Livin' H" and "Livin H" are one building rather than two rows.
+ *
+ * Deliberately crude. It is used to notice that a property is already in the pool, and the
+ * cost of missing a match is a duplicate row somebody merges by hand, while the cost of a
+ * clever match that is wrong is two different houses sharing a record.
+ */
+export function normalisedName(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+/**
+ * What a candidate knows that belongs in the pool row.
+ *
+ * Only non-empty values. The pool row outlives the shortlist it was sourced for, so a
+ * candidate with a blank area must not wipe an area somebody filled in from a later
+ * conversation. The candidate's own per-lead facts, price for these dates, availability for
+ * these dates, status on this shortlist, are not here at all: they belong to the lead, not
+ * to the building.
+ */
+export function poolFactsFromCandidate(candidate: Candidate): Partial<PoolProperty> {
+  const mapping: Array<[keyof PoolProperty, string]> = [
+    ["name", candidate.property_name],
+    ["source", candidate.source_link],
+    ["contact_channel", candidate.contact_channel],
+    ["contact_handle", candidate.contact_handle],
+    ["area", candidate.area],
+    ["map_link", candidate.map_link],
+    ["bedrooms", candidate.bedrooms],
+    ["bed_setup", candidate.bed_set_up],
+    ["pool", candidate.pool],
+    ["walkable", candidate.walkable],
+    ["short_stay_licence", candidate.licence],
+  ];
+  const facts: Partial<PoolProperty> = {};
+  for (const [column, value] of mapping) {
+    if (value && value.trim()) facts[column] = value.trim();
+  }
+  return facts;
+}
+
+/* ---------------------------------------------------------------------------------------
+ * The client registry, clients/*.md. Signed owners.
+ * ------------------------------------------------------------------------------------- */
+
+/** From the client template's own comments, which are the registry's vocabulary. */
+export const CLIENT_STATUSES = ["active", "paused", "churned"] as const;
+export const OWNER_TYPES = ["resident", "absentee_thailand", "absentee_overseas"] as const;

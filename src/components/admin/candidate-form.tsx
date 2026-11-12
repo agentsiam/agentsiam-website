@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { adminLeadPath } from "@/lib/admin/routes";
+import { adminLeadPath, adminPropertyPath } from "@/lib/admin/routes";
 import {
   CANDIDATE_STATUSES,
   CONTACT_CHANNELS,
@@ -130,6 +130,25 @@ export function CandidateForm({
           {error}
         </p>
       ) : null}
+
+      {form.property_id ? (
+        <p className="text-xs text-muted">
+          In the property pool as{" "}
+          <a
+            href={adminPropertyPath(form.property_id)}
+            className="text-primary hover:underline"
+          >
+            {form.property_id}
+          </a>
+          . What is true of the building rather than of this stay is kept there, and saving
+          here keeps it current.
+        </p>
+      ) : (
+        <p className="text-xs text-muted">
+          Saving adds this property to the pool, or finds it there by name if it is already
+          known, so the next renter lead starts from what we already have.
+        </p>
+      )}
 
       <section className="rounded-panel border border-hairline bg-bg p-5">
         <div className="grid gap-4 sm:grid-cols-2">

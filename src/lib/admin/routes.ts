@@ -12,6 +12,7 @@ export const ADMIN_SIGN_IN = "/admin/sign-in";
 export const ADMIN_BLOCKED = "/admin/blocked";
 export const ADMIN_OWNERS = "/admin/owners";
 export const ADMIN_PROPERTIES = "/admin/properties";
+export const ADMIN_CLIENTS = "/admin/clients";
 
 export function adminLeadPath(leadId: string): string {
   return `/admin/leads/${leadId}`;
@@ -31,6 +32,10 @@ export function adminOwnerPath(ownerId: string): string {
 
 export function adminPropertyPath(propertyId: string): string {
   return `${ADMIN_PROPERTIES}/${propertyId}`;
+}
+
+export function adminClientPath(clientId: string): string {
+  return `${ADMIN_CLIENTS}/${clientId}`;
 }
 
 /** The renter lead's own row, which is edited on a page of its own rather than inline, so

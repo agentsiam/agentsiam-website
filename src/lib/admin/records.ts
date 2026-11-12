@@ -13,11 +13,13 @@
  */
 
 import {
+  CLIENT_STATUSES,
   CONTACT_CHANNELS,
   LEAD_SOURCES,
   LICENCES,
   OWNER_SEGMENTS,
   OWNER_STAGES,
+  OWNER_TYPES,
   POOL_KINDS,
   QUALIFICATIONS,
   TIERS,
@@ -43,7 +45,7 @@ export type FieldSpec = {
   readOnly?: boolean;
 };
 
-export type RecordKind = "renter" | "owner" | "property";
+export type RecordKind = "renter" | "owner" | "property" | "client";
 
 export type RecordSpec = {
   kind: RecordKind;
@@ -225,10 +227,74 @@ export const PROPERTY: RecordSpec = {
   ],
 };
 
+/**
+ * Signed owners, clients/*.md. One markdown file each rather than a row, so `file` names the
+ * folder and the fields are frontmatter keys. Everything else about a client, the contract
+ * terms, how they take bad news, the dated history, is prose below the frontmatter and is
+ * edited as prose.
+ *
+ * Dates here are DD/MM/YYYY rather than ISO, because that is what the template asks for and
+ * what the signed contracts use. Written as text for that reason: a date input would hand
+ * back an ISO string and quietly change the convention of every record it touched.
+ */
+export const CLIENT: RecordSpec = {
+  kind: "client",
+  one: "client",
+  many: "clients",
+  idColumn: "client_id",
+  idPrefix: "C",
+  nameColumn: "name",
+  file: `${CRM}/clients/`,
+  listColumns: [
+    { key: "name", label: "Name" },
+    { key: "status", label: "Status" },
+    { key: "area", label: "Area" },
+    { key: "tier", label: "Tier" },
+    { key: "fee_pct", label: "Fee %" },
+    { key: "contract_renewal_date", label: "Renewal" },
+  ],
+  fields: [
+    { key: "client_id", label: "Client ID", kind: "text", readOnly: true },
+    { key: "name", label: "Name", kind: "text", required: true },
+    { key: "status", label: "Status", kind: "select", options: CLIENT_STATUSES },
+    { key: "segment", label: "Segment", kind: "select", options: OWNER_SEGMENTS },
+    { key: "area", label: "Area", kind: "text" },
+    {
+      key: "nationality",
+      label: "Nationality",
+      kind: "text",
+      hint: "Affects structure and who can hold a compliance registration",
+    },
+    { key: "owner_type", label: "Owner type", kind: "select", options: OWNER_TYPES },
+    { key: "contact_channel", label: "Contact channel", kind: "select", options: CONTACT_CHANNELS },
+    { key: "contact_info", label: "Contact", kind: "text" },
+    { key: "preferred_language", label: "Preferred language", kind: "text" },
+    { key: "source_lead_id", label: "Source lead", kind: "text", hint: "The L-number they came from" },
+    { key: "source", label: "Source", kind: "select", options: LEAD_SOURCES },
+    { key: "referred_by", label: "Referred by", kind: "text" },
+    { key: "tier", label: "Tier", kind: "select", options: TIERS },
+    { key: "fee_pct", label: "Fee %", kind: "number" },
+    { key: "onboarding_fee_thb", label: "Onboarding fee, THB", kind: "number" },
+    { key: "contract_signed_date", label: "Signed", kind: "text", hint: "DD/MM/YYYY" },
+    { key: "contract_start_date", label: "Starts", kind: "text", hint: "DD/MM/YYYY" },
+    { key: "contract_renewal_date", label: "Renews", kind: "text", hint: "DD/MM/YYYY" },
+    { key: "notice_period_days", label: "Notice period, days", kind: "number" },
+    { key: "owner_blocked_nights_cap", label: "Owner blocked nights cap", kind: "number" },
+    {
+      key: "properties",
+      label: "Properties",
+      kind: "text",
+      hint: "Beds24 property IDs, as a list: [275645]",
+      wide: true,
+    },
+  ],
+};
+
 export const RECORDS: Record<RecordKind, RecordSpec> = {
   renter: RENTER,
   owner: OWNER,
   property: PROPERTY,
+  client: CLIENT,
 };
 
 export function recordSpec(kind: string): RecordSpec | null {

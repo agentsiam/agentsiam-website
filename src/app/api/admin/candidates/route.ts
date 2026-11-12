@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { currentSession } from "@/lib/admin/guard";
 import { candidateFacts, findBlocked, refusalReason } from "@/lib/admin/blocked";
-import { LEAD_ID, readBlocked, readLead, updateShortlist } from "@/lib/admin/store";
+import {
+  LEAD_ID,
+  linkCandidateToPool,
+  readBlocked,
+  readLead,
+  updateShortlist,
+} from "@/lib/admin/store";
 import {
   CANDIDATE_STATUSES,
   CONTACT_CHANNELS,
@@ -143,6 +149,9 @@ export async function POST(request: Request) {
   const candidate: Candidate = {
     ...emptyCandidate(),
     id: text(incoming.id, 64),
+    // Carried through from the stored candidate rather than typed. A pool id the caller
+    // invented is checked against the pool before it is believed, in linkCandidateToPool.
+    property_id: text(incoming.property_id, 16),
     property_name: propertyName,
     source_link: text(incoming.source_link, MAX.source_link),
     contact_channel: channel,
@@ -199,6 +208,26 @@ export async function POST(request: Request) {
   if (match) {
     return NextResponse.json({ error: refusalReason(match), blocked: true }, { status: 422 });
   }
+
+  // The pool row first, so the candidate is saved already carrying its `property_id` and
+  // one shortlist commit covers the whole save. A pool row written here and then a
+  // shortlist save that fails leaves a property in the pool with no candidate pointing at
+  // it, which is visible on the Property pool screen and is adopted rather than duplicated
+  // on the next attempt, because the match falls back to the name.
+  let propertyId = candidate.property_id;
+  try {
+    propertyId = await linkCandidateToPool(candidate, leadId, session.who);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: `The candidate was not saved, because the property pool could not be ${
+          candidate.property_id ? "updated" : "added to"
+        }. ${error instanceof Error ? error.message : ""}`.trim(),
+      },
+      { status: 502 },
+    );
+  }
+  candidate.property_id = propertyId;
 
   const now = today();
   try {

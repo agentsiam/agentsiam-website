@@ -61,6 +61,7 @@ function Field({
 export function RowForm({
   spec,
   values,
+  body,
   isNew,
   backTo,
   newRowBase,
@@ -70,6 +71,8 @@ export function RowForm({
   isNew: boolean;
   /** Where Cancel goes, and where a saved existing row returns to. */
   backTo: string;
+  /** The prose below a client's frontmatter. Undefined for the records that have none. */
+  body?: string;
   /** The path a newly added row lives under, so the save can land on it once the store has
    * given it an id. A string rather than a function because this is a client component and
    * a function prop cannot cross that boundary; passing one renders a 500 rather than a
@@ -78,10 +81,12 @@ export function RowForm({
 }) {
   const [form, setForm] = useState<Values>(values);
   const [historyEntry, setHistoryEntry] = useState("");
+  const [prose, setProse] = useState(body ?? "");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
   const hasHistory = spec.kind === "owner";
+  const hasBody = spec.kind === "client" && body !== undefined;
 
   async function save(event: React.FormEvent) {
     event.preventDefault();
@@ -96,6 +101,7 @@ export function RowForm({
           id: isNew ? undefined : form[spec.idColumn],
           changes: form,
           historyEntry: hasHistory ? historyEntry : undefined,
+          body: hasBody && !isNew ? prose : undefined,
         }),
       });
       if (response.ok) {
@@ -146,6 +152,23 @@ export function RowForm({
             rows={3}
             value={historyEntry}
             onChange={(event) => setHistoryEntry(event.target.value)}
+          />
+        </section>
+      ) : null}
+
+      {hasBody && !isNew ? (
+        <section className="rounded-panel border border-hairline bg-bg p-5">
+          <Label
+            htmlFor="client-body"
+            label="The record itself"
+            hint="Contract terms, contact preferences, their goals, owner use, history. Markdown, as it is written in the file."
+          />
+          <textarea
+            id="client-body"
+            className={`${INPUT} font-mono`}
+            rows={22}
+            value={prose}
+            onChange={(event) => setProse(event.target.value)}
           />
         </section>
       ) : null}

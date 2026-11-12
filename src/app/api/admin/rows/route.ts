@@ -3,9 +3,11 @@ import { currentSession } from "@/lib/admin/guard";
 import { CsvError } from "@/lib/admin/csv";
 import { cleanChanges, recordSpec } from "@/lib/admin/records";
 import {
+  addClient,
   addLead,
   addOwnerLead,
   addProperty,
+  updateClient,
   updateLead,
   updateOwnerLead,
   updateProperty,
@@ -33,7 +35,13 @@ export async function POST(request: Request) {
   const session = await currentSession();
   if (!session) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
-  let body: { kind?: unknown; id?: unknown; changes?: unknown; historyEntry?: unknown };
+  let body: {
+    kind?: unknown;
+    id?: unknown;
+    changes?: unknown;
+    historyEntry?: unknown;
+    body?: unknown;
+  };
   try {
     body = (await request.json()) as typeof body;
   } catch {
@@ -56,6 +64,9 @@ export async function POST(request: Request) {
 
   const id = typeof body.id === "string" ? body.id.trim() : "";
   const historyEntry = typeof body.historyEntry === "string" ? body.historyEntry : "";
+  // Null rather than "" when it was not sent: a client saved from a form that did not show
+  // the prose must keep the prose, while one that sent an empty box meant to empty it.
+  const prose = typeof body.body === "string" ? body.body : null;
 
   if (id && !new RegExp(`^${spec.idPrefix}-\\d{4}$`).test(id)) {
     return NextResponse.json({ error: `${id} is not a ${spec.one} ID.` }, { status: 400 });
@@ -68,6 +79,7 @@ export async function POST(request: Request) {
         await updateOwnerLead(id, cleaned.changes, session.who, historyEntry);
       }
       if (spec.kind === "property") await updateProperty(id, cleaned.changes, session.who);
+      if (spec.kind === "client") await updateClient(id, cleaned.changes, prose, session.who);
       return NextResponse.json({ id });
     }
 
@@ -76,7 +88,9 @@ export async function POST(request: Request) {
         ? await addLead(cleaned.changes, session.who)
         : spec.kind === "owner"
           ? await addOwnerLead(cleaned.changes, session.who)
-          : await addProperty(cleaned.changes, session.who);
+          : spec.kind === "client"
+            ? await addClient(cleaned.changes, session.who)
+            : await addProperty(cleaned.changes, session.who);
     return NextResponse.json({ id: added });
   } catch (error) {
     // A CsvError is the request's fault: an id that is not in the file, or a column that

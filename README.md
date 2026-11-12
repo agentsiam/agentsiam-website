@@ -336,20 +336,50 @@ The pipeline, so nobody has to think about image formats:
 
 `npm run photos` regenerates on demand. Hand-editing a generated file is R5 in `CLAUDE.md`.
 
-## The renter shortlist admin
+## The CRM admin
 
-A private area at `/admin` where Paul and Nils open a renter lead, build its shortlist of
-candidate properties, take each candidate to a decision, and see which are complete enough to
-send. Nothing in it is public, indexed or in the sitemap.
+A private area at `/admin` where Paul and Nils work the CRM: renter leads and their
+shortlists, the owner pipeline, the property pool and the client registry. Nothing in it is
+public, indexed or in the sitemap.
+
+It was the renter shortlist admin until 12/11/2026 and the document store still calls it that,
+which is worth knowing when reading `as-salesmarketing/01-crm/README.md`.
+
+| Screen | Is | Where it lives in `agentsiam-consulting` |
+|---|---|---|
+| Renter leads | The enquiry, its shortlist, each candidate's decision | `01-crm/guest-leads.csv`, `01-crm/shortlists/G-####.json` |
+| Owner leads | The acquisition pipeline, with dated history | `01-crm/leads.csv` |
+| Property pool | Properties AgentSiam does not manage, found while sourcing | `01-crm/property-pool.csv` |
+| Clients | Signed owners, one markdown record each | `01-crm/clients/C-####-slug.md` |
+| Blocked operators | Who AgentSiam will not source through | `01-crm/blocked-operators.json` |
 
 **The data is files in the document store, not a database.** Paul's decision of 11/11/2026.
-`as-salesmarketing/01-crm/guest-leads.csv` in `agentsiam-consulting` stays the source of truth
-for the lead itself: the admin reads it and never writes it, so stages and next actions are
-still worked in the CSV and through Claude. The candidates live one JSON file per lead in
-`as-salesmarketing/01-crm/shortlists/`, and the blocked-operator list is
-`as-salesmarketing/01-crm/blocked-operators.json` beside them. Every save from the admin is a
-commit to that repository, so git history is the audit trail and Claude can still read a
-candidate. `as-salesmarketing/01-crm/shortlists/README.md` is the field list.
+Every save from the admin is a commit to that repository, so git history is the audit trail,
+Claude can still read a record, and a person can still edit one by hand.
+
+**Which is why the writing rule is narrow: a cell nobody edited comes back out byte for
+byte.** These files are worked by hand and by Claude as well, so the admin writes only the
+cells it was asked to change, pads a short row before writing so a value cannot land in the
+wrong column, refuses a column the header does not name, refuses an id that is not in the
+file rather than quietly appending it, and writes nothing at all when the bytes would not
+change. A client's frontmatter is edited line by line for the same reason: parsing it to an
+object and serialising it back would reformat a file nobody asked to reformat. Two scripts
+hold that to the real files, and both read only:
+
+```bash
+npm run check:csv
+node scripts/check-frontmatter.mjs
+```
+
+**A candidate and a pool property are the same building.** Saving a candidate finds its pool
+row by `property_id`, or by the name with punctuation and case ignored, and adds one only
+when neither matches, so sending a second renter to the same house does not make a second
+row. Only non-empty values cross, so a candidate with a blank area cannot wipe an area
+somebody filled in from a later phone call, and the per-stay facts, the price for these
+dates, whether it is free for them, the status on this shortlist, stay on the candidate where
+they belong. `offered_to` is added to and never emptied. `scripts/link-shortlists-to-pool.mjs`
+did this once to the candidates written before the link existed; it reports by default and
+writes only with `--write`.
 
 **Five environment variables, all server-side**, documented in `.env.example`:
 `ADMIN_COOKIE_SECRET`, `ADMIN_PASSPHRASE_PAUL`, `ADMIN_PASSPHRASE_NILS`, and then either
@@ -381,7 +411,7 @@ send`, `sent to guest` or `booked`, is refused while any of the four is missing.
 **Running it locally.** Set `CRM_LOCAL_PATH` to the checkout of `agentsiam-consulting` on this
 machine and the admin reads and writes the working tree directly, which is also how it is
 tested. Those writes are not committed by the admin: `git status` in that repository shows
-them.
+them, and a test write is undone with `git checkout --` on the file.
 
 ### Setting it up on Vercel
 
@@ -475,7 +505,7 @@ the admin without touching a deployment.
 
 ## Known gaps
 
-- **The renter shortlist admin has never run against GitHub (11/11/2026).** It was built and
+- **The CRM admin has never run against GitHub (11/11/2026).** It was built and
   verified against a local checkout of the document store, with `CRM_LOCAL_PATH` set: sign-in,
   the lead list, adding and changing a candidate, the readiness gate, the blocked refusal on
   both a link and a handle, removal, and a signed-out visitor getting a redirect from every
@@ -501,7 +531,10 @@ the admin without touching a deployment.
   token page in the screenshot showed it, which is that `CRM_GITHUB_TOKEN` was left on
   Repository access "Public repositories" while the document store is private. `readStored` no
   longer reports that as a missing file: on a 404 it asks after the repository itself and says
-  plainly when the token cannot see it. The setup steps are above under "Setting it up on Vercel". Two readings in it are
+  plainly when the token cannot see it. Everything the admin does against the GitHub backend
+  is therefore still untried, the four screens added on 12/11/2026 included. All of it is
+  exercised against a local checkout, which is the same code with a different two functions
+  under it, and none of that touches the token, the contents API or the conflict retry. The setup steps are above under "Setting it up on Vercel". Two readings in it are
   mine rather than
   the brief's, and both are visible on screen rather than buried: "ready to send" treats
   availability as `yes` rather than merely answered, because a property the owner has said is

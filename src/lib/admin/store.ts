@@ -23,13 +23,26 @@
  * src/proxy.ts included, may import this file.
  */
 
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { CONTACT_EMAIL } from "@/lib/site";
 import { appendCsvRow, csvColumn, nextId, parseCsvObjects, updateCsvRow } from "./csv";
 import type { BlockedList } from "./blocked";
-import { appendHistory } from "./types";
-import type { Lead, OwnerLead, PoolProperty, Shortlist } from "./types";
+import {
+  joinDocument,
+  readValue,
+  setValue,
+  splitDocument,
+  type Document,
+} from "./frontmatter";
+import {
+  addOfferedTo,
+  appendHistory,
+  normalisedName,
+  poolFactsFromCandidate,
+  today,
+} from "./types";
+import type { Candidate, Lead, OwnerLead, PoolProperty, Shortlist } from "./types";
 
 const REPO = process.env.CRM_REPO ?? "agentsiam/agentsiam-consulting";
 const BRANCH = process.env.CRM_BRANCH ?? "main";
@@ -43,6 +56,8 @@ export const LEADS_FILE = `${CRM}/guest-leads.csv`;
 export const OWNERS_FILE = `${CRM}/leads.csv`;
 export const POOL_FILE = `${CRM}/property-pool.csv`;
 export const BLOCKED_FILE = `${CRM}/blocked-operators.json`;
+export const CLIENTS_DIR = `${CRM}/clients`;
+export const CLIENT_TEMPLATE = `${CRM}/clients/_template.md`;
 
 /** Lead IDs are `G-####` and nothing else. This is the only thing standing between a
  * crafted URL and an arbitrary path in the document store, so it is strict rather than
@@ -53,6 +68,7 @@ export const LEAD_ID = /^G-\d{4}$/;
  * reused, so a deleted row does not hand its id to the next one. */
 export const OWNER_ID = /^L-\d{4}$/;
 export const PROPERTY_ID = /^P-\d{4}$/;
+export const CLIENT_ID = /^C-\d{4}$/;
 
 export function shortlistFile(leadId: string): string {
   if (!LEAD_ID.test(leadId)) throw new StoreError(`Not a lead ID: ${leadId}`);
@@ -540,6 +556,270 @@ export async function addProperty(values: Partial<PoolProperty>, who: string): P
     values as Record<string, string>,
     (id) => `Property ${id}, ${values.name || "no name yet"}, added to the pool in the admin by ${who}`,
   );
+}
+
+/**
+ * The pool row a shortlist candidate is, creating it if the pool has never seen this
+ * building, and recording that it was put to this lead.
+ *
+ * Three ways to find the row, in order. The `property_id` the candidate already carries.
+ * Failing that, a row whose name matches once punctuation and case stop mattering, which is
+ * what keeps a second save from making a second row and what lets the pool rows that
+ * predate the link be adopted rather than duplicated. Failing both, a new row.
+ *
+ * `offered_to` is added to and never taken away. It records that a property was put to a
+ * lead, which stays true after the lead closes and after the candidate is removed from the
+ * shortlist. The pool exists so the next renter starts from what is already known, and that
+ * includes who has already seen it.
+ *
+ * Returns the id to store on the candidate.
+ */
+export async function linkCandidateToPool(
+  candidate: Candidate,
+  leadId: string,
+  who: string,
+): Promise<string> {
+  const properties = await readProperties();
+  const wanted = normalisedName(candidate.property_name);
+
+  const existing =
+    (candidate.property_id
+      ? properties.find((property) => property.property_id === candidate.property_id)
+      : undefined) ??
+    properties.find((property) => normalisedName(property.name) === wanted);
+
+  const facts = poolFactsFromCandidate(candidate);
+
+  if (!existing) {
+    return addProperty(
+      {
+        ...facts,
+        offered_to: leadId,
+        first_contact_date: today(),
+        // The pool's status is the owner's latest answer about the building, which is not
+        // the candidate's status on one shortlist. Seeded once from what is known today and
+        // never overwritten from a candidate afterwards.
+        status:
+          candidate.available === "no"
+            ? "not available"
+            : candidate.available === "yes"
+              ? "available"
+              : "available, not yet contacted",
+      },
+      who,
+    );
+  }
+
+  const offered = addOfferedTo(existing.offered_to, leadId);
+  const changes: Partial<PoolProperty> = { ...facts };
+  if (offered !== existing.offered_to) changes.offered_to = offered;
+
+  // updateCsv writes nothing when the bytes would not change, so a save that tells the pool
+  // only what it already knew leaves no commit behind.
+  await updateProperty(existing.property_id, changes, who);
+  return existing.property_id;
+}
+
+/* ---------------------------------------------------------------------------------------
+ * The client registry. One markdown file per signed owner, not a table.
+ * ------------------------------------------------------------------------------------- */
+
+/**
+ * The file names in a folder. The two backends answer this differently enough to be worth
+ * saying out loud: the filesystem lists a directory, while the GitHub contents API returns
+ * an array for a directory and an object for a file, which is why this cannot go through
+ * `readStored`.
+ */
+async function listStored(path: string): Promise<string[]> {
+  const mode = requireStore();
+
+  if (mode === "local") {
+    try {
+      return (await readdir(localPath(path), { withFileTypes: true }))
+        .filter((entry) => entry.isFile())
+        .map((entry) => entry.name);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+      throw error;
+    }
+  }
+
+  const response = await fetch(
+    `https://api.github.com/repos/${REPO}/contents/${encodeURI(path)}?ref=${encodeURIComponent(BRANCH)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      cache: "no-store",
+    },
+  );
+  if (response.status === 404) {
+    await failUnlessRepoIsReachable(path);
+    return [];
+  }
+  if (!response.ok) {
+    throw new StoreError(
+      `GitHub answered ${response.status} listing ${path}. ${await shortBody(response)}`,
+    );
+  }
+  const body = (await response.json()) as unknown;
+  if (!Array.isArray(body)) throw new StoreError(`${path} is a file, not a folder.`);
+  return (body as Array<{ name?: string; type?: string }>)
+    .filter((entry) => entry.type === "file")
+    .map((entry) => entry.name ?? "")
+    .filter(Boolean);
+}
+
+/** README.md is navigation and _template.md is the thing a client file is copied from.
+ * Neither is a client. */
+function isClientFile(name: string): boolean {
+  return name.endsWith(".md") && name !== "README.md" && !name.startsWith("_");
+}
+
+export type ClientRecord = {
+  client_id: string;
+  /** The file this came from, which carries the slug and so cannot be derived from the id. */
+  file: string;
+  values: Record<string, string>;
+  body: string;
+};
+
+async function readClientFile(name: string): Promise<ClientRecord | null> {
+  const stored = await readStored(`${CLIENTS_DIR}/${name}`);
+  if (!stored) return null;
+  let document: Document;
+  try {
+    document = splitDocument(stored.text);
+  } catch {
+    return null;
+  }
+  const values: Record<string, string> = {};
+  for (const field of CLIENT_KEYS) values[field] = readValue(document.frontmatter, field);
+  return {
+    client_id: values.client_id || name.slice(0, 6),
+    file: name,
+    values,
+    body: document.body,
+  };
+}
+
+/**
+ * The keys the admin reads out of a client file. Everything else in the frontmatter is left
+ * alone rather than dropped, which is the whole reason the frontmatter is edited line by
+ * line instead of parsed and rewritten.
+ */
+const CLIENT_KEYS = [
+  "client_id",
+  "name",
+  "status",
+  "segment",
+  "area",
+  "nationality",
+  "owner_type",
+  "contact_channel",
+  "contact_info",
+  "preferred_language",
+  "source_lead_id",
+  "source",
+  "referred_by",
+  "tier",
+  "fee_pct",
+  "onboarding_fee_thb",
+  "contract_signed_date",
+  "contract_start_date",
+  "contract_renewal_date",
+  "notice_period_days",
+  "owner_blocked_nights_cap",
+  "properties",
+];
+
+export async function readClients(): Promise<ClientRecord[]> {
+  const names = (await listStored(CLIENTS_DIR)).filter(isClientFile).sort();
+  const records = await Promise.all(names.map((name) => readClientFile(name)));
+  return records.filter((record): record is ClientRecord => record !== null);
+}
+
+export async function readClient(clientId: string): Promise<ClientRecord | null> {
+  const clients = await readClients();
+  return clients.find((client) => client.client_id === clientId) ?? null;
+}
+
+/**
+ * Change frontmatter keys, and the prose below them, in one client file.
+ *
+ * No retry loop: a client file is one person's record, two people are not editing the same
+ * one in the same second, and the `sha` check still refuses a write that would overwrite a
+ * change made since the read. A conflict here surfaces as a conflict rather than being
+ * silently retried over.
+ */
+export async function updateClient(
+  clientId: string,
+  changes: Record<string, string>,
+  body: string | null,
+  who: string,
+): Promise<void> {
+  const client = await readClient(clientId);
+  if (!client) throw new StoreError(`No client ${clientId}.`);
+  const path = `${CLIENTS_DIR}/${client.file}`;
+  const stored = await readStored(path);
+  if (!stored) throw new StoreError(`${path} is not in the document store.`);
+
+  const document = splitDocument(stored.text);
+  let frontmatter = document.frontmatter;
+  for (const [key, value] of Object.entries(changes)) {
+    if (key === "client_id") continue;
+    frontmatter = setValue(frontmatter, key, value);
+  }
+  const text = joinDocument({ frontmatter, body: body === null ? document.body : body });
+  if (text === stored.text) return;
+  await writeStored(path, text, `Client ${clientId} edited in the admin by ${who}`, stored.sha);
+}
+
+/** A file name from a client's name: `C-0003-somchai.md`. */
+function clientFileName(clientId: string, name: string): string {
+  const slug =
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40) || "client";
+  return `${clientId}-${slug}.md`;
+}
+
+/**
+ * A new client, copied from `_template.md` so the prose headings and the guidance a person
+ * will fill in later arrive with it, exactly as the registry's README says to do it.
+ */
+export async function addClient(
+  values: Record<string, string>,
+  who: string,
+): Promise<string> {
+  const template = await readStored(CLIENT_TEMPLATE);
+  if (!template) {
+    throw new StoreError(`${CLIENT_TEMPLATE} is not in the document store, so a client cannot be started from it.`);
+  }
+  const existing = (await readClients()).map((client) => client.client_id);
+  const clientId = nextId(existing, "C");
+
+  const document = splitDocument(template.text);
+  let frontmatter = setValue(document.frontmatter, "client_id", clientId);
+  for (const [key, value] of Object.entries(values)) {
+    if (key === "client_id") continue;
+    frontmatter = setValue(frontmatter, key, value);
+  }
+
+  const name = values.name ?? "";
+  const body = document.body.replace("# <Name>", `# ${name || clientId}`);
+  const file = clientFileName(clientId, name);
+  await writeStored(
+    `${CLIENTS_DIR}/${file}`,
+    joinDocument({ frontmatter, body }),
+    `Client ${clientId}, ${name || "no name yet"}, added in the admin by ${who}`,
+    null,
+  );
+  return clientId;
 }
 
 /** Where a change made here lands, for the screen to say out loud. */
