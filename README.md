@@ -391,7 +391,10 @@ is not configured.
 
 **1. The token.** GitHub, Settings, Developer settings, Personal access tokens, Fine-grained
 tokens, Generate new token. Resource owner is the account that owns `agentsiam-consulting`.
-Repository access is Only select repositories, and that one repository alone. Permissions is
+Repository access is Only select repositories, and that one repository alone. "Public
+repositories" is not a milder version of that, it is the wrong answer: the document store is
+private, so a token scoped that way is refused with a 404 on every path, which for a long time
+looked from the admin exactly like an empty folder. Permissions is
 Repository permissions, Contents, Read and write, and nothing else; GitHub adds Metadata read by
 itself and that is expected. Set an expiry and put the date in "Known gaps", because the day it
 lapses every read and every save in the admin starts failing. Copy the `github_pat_` value while
@@ -443,7 +446,7 @@ one tells you nothing about the rows below it.
 |---|---|---|
 | `/admin` shows a sign-in form that does not say it is not configured | The variables reached this deployment | They are on the wrong environment, or nothing has been redeployed since they were set |
 | The passphrase signs in, and a wrong one does not | The cookie is being signed and read | `ADMIN_COOKIE_SECRET` is under 32 characters, which counts as unset, or the stored passphrase is not the string you believe it is: it cannot be read back, so overwrite it |
-| `G-0003` lists three candidates | The GitHub read path works | The token cannot see the repository, or those files are not on `main` |
+| `G-0003` lists three candidates | The GitHub read path works | The screen says which it is: a token that cannot see the repository is now reported as that, rather than as a file that is not there |
 | A saved change to a candidate is accepted | The GitHub write path works, which nothing else proves | Read the message on screen: it names the file and the repository |
 | A `poolvillachiangmai.directstays.com` link is refused and names the operator | `blocked-operators.json` is read on every save | That file is not on `main` |
 
@@ -492,7 +495,13 @@ the admin without touching a deployment.
   `/api/admin/candidates` are both refused with 401, and `robots.txt` disallows `/admin` and
   `/api/admin`. What is not verified is the thing this entry is about. No save has run, so the
   token, the contents API and the conflict retry are all still untried, and the first real save
-  is the test. The setup steps are above under "Setting it up on Vercel". Two readings in it are
+  is the test. Signing in on the live domain works as of 12/11/2026, and the first GitHub read
+  then failed: every path came back 404, including `guest-leads.csv`, which is certainly on
+  `main`. The cause is not established from here, but one reading fits everything seen and the
+  token page in the screenshot showed it, which is that `CRM_GITHUB_TOKEN` was left on
+  Repository access "Public repositories" while the document store is private. `readStored` no
+  longer reports that as a missing file: on a 404 it asks after the repository itself and says
+  plainly when the token cannot see it. The setup steps are above under "Setting it up on Vercel". Two readings in it are
   mine rather than
   the brief's, and both are visible on screen rather than buried: "ready to send" treats
   availability as `yes` rather than merely answered, because a property the owner has said is

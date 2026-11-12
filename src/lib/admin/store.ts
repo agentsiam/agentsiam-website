@@ -114,7 +114,10 @@ async function readStored(path: string): Promise<Stored | null> {
     },
   );
 
-  if (response.status === 404) return null;
+  if (response.status === 404) {
+    await failUnlessRepoIsReachable(path);
+    return null;
+  }
   if (!response.ok) {
     throw new StoreError(
       `GitHub answered ${response.status} reading ${path}. ${await shortBody(response)}`,
@@ -129,6 +132,52 @@ async function readStored(path: string): Promise<Stored | null> {
     text: Buffer.from(body.content, "base64").toString("utf8"),
     sha: body.sha ?? null,
   };
+}
+
+/** Set once the repository has answered for this process. A token that can see it keeps
+ * seeing it, and a 404 on a shortlist that genuinely does not exist yet is common enough
+ * that asking GitHub about the repository every time would be a second request for nothing. */
+let repositoryIsReachable = false;
+
+/**
+ * A 404 from the contents API carries two meanings that look identical from here: the file
+ * is not there, or this token cannot see the repository at all. A fine-grained token left on
+ * "Public repositories" gets the second one against a private document store, and calling
+ * that a missing file sends whoever reads the screen looking for the wrong thing entirely.
+ *
+ * So before believing a path is absent, ask after the repository itself. Costs one request,
+ * and only on the 404 path, and only until the repository has answered once.
+ */
+async function failUnlessRepoIsReachable(path: string): Promise<void> {
+  if (repositoryIsReachable) return;
+
+  const response = await fetch(`https://api.github.com/repos/${REPO}`, {
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    cache: "no-store",
+  });
+
+  if (response.ok) {
+    repositoryIsReachable = true;
+    return;
+  }
+  if (response.status === 404) {
+    throw new StoreError(
+      `CRM_GITHUB_TOKEN cannot see ${REPO}, so nothing in it can be read, ${path} included. ` +
+        `The document store is private, so a fine-grained token needs Repository access set to ` +
+        `that one repository rather than "Public repositories", and Contents read and write ` +
+        `under Repository permissions. A token that cannot see a repository is answered with ` +
+        `the same 404 as a file that is not there, which is why this says so rather than ` +
+        `reporting a missing file.`,
+    );
+  }
+  throw new StoreError(
+    `GitHub answered ${response.status} for ${REPO}, asked while working out whether ${path} is ` +
+      `missing or merely out of reach. ${await shortBody(response)}`,
+  );
 }
 
 async function writeStored(
