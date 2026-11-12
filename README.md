@@ -473,13 +473,19 @@ the admin without touching a deployment.
   successful save rather than with a build. Two of the four variables are set in Preview as of
   12/11/2026, `ADMIN_COOKIE_SECRET` and `CRM_BRANCH`, which points at the throwaway branch
   `admin-write-test` rather than `main`; the two passphrases and `CRM_GITHUB_TOKEN` are not set,
-  so a preview still answers the not-configured form, and nothing has been deployed since they
-  were added, so no deployment carries them yet. The steps for the rest are above under "Setting
-  it up on Vercel". Two readings in it are mine rather than the brief's, and both are visible
-  on screen rather than buried: "ready to send" treats availability as `yes` rather than merely
-  answered, because a property the owner has said is not free cannot be sent, and a licence of
-  `unknown` still counts as filled in, because whether that is good enough to send is a
-  judgement for whoever presses send.
+  so a preview still answers the not-configured form. The newest preview deployment, 12/11/2026
+  09:19, does carry those two: they were created two minutes before it was built. The steps for
+  the rest are above under "Setting it up on Vercel". Two readings in it are mine rather than
+  the brief's, and both are visible on screen rather than buried: "ready to send" treats
+  availability as `yes` rather than merely answered, because a property the owner has said is
+  not free cannot be sent, and a licence of `unknown` still counts as filled in, because
+  whether that is good enough to send is a judgement for whoever presses send.
+- **Nils cannot open a preview deployment (12/11/2026).** Deployment Protection on the Vercel
+  project is SSO on every deployment except custom domains, with no password protection and no
+  bypass, and the team has two members: `agentsiam` and the PunProfile bot
+  `punprofilecareer-droid`. Nils holds neither, so a preview URL stops him at a Vercel login
+  whatever the admin's own variables say. The only surface that does not ask is `agentsiam.com`
+  itself, which means production, which means `main`.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.
