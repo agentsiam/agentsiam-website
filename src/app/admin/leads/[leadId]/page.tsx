@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireSession } from "@/lib/admin/guard";
-import { adminCandidatePath, adminLeadPath, NEW_CANDIDATE } from "@/lib/admin/routes";
+import {
+  adminCandidatePath,
+  adminLeadEditPath,
+  adminLeadPath,
+  NEW_CANDIDATE,
+} from "@/lib/admin/routes";
 import { LEAD_ID, readBlocked, readLead, readShortlist, storeProblem } from "@/lib/admin/store";
 import { unmatchableOutlets } from "@/lib/admin/blocked";
 import { isReadyToSend, missingForReady, type Candidate } from "@/lib/admin/types";
@@ -66,9 +71,12 @@ export default async function LeadPage({ params }: { params: Promise<{ leadId: s
         >
           {lead.lead_id} {lead.name}
         </h1>
-        <span className="text-xs text-muted">
-          read from guest-leads.csv, changed there and not here
-        </span>
+        <Link
+          href={adminLeadEditPath(leadId)}
+          className="text-xs text-primary hover:underline"
+        >
+          Edit this lead
+        </Link>
       </div>
 
       <dl className="mt-5 grid gap-x-8 gap-y-3 rounded-panel border border-hairline bg-bg p-5 text-sm sm:grid-cols-2">

@@ -28,6 +28,7 @@ import { dirname, join, resolve } from "node:path";
 import { CONTACT_EMAIL } from "@/lib/site";
 import { appendCsvRow, csvColumn, nextId, parseCsvObjects, updateCsvRow } from "./csv";
 import type { BlockedList } from "./blocked";
+import { appendHistory } from "./types";
 import type { Lead, OwnerLead, PoolProperty, Shortlist } from "./types";
 
 const REPO = process.env.CRM_REPO ?? "agentsiam/agentsiam-consulting";
@@ -442,6 +443,16 @@ export async function updateLead(
   );
 }
 
+export async function addLead(values: Partial<Lead>, who: string): Promise<string> {
+  return appendWithId(
+    LEADS_FILE,
+    "lead_id",
+    "G",
+    values as Record<string, string>,
+    (id) => `Renter lead ${id}, ${values.name || "no name yet"}, added in the admin by ${who}`,
+  );
+}
+
 /* ---------------------------------------------------------------------------------------
  * The owner pipeline.
  * ------------------------------------------------------------------------------------- */
@@ -456,15 +467,30 @@ export async function readOwnerLead(leadId: string): Promise<OwnerLead | null> {
   return leads.find((lead) => lead.lead_id === leadId) ?? null;
 }
 
+/**
+ * Change cells in an owner lead's row, and optionally add a dated line to its `history`.
+ *
+ * The history line is computed inside the retry rather than by the caller, so a conflict
+ * re-reads the newer cell and appends to that. A caller computing it first would, on a
+ * retry, write back a history that had lost whatever the other person just added.
+ */
 export async function updateOwnerLead(
   leadId: string,
   changes: Partial<OwnerLead>,
   who: string,
+  historyEntry = "",
 ): Promise<void> {
   if (!OWNER_ID.test(leadId)) throw new StoreError(`Not an owner lead ID: ${leadId}`);
   await updateCsv(
     OWNERS_FILE,
-    (text) => updateCsvRow(text, "lead_id", leadId, changes as Record<string, string>),
+    (text) => {
+      const next = { ...changes } as Record<string, string>;
+      if (historyEntry.trim()) {
+        const row = parseCsvObjects(text).find((candidate) => candidate.lead_id === leadId);
+        next.history = appendHistory(row?.history ?? "", `${historyEntry.trim()} (${who})`);
+      }
+      return updateCsvRow(text, "lead_id", leadId, next);
+    },
     `Owner lead ${leadId} edited in the admin by ${who}`,
   );
 }

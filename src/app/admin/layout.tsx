@@ -4,7 +4,12 @@ import { Poppins, IBM_Plex_Sans } from "next/font/google";
 import "../globals.css";
 import { SignOut } from "@/components/admin/sign-out";
 import { currentSession } from "@/lib/admin/guard";
-import { ADMIN_BLOCKED, ADMIN_ROOT } from "@/lib/admin/routes";
+import {
+  ADMIN_BLOCKED,
+  ADMIN_OWNERS,
+  ADMIN_PROPERTIES,
+  ADMIN_ROOT,
+} from "@/lib/admin/routes";
 import { storeDescription } from "@/lib/admin/store";
 
 /**
@@ -74,6 +79,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 <nav className="flex items-center gap-4 text-sm">
                   <Link href={ADMIN_ROOT} className="text-primary hover:underline">
                     Renter leads
+                  </Link>
+                  <Link href={ADMIN_OWNERS} className="text-primary hover:underline">
+                    Owner leads
+                  </Link>
+                  <Link href={ADMIN_PROPERTIES} className="text-primary hover:underline">
+                    Property pool
                   </Link>
                   <Link href={ADMIN_BLOCKED} className="text-primary hover:underline">
                     Blocked operators
