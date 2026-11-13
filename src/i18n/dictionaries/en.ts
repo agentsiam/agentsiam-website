@@ -1498,6 +1498,8 @@ export const en = {
   areaChangKhian: "Chang Khian",
   areaChangPhueak: "Chang Phueak",
   areaPaDaet: "Pa Daet",
+  // Labels a link to ONE house. viewProperty says 'See the houses' and belongs on a link to the collection; it was on both, so a footer link under 'All properties' promised a selection and opened a single townhouse.
+  seeHouse: "See {name}",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

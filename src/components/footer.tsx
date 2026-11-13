@@ -5,6 +5,7 @@ import { localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
 import { areaName } from "@/lib/area-content";
 import { MANAGEMENT_CITIES } from "@/lib/management-cities";
+import { FEATURED_PROPERTY } from "@/lib/property";
 import { CONTACT_EMAIL, POSTAL_ADDRESS } from "@/lib/site";
 
 /**
@@ -39,7 +40,13 @@ export function Footer({ locale }: { locale: Locale }) {
       heading: t.footStay,
       links: [
         { href: href("/properties"), label: t.allProperties },
-        { href: href("/lotushouse"), label: t.viewProperty },
+        // Named, not "See the houses". The row above it is the collection; a second link
+        // whose label also promises a selection, sitting directly under it and opening one
+        // townhouse, reads as a broken link rather than as the one bookable house.
+        {
+          href: href(`/${FEATURED_PROPERTY.slug}`),
+          label: t.seeHouse.replace("{name}", FEATURED_PROPERTY.title),
+        },
         // The guest outlet. Linked from every locale although it is English-only: an
         // English article is more use to a Thai reader than one they cannot find, and the
         // Thai and Chinese labels say which language it is in before they click.

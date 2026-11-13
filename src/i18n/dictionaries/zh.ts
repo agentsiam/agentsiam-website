@@ -1304,4 +1304,5 @@ export const zh: Dictionary = {
   areaChangKhian: "Chang Khian",
   areaChangPhueak: "Chang Phueak",
   areaPaDaet: "Pa Daet",
+  seeHouse: "查看 {name}",
 };

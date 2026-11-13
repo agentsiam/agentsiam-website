@@ -1304,4 +1304,5 @@ export const th: Dictionary = {
   areaChangKhian: "ช่างเคี่ยน",
   areaChangPhueak: "ช้างเผือก",
   areaPaDaet: "ป่าแดด",
+  seeHouse: "ดู {name}",
 };

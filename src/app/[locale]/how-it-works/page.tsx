@@ -405,7 +405,7 @@ export default async function HowItWorksPage({
           href={href(`/${FEATURED_PROPERTY.slug}`)}
           className="hit text-sm font-semibold text-primary hover:text-secondary"
         >
-          {t.viewProperty} →
+          {t.seeHouse.replace("{name}", FEATURED_PROPERTY.title)} →
         </Link>
       </section>
     </div>
