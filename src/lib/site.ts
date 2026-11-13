@@ -130,10 +130,13 @@ export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? ""
 // date inside a Thai and a Chinese sentence. Kept as a date so each locale formats it.
 export const POLICY_UPDATED = "2026-08-14";
 
-// The privacy policy's own date once Google Analytics is on, because that is when its
-// measurement and cookie sections change. The terms keep POLICY_UPDATED, since nothing in
-// them moved.
-export const PRIVACY_WITH_ANALYTICS_UPDATED = "2026-09-17";
+// The privacy policy's own date. It was split in two while the only thing that moved in
+// that policy was Google Analytics, which renders conditionally, so the date it carried
+// depended on whether the measurement and cookie sections were there at all. The WhatsApp
+// and Upstash paragraph added on 13/11/2026 is in the policy whatever that env var says,
+// so both states were last changed on the same day and one date is the honest answer.
+// The terms carry their own literal and are untouched by this.
+export const PRIVACY_UPDATED = "2026-11-13";
 
 /**
  * An ISO date written the way the reader's own locale writes dates.

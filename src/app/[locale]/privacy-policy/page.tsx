@@ -8,8 +8,7 @@ import {
   CONTACT_EMAIL,
   CRISP_WEBSITE_ID,
   GA_MEASUREMENT_ID,
-  POLICY_UPDATED,
-  PRIVACY_WITH_ANALYTICS_UPDATED,
+  PRIVACY_UPDATED,
   policyUpdated,
   pageMeta,
 } from "@/lib/site";
@@ -61,7 +60,7 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
         </h1>
         <p className="mt-2.5 text-sm text-muted">
           {t.lastUpdated}{" "}
-          {policyUpdated(locale, GA_MEASUREMENT_ID ? PRIVACY_WITH_ANALYTICS_UPDATED : POLICY_UPDATED)}
+          {policyUpdated(locale, PRIVACY_UPDATED)}
         </p>
 
         <div className="mt-8 text-[15px] leading-relaxed text-body [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:tracking-[-0.015em] [&_h2]:text-text [&_li]:mt-1 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-inside [&_ul]:list-disc"
@@ -129,6 +128,17 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             details under its own policy, and we receive from it only what is needed to host
             the stay and to keep the guest records Thai law requires of an accommodation
             operator.
+          </p>
+          <p>
+            <strong>Messages you send us on WhatsApp.</strong> If you write to us on
+            WhatsApp we receive the name on your WhatsApp profile, the number you write
+            from, and what you write. Where you send a photograph, a document or a voice
+            message we record that you sent one and its caption, not the file itself. We
+            use all of it to answer you and to arrange or host your stay. The conversation
+            is kept for us by Upstash, on servers in Singapore. WhatsApp is operated by
+            Meta, which carries the message to us under its own policy, as it does any
+            other WhatsApp message. The lawful basis is the steps taken at your request,
+            and the performance of your booking where one follows.
           </p>
           {GA_MEASUREMENT_ID ? (
             <>
@@ -219,6 +229,9 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
               a stay
             </li>
             <li>
+              Upstash, which stores the WhatsApp conversations described above
+            </li>
+            <li>
               our payment provider, when you pay for a booking
             </li>
             {GA_MEASUREMENT_ID ? (
@@ -242,15 +255,18 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
 
           <h2>How long we keep it</h2>
           <p>
-            Enquiries that do not become engagements are kept for up to two years from your
-            last message, then deleted. Booking records are kept for five years, which is the
-            minimum the Thai Accounting Act and the Revenue Code require for the accounts and
-            tax records a paid booking creates. Lodger registration is kept for at least one
-            year in the form the Hotel Act requires. Records connected to an owner engagement
-            are kept for the length of the engagement and for the same accounting and tax
-            periods afterwards. You can ask us to delete an enquiry sooner; we cannot delete
-            records we are required by those rules to keep, and we will say so if that is the
-            case.
+            Enquiries that do not become engagements are kept for up to two years from
+            your last message, then deleted. A WhatsApp conversation is kept for twelve
+            months from your most recent message in it, then deleted, and we hold only
+            the five hundred most recent messages of one at any time. Booking records
+            are kept for five years, which is the minimum the Thai Accounting Act and
+            the Revenue Code require for the accounts and tax records a paid booking
+            creates. Lodger registration is kept for at least one year in the form the
+            Hotel Act requires. Records connected to an owner engagement are kept for
+            the length of the engagement and for the same accounting and tax periods
+            afterwards. You can ask us to delete an enquiry sooner; we cannot delete
+            records we are required by those rules to keep, and we will say so if that
+            is the case.
           </p>
 
           <h2>Your rights</h2>
