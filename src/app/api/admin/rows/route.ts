@@ -72,6 +72,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `${id} is not a ${spec.one} ID.` }, { status: 400 });
   }
 
+  // A save that changes nothing answered 200 having written nothing: the form posts only
+  // the fields it changed, and updateCsv declines a write that would produce the same bytes,
+  // so "saved" and "nothing happened" looked identical from the screen. That is the one
+  // pair of outcomes not to be unable to tell apart while the GitHub write path is still
+  // unverified: a save that writes nothing leaves no commit, and no commit is also what a
+  // token without Contents write leaves. The prose and a history line are changes in their
+  // own right, so a client or owner save carrying one is not empty.
+  if (id && Object.keys(cleaned.changes).length === 0 && prose === null && historyEntry.trim() === "") {
+    return NextResponse.json(
+      { error: "Nothing was changed, so nothing was saved." },
+      { status: 400 },
+    );
+  }
+
   try {
     if (id) {
       if (spec.kind === "renter") await updateLead(id, cleaned.changes, session.who);

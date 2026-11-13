@@ -508,10 +508,14 @@ the admin without touching a deployment.
 - **The CRM admin has never saved to GitHub (11/11/2026).** The read path works in production
   and the write path has never run once, which is the whole of this gap. A token holding
   Contents read but not write looks exactly like a working admin until someone presses save,
-  so what closes this entry is one successful save, not a build and not a page that loads. No
-  code is outstanding for it: `src/lib/admin/store.ts` holds the GitHub read, the write with
-  its `sha` check and the three-attempt conflict retry, every save route goes through that one
-  function, and there is no stub or TODO anywhere in it. Everything is verified against a
+  so what closes this entry is one successful save, not a build and not a page that loads.
+  A save that changes nothing is refused from 13/11/2026 with "Nothing was changed, so
+  nothing was saved". Until then it answered 200 having written nothing, because the form
+  posts only the fields it changed and `updateCsv` declines a write that would produce the
+  same bytes, so it left exactly the absence a token without Contents write leaves and the
+  screen called it a save. No code is outstanding for it: `src/lib/admin/store.ts` holds the
+  GitHub read, the write with its `sha` check and the three-attempt conflict retry, every save
+  route goes through that one function, and there is no stub or TODO anywhere in it. Everything is verified against a
   local checkout with `CRM_LOCAL_PATH` set, which is the same code with two different
   functions under it and touches neither the token nor the contents API: sign-in, the lead
   list, adding and changing a candidate, the readiness gate, the blocked refusal on both a
