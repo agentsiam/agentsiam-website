@@ -432,9 +432,12 @@ repositories" is not a milder version of that, it is the wrong answer: the docum
 private, so a token scoped that way is refused with a 404 on every path, which for a long time
 looked from the admin exactly like an empty folder. Permissions is
 Repository permissions, Contents, Read and write, and nothing else; GitHub adds Metadata read by
-itself and that is expected. Set an expiry and put the date in "Known gaps", because the day it
-lapses every read and every save in the admin starts failing. Copy the `github_pat_` value while
-it is on screen, because GitHub does not show it again.
+itself and that is expected. Expiry is No expiration, Paul's choice on 13/11/2026: an expiring
+token takes the admin down on a date nobody is watching, and every read and every save begins
+failing at once. The cost of that choice is that the token never falls out of use by itself, so
+it is only ever revoked by hand, at GitHub, Settings, Personal access tokens. Revoke it there
+the moment a laptop or a Vercel account is in doubt, and treat the value as live until you do.
+Copy the `github_pat_` value while it is on screen, because GitHub does not show it again.
 
 Scoped that narrowly, the worst a leaked token can do is commit to the document store, which has
 git history. A token with access to every repository would be a different object entirely, so
@@ -541,16 +544,13 @@ the admin without touching a deployment.
   handed over. A trailing newline and a stale pair from an earlier round both fit everything
   observed. The lesson is the one now in the setup section: Sensitive buys secrecy at the
   price of ever diagnosing it.
-- **The GitHub token's expiry is not written down (12/11/2026).** Whatever expiry it carries
-  is the day the admin stops working, and it stops all at once: every read and every save
-  begins failing. The failure is at least legible, because `readStored` passes GitHub's own
-  status and message through, and an expired token answers 401 with "Bad credentials"
-  rather than the 404 a scope problem gives. What is missing is the warning: nothing watches
-  the date, so the first notice is someone opening the admin and finding it dead. The date
-  is not known to this repository, which is the gap. If the token was created on 12/11/2026
-  and kept GitHub's 30-day default it lapses on 12/12/2026, which is an inference from that
-  default rather than a reading of the token page. Rotating it is the command under
-  "Setting it up on Vercel" above, plus a redeploy, because a Vercel variable binds when a
+- ~~**The GitHub token's expiry is not written down (12/11/2026).**~~ Resolved 13/11/2026:
+  the token carries no expiry, on Paul's word. So the admin will not stop on a date nobody is
+  watching, and the entry closes rather than waiting for one. What it leaves standing is in
+  the setup section above, not here: a token that never expires is only ever revoked by hand,
+  so the day a laptop or a Vercel account is in doubt, revoking it at GitHub is a step
+  somebody has to remember. If it is ever replaced rather than revoked, the command and the
+  redeploy are under "Setting it up on Vercel", because a Vercel variable binds when a
   deployment is created.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
