@@ -88,7 +88,7 @@ export default async function PropertiesPage({
               {t.browseChiangMai}
             </Link>
             <Link
-              href={href("/contact")}
+              href={href("/house-for-rent-chiang-mai#request")}
               className="rounded-full border-[1.5px] border-ink px-6 py-3.5 text-[15px] font-semibold hover:bg-ink hover:text-white"
             >
               {t.tellUsWhatYouNeed}
@@ -201,7 +201,7 @@ export default async function PropertiesPage({
                 {t.clearFilters}
               </Link>
               <Link
-                href={href("/contact")}
+                href={href("/house-for-rent-chiang-mai#request")}
                 className="rounded-full border-[1.5px] border-ink px-6 py-3.5 text-[15px] font-semibold hover:bg-ink hover:text-white"
               >
                 {t.tellUsWhatYouNeed}
@@ -255,7 +255,11 @@ export default async function PropertiesPage({
             {t.psCtaBody}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href={href("/contact")} className="pill-primary">
+            {/* The guest request, not /contact. This CTA asks for dates and what matters
+                to the reader, and it pointed at the owner form headed "Tell us about your
+                property" -- which then had to carry a note sending guests back out again.
+                Same destination the header's Contact already uses for a renter. */}
+            <Link href={href("/house-for-rent-chiang-mai#request")} className="pill-primary">
               {t.tellUsWhatYouNeed}
             </Link>
             <Link href={href("/how-it-works")} className="pill-outline">

@@ -426,7 +426,6 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
           <BookingPanel
             t={t}
             locale={locale}
-            contactHref={href("/contact")}
             privacyHref={href("/privacy-policy")}
           />
 

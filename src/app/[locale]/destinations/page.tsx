@@ -147,7 +147,9 @@ export default async function DestinationsPage({ params }: PageProps<"/[locale]"
         })}
       </ul>
 
-      {/* shape: closing-cta -- The guest ask, for the reader none of the eight fitted. */}
+      {/* shape: closing-cta -- The guest ask, for the reader no neighbourhood fitted.
+          It goes to the renter request. It pointed at /contact, which is the owner form
+          headed "Tell us about your property". */}
       <section className="mt-12 rounded-panel bg-surface px-7 py-9">
         <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
           {t.areaIndexCloseTitle}
@@ -156,7 +158,7 @@ export default async function DestinationsPage({ params }: PageProps<"/[locale]"
           {t.areaIndexCloseBody}
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href={href("/contact")} className="pill-primary">
+          <Link href={href("/house-for-rent-chiang-mai#request")} className="pill-primary">
             {t.tellUsWhatYouNeed}
           </Link>
           <Link href={href("/properties")} className="pill-outline">

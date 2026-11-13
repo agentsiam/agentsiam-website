@@ -98,7 +98,6 @@ type QuoteOutcome = {
 type Props = {
   t: Dictionary;
   locale: Locale;
-  contactHref: string;
   privacyHref: string;
 };
 
@@ -285,7 +284,7 @@ function wantsEmail(code: string | undefined): boolean {
   );
 }
 
-export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
+export function BookingPanel({ t, locale, privacyHref }: Props) {
   const [nights, setNights] = useState<Map<string, Night> | null>(null);
   const [calendarError, setCalendarError] = useState(false);
   const [arrival, setArrival] = useState<string | null>(null);
@@ -881,9 +880,13 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
       <Panel title={t.checkDatesAndBook}>
         <div className="p-5">
           <p className="text-sm leading-relaxed text-body">{t.bookingUnavailable}</p>
-          <Link href={contactHref} className="pill-primary mt-4 block text-center">
+          {/* Email, not contactHref. The copy above asks for dates at THIS house, and
+              /contact is the owner form headed "Tell us about your property": a guest
+              whose calendar failed was being sent to list a property. The enquiry-only
+              house pages answer the same question with a mailto, and this matches them. */}
+          <a href={mailto} className="pill-primary mt-4 block text-center">
             {t.enquireDates}
-          </Link>
+          </a>
           <p className="mt-3 text-xs leading-relaxed text-muted">
             {t.bkOrEmailUs}{" "}
             <a className="underline underline-offset-2 hover:text-primary" href={mailto}>
@@ -915,7 +918,6 @@ export function BookingPanel({ t, locale, contactHref, privacyHref }: Props) {
         headingRef={confirmationRef}
         longDate={longDate}
         money={money}
-        contactHref={contactHref}
         guideHref={guideHref}
         mailto={mailto}
       />
@@ -1292,7 +1294,6 @@ function Confirmation({
   headingRef,
   longDate,
   money,
-  contactHref,
   guideHref,
   mailto,
 }: {
@@ -1308,7 +1309,6 @@ function Confirmation({
   headingRef: React.RefObject<HTMLHeadingElement | null>;
   longDate: Intl.DateTimeFormat;
   money: Intl.NumberFormat;
-  contactHref: string;
   guideHref: string;
   mailto: string;
 }) {
@@ -1379,9 +1379,12 @@ function Confirmation({
           <Link href={guideHref} className="pill-outline block text-center">
             {t.guideCardLink}
           </Link>
-          <Link href={contactHref} className="pill-outline block text-center">
+          {/* Email, for the same reason as the dead-calendar panel: this sits on the
+              screen of someone who has just asked to stay, and /contact is where an
+              owner lists a property. */}
+          <a href={mailto} className="pill-outline block text-center">
             {t.bkAskUs}
-          </Link>
+          </a>
         </div>
         <p className="mt-3 text-xs leading-relaxed text-muted">
           {t.bkOrEmailUs}{" "}

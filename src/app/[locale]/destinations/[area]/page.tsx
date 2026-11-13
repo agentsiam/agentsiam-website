@@ -348,7 +348,7 @@ export default async function AreaPage({
               {t.seeEverything}
             </Link>
             <Link
-              href={href("/contact")}
+              href={href("/house-for-rent-chiang-mai#request")}
               className="rounded-full border-[1.5px] border-ink px-6 py-3.5 text-[15px] font-semibold hover:bg-ink hover:text-white"
             >
               {t.tellUsWhatYouNeed}
@@ -357,7 +357,9 @@ export default async function AreaPage({
         </section>
       )}
 
-      {/* shape: closing-cta -- The pair. Ask a person, or read the guide. */}
+      {/* shape: closing-cta -- The pair. Ask a person, or read the guide.
+          The ask is the renter request, not /contact: everything above it is written to
+          someone choosing where to stay, and /contact is the owner form. */}
       <section className="mt-12 rounded-panel bg-surface px-7 py-9">
         <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
           {t.areaCloseTitle}
@@ -366,7 +368,7 @@ export default async function AreaPage({
           {t.areaCloseBody}
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href={href("/contact")} className="pill-primary">
+          <Link href={href("/house-for-rent-chiang-mai#request")} className="pill-primary">
             {t.tellUsWhatYouNeed}
           </Link>
           <Link href={href("/lotushouse/local-guide")} className="pill-outline">
