@@ -175,7 +175,7 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
             `npm run photos`, so it is the photographer's description rather than something
             invented here, and it stays English under lang="en" like the team portraits. */}
         <div className="rounded-[24px] bg-bg p-3">
-          <div className="grad-blue relative aspect-5/4 overflow-hidden rounded-[16px]">
+          <div className="grad-blue relative aspect-5/4 overflow-hidden rounded-panel">
             {route.photo ? (
               <Image
                 src={route.photo.src}

@@ -1171,7 +1171,7 @@ export function BookingPanel({ t, locale, privacyHref }: Props) {
           />
         ) : mode === "paying" && payment ? (
           <>
-          <details className="mt-4 rounded-xl border border-hairline p-3.5 text-[12.5px] leading-relaxed text-body">
+          <details className="mt-4 rounded-box border border-hairline p-3.5 text-[12.5px] leading-relaxed text-body">
             <summary className="cursor-pointer font-semibold text-text">{t.cxAccepted}</summary>
             <div className="mt-2 [&_h3]:hidden [&_p]:mt-2">
               <CancellationTerms t={t} />
@@ -1740,7 +1740,7 @@ function GuestForm({
         <div className="mt-4">
           <div
             tabIndex={0}
-            className="max-h-56 overflow-y-auto rounded-xl border border-hairline p-3.5 text-[12.5px] leading-relaxed text-body [&_h3]:font-semibold [&_h3]:text-text [&_p]:mt-2"
+            className="max-h-56 overflow-y-auto rounded-box border border-hairline p-3.5 text-[12.5px] leading-relaxed text-body [&_h3]:font-semibold [&_h3]:text-text [&_p]:mt-2"
           >
             <CancellationTerms t={t} />
           </div>
