@@ -288,7 +288,7 @@ export const th: Dictionary = {
   filter_bathrooms: "ห้องน้ำ",
   filter_guests: "จำนวนผู้เข้าพัก",
 
-  destinationsTitle: "แปดย่าน อธิบายตามจริง",
+  destinationsTitle: "ย่านในเชียงใหม่ อธิบายตามจริง",
   destinationsIntro: "เชียงใหม่ข้ามเมืองได้ในราวยี่สิบนาที แต่แต่ละย่านให้บรรยากาศการเที่ยวต่างกัน ที่นี่บอกตามตรงว่าแต่ละย่านเป็นอย่างไร และเราดูแลที่พักใดบ้าง",
   areaNoneYet: "ผ่านการสอบถาม",
   areaEmptyTitle: "สนใจพักใน{area}? สอบถามเราก่อน",
@@ -375,7 +375,7 @@ export const th: Dictionary = {
   metaGuideDesc: "{n} สถานที่รอบ {property} ในเชียงใหม่ คัดโดยทีมเจ้าบ้าน พร้อมเวลาเดินและขับรถ",
   metaDestinationsTitle: "ย่านที่พักในเชียงใหม่",
   metaDestinationsDesc:
-    "แปดย่านในเชียงใหม่ที่เราดูแล Nimman, Old City, Santitham, Chang Khlan, Wat Ket, Hang Dong, Mae Rim และ San Sai พร้อมบรรยากาศจริงของแต่ละย่าน",
+    "ย่านต่างๆ ในเชียงใหม่ Nimman, Old City, Santitham, Chang Khlan, Wat Ket, Hang Dong, Mae Rim, Pa Daet และย่านอื่น พร้อมบรรยากาศจริงของแต่ละย่าน",
   metaAreaTitle: "พักในย่าน {area} เชียงใหม่",
   metaAreaDesc: "{area}: {vibe} รู้จักบรรยากาศของย่านและที่พักที่เราดูแลในพื้นที่",
   metaContactTitle: "ติดต่อเรา",
@@ -904,8 +904,8 @@ export const th: Dictionary = {
 
   // -- homepage neighbourhood strip ----------------------------------------
   homeAreasTitle: "ย่านไหนในเชียงใหม่",
-  homeAreasSub: "ย่านที่คุณเลือกพักมีผลต่อทริปมากกว่าตัวบ้าน มาทำความรู้จัก 8 ย่านในเชียงใหม่ว่าพักแล้วเป็นอย่างไร",
-  homeAreasLink: "ดูทั้งแปดย่าน",
+  homeAreasSub: "ย่านที่คุณเลือกพักมีผลต่อทริปมากกว่าตัวบ้าน มาทำความรู้จักแต่ละย่านในเชียงใหม่ว่าพักแล้วเป็นอย่างไร",
+  homeAreasLink: "ดูทุกย่าน",
 
   // -- live chat, privacy policy sentence ----------------------------------
   privacyChatCookie: "ผู้ให้บริการแชทของเราจะตั้งคุกกี้ของตนเองเมื่อคุณเปิดหน้าต่างแชท เพื่อให้คำตอบกลับไปถึงบทสนทนาที่คุณเริ่มไว้ คุกกี้นี้เกิดขึ้นเมื่อคุณเปิดแชทเท่านั้น ไม่ใช่ตอนที่คุณกำลังดูเว็บไซต์ และไม่ได้ใช้เพื่อการโฆษณา",

@@ -323,7 +323,7 @@ export const en = {
   filter_bathrooms: "bathrooms",
   filter_guests: "guests",
 
-  destinationsTitle: "Eight neighbourhoods, honestly described.",
+  destinationsTitle: "Chiang Mai neighbourhoods, honestly described.",
   destinationsIntro:
     "Chiang Mai is small enough to cross in twenty minutes and varied enough that the neighbourhood decides the holiday. Here is what each one is actually like, and what we manage there.",
   areaNoneYet: "By enquiry",
@@ -429,7 +429,7 @@ export const en = {
   metaGuideDesc:
     "{n} places around {property} in Chiang Mai, chosen by the hosts, with walking and driving times.",
   metaDestinationsTitle: "Chiang Mai neighbourhoods",
-  metaDestinationsDesc: "Eight Chiang Mai neighbourhoods: Nimman, Old City, Santitham, Chang Khlan, Wat Ket, Hang Dong, Mae Rim and San Sai, and what each is like.",
+  metaDestinationsDesc: "Chiang Mai neighbourhood by neighbourhood: Nimman, Old City, Santitham, Chang Khlan, Wat Ket, Hang Dong, Mae Rim, Pa Daet and more, and what each is like.",
   metaAreaTitle: "Staying in {area}, Chiang Mai",
   metaAreaDesc:
     "{area}: {vibe}. What the neighbourhood is like, and the places we manage there.",
@@ -1065,8 +1065,8 @@ export const en = {
   // -- homepage neighbourhood strip ----------------------------------------
   // The eight neighbourhood pages became substantial on 06/09/2026 and the homepage pointed at none of them: they were reachable from the nav and the footer only. This is the third route the spec names.
   homeAreasTitle: "Where in Chiang Mai",
-  homeAreasSub: "The neighbourhood decides the holiday more than the house does. Eight of them, described as they actually are.",
-  homeAreasLink: "All eight neighbourhoods",
+  homeAreasSub: "The neighbourhood decides the holiday more than the house does. Here is each one, described as it actually is.",
+  homeAreasLink: "All the neighbourhoods",
 
   // -- live chat, privacy policy sentence ----------------------------------
   // Rendered only when NEXT_PUBLIC_CRISP_WEBSITE_ID is set, so the policy cannot describe a chat provider the site is not running and cannot stay silent about one it is. Same shape as the payment-provider sentence above it, because it is the same legal argument: storage set because the visitor asked for something.

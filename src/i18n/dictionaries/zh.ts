@@ -290,7 +290,7 @@ export const zh: Dictionary = {
   filter_bathrooms: "卫浴",
   filter_guests: "住客",
 
-  destinationsTitle: "八个区域，如实描述。",
+  destinationsTitle: "清迈各区域，如实描述。",
   destinationsIntro: "清迈不大，约二十分钟即可穿城，但各个区域差异明显，住在哪里会直接影响旅行体验。下面如实介绍每个区域，以及我们在那里管理的房源。",
   areaNoneYet: "咨询了解",
   areaEmptyTitle: "想住在{area}？先来问我们。",
@@ -376,7 +376,7 @@ export const zh: Dictionary = {
   metaGuideTitle: "{property}周边指南",
   metaGuideDesc: "{property}周边{n}个地点，由房东挑选，并列出步行和驾车时间。",
   metaDestinationsTitle: "清迈区域指南",
-  metaDestinationsDesc: "我们覆盖清迈八个区域：Nimman、Old City、Santitham、Chang Khlan、Wat Ket、Hang Dong、Mae Rim、San Sai，并如实介绍每个区域。",
+  metaDestinationsDesc: "清迈各个区域：Nimman、Old City、Santitham、Chang Khlan、Wat Ket、Hang Dong、Mae Rim、Pa Daet 等，并如实介绍每个区域。",
   metaAreaTitle: "住在清迈{area}",
   metaAreaDesc: "{area}：{vibe}。了解这个区域，以及我们在当地管理的房源。",
   metaContactTitle: "联系我们",
@@ -904,8 +904,8 @@ export const zh: Dictionary = {
 
   // -- homepage neighbourhood strip ----------------------------------------
   homeAreasTitle: "清迈的哪一区",
-  homeAreasSub: "住在哪个街区，往往比选哪套房更影响旅行体验。这里介绍清迈8个街区，看看住在各处是什么样。",
-  homeAreasLink: "查看全部八个区域",
+  homeAreasSub: "住在哪个街区，往往比选哪套房更影响旅行体验。这里逐个介绍清迈的街区，看看住在各处是什么样。",
+  homeAreasLink: "查看全部区域",
 
   // -- live chat, privacy policy sentence ----------------------------------
   privacyChatCookie: "当您打开聊天窗口时，我们的聊天服务商会设置自己的cookie，以便回复能回到您发起的那段对话。它只在您打开聊天时出现，浏览网站时不会，也不用于广告。",
