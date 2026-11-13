@@ -149,7 +149,7 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
         </ol>
       </section>
 
-      <section id="request" className="mt-12 scroll-mt-24">
+      <section id="request" className="mt-12 scroll-anchor">
         <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.formTitle}</h2>
         <p className="mt-2.5 mb-5 max-w-[600px] text-[15px] leading-relaxed text-body">
           {COPY.formBody}

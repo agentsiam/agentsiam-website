@@ -217,7 +217,7 @@ export default async function BusinessServicesPage({ params }: PageProps<"/[loca
           marked gap, which is the honest length of this list today. */}
       <section
         id="how-it-starts"
-        className="mx-auto max-w-(--container-chrome) scroll-mt-24 px-5 pt-16"
+        className="mx-auto max-w-(--container-chrome) scroll-anchor px-5 pt-16"
       >
         <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
           {t.bsStartTitle}

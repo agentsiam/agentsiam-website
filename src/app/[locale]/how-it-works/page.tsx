@@ -301,7 +301,7 @@ export default async function HowItWorksPage({
       <TeamRow t={t} heading={t.meetTheTeam} />
 
       {/* shape: route-grid -- where are you starting from: three routes, each ending at the form. */}
-      <section id="start" className="mx-auto max-w-(--container-prose) scroll-mt-24 px-5 pt-16">
+      <section id="start" className="mx-auto max-w-(--container-prose) scroll-anchor px-5 pt-16">
         <div className="overflow-hidden rounded-[28px] bg-ink px-5 py-14 sm:px-10 sm:py-20">
           <div className="mx-auto max-w-[1040px]">
             <h2 className="mx-auto max-w-[762px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase text-gold-on-ink">
@@ -366,7 +366,7 @@ export default async function HowItWorksPage({
       </section>
 
       {/* shape: contact-form -- the conversion: the owner form, on the page, with what happens next. */}
-      <section id="owner-form" className="mx-auto max-w-(--container-prose) scroll-mt-24 px-5 pt-16">
+      <section id="owner-form" className="mx-auto max-w-(--container-prose) scroll-anchor px-5 pt-16">
         <div className="rounded-panel border border-hairline px-6 py-9 sm:px-10">
           <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
             {t.c2CloseTitle}

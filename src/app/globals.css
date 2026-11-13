@@ -162,6 +162,19 @@ button {
   than layout, and drifting them by a pixel per page is how a design system dies.
 */
 @layer components {
+  /* Anything an in-page link jumps to. The header is sticky, so a bare anchor puts the
+     target's first line under it: #booking on the property page had no scroll margin at
+     all, and "Check dates" landed the panel's title and its check-in/check-out summary
+     behind 138px of header on every phone. The rest used scroll-mt-24, which is 96px and
+     was written against the one-row header, so it was 42px short at the same widths.
+
+     It reads --nav-h for the same reason the /properties filter bar does: the header's
+     height depends on the width AND the locale, and nav-height.tsx is what knows it. A
+     number here would be wrong in two of the three languages. */
+  .scroll-anchor {
+    scroll-margin-top: calc(var(--nav-h) + 1rem);
+  }
+
   /* IBM Plex Mono, uppercase, 10.5-12px, letter-spacing 0.07-0.08em. */
   .eyebrow {
     font-family: var(--font-mono);

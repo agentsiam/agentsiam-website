@@ -324,7 +324,7 @@ export function LocalGuide({
         <>
           {/* The hosts' own picks first, with their notes: the page's proof that the hosts
               know the street. Before this they sat mid-list behind the 7-Eleven. */}
-          <section id="guide-favourites" className="mt-10 scroll-mt-24">
+          <section id="guide-favourites" className="mt-10 scroll-anchor">
             <h2 className="font-display text-2xl font-bold tracking-[-0.015em]">
               <span aria-hidden="true" className="mr-1.5 text-deep-red">★</span>
               {t.guidePicks}
@@ -370,7 +370,7 @@ export function LocalGuide({
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_2fr]">
             {/* First night: what a guest needs within an hour of arriving. */}
-            <section id="guide-first-night" className="scroll-mt-24 rounded-panel bg-surface p-6">
+            <section id="guide-first-night" className="scroll-anchor rounded-panel bg-surface p-6">
               <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{t.guideBasicsTitle}</h2>
               <p className="mt-1 text-[13.5px] text-muted">{t.guideBasicsSub}</p>
               <ul className="mt-4">{basics.map((p: (typeof GUIDE_PLACES)[number]) => (
@@ -385,7 +385,7 @@ export function LocalGuide({
             </section>
 
             {/* A day from the door: two walkable places per part of the day, host picks first. */}
-            <section id="guide-day" className="scroll-mt-24 rounded-panel border border-hairline p-6">
+            <section id="guide-day" className="scroll-anchor rounded-panel border border-hairline p-6">
               <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{t.guideDayTitle}</h2>
               <p className="mt-1 text-[13.5px] text-muted">{t.guideDaySub}</p>
               <div className="mt-4 grid gap-5 sm:grid-cols-3">
@@ -407,7 +407,7 @@ export function LocalGuide({
             </section>
           </div>
 
-          <h2 id="guide-everything" className="mt-12 scroll-mt-24 font-display text-2xl font-bold tracking-[-0.015em]">{t.guideEverything}</h2>
+          <h2 id="guide-everything" className="mt-12 scroll-anchor font-display text-2xl font-bold tracking-[-0.015em]">{t.guideEverything}</h2>
         </>
       ) : null}
 

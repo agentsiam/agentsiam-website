@@ -1271,7 +1271,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
     >
       <h2
         id="booking"
-        className="border-b border-hairline px-5 py-4 font-display text-lg font-bold tracking-[-0.015em]"
+        className="scroll-anchor border-b border-hairline px-5 py-4 font-display text-lg font-bold tracking-[-0.015em]"
       >
         {title}
       </h2>
