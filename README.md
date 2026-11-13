@@ -381,6 +381,12 @@ they belong. `offered_to` is added to and never emptied. `scripts/link-shortlist
 did this once to the candidates written before the link existed; it reports by default and
 writes only with `--write`.
 
+**What "ready to send" means, and it is a judgement rather than a fact.** A candidate counts
+as ready when its availability reads `yes` rather than merely answered, because a property an
+owner has said is not free cannot be sent, while a licence of `unknown` still counts as filled
+in, because whether that is good enough to send is for whoever presses send. Both readings are
+mine rather than the brief's, and both are on screen rather than buried in a gate.
+
 **Five environment variables, all server-side**, documented in `.env.example`:
 `ADMIN_COOKIE_SECRET`, `ADMIN_PASSPHRASE_PAUL`, `ADMIN_PASSPHRASE_NILS`, and then either
 `CRM_GITHUB_TOKEN` for production or `CRM_LOCAL_PATH` for local development. Unset, the admin
@@ -505,37 +511,18 @@ the admin without touching a deployment.
 
 ## Known gaps
 
-- **The CRM admin has never saved to GitHub (11/11/2026).** The read path works in production
-  and the write path has never run once, which is the whole of this gap. A token holding
-  Contents read but not write looks exactly like a working admin until someone presses save,
-  so what closes this entry is one successful save, not a build and not a page that loads.
-  A save that changes nothing is refused from 13/11/2026 with "Nothing was changed, so
-  nothing was saved". Until then it answered 200 having written nothing, because the form
-  posts only the fields it changed and `updateCsv` declines a write that would produce the
-  same bytes, so it left exactly the absence a token without Contents write leaves and the
-  screen called it a save. No code is outstanding for it: `src/lib/admin/store.ts` holds the
-  GitHub read, the write with its `sha` check and the three-attempt conflict retry, every save
-  route goes through that one function, and there is no stub or TODO anywhere in it. Everything is verified against a
-  local checkout with `CRM_LOCAL_PATH` set, which is the same code with two different
-  functions under it and touches neither the token nor the contents API: sign-in, the lead
-  list, adding and changing a candidate, the readiness gate, the blocked refusal on both a
-  link and a handle, removal, and a signed-out visitor getting a redirect from every page and
-  a 401 from every API route. What is verified on the live domain: all five variables are set
-  in Production, four of them sensitive, with `CRM_BRANCH` set to `main` rather than the
-  throwaway `admin-write-test` that Preview still points at; `/admin` redirects to the real
-  sign-in form rather than the not-configured one; a POST and a DELETE to
-  `/api/admin/candidates` are both refused with 401; `robots.txt` disallows `/admin` and
-  `/api/admin`; sign-in works; and the renter leads load, which is Paul's report on
-  12/11/2026 and not something a session watched. The first GitHub read before that failed
-  with a 404 on every path, `guest-leads.csv` included, because the token was left on
-  Repository access "Public repositories" while the document store is private. Widening it to
-  `agentsiam-consulting` fixed it, and `readStored` no longer reports a repository it cannot
-  see as a missing file: on a 404 it asks after the repository itself and says which of the
-  two it is. The setup steps are above under "Setting it up on Vercel". Two readings in it
-  are mine rather than the brief's, and both are visible on screen rather than buried: "ready
-  to send" treats availability as `yes` rather than merely answered, because a property the
-  owner has said is not free cannot be sent, and a licence of `unknown` still counts as filled
-  in, because whether that is good enough to send is a judgement for whoever presses send.
+- ~~**The CRM admin has never saved to GitHub (11/11/2026).**~~ Resolved 13/11/2026 by the
+  first real save. Paul added a candidate to `G-0003` from the live domain and it landed as
+  two commits in `agentsiam-consulting` at 08:56, authored `agentsiam <hi@agentsiam.com>`:
+  `9770951` for the pool row the candidate needed, then `ab73168` for the shortlist itself.
+  That is the token's Contents write, the contents API write with its `sha` check, and the
+  candidate-to-pool link, all proven in production rather than against a local checkout. One
+  thing in that path is still untried: the three-attempt conflict retry only fires when a file
+  changes between the read and the write, and nothing has contrived that. A save that changes
+  nothing is refused from 13/11/2026 with "Nothing was changed, so nothing was saved". Until
+  then it answered 200 having written nothing, because the form posts only the fields it
+  changed and `updateCsv` declines a write that would produce the same bytes, so it left
+  exactly the absence a token without Contents write leaves and the screen called it a save.
 - ~~**Nils cannot open a preview deployment (12/11/2026).**~~ Resolved 12/11/2026 by going to
   production rather than by giving him an account. Deployment Protection on the Vercel project
   is SSO on every deployment except custom domains, with no password protection and no bypass,
