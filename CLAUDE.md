@@ -182,6 +182,13 @@ build refuses to do, is `GUIDE-RUNBOOK.md`; do not restate it here.
   swap the six `next/font/google` calls in `layout.tsx` for `next/font/local` against real
   `.woff2` files, build, and swap back; `localFont` needs literal object arguments, so a
   helper function that builds the `src` array fails to compile.
+  Vercel's own builders are not exempt: a production build of `5d90301` failed at 20:28 on
+  12/11/2026 with `Turbopack build failed with 27 errors` and `Can't resolve
+  '@vercel/turbopack-next/internal/font/google/font'` on the generated IBM Plex Sans and
+  Noto Sans Thai faces, on a commit that touched `README.md` and nothing else. The next
+  build of the same code succeeded. So a failed deployment whose errors are all under
+  `[next]/internal/font/google/` is a fetch that did not land, and the first move is to
+  redeploy rather than to read the diff.
 - A blank dictionary string ships English and nobody notices, because the per-key fallback is
   working exactly as designed. `scripts/add-dictionary-keys.mjs` will happily write one if a
   spec file carries `""`; `en.ts` is where that does the most damage, since it is the
