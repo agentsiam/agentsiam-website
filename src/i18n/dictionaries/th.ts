@@ -1299,4 +1299,9 @@ export const th: Dictionary = {
   gardenDesc2: "ห้องน้ำ 5 ห้อง และที่จอดรถ 3 คัน ครัวมีเตาบาร์บีคิว พร้อม Wi-Fi โทรทัศน์ ผ้าเช็ดตัว สบู่ และแชมพู",
   metaGardenTitle: "Garden Villa ย่านป่าแดด เชียงใหม่",
   metaGardenDesc: "พูลวิลล่าส่วนตัว 4 ห้องนอน ในย่านป่าแดด เชียงใหม่ บ้านสองชั้นพร้อมสวนส่วนตัว สอบถามวันที่ว่างและราคาได้",
+
+  // -- neighbourhood names: the three added for K. Mike's villas -----------
+  areaChangKhian: "ช่างเคี่ยน",
+  areaChangPhueak: "ช้างเผือก",
+  areaPaDaet: "ป่าแดด",
 };

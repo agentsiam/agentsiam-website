@@ -21,6 +21,7 @@
  * that is honest about its limits and one that quietly reads as local knowledge.
  */
 import type { Dictionary } from "@/i18n/dictionaries/en";
+import { areaBySlug } from "@/lib/areas";
 import { GUIDE_PLACES, type GuidePlace } from "@/lib/guide.generated";
 
 export type AreaContent = {
@@ -50,6 +51,9 @@ const NAME_KEYS: Record<string, keyof Dictionary> = {
   "hang-dong": "areaHangDong",
   "mae-rim": "areaMaeRim",
   "san-sai": "areaSanSai",
+  "chang-khian": "areaChangKhian",
+  "chang-phueak": "areaChangPhueak",
+  "pa-daet": "areaPaDaet",
 };
 
 /**
@@ -71,7 +75,13 @@ const AREA_REFS: Partial<Record<keyof Dictionary, string>> = {
 
 export function areaName(t: Dictionary, slug: string): string {
   const key = NAME_KEYS[slug];
-  return key ? t[key] : slug;
+  if (key) return t[key];
+  // The fallback the comment above promises, and which this function did not do: three
+  // areas were added to `areas.ts` with vibe keys but no name key, so the homepage grid,
+  // the footer and each area page's own h1 printed "chang-khian" in all three languages
+  // while the breadcrumb beside it printed "Chang Khian". A raw slug on the page is worse
+  // than an untranslated name, so an unmapped slug now resolves to the English name.
+  return areaBySlug(slug)?.name ?? slug;
 }
 
 /** One line of area copy, with any neighbourhood name in it resolved for this locale. */

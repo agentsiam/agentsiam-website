@@ -1299,4 +1299,9 @@ export const zh: Dictionary = {
   gardenDesc2: "五间卫浴，可停三辆车。厨房配烧烤设备，并提供 Wi-Fi、电视、毛巾、香皂与洗发水。",
   metaGardenTitle: "Garden Villa，清迈 Pa Daet",
   metaGardenDesc: "位于清迈 Pa Daet 的四卧室私人泳池别墅，两层楼并带自家花园。欢迎咨询日期与价格。",
+
+  // -- neighbourhood names: the three added for K. Mike's villas -----------
+  areaChangKhian: "Chang Khian",
+  areaChangPhueak: "Chang Phueak",
+  areaPaDaet: "Pa Daet",
 };

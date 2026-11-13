@@ -1492,6 +1492,12 @@ export const en = {
   gardenDesc2: "Five bathrooms and parking for three cars. The kitchen has a barbecue, and Wi-Fi, a television, towels, soap and shampoo are included.",
   metaGardenTitle: "Garden Villa, Pa Daet, Chiang Mai",
   metaGardenDesc: "A four-bedroom private pool villa in Pa Daet, Chiang Mai, over two storeys with its own garden. Enquire for dates and a price.",
+
+  // -- neighbourhood names: the three added for K. Mike's villas -----------
+  // Chang Khian is not Chang Khlan. The Thai spelling is the one in the property profile, Paul 11/11/2026. Chinese leaves these three in Latin, as the villa descriptions already do.
+  areaChangKhian: "Chang Khian",
+  areaChangPhueak: "Chang Phueak",
+  areaPaDaet: "Pa Daet",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
