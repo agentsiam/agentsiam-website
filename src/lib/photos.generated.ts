@@ -7,14 +7,17 @@
 
 import type { StaticImageData } from "next/image";
 
-import areas_0 from "@/photos/areas/chang-khlan.jpeg";
-import areas_1 from "@/photos/areas/hang-dong.jpeg";
-import areas_2 from "@/photos/areas/mae-rim.jpeg";
-import areas_3 from "@/photos/areas/nimman.jpeg";
-import areas_4 from "@/photos/areas/old-city.jpeg";
-import areas_5 from "@/photos/areas/san-sai.jpeg";
-import areas_6 from "@/photos/areas/santitham.jpeg";
-import areas_7 from "@/photos/areas/wat-ket.jpeg";
+import areas_0 from "@/photos/areas/chang-khian.jpeg";
+import areas_1 from "@/photos/areas/chang-phueak.jpeg";
+import areas_2 from "@/photos/areas/pa-daet.jpeg";
+import areas_3 from "@/photos/areas/chang-khlan.jpeg";
+import areas_4 from "@/photos/areas/hang-dong.jpeg";
+import areas_5 from "@/photos/areas/mae-rim.jpeg";
+import areas_6 from "@/photos/areas/nimman.jpeg";
+import areas_7 from "@/photos/areas/old-city.jpeg";
+import areas_8 from "@/photos/areas/san-sai.jpeg";
+import areas_9 from "@/photos/areas/santitham.jpeg";
+import areas_10 from "@/photos/areas/wat-ket.jpeg";
 import atriumvilla_0 from "@/photos/atriumvilla/01-cover-double-height-living-room.jpeg";
 import atriumvilla_1 from "@/photos/atriumvilla/02-123ff2ca.jpeg";
 import atriumvilla_2 from "@/photos/atriumvilla/03-421cd200.jpeg";
@@ -333,14 +336,17 @@ export type Photo = {
 /** Keyed by set name -- the folder under src/photos. An empty set is simply absent. */
 export const PHOTOS: Record<string, Photo[]> = {
   "areas": [
-    { src: areas_0, file: "chang-khlan.jpeg", alt: "A lit restaurant terrace at dusk with tables laid for dinner, Chang Khlan, Chiang Mai" },
-    { src: areas_1, file: "hang-dong.jpeg", alt: "A walled villa frontage with the Doi Suthep ridge on the horizon, Hang Dong, south of Chiang Mai" },
-    { src: areas_2, file: "mae-rim.jpeg", alt: "Flooded rice paddy and forested hills in morning haze, Mae Rim, north of Chiang Mai" },
-    { src: areas_3, file: "nimman.jpeg", alt: "A modern cafe frontage with folding glass doors open to the street, Nimman, Chiang Mai" },
-    { src: areas_4, file: "old-city.jpeg", alt: "A quiet lane of shophouses behind a laterite wall inside the Old City moat, Chiang Mai" },
-    { src: areas_5, file: "san-sai.jpeg", alt: "A modern two-storey house behind a clipped hedge on a suburban street, San Sai, Chiang Mai" },
-    { src: areas_6, file: "santitham.jpeg", alt: "A two-storey townhouse with a shaded forecourt on a residential street, Santitham, Chiang Mai" },
-    { src: areas_7, file: "wat-ket.jpeg", alt: "A timber garden house and a jetty on the bank of the Ping river, Wat Ket, Chiang Mai" },
+    { src: areas_0, file: "chang-khian.jpeg", alt: "A house gateway and clipped hedge below a forested mountain slope, Chang Khian, Chiang Mai" },
+    { src: areas_1, file: "chang-phueak.jpeg", alt: "A fresh produce stall set out early in the morning, Chang Phueak, Chiang Mai" },
+    { src: areas_2, file: "pa-daet.jpeg", alt: "Tiled roofs of a modern neighbourhood at dusk with forested hills behind, Pa Daet, south of Chiang Mai" },
+    { src: areas_3, file: "chang-khlan.jpeg", alt: "A lit restaurant terrace at dusk with tables laid for dinner, Chang Khlan, Chiang Mai" },
+    { src: areas_4, file: "hang-dong.jpeg", alt: "A walled villa frontage with the Doi Suthep ridge on the horizon, Hang Dong, south of Chiang Mai" },
+    { src: areas_5, file: "mae-rim.jpeg", alt: "Flooded rice paddy and forested hills in morning haze, Mae Rim, north of Chiang Mai" },
+    { src: areas_6, file: "nimman.jpeg", alt: "A modern cafe frontage with folding glass doors open to the street, Nimman, Chiang Mai" },
+    { src: areas_7, file: "old-city.jpeg", alt: "A quiet lane of shophouses behind a laterite wall inside the Old City moat, Chiang Mai" },
+    { src: areas_8, file: "san-sai.jpeg", alt: "A modern two-storey house behind a clipped hedge on a suburban street, San Sai, Chiang Mai" },
+    { src: areas_9, file: "santitham.jpeg", alt: "A two-storey townhouse with a shaded forecourt on a residential street, Santitham, Chiang Mai" },
+    { src: areas_10, file: "wat-ket.jpeg", alt: "A timber garden house and a jetty on the bank of the Ping river, Wat Ket, Chiang Mai" },
   ],
   "atriumvilla": [
     { src: atriumvilla_0, file: "01-cover-double-height-living-room.jpeg", alt: "" },
