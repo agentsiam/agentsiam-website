@@ -137,7 +137,7 @@ export default async function BusinessServicesPage({ params }: PageProps<"/[loca
           <span>{t.bsRentalNote}</span>
           <Link
             href={href("/how-it-works")}
-            className="font-semibold text-primary hover:text-secondary"
+            className="font-semibold text-primary hover:text-ink"
           >
             {t.mgmtHowLink}
           </Link>

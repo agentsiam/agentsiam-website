@@ -314,7 +314,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           </div>
           <Link
             href={href("/properties")}
-            className="text-sm font-semibold text-primary hover:text-secondary"
+            className="text-sm font-semibold text-primary hover:text-ink"
           >
             {t.allProperties} →
           </Link>

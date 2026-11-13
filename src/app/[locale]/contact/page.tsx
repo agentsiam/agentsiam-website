@@ -100,7 +100,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
                 {t.guestQnNote}{" "}
                 <Link
                   href={href(`/${FEATURED_PROPERTY.slug}`)}
-                  className="font-semibold text-primary hover:text-secondary"
+                  className="font-semibold text-primary hover:text-ink"
                 >
                   {FEATURED_PROPERTY.title} →
                 </Link>

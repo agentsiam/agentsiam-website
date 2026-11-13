@@ -239,7 +239,7 @@ export default async function ManagementCityPage({
         <span className="text-sm text-muted">{t.lookingToStay}</span>
         <Link
           href={href("/properties")}
-          className="hit text-sm font-semibold text-primary hover:text-secondary"
+          className="hit text-sm font-semibold text-primary hover:text-ink"
         >
           {t.mgmt2GuestLink}
         </Link>

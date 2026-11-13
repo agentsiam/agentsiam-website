@@ -290,7 +290,7 @@ export default async function HowItWorksPage({
           </div>
           <Link
             href={href(`/${FEATURED_PROPERTY.slug}`)}
-            className="hit mt-4 inline-block text-sm font-semibold text-primary hover:text-secondary"
+            className="hit mt-4 inline-block text-sm font-semibold text-primary hover:text-ink"
           >
             {FEATURED_PROPERTY.title} →
           </Link>
@@ -403,7 +403,7 @@ export default async function HowItWorksPage({
         <span className="text-sm text-muted">{t.lookingToStay}</span>
         <Link
           href={href(`/${FEATURED_PROPERTY.slug}`)}
-          className="hit text-sm font-semibold text-primary hover:text-secondary"
+          className="hit text-sm font-semibold text-primary hover:text-ink"
         >
           {t.seeHouse.replace("{name}", FEATURED_PROPERTY.title)} →
         </Link>
