@@ -61,6 +61,10 @@ export type Candidate = {
   walkable: string;
   transport_if_not_walkable: string;
   licence: string;
+  /** The day the owner or manager was asked about this lead's dates. Blank until somebody
+   * asks. It is what a timeout reads: `availability_confirmed_on` says when an answer came
+   * back, and nothing else said when the question went out. */
+  asked_on: string;
   available: string;
   availability_confirmed_on: string;
   total_price_thb: number | null;
@@ -109,6 +113,72 @@ export type Lead = {
   owner: string;
   next_action_date: string;
   lost_reason: string;
+};
+
+/**
+ * One renter inquiry as it arrived, one file per lead, beside the shortlist:
+ * as-salesmarketing/01-crm/inquiries/G-####.json in agentsiam-consulting.
+ *
+ * Written by /api/stay-request when the form is submitted, not by the admin. It exists
+ * because guest-leads.csv holds sixteen free-text columns and a renter's requirement is
+ * structured: a budget with a unit, a date flexibility, a guest split, fixed must-haves.
+ * Those cannot be matched against property-pool.csv while they sit inside a paragraph, and
+ * the CSV row is where a person reads the lead rather than where a filter does.
+ *
+ * It carries no email address, no phone number and no messaging handle, by the rule
+ * guest-leads.csv and shortlists/README.md both state: those stay in the mailbox the
+ * enquiry arrived in. `contact_channels` says which channels the renter offered, and the
+ * notification email to hi@agentsiam.com carries the handles. It is also the right shape
+ * for decision 92, where an owner is shown the requirement and the renter's details cross
+ * only after that owner has accepted the introduction terms for the lead.
+ *
+ * snake_case for the same reason as a candidate: this is the JSON on disk in the document
+ * store, and that repository writes its data in snake_case.
+ */
+export type Inquiry = {
+  lead_id: string;
+  /** ISO date, and the full timestamp beside it, because two inquiries in one day are
+   * ordinary and the CSV's received_date cannot tell them apart. */
+  received_on: string;
+  received_at: string;
+  /** One of ROUTING_CASES in src/lib/stay-request.ts. */
+  routing: string;
+  /** The property page the form sat on, as its route slug, or "" for an open requirement. */
+  property_ref: string;
+  property_name: string;
+  /** The language the renter asked to be answered in, and the language of the page they
+   * wrote from. They are not always the same. */
+  reply_language: string;
+  wrote_in: string;
+  from_page: string;
+  /** Channel kinds only, never a handle. */
+  contact_channels: string[];
+  check_in: string;
+  check_out: string;
+  nights: number;
+  date_flexibility: string;
+  adults: number;
+  children: number;
+  children_ages: string;
+  budget_amount: number | null;
+  budget_unit: string;
+  budget_currency: string;
+  area_wanted: string;
+  bedrooms_minimum: string;
+  must_haves: string[];
+  party: string;
+  vehicle: string;
+  pets: string;
+  pets_count: number | null;
+  pets_species: string;
+  smoking: string;
+  notes: string;
+  found_via: string;
+  /** `yes` or `no`, and the exact words the renter was shown when they answered, in the
+   * language they were shown them in. A consent record that does not say what was consented
+   * to is not a consent record. */
+  consent_to_pass_to_owner: string;
+  consent_text: string;
 };
 
 /**
@@ -182,6 +252,7 @@ export function emptyCandidate(): Candidate {
     walkable: "",
     transport_if_not_walkable: "",
     licence: "unknown",
+    asked_on: "",
     available: "unknown",
     availability_confirmed_on: "",
     total_price_thb: null,

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PhotoGallery } from "@/components/photo-gallery";
+import { StayRequestForm } from "@/components/stay-request-form";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { IconChip } from "@/components/icon";
@@ -12,6 +13,7 @@ import { PHOTOS } from "@/lib/photos.generated";
 import { AREAS } from "@/lib/areas";
 import { COSMOS_HOUSE, type Property } from "@/lib/property";
 import { CONTACT_EMAIL, pageMeta, routeOgImage, SITE_NAME } from "@/lib/site";
+import { stayRequestLabels } from "@/lib/stay-request-copy";
 import { alt as ogAlt } from "./opengraph-image";
 import type { Dictionary } from "@/i18n";
 import { areaVibe } from "@/i18n/area-vibe";
@@ -228,12 +230,14 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
             {t.cosmosNotOpenTitle}
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-body">{t.cosmosNotOpenBody}</p>
-          <a
-            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(property.title)}`}
-            className="pill-primary mt-4"
-          >
+          <a href="#request" className="pill-primary mt-4">
             {t.cosmosEnquire}
           </a>
+          <p className="mt-3 text-xs leading-relaxed text-muted">
+            <a className="underline hover:text-primary" href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
+            </a>
+          </p>
         </section>
 
         {/* The local guide, as on Lotus House, with times routed from this house. */}
@@ -250,6 +254,25 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
         </section>
         </div>
       </div>
+
+      {/* The request form, carrying this property's slug, so the inquiry is recorded as a
+          question about this house rather than as an open requirement. It replaced a mailto
+          link, which persisted nothing at all. */}
+      <section id="request" className="mt-12 scroll-anchor">
+        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
+          {t.hfrFormTitle}
+        </h2>
+        <StayRequestForm
+          labels={stayRequestLabels(t)}
+          areas={AREAS.map((item) => item.name)}
+          defaultArea={area?.name ?? ""}
+          page="/cosmoshouse"
+          locale={locale as Locale}
+          property="cosmoshouse"
+          propertyName={property.title}
+          privacyHref={href("/privacy-policy")}
+        />
+      </section>
     </div>
   );
 }

@@ -347,7 +347,7 @@ which is worth knowing when reading `as-salesmarketing/01-crm/README.md`.
 
 | Screen | Is | Where it lives in `agentsiam-consulting` |
 |---|---|---|
-| Renter leads | The enquiry, its shortlist, each candidate's decision | `01-crm/guest-leads.csv`, `01-crm/shortlists/G-####.json` |
+| Renter leads | The enquiry, its shortlist, each candidate's decision | `01-crm/guest-leads.csv`, `01-crm/shortlists/G-####.json`, `01-crm/inquiries/G-####.json` |
 | Owner leads | The acquisition pipeline, with dated history | `01-crm/leads.csv` |
 | Property pool | Properties AgentSiam does not manage, found while sourcing | `01-crm/property-pool.csv` |
 | Clients | Signed owners, one markdown record each | `01-crm/clients/C-####-slug.md` |
@@ -507,6 +507,46 @@ preview to someone outside the team" opens the whole branch to anyone holding it
 included, which leaves the passphrase as the only wall. Do not issue one for a branch that
 carries the admin.
 
+### The renter request form writes to the store as well
+
+The admin is no longer the only writer. `POST /api/stay-request`, behind the request form on
+`/house-for-rent-chiang-mai` and on all eight property pages that are listed for enquiry rather
+than bookable, records every submission before it emails anybody: a `G-####` row appended to
+`guest-leads.csv`, then `inquiries/G-####.json` beside the shortlist. Until 14/11/2026 it sent
+one email and persisted nothing, so the only evidence an enquiry had ever arrived was a message
+in a mailbox and whatever somebody retyped into the CSV by hand.
+
+**The order is the design, and a failure is never quiet.** The record goes first. If it cannot be
+written the submission is still emailed, because a renter who waited for a reply should get one,
+but the subject then says `NOT RECORDED` and the first row of the body says what went wrong.
+Nothing is kept and nobody is told only if the mail also fails, and that is the one case the
+renter is shown an error.
+
+**Two files, because the row and the record answer different questions.** The CSV row is where a
+person reads a lead, so the structured answers are composed into its `requirements` cell as plain
+sentences. The JSON record holds them as fields, which is what can be matched against
+`property-pool.csv`: a budget with its unit and currency, a date flexibility, the guest split with
+the children's ages, eight fixed must-haves, pets, smoking, who is coming, a vehicle, the language
+to answer in, and the consent answer with the exact words the renter was shown, in the language
+they were shown them in.
+
+**Neither file carries a contact handle**, which is the CRM's own rule in
+`01-crm/README.md` and `01-crm/shortlists/README.md`: no guest email address and no guest phone
+number, because those stay in the mailbox the enquiry arrived in. The row names the channels the
+renter offered, the notification carries the handles, and the inquiry record holds no name and no
+handle at all. That is also what decision 92 needs, since the record is what an owner is shown and
+the renter's details cross only once that owner has accepted the introduction terms for the lead.
+
+**One named channel, not email.** Email was required and is not any more: a submission needs a
+name, the dates, how they found us, and at least one of email, phone, WhatsApp or LINE. Thai and
+Chinese renters often use LINE and nothing else.
+
+**Three routing cases, recorded, all landing with AgentSiam.** The form carries a property's route
+slug when it sits on that property's page, and `beds24` on the `Property` decides the rest: a
+property with a Beds24 room is `managed property`, one without is `listed with AgentSiam`, and no
+slug at all is an `open requirement`, which is what most leads actually are. Nothing is delivered
+to an owner by any channel; see "Known gaps".
+
 **Rotating and revoking.** Changing `ADMIN_COOKIE_SECRET` and redeploying signs both people out,
 which is how a session is revoked. Deleting the token on GitHub stops reads and saves together:
 sign-in still works and every page then shows a store error, which is the quickest way to shut
@@ -552,13 +592,57 @@ the admin without touching a deployment.
   somebody has to remember. If it is ever replaced rather than revoked, the command and the
   redeploy are under "Setting it up on Vercel", because a Vercel variable binds when a
   deployment is created.
+- **Nothing delivers a renter inquiry to a property owner (14/11/2026).** The form, the record
+  and the routing are built and the case is written on every inquiry, so all three cases land
+  with AgentSiam and are worked by hand. Three things are out: AgentSiam's LINE Official Account
+  does not exist, so the free-listing half has no channel at all (decision 67 in the consulting
+  repo's decisions log); the published privacy policy does not name property owners among the
+  recipients of a renter's data, and that line ships in the same change as the delivery rather
+  than before it; and the query that finds the matching properties for an open requirement is
+  not written, so decision 94's fan-out has nothing to fan out to. A LINE push also cannot be
+  addressed to a LINE ID typed into a form: it needs the owner to add the Official Account first,
+  and the `userId` from that follow event stored against their pool row. That is unscoped work.
+- **A spam submission now reaches the document store, not just a mailbox (14/11/2026).** The
+  protection is still what it was for a mailbox: one honeypot field and six submissions per ten
+  minutes per address, in module scope on a serverless platform, so one bucket per warm instance.
+  A bot that gets past both now leaves a lead row and an inquiry file, which in production is two
+  commits in `agentsiam-consulting`. That is cheap to undo and noisy to live with, and it gets
+  worse the day an inquiry is forwarded to an owner's phone on a metered channel. The normal
+  answer is a one-time code to the renter's email or phone before anything is forwarded, and
+  nothing like it exists here.
+- **Two renter leads carrying the same person and the same dates make two records.** Nothing
+  looks for a duplicate, so the same renter submitting from three pages produces three `G-####`
+  rows. Harmless while a person reads every one of them, and not harmless on the day an owner is
+  messaged per record.
+- **The Thai and Chinese of the request form have had no native read (14/11/2026).** Sixty keys,
+  the `sr*` block in the three dictionaries: the four contact channels, the date flexibility, the
+  guest split, the budget unit and currency, the eight must-haves, the four questions behind the
+  disclosure, the consent sentence and its explanation, and the confirmation body. Written in one
+  scripted pass per R9 and rendered at 375px in both languages with no truncation and no
+  horizontal scroll, which is a layout check and not a language one. The consent sentence is the
+  one to read hardest, because it is the string stored on the record as evidence of what the
+  renter agreed to.
+- **The privacy policy does not describe what the request form now collects (14/11/2026).** Its
+  "What we collect, and why" section has an `Enquiries` paragraph written for the contact form,
+  naming the name, the email address, a phone or LINE handle, a property type, a neighbourhood
+  and the message. The renter request form now also collects a budget with its unit, a date
+  flexibility, the number of adults and children **and the children's ages**, eight must-haves,
+  pets, smoking, who is coming, whether they will have a vehicle and the language to answer in.
+  The children's ages are worth their own look: the same policy says the site is not directed at
+  children and that we do not knowingly collect their personal information. Nothing was changed
+  there, because the paragraph and the recipient list the owner delivery needs are one edit to a
+  page that has to be legally exact, and that is Paul's call rather than a side effect of a form.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.
 - **`guest-leads.csv` has no `notes` and no `history` column**, although the CRM README says
   every lead row carries both and the owner file `leads.csv` does. That is why G-0003's
   shortlist was living in its `requirements` cell. The admin does not fix it: it reads the
-  columns that exist.
+  columns that exist. Neither does the request form, which is why the structured answers go into
+  `requirements` as sentences and into `inquiries/G-####.json` as fields. **The consent answer
+  rides in that same cell**, as the clause "Consent to pass this to a property owner or their
+  manager: yes" or "no". It belongs in a column of its own, and a column is a header change to a
+  file in another repository, so it waits for the same decision as `notes` and `history`.
 - **The owner copy pass, and its unreviewed Thai and Chinese (10/11/2026).** The pass that took
   the stated management fee off the site and removed the claims a one-house portfolio cannot
   support was written on 06/11/2026 in all three languages, and both of its commits say the Thai

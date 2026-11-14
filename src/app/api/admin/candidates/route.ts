@@ -51,6 +51,7 @@ const MAX = {
   bedrooms: 40,
   bed_set_up: 120,
   transport_if_not_walkable: 300,
+  asked_on: 10,
   availability_confirmed_on: 10,
   rejected_reason: 400,
   notes: 4000,
@@ -139,6 +140,11 @@ export async function POST(request: Request) {
     return badRequest("The date the owner confirmed has to be a date.");
   }
 
+  const askedOn = text(incoming.asked_on, MAX.asked_on);
+  if (askedOn && !ISO_DATE.test(askedOn)) {
+    return badRequest("The date the owner was asked has to be a date.");
+  }
+
   const photoLinks = Array.isArray(incoming.photo_links)
     ? incoming.photo_links
         .map((link) => text(link, MAX.photo_link))
@@ -166,6 +172,7 @@ export async function POST(request: Request) {
       ? text(incoming.transport_if_not_walkable, MAX.transport_if_not_walkable)
       : "",
     licence,
+    asked_on: askedOn,
     available,
     availability_confirmed_on: confirmedOn,
     total_price_thb: price,

@@ -324,6 +324,20 @@ export function CandidateForm({
           </div>
 
           <div>
+            <Label htmlFor="asked_on" label="Date the owner was asked" />
+            <input
+              id="asked_on"
+              type="date"
+              className={INPUT}
+              value={form.asked_on}
+              onChange={(event) => set("asked_on", event.target.value)}
+            />
+            <p className="mt-1 text-xs text-muted">
+              What a timeout reads. The date below is when an answer came back.
+            </p>
+          </div>
+
+          <div>
             <Label
               htmlFor="availability_confirmed_on"
               label="Date the owner confirmed that"
