@@ -479,8 +479,8 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: gardenvilla_55, file: "56-d9f4ead2.jpeg", alt: "" },
   ],
   "heroes": [
-    { src: heroes_0, file: "owner-at-the-table.jpeg", alt: "A man at a dining table reading a printed document, a pen and a closed laptop beside him and a garden through the door behind" },
-    { src: heroes_1, file: "residential-lane.jpeg", alt: "A gate and garden wall on a tree-lined residential lane, bougainvillea over the wall and tended pots along the kerb" },
+    { src: heroes_0, file: "owner-at-the-table.jpeg", alt: "A man sitting side on at a dining table reading a printed document, a phone and a glass of water beside him, a plain room with a ceiling fan behind" },
+    { src: heroes_1, file: "residential-lane.jpeg", alt: "A steel gate and garden wall on a residential lane at midday, a covered motorbike and potted shrubs along the pavement, cables overhead" },
   ],
   "jasminevilla": [
     { src: jasminevilla_0, file: "01-cover-pool-and-screen.jpeg", alt: "" },
