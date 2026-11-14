@@ -1,21 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { AREAS, CITIES } from "@/lib/areas";
 import {
   FEATURES,
   GUEST_CHOICES,
-  MAP_MIN_RESULTS,
   PROPERTY_TYPES,
   searchToQuery,
   SORTS,
@@ -54,20 +46,31 @@ const field =
 const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 /**
- * The map pane's open state, which lives on <body> and is read from there by everything
- * that needs it: the CSS rule that shows the pane, and the bar's own toggle label.
- *
- * `document` is untouched on the server, so the store is only ever read on the client and
- * the server snapshot is a flat false. That matches the first paint, where the attribute is
- * unset and the pane is hidden.
+ * Intl locale for each of our three, for the dates in the phone summary. Copied from the
+ * booking panel rather than imported, as the tile and the results map already are: that
+ * module is a client component with a Stripe dependency and this is a thousands separator
+ * and a month name. Thai is pinned to the Gregorian calendar there and is kept identical
+ * here so the four never disagree about what "th" means.
  */
-function readMapOpen() {
-  return document.body.dataset.mapOpen === "true";
-}
+const INTL_LOCALE: Record<Locale, string> = {
+  en: "en-GB",
+  th: "th-TH-u-ca-gregory",
+  zh: "zh-Hans",
+};
 
-function subscribeToMapToggle(onChange: () => void) {
-  window.addEventListener("as:map-toggle", onChange);
-  return () => window.removeEventListener("as:map-toggle", onChange);
+/**
+ * One date for the summary line: day and short month, no year.
+ *
+ * Parsed and formatted in UTC on purpose. `new Date("2026-12-24")` is midnight UTC, and a
+ * browser in New York formats that as the 23rd. These are calendar days out of a URL, not
+ * instants, and a guest who picked the 24th must be shown the 24th wherever they are.
+ */
+function shortDate(iso: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(INTL_LOCALE[locale], {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  }).format(new Date(`${iso}T00:00:00Z`));
 }
 
 export function PropertyFilters({
@@ -92,22 +95,18 @@ export function PropertyFilters({
    * panel does not exist until someone opens it.
    */
   const [sheet, setSheet] = useState(false);
-  const trigger = useRef<HTMLButtonElement>(null);
+  /**
+   * Whichever control opened the panel, so closing can put focus back on it.
+   *
+   * There are two now and they are at different widths: the Filters button in the full
+   * control row, and, on a phone, the summary pill that is the bar. A single ref could only
+   * ever point at one of them, and returning focus to a `display: none` button sends it to
+   * the top of the document instead.
+   */
+  const opener = useRef<HTMLButtonElement | null>(null);
   const panel = useRef<HTMLDivElement>(null);
   const panelId = useId();
   const titleId = useId();
-  // Mobile only. The split view cannot hold under 900px, so the map is opt-in there --
-  // and the toggle belongs here, in the sticky bar, rather than below a list the guest
-  // would have to scroll past fifty results to reach.
-  //
-  // Subscribed to rather than held in React state, because the attribute on <body> outlives
-  // this component and React state does not. Open the map, tap a property, press back: the
-  // attribute survived the client navigation and the map was still on screen, while a
-  // `useState(false)` had reset and the button underneath it read "Show map". The first tap
-  // then set a value that was already true and nothing moved, so the control read as dead
-  // and had to be pressed twice. There is one store now, and the event the toggle already
-  // dispatches for Leaflet's benefit is what tells React to read it again.
-  const mapOpen = useSyncExternalStore(subscribeToMapToggle, readMapOpen, () => false);
   // The panel's working copy. Discarded on Close, pushed to the URL on Apply.
   const [draft, setDraft] = useState<SearchState>(state);
 
@@ -117,23 +116,23 @@ export function PropertyFilters({
   }
 
   /**
-   * Opens and closes the map pane on small screens.
+   * Takes the site header off its sticky perch, on this page and below the breakpoint only.
    *
-   * The state lives on <body> rather than in React because the pane is rendered by a
-   * different component, in a different column of a server-rendered page. A data
-   * attribute plus a CSS rule keeps them in step without lifting the whole results page
-   * into a client component, which would cost the crawlable list. The event does two jobs:
-   * Leaflet mis-measures a container that was hidden when it was built, and this component
-   * reads the attribute back through it rather than keeping a second copy of the answer.
+   * The header is three rows and 142px on a phone, and this bar sat under it, so 462px of a
+   * 812px screen was chrome that never moved and the first photograph opened below the fold.
+   * On a results page the nav is not what needs pinning: the search is, and that is this
+   * bar. The header scrolls away with the page and comes back at the top of it.
    *
-   * `next` is read from the attribute, not from the rendered value, so the first tap after
-   * a back navigation is a real toggle rather than a no-op.
+   * An attribute on <body> because the header is rendered by the layout, outside this page,
+   * and reaching it any other way means making it a client component. The CSS rule is in
+   * globals.css beside the map pane's, which is set the same way and for the same reason.
    */
-  function toggleMap() {
-    const next = !readMapOpen();
-    document.body.dataset.mapOpen = String(next);
-    window.dispatchEvent(new CustomEvent("as:map-toggle", { detail: { open: next } }));
-  }
+  useEffect(() => {
+    document.body.dataset.flatNav = "true";
+    return () => {
+      delete document.body.dataset.flatNav;
+    };
+  }, []);
 
   /**
    * Closes without committing. `restoreFocus` is false only when the guest dismissed the
@@ -142,7 +141,7 @@ export function PropertyFilters({
    */
   const close = useCallback((restoreFocus = true) => {
     setOpen(false);
-    if (restoreFocus) trigger.current?.focus();
+    if (restoreFocus) opener.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -192,7 +191,7 @@ export function PropertyFilters({
       if (!target) return;
       // The trigger toggles itself; letting this handler close first would make the click
       // close and reopen in the same gesture.
-      if (panel.current?.contains(target) || trigger.current?.contains(target)) return;
+      if (panel.current?.contains(target) || opener.current?.contains(target)) return;
       close(false);
     }
 
@@ -208,7 +207,7 @@ export function PropertyFilters({
 
   function apply() {
     setOpen(false);
-    trigger.current?.focus();
+    opener.current?.focus();
     // Only the fields the panel actually owns.
     //
     // The bar stays live while the panel is open -- it sits above it -- so a guest can
@@ -216,16 +215,25 @@ export function PropertyFilters({
     // the panel opened and still holds the *old* dates, so pushing all of it silently
     // reverted the date they had just chosen. The panel commits its own five fields and
     // leaves the rest of the committed state alone.
-    go({
-      areas: draft.areas,
-      types: draft.types,
-      features: draft.features,
-      bedrooms: draft.bedrooms,
-      bathrooms: draft.bathrooms,
-    });
+    //
+    // Below 900px none of that holds: the bar is a summary, the city, the dates, the guest
+    // count and the sort are edited inside the sheet, and there is no live bar behind it to
+    // leave alone. The sheet commits the whole draft, which is every field it showed.
+    go(
+      sheet
+        ? draft
+        : {
+            areas: draft.areas,
+            types: draft.types,
+            features: draft.features,
+            bedrooms: draft.bedrooms,
+            bathrooms: draft.bathrooms,
+          },
+    );
   }
 
-  function openPanel() {
+  function openPanel(from: HTMLButtonElement) {
+    opener.current = from;
     // Re-seed from the committed state, so reopening never resurrects a discarded draft.
     setDraft(state);
     setOpen(true);
@@ -293,6 +301,22 @@ export function PropertyFilters({
     guestOptions.sort((a, b) => a - b);
   }
 
+  // The search, as a sentence, for the phone bar. Three facts in the order a guest holds
+  // them: where, when, how many. Dates read as an invitation until they are set, because
+  // they are the one field that changes what a property page can tell them afterwards.
+  const cityName = CITIES.find((city) => city.slug === state.city)?.name ?? state.city;
+  const dateLabel =
+    state.from && state.to
+      ? t.psDateRange
+          .replace("{from}", shortDate(state.from, locale))
+          .replace("{to}", shortDate(state.to, locale))
+      : state.from
+        ? shortDate(state.from, locale)
+        : t.psAddDates;
+  const guestLabel = state.guests
+    ? t.psGuestsN.replace("{n}", String(state.guests))
+    : t.psAnyGuests;
+
   return (
     /* The blur sits on the inner wrapper, not here.
        `backdrop-filter` makes its element a containing block for fixed-position
@@ -300,7 +324,10 @@ export function PropertyFilters({
        to the bar's own box -- a full-screen sheet the size of the filter bar. The blur
        belongs to the bar's chrome anyway; the panel is a sibling of it. */
     <div
-      className={`sticky top-[var(--nav-h)] border-b border-hairline ${
+      /* top-0 below the breakpoint, because the header is not sticky there and this bar is
+         what holds the top of the screen. At 900px and up the header is back and the bar
+         sits under it, at whatever height nav-height.tsx has measured it to be. */
+      className={`sticky top-0 border-b border-hairline min-[900px]:top-[var(--nav-h)] ${
         /* The bar's own stacking context contains the sheet, so the sheet cannot rise above
            the site header (z-40) on its own. While the panel is open the bar outranks the
            header and the full-screen sheet covers it; closed, it sits back under it. */
@@ -309,7 +336,49 @@ export function PropertyFilters({
     >
       <div className="bg-bg/95 px-5 backdrop-blur">
       <div className="mx-auto max-w-(--container-chrome) py-3">
-        <div className="flex flex-wrap items-end gap-3">
+        {/* The phone bar. One row, and both things in it open the same sheet.
+
+            It replaced four rows of controls, 319px of a 812px screen, pinned there the
+            whole way down the page. Five of the six were touched once a session or not at
+            all, and the page spent more of itself describing the search than showing what
+            the search found. The summary says what the search is and the sheet is where it
+            is changed, which is the trade every phone-sized search makes. */}
+        <div className="flex items-center gap-2 min-[900px]:hidden">
+          <button
+            type="button"
+            onClick={(event) => openPanel(event.currentTarget)}
+            aria-expanded={open}
+            aria-controls={panelId}
+            /* The visible text is the search itself and reads as a sentence, not a label,
+               so the button needs a name of its own. */
+            aria-label={t.psSearchEdit}
+            className="flex min-h-11 min-w-0 flex-1 cursor-pointer items-center rounded-full border-[1.5px] border-hairline px-4 py-2 text-left hover:border-ink"
+          >
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[13.5px] font-semibold leading-tight">
+                {cityName}
+              </span>
+              <span className="block truncate text-[11.5px] leading-tight text-muted">
+                {dateLabel} · {guestLabel}
+              </span>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={(event) => (open ? close() : openPanel(event.currentTarget))}
+            aria-expanded={open}
+            aria-controls={panelId}
+            className="min-h-11 shrink-0 cursor-pointer rounded-full border-[1.5px] border-ink px-4 py-2.5 text-[13px] font-semibold"
+          >
+            {t.filters}
+            {chips.length ? ` (${chips.length})` : ""}
+          </button>
+        </div>
+
+        {/* 900px and up, where there is room for the controls themselves and the bar stays
+            live behind the dropdown. Unchanged. */}
+        <div className="hidden flex-wrap items-end gap-3 min-[900px]:flex">
           <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
             {t.where}
             <select
@@ -364,9 +433,8 @@ export function PropertyFilters({
           </label>
 
           <button
-            ref={trigger}
             type="button"
-            onClick={() => (open ? close() : openPanel())}
+            onClick={(event) => (open ? close() : openPanel(event.currentTarget))}
             aria-expanded={open}
             aria-controls={panelId}
             className="min-h-11 cursor-pointer rounded-full border-[1.5px] border-ink px-4 py-2.5 text-[13px] font-semibold hover:bg-ink hover:text-white"
@@ -374,20 +442,6 @@ export function PropertyFilters({
             {t.filters}
             {chips.length ? ` (${chips.length})` : ""}
           </button>
-
-          {/* Below 900px only: the desktop split view already shows the map. It disappears
-              with the map itself below the threshold, rather than staying on as a toggle
-              with nothing behind it. */}
-          {resultCount >= MAP_MIN_RESULTS ? (
-            <button
-              type="button"
-              onClick={toggleMap}
-              aria-pressed={mapOpen}
-              className="min-h-11 cursor-pointer rounded-full border-[1.5px] border-hairline px-4 py-2.5 text-[13px] font-semibold hover:border-ink min-[900px]:hidden"
-            >
-              {mapOpen ? t.hideMap : t.showMap}
-            </button>
-          ) : null}
 
           <span className="flex-1" />
 
@@ -474,9 +528,100 @@ export function PropertyFilters({
               </button>
             </div>
 
-            {/* Neighbourhood first: it is the strongest signal a Chiang Mai guest has, and
-                it lives here rather than in the bar because Where is city-level. */}
-            <Group title={t.neighbourhood}>
+            {/* The search itself, below the breakpoint only.
+
+                These five are the bar at 900px and up, where the bar stays live behind the
+                dropdown and the panel deliberately does not own them. On a phone the bar is
+                a summary, so this is the only place they can be edited, and Apply commits
+                the whole draft rather than the panel's own five fields.
+
+                Hidden rather than conditionally rendered, so what the panel looks like is
+                decided by CSS at both widths and there is nothing to mismatch on hydration. */}
+            <fieldset className="min-[900px]:hidden">
+              <legend className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                {t.psSearchGroup}
+              </legend>
+              <div className="mt-2.5 grid gap-3">
+                <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                  {t.where}
+                  <select
+                    value={draft.city}
+                    onChange={(event) => setDraft({ ...draft, city: event.target.value })}
+                    className={`${field} cursor-pointer`}
+                  >
+                    {CITIES.map((city) => (
+                      <option key={city.slug} value={city.slug}>
+                        {city.name}
+                        {city.live ? "" : ` — ${t.launchingSoon}`}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                    {t.checkIn}
+                    <input
+                      type="date"
+                      value={draft.from}
+                      onChange={(event) => setDraft({ ...draft, from: event.target.value })}
+                      className={field}
+                    />
+                  </label>
+                  <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                    {t.checkOut}
+                    <input
+                      type="date"
+                      value={draft.to}
+                      min={draft.from || undefined}
+                      onChange={(event) => setDraft({ ...draft, to: event.target.value })}
+                      className={field}
+                    />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                    {t.guests}
+                    <select
+                      value={draft.guests || 0}
+                      onChange={(event) =>
+                        setDraft({ ...draft, guests: Number(event.target.value) })
+                      }
+                      className={`${field} cursor-pointer`}
+                    >
+                      <option value={0}>{t.any}</option>
+                      {guestOptions.map((n) => (
+                        <option key={n} value={n}>
+                          {n}+
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                    {t.sort}
+                    <select
+                      value={draft.sort}
+                      onChange={(event) =>
+                        setDraft({ ...draft, sort: event.target.value as SearchState["sort"] })
+                      }
+                      className={`${field} cursor-pointer`}
+                    >
+                      {SORTS.map((sort) => (
+                        <option key={sort} value={sort}>
+                          {t[`sort_${sort.replace(/-/g, "_")}` as keyof Dictionary] ?? sort}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+
+            {/* Neighbourhood first among the filters: it is the strongest signal a Chiang
+                Mai guest has, and it lives here rather than in the bar because Where is
+                city-level. */}
+            <Group title={t.neighbourhood} className="min-[900px]:mt-0">
               {AREAS.map((area) => (
                 <Chip
                   key={area.slug}
@@ -568,9 +713,19 @@ export function PropertyFilters({
   );
 }
 
-function Group({ title, children }: { title: string; children: React.ReactNode }) {
+function Group({
+  title,
+  children,
+  /** The neighbourhood group is first only at 900px and up; the search fieldset is above
+      it below that, and `first:mt-0` goes by the DOM rather than by what is displayed. */
+  className = "",
+}: {
+  title: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <fieldset className="mt-5 first:mt-0">
+    <fieldset className={`mt-5 first:mt-0 ${className}`}>
       <legend className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
         {title}
       </legend>

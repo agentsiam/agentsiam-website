@@ -441,39 +441,55 @@ button {
   z-index: 500;
 }
 
+/* The map canvas keeps Leaflet's own numbering to itself.
+
+   Leaflet runs its panes from 200 to 1000 and leaves `.leaflet-container` at
+   `position: relative; z-index: auto`, so with no context of its own those numbers
+   compete with whatever else sits in the same box. The full-screen close control is a
+   sibling of this canvas at z-index 10, and the map tiles at 200 painted straight over
+   it. It still answered hit tests, because Leaflet sets `pointer-events: none` on a
+   tile, so the button was clickable and invisible at the same time, which is the worst
+   of the two states to ship. One line, and the panes stay inside. */
+.as-map-canvas {
+  isolation: isolate;
+}
+
 /* -- Results map pane -------------------------------------------------------
-   Below the 900px split-view breakpoint the map is opt-in, toggled from the filter
-   bar. When it opens it sits *above* the results rather than under them, which is
-   what the handoff asks for and the only placement that makes sense on a phone --
-   a map below fifty tiles is a map nobody finds. */
+   Below the 900px split-view breakpoint the map is not a column, it is a view. It
+   opens full screen from a floating button over the results and closes with the
+   phone's own back gesture, because the split cannot hold at 375px wide: a map in
+   the scroll was 360px of a page it could not share, it slid under the sticky bar
+   as soon as anyone scrolled, and Leaflet's `touch-action: none` meant a swipe that
+   started on it panned the map while the page stayed where it was. Full screen, the
+   map owns the gestures and there is nothing behind it to fight. */
 @media (max-width: 899px) {
   .as-map-pane {
     display: none;
   }
-  body[data-map-open="true"] .as-map-pane {
+  .as-map-pane[data-fullscreen="true"] {
     display: block;
-    order: -1;
-    margin-bottom: 4px;
-    /* A stacking context, which is the whole job of these two lines. Leaflet numbers its
-       own panes from 200 to 1000 and leaves `.leaflet-container` at `position: relative;
-       z-index: auto`, so with nothing to contain them those panes compete with the page
-       itself and win: the tiles painted straight over the sticky filter bar at z-30 and
-       the site header at z-40, and opening the map looked like the chrome had been sliced
-       in half. At 900px and up the pane is `position: sticky`, which is a stacking context
-       by itself, so this is only ever needed below the breakpoint. */
-    position: relative;
-    z-index: 0;
+    position: fixed;
+    inset: 0;
+    /* Over the filter bar at z-30 and the site header at z-40. The fixed position makes
+       the stacking context that keeps Leaflet's own panes, which run from 200 to 1000,
+       inside the overlay rather than loose on the page. */
+    z-index: 60;
+    background: var(--color-bg);
   }
-  /* Vertical swipes scroll the page; horizontal ones still pan the map.
+  .as-map-pane[data-fullscreen="true"] .as-map-canvas {
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+  }
 
-     Leaflet sets `touch-action: none` on its container, which is right for a map that owns
-     the screen and wrong for one sitting in the middle of a scrolling list. Any swipe that
-     began on the 360px map panned the map and left the page where it was, so the map read
-     as a hole in the scroll that a thumb had to be aimed around. The override is scoped to
-     the results pane: the guide's map is not inside one and keeps Leaflet's own handling,
-     which is correct there because it is what the page is for. */
-  body[data-map-open="true"] .as-map-pane .leaflet-container {
-    touch-action: pan-y;
+  /* -- The results page lets the header scroll away -------------------------
+     Set by the filter bar while it is mounted, which is this page and no other. The
+     header is three rows and 142px on a phone; with the bar under it, 462px of a
+     812px screen never moved and the first photograph opened below the fold. On a
+     results page the search is what deserves to be pinned, and the bar is sticky at
+     top: 0 in its place. */
+  body[data-flat-nav="true"] [data-nav-root] {
+    position: static;
   }
 }
 

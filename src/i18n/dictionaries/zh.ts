@@ -1379,4 +1379,13 @@ export const zh: Dictionary = {
   srHandleWhatsApp: "+66 81 234 5678",
   srHandleLine: "@your-line-id",
   srFormIntro: "每条需求都由真人阅读，并通过您选择的渠道回复。",
+
+  // -- Results page chrome: the phone search pill and the full-screen map ----
+  psSearchEdit: "修改搜索",
+  psSearchGroup: "搜索",
+  psAddDates: "选择日期",
+  psAnyGuests: "住客不限",
+  psDateRange: "{from} 至 {to}",
+  psMapOpen: "地图",
+  psMapClose: "关闭地图",
 };

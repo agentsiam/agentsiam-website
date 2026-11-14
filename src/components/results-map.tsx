@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 
 /**
@@ -49,6 +49,34 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
+/**
+ * Whether the URL currently says the map is open, and how to hear about it changing.
+ *
+ * Read from `window.location` rather than through `useSearchParams`, which would be the
+ * obvious hook and is the wrong one here. This component is also the guide's map on every
+ * property page, and those pages are static: a client component calling `useSearchParams`
+ * on a statically rendered route has to sit inside a Suspense boundary or the production
+ * build fails, and the boundary would take the map's own container out of the server HTML
+ * and put a layout shift on a page that currently has none.
+ *
+ * `popstate` covers the phone's back gesture and the browser's own buttons. Our two writers
+ * announce themselves, because changing history from script fires nothing.
+ */
+const MAP_URL_EVENT = "as:map-url";
+
+function readMapParam(): boolean {
+  return new URLSearchParams(window.location.search).get("map") === "1";
+}
+
+function subscribeToMapUrl(onChange: () => void) {
+  window.addEventListener("popstate", onChange);
+  window.addEventListener(MAP_URL_EVENT, onChange);
+  return () => {
+    window.removeEventListener("popstate", onChange);
+    window.removeEventListener(MAP_URL_EVENT, onChange);
+  };
+}
+
 /** Chiang Mai, framed to the city and its immediate districts. */
 const CITY = { lat: 18.7883, lng: 98.9853, zoom: 12 };
 
@@ -77,6 +105,8 @@ function prefersReducedMotion(): boolean {
 export function ResultsMap({
   pins,
   mapLabel,
+  mapOpenLabel = "",
+  mapCloseLabel = "",
   /**
    * Clicking a card flies the map to its pin.
    *
@@ -124,6 +154,9 @@ export function ResultsMap({
   pins: Pin[];
   /** The map's accessible name. One string, where the whole dictionary used to arrive. */
   mapLabel: string;
+  /** The floating button's label, and the overlay's close control. Collapsible maps only. */
+  mapOpenLabel?: string;
+  mapCloseLabel?: string;
   panOnCardClick?: boolean;
   collapsible?: boolean;
   cluster?: boolean;
@@ -150,6 +183,84 @@ export function ResultsMap({
    */
   const [near, setNear] = useState(false);
 
+  /**
+   * Whether the map is the whole screen, which below 900px is the only shape it takes.
+   *
+   * The state is the URL, for one reason above the others: the phone's back gesture then
+   * closes the map instead of leaving the page, which is what every guest will try first.
+   * It is also one store rather than two, which is the bug that made the old toggle need
+   * pressing twice, and a map view can be sent to someone.
+   *
+   * `window.history.pushState` rather than `router.push`, which Next supports: opening a
+   * map is not worth a round trip to the server for a list that has not changed.
+   */
+  const mapParam = useSyncExternalStore(subscribeToMapUrl, readMapParam, () => false);
+  const fullscreen = collapsible && mapParam;
+  /** Whether this component is what put the entry on the history stack. */
+  const pushed = useRef(false);
+
+  const openMap = useCallback(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("map", "1");
+    window.history.pushState(null, "", `?${params.toString()}`);
+    pushed.current = true;
+    window.dispatchEvent(new Event(MAP_URL_EVENT));
+  }, []);
+
+  /**
+   * Back where we can, which keeps the history stack honest and matches what the phone's
+   * own back gesture does. A guest who arrived on a shared `?map=1` link has no entry of
+   * ours to pop, and going back would take them off the site, so that one is replaced.
+   */
+  const closeMap = useCallback(() => {
+    if (pushed.current) {
+      pushed.current = false;
+      // popstate follows on its own, and that is what the store is listening for.
+      window.history.back();
+      return;
+    }
+    const params = new URLSearchParams(window.location.search);
+    params.delete("map");
+    const query = params.toString();
+    window.history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
+    window.dispatchEvent(new Event(MAP_URL_EVENT));
+  }, []);
+
+  useEffect(() => {
+    // Closed from outside, by the back gesture or by a link: the entry is already gone.
+    if (!fullscreen) pushed.current = false;
+  }, [fullscreen]);
+
+  /** The page behind must not scroll, and Escape closes, as the filter sheet does. */
+  useEffect(() => {
+    if (!fullscreen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeMap();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [fullscreen, closeMap]);
+
+  /**
+   * Whether to build the map at all.
+   *
+   * Two ways in, and they belong to the two shapes. At 900px and up the pane is a column on
+   * the page and the observer below decides, which is what keeps 51KB of Leaflet off a page
+   * nobody scrolls far down. Below it the pane has no box until it is opened, so nothing
+   * ever intersects and the toggle is the only thing that can say.
+   *
+   * It follows that closing the map on a phone tears the instance down and reopening builds
+   * a fresh one. That is deliberate: it is about a hundred milliseconds against cached
+   * tiles, and it means the map is always measured against a container at its real size,
+   * which is the thing Leaflet is worst at being told later.
+   */
+  const active = near || fullscreen;
+
   useEffect(() => {
     const node = container.current;
     if (!node) return;
@@ -167,32 +278,11 @@ export function ResultsMap({
       { rootMargin: "400px" },
     );
     observer.observe(node);
-
-    /**
-     * Below 900px the pane is `display: none` until the filter bar's toggle opens it, and an
-     * element with no box never intersects anything, so the observer above cannot be what
-     * starts the map on a phone. It did not: tapping "Show map" opened a 360px panel that
-     * stayed empty, because nothing had asked for Leaflet yet and nothing ever would.
-     *
-     * The toggle says so directly. It sets the attribute that reveals the pane before it
-     * dispatches, so by the time this runs the container has its real height and the map is
-     * measured against a box rather than against nothing.
-     */
-    const onOpen = (event: Event) => {
-      if (!(event as CustomEvent<{ open: boolean }>).detail?.open) return;
-      setNear(true);
-      observer.disconnect();
-    };
-    window.addEventListener("as:map-toggle", onOpen);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("as:map-toggle", onOpen);
-    };
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    if (!near || !container.current) return;
+    if (!active || !container.current) return;
     let cleanup = () => {};
     let cancelled = false;
 
@@ -275,6 +365,10 @@ export function ResultsMap({
           const tile = document.querySelector<HTMLElement>(
             `[data-map-key="${pin.slug}"]`,
           );
+          // On a phone the map is the whole screen and the list is behind it, so a pin has
+          // to hand the guest back to the page before it can show them anything. The map is
+          // a way into the list there, not a surface the list is read from.
+          if (window.matchMedia("(max-width: 899px)").matches) closeMap();
           tile?.scrollIntoView({
             behavior: prefersReducedMotion() ? "auto" : "smooth",
             block: "center",
@@ -375,47 +469,68 @@ export function ResultsMap({
 
     draw();
 
-    /**
-     * Leaflet measures its container on creation. On a phone the pane starts hidden, so
-     * the map it builds is sized against a zero-height box and renders as a grey slab
-     * until told otherwise. The filter bar's toggle fires this event; invalidateSize is
-     * the fix.
-     */
-    const onToggle = (event: Event) => {
-      const open = (event as CustomEvent<{ open: boolean }>).detail?.open;
-      if (open) window.setTimeout(() => map.current?.invalidateSize(), 0);
-    };
-    window.addEventListener("as:map-toggle", onToggle);
-
     return () => {
       cancelled = true;
-      window.removeEventListener("as:map-toggle", onToggle);
       cleanup();
     };
     // Re-drawn whenever the result set changes, which on this page means a new URL, and
-    // once when the container first comes near the viewport.
-  }, [near, pins, panOnCardClick, cluster, home, frameOn, locale]);
+    // once when the map first becomes active: in view on a desktop, opened on a phone.
+    // Nothing calls invalidateSize any more, because there is no longer a path on which the
+    // container is measured at a size it is not about to be shown at.
+  }, [active, pins, panOnCardClick, cluster, home, frameOn, locale, closeMap]);
 
   if (pins.length === 0) return null;
 
   return (
-    <div
-      className={`${collapsible ? "as-map-pane" : ""} ${
-        sticky ? "min-[900px]:sticky min-[900px]:top-[150px]" : ""
-      }`}
-    >
+    <>
       <div
-        ref={container}
-        /* region, not application. `application` drops a screen reader out of browse mode
-           for everything inside it, and it is only worth that when the element implements
-           its own key bindings that the reader would otherwise swallow. This one does not:
-           the markers are out of the tab order and Leaflet's own controls are ordinary
-           buttons. */
-        role="region"
-        aria-label={mapLabel}
-        className={`h-[360px] w-full overflow-hidden rounded-panel border border-hairline ${mapHeightClass}`}
-      />
-    </div>
+        className={`${collapsible ? "as-map-pane" : ""} ${
+          sticky ? "min-[900px]:sticky min-[900px]:top-[150px]" : ""
+        }`}
+        /* What the full-screen rule in globals.css keys on. Below 900px it is the whole of
+           the layout: fixed, inset 0, over the chrome. Above it, nothing changes. */
+        data-fullscreen={fullscreen ? "true" : undefined}
+      >
+        <div
+          ref={container}
+          /* region, not application. `application` drops a screen reader out of browse mode
+             for everything inside it, and it is only worth that when the element implements
+             its own key bindings that the reader would otherwise swallow. This one does not:
+             the markers are out of the tab order and Leaflet's own controls are ordinary
+             buttons. */
+          role="region"
+          aria-label={mapLabel}
+          className={`as-map-canvas h-[360px] w-full overflow-hidden rounded-panel border border-hairline ${mapHeightClass}`}
+        />
+
+        {/* Over the map, not under it. Leaflet's own zoom control is top left and its
+            attribution is bottom right, which is the licence condition and not ours to
+            move, so the close sits in the corner both of them leave alone. */}
+        {collapsible && fullscreen ? (
+          <button
+            type="button"
+            onClick={closeMap}
+            className="absolute right-4 top-4 z-10 min-h-11 cursor-pointer rounded-full bg-bg px-5 py-2.5 text-[13px] font-semibold shadow-lg min-[900px]:hidden"
+          >
+            {mapCloseLabel}
+          </button>
+        ) : null}
+      </div>
+
+      {/* The way in. Floating over the results rather than sitting in the bar, because the
+          bar is one row now and a map is a thing you reach for part way down a list, not a
+          setting you leave switched on. Centred, clear of the WhatsApp launcher in the
+          right corner. */}
+      {collapsible && !fullscreen ? (
+        <button
+          type="button"
+          onClick={openMap}
+          className="fixed bottom-5 left-1/2 z-40 min-h-11 -translate-x-1/2 cursor-pointer rounded-full bg-ink px-6 py-3 text-[13px] font-semibold text-white shadow-lg print:hidden min-[900px]:hidden"
+        >
+          {mapOpenLabel}
+        </button>
+      ) : null}
+    </>
   );
 }
 

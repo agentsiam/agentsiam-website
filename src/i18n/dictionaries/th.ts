@@ -1379,4 +1379,13 @@ export const th: Dictionary = {
   srHandleWhatsApp: "+66 81 234 5678",
   srHandleLine: "@your-line-id",
   srFormIntro: "ทุกคำขอมีคนอ่านจริง และตอบกลับทางช่องทางที่คุณเลือก",
+
+  // -- Results page chrome: the phone search pill and the full-screen map ----
+  psSearchEdit: "แก้ไขการค้นหา",
+  psSearchGroup: "ค้นหา",
+  psAddDates: "เลือกวันที่",
+  psAnyGuests: "ผู้เข้าพักไม่จำกัด",
+  psDateRange: "{from} ถึง {to}",
+  psMapOpen: "แผนที่",
+  psMapClose: "ปิดแผนที่",
 };

@@ -1589,6 +1589,19 @@ export const en = {
   srHandleLine: "@your-line-id",
   // Replaces a line that promised a reply by email, which sat directly above a form offering phone, WhatsApp and LINE and contradicted the field under it.
   srFormIntro: "A person reads every request and answers on the channel you choose.",
+
+  // -- Results page chrome: the phone search pill and the full-screen map ----
+  // Accessible name of the summary button that is the whole filter bar on a phone. The visible text is the search itself, which reads as a sentence rather than a label.
+  psSearchEdit: "Change search",
+  // Legend over the city, dates and guests inside the filter sheet. They live in the bar at 900px and up and only move into the sheet below it.
+  psSearchGroup: "Search",
+  // The dates half of the phone summary when no dates are set. An invitation rather than a state: it is the one field that changes what the property pages can then show.
+  psAddDates: "Add dates",
+  psAnyGuests: "Any guests",
+  psDateRange: "{from} to {to}",
+  // The floating button that takes the map full screen on a phone. One word: it sits over the results and is read at a glance.
+  psMapOpen: "Map",
+  psMapClose: "Close map",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

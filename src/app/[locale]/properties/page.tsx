@@ -129,7 +129,9 @@ export default async function PropertiesPage({
       {/* shape: property-grid
           -- Split view: list left, map right and sticky. The handoff's one breakpoint at
           900px -- below it the split cannot hold, so the list takes the full width and the
-          map becomes a toggle inside ResultsMap. */}
+          map is a full-screen view of its own, reached from a floating button and closed
+          with the phone's back gesture. ResultsMap owns both shapes and the state behind
+          them; nothing on this page changes between the two. */}
       <div
         className={`mx-auto grid max-w-(--container-chrome) gap-9 px-5 pb-18 pt-7 ${
           showMap ? "min-[900px]:grid-cols-[1fr_minmax(360px,42%)] min-[900px]:items-start" : ""
@@ -216,7 +218,15 @@ export default async function PropertiesPage({
             neighbourhood and the distance the tile already carries, and charges a mapping
             library and an external tile host for the repetition. The "Show map" toggle in
             the bar is gated on the same constant, so it never survives the map. */}
-        {showMap ? <ResultsMap pins={pins} mapLabel={t.mapLabel} locale={locale} /> : null}
+        {showMap ? (
+          <ResultsMap
+            pins={pins}
+            mapLabel={t.mapLabel}
+            mapOpenLabel={t.psMapOpen}
+            mapCloseLabel={t.psMapClose}
+            locale={locale}
+          />
+        ) : null}
       </div>
 
       <div className="mx-auto max-w-(--container-chrome) px-5 pb-18">
