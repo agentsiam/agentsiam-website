@@ -143,15 +143,21 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
               </a>
             </div>
           </div>
+          {/* The phone copy of the same frame. The frames are portrait, generated for the
+              tall column this hero carries at 900px and up, so the ratio here stays close
+              to the source: a 16:10 band out of the middle of a 2:3 frame is a slice, not
+              a photograph. Its own `sizes` keeps the two copies from both being fetched,
+              and it is above the fold on a phone, so it carries `priority` instead. */}
           {heroPhoto ? (
-            <div className="relative mt-8 aspect-16/10 overflow-hidden rounded-box min-[900px]:hidden">
+            <div className="relative mt-8 aspect-4/5 overflow-hidden rounded-box min-[900px]:hidden">
               <Image
                 src={heroPhoto.src}
                 alt={heroPhoto.alt}
                 lang="en"
                 placeholder="blur"
                 fill
-                sizes="100vw"
+                priority
+                sizes="(min-width: 900px) 0px, calc(100vw - 88px)"
                 className="object-cover"
               />
             </div>
