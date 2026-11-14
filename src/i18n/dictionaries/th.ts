@@ -975,7 +975,6 @@ export const th: Dictionary = {
   hfrHaveBody: "เราดูแลบ้านพักในย่านช้างคลานและแม่ริมเอง เมื่อจองกับเรา ทีมงานในพื้นที่ที่ดูแลบ้านจะดูแลการเข้าพักของคุณด้วย",
   hfrHaveLink: "ดูบ้านพักที่เราดูแล",
   hfrFormTitle: "บอกเราว่าคุณต้องการอะไร",
-  hfrFormBody: "ทุกคำขอมีคนอ่านจริง และตอบกลับทางอีเมล",
   hfrFaqTitle: "คำถามที่ผู้เข้าพักถามบ่อย",
   hfrFaq1Q: "มีบ้านส่วนตัวว่างให้เช่าหนึ่งเดือนในเชียงใหม่ไหม",
   hfrFaq1A: "ส่งวันที่ของคุณผ่านแบบฟอร์มในหน้านี้ เราจะหาบ้านส่วนตัวที่ว่างในช่วงนั้น และตอบกลับพร้อมรายการที่ตรงกับความต้องการ แต่ละหลังมีราคารวม",
@@ -1305,7 +1304,6 @@ export const th: Dictionary = {
   srWhatsApp: "WhatsApp",
   srLine: "LINE ID",
   srContactTitle: "ให้เราตอบคุณทางไหน",
-  srContactHint: "กรอกอย่างน้อยหนึ่งช่องทาง เราจะตอบกลับทางช่องทางที่คุณให้ไว้",
   srReplyLanguage: "ตอบเป็นภาษา",
   srLangEn: "อังกฤษ",
   srLangTh: "ไทย",
@@ -1366,4 +1364,19 @@ export const th: Dictionary = {
 
   // -- the renter request form: no way to reach them -----------------------
   srContactMissing: "กรุณาให้ช่องทางติดต่ออย่างน้อยหนึ่งช่องทาง อีเมล โทรศัพท์ WhatsApp หรือ LINE",
+
+  // -- the renter request form: the layout pass ----------------------------
+  srSectionYou: "ข้อมูลของคุณและวันที่เข้าพัก",
+  srSectionLooking: "สิ่งที่คุณกำลังมองหา",
+  srContactPick: "เราจะตอบกลับทางช่องทางที่คุณเลือก",
+  srAnswerInline: "ตอบเป็นภาษา",
+  srDatesInline: "วันที่นี้",
+  srGuests: "ผู้เข้าพัก",
+
+  // -- the renter request form: the handle examples, and the intro that promised email ----
+  srHandleEmail: "you@example.com",
+  srHandlePhone: "+66 81 234 5678",
+  srHandleWhatsApp: "+66 81 234 5678",
+  srHandleLine: "@your-line-id",
+  srFormIntro: "ทุกคำขอมีคนอ่านจริง และตอบกลับทางช่องทางที่คุณเลือก",
 };

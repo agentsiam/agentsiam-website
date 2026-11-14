@@ -6,7 +6,9 @@
  * nine places for one of them to be missed, and the form is a client component, so it cannot
  * read the dictionary itself without shipping all seven hundred keys to the browser.
  *
- * Nothing here composes a sentence out of two strings. A label is one key.
+ * Nothing here composes a sentence out of two strings. A label is one key, and the two that
+ * read as sentences on screen, the reply language and the date flexibility, are each a whole
+ * fragment with a select after it, because word order differs in all three languages.
  */
 
 import type { Dictionary } from "@/i18n";
@@ -15,26 +17,39 @@ import type { StayRequestLabels } from "@/components/stay-request-form";
 export function stayRequestLabels(t: Dictionary): StayRequestLabels {
   return {
     name: t.hfrFormName,
-    email: t.hfrFormEmail,
-    phone: t.srPhone,
-    whatsapp: t.srWhatsApp,
-    line: t.srLine,
     contactTitle: t.srContactTitle,
-    contactHint: t.srContactHint,
+    contactPick: t.srContactPick,
+    contactKinds: {
+      email: t.hfrFormEmail,
+      phone: t.srPhone,
+      WhatsApp: t.srWhatsApp,
+      LINE: t.srLine,
+    },
+    contactExamples: {
+      email: t.srHandleEmail,
+      phone: t.srHandlePhone,
+      WhatsApp: t.srHandleWhatsApp,
+      LINE: t.srHandleLine,
+    },
     contactMissing: t.srContactMissing,
     replyLanguage: t.srReplyLanguage,
+    answerInline: t.srAnswerInline,
     languages: { en: t.srLangEn, th: t.srLangTh, zh: t.srLangZh },
     optional: t.hfrFormOptional,
+    sectionYou: t.srSectionYou,
+    sectionLooking: t.srSectionLooking,
     area: t.hfrFormArea,
     areaAny: t.hfrFormAreaAny,
     checkIn: t.hfrFormCheckIn,
     checkOut: t.hfrFormCheckOut,
     flexLabel: t.srFlexLabel,
+    datesInline: t.srDatesInline,
     flexibility: {
       exact: t.srFlexExact,
       "a few days either way": t.srFlexFewDays,
       "month only": t.srFlexMonth,
     },
+    guests: t.srGuests,
     adults: t.srAdults,
     children: t.srChildren,
     childrenAges: t.srChildrenAges,
