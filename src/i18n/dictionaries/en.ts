@@ -1139,7 +1139,6 @@ export const en = {
   hfrHaveBody: "We run houses ourselves too, in Chang Khlan and Mae Rim, so a stay booked through us is handled by the same team on the ground.",
   hfrHaveLink: "See our houses",
   hfrFormTitle: "Tell us what you need",
-  hfrFormBody: "A person reads every request and replies by email.",
   hfrFaqTitle: "Questions guests ask",
   hfrFaq1Q: "Do you have a private house free for a month in Chiang Mai?",
   hfrFaq1A: "Send your dates through the form on this page. We look for privately owned houses that are free for those dates and reply with the ones that fit, each with the total price.",
@@ -1501,7 +1500,6 @@ export const en = {
   srLine: "LINE ID",
   // A legend over the four channels. At least one is required and the server refuses a submission with none: email alone excluded Thai and Chinese renters who use LINE and nothing else.
   srContactTitle: "How should we answer you?",
-  srContactHint: "At least one. We answer on whichever you give us.",
   srReplyLanguage: "Answer me in",
   // The three languages as the renter picks one to be answered in, which is not the same question as the language switcher in the header: these are named in the language of the page, not in their own.
   srLangEn: "English",
@@ -1569,6 +1567,28 @@ export const en = {
   // -- the renter request form: no way to reach them -----------------------
   // The one required rule no HTML attribute can express: at least one of four fields, none of them individually required. Without its own message the renter saw "sending failed, email us instead", which is both wrong and a dead end.
   srContactMissing: "Please give us one way to reach you: email, phone, WhatsApp or LINE.",
+
+  // -- the renter request form: the layout pass ----------------------------
+  // The form is three sections with real headings rather than one column of thirty-two controls. A renter should be able to see where they are in it.
+  srSectionYou: "You and your dates",
+  srSectionLooking: "What you are looking for",
+  // Replaces the hint under four empty boxes that read as four required fields. One channel is chosen from a list now, so the rule is in the shape of the thing rather than in a line of text contradicting it.
+  srContactPick: "We answer on whichever you choose.",
+  // Reads as a sentence with the language select inside it, rather than as a full-width labelled row shouting as loudly as the dates. Stands alone: it is never joined to the sentence before it, because word order differs in all three languages.
+  srAnswerInline: "Answer me in",
+  // The same treatment for the date flexibility, which sits under the two date fields it qualifies.
+  srDatesInline: "These dates are",
+  // One label over the adults and children counts, so the two counts stop shouting as two separate questions.
+  srGuests: "Guests",
+
+  // -- the renter request form: the handle examples, and the intro that promised email ----
+  // The one field beside the channel chooser takes whatever that channel is addressed by, so it shows an example of that channel's own shape. The same example in all three languages: it is a format, not a sentence.
+  srHandleEmail: "you@example.com",
+  srHandlePhone: "+66 81 234 5678",
+  srHandleWhatsApp: "+66 81 234 5678",
+  srHandleLine: "@your-line-id",
+  // Replaces a line that promised a reply by email, which sat directly above a form offering phone, WhatsApp and LINE and contradicted the field under it.
+  srFormIntro: "A person reads every request and answers on the channel you choose.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

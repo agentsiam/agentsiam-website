@@ -975,7 +975,6 @@ export const zh: Dictionary = {
   hfrHaveBody: "昌康和湄林的房源也由我们自行管理。您通过我们预订后，仍由负责房源的同一支当地团队照顾您的住宿。",
   hfrHaveLink: "查看我们管理的房源",
   hfrFormTitle: "告诉我们您的需求",
-  hfrFormBody: "每条需求都由真人阅读，并通过邮件回复。",
   hfrFaqTitle: "房客常见问题",
   hfrFaq1Q: "清迈有可以整月租住的私人房屋吗？",
   hfrFaq1A: "请通过本页表单发送您的日期。我们会寻找这些日期空闲的私人房屋，并回复合适的选项，每套都附总价。",
@@ -1305,7 +1304,6 @@ export const zh: Dictionary = {
   srWhatsApp: "WhatsApp",
   srLine: "LINE ID",
   srContactTitle: "我们如何回复您？",
-  srContactHint: "请至少填写一项。我们会通过您提供的渠道回复。",
   srReplyLanguage: "回复语言",
   srLangEn: "英语",
   srLangTh: "泰语",
@@ -1366,4 +1364,19 @@ export const zh: Dictionary = {
 
   // -- the renter request form: no way to reach them -----------------------
   srContactMissing: "请至少留下一种联系方式：电子邮箱、电话、WhatsApp 或 LINE。",
+
+  // -- the renter request form: the layout pass ----------------------------
+  srSectionYou: "您的信息和入住日期",
+  srSectionLooking: "您想找什么样的房子",
+  srContactPick: "我们会通过您选择的渠道回复。",
+  srAnswerInline: "回复语言",
+  srDatesInline: "这些日期",
+  srGuests: "入住人数",
+
+  // -- the renter request form: the handle examples, and the intro that promised email ----
+  srHandleEmail: "you@example.com",
+  srHandlePhone: "+66 81 234 5678",
+  srHandleWhatsApp: "+66 81 234 5678",
+  srHandleLine: "@your-line-id",
+  srFormIntro: "每条需求都由真人阅读，并通过您选择的渠道回复。",
 };

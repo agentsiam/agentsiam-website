@@ -8,6 +8,7 @@ import { CONTACT_EMAIL } from "@/lib/site";
 import {
   BEDROOM_MINIMUMS,
   BUDGET_UNITS,
+  CONTACT_KINDS,
   CURRENCIES,
   DATE_FLEXIBILITY,
   MAX_ADULTS,
@@ -18,6 +19,7 @@ import {
   PETS,
   SMOKING,
   type BudgetUnit,
+  type ContactKind,
   type DateFlexibility,
   type MustHave,
   type Party,
@@ -32,7 +34,7 @@ import {
  * It asks in fixed choices what renters are already telling us in prose. The lead file
  * carries "about 2026-12-21 (start flexible)" in a dates cell and a paragraph of must-haves
  * inside a requirements cell, which is information given and then made unmatchable against
- * the property pool. A select and eight checkboxes are the whole fix.
+ * the property pool. A select and eight choices are the whole fix.
  *
  * WHAT IS REQUIRED IS DELIBERATELY SHORT: a name, one way to reach them, the dates, and how
  * they found us. Everything else is offered and optional, and the answers that only some
@@ -40,8 +42,28 @@ import {
  * front of everyone. A form that asks a majority to read a minority's questions costs
  * conversion for nothing.
  *
- * Email is no longer required, one named channel is. Thai and Chinese renters often use LINE
- * and nothing else, and an email field with a red asterisk is where that renter leaves.
+ * THE LAYOUT IS THE SECOND DRAFT, and the first one is why these rules are written down.
+ * It shipped as one undifferentiated column of thirty-two controls under twenty-four
+ * shouted labels, led by four empty contact boxes that read as four required fields when
+ * the rule is that any one of them will do.
+ *
+ *   One channel, chosen. A select naming the four channels and one field for the handle,
+ *   which states the any-one-will-do rule in its shape instead of contradicting it. The
+ *   handle still posts under that channel's own field name, so the endpoint and the record
+ *   see exactly what they saw before.
+ *
+ *   Three sections with real headings, not one card, so a renter can see where they are.
+ *
+ *   A qualifier is a sentence, not a row. The reply language and the date flexibility read
+ *   as "and answer me in English" under the thing they qualify, rather than taking a
+ *   full-width labelled row each and shouting as loudly as the dates do.
+ *
+ *   A label only where a label earns it. The budget's unit and currency sit unlabelled
+ *   beside the amount, because "PER" and "CURRENCY" as headings describe the database
+ *   rather than the question.
+ *
+ *   Must-haves are chips. Eight checkboxes in two sparse columns looked unfinished and
+ *   read as a list of demands.
  *
  * Labels arrive as props rather than the dictionary, because this is a client component and
  * serialising 700 keys to the browser so that forty can be read is what the home page and
@@ -51,22 +73,25 @@ import {
 
 export type StayRequestLabels = {
   name: string;
-  email: string;
-  phone: string;
-  whatsapp: string;
-  line: string;
   contactTitle: string;
-  contactHint: string;
+  contactPick: string;
+  contactKinds: Record<ContactKind, string>;
+  contactExamples: Record<ContactKind, string>;
   contactMissing: string;
   replyLanguage: string;
+  answerInline: string;
   languages: Record<Locale, string>;
   optional: string;
+  sectionYou: string;
+  sectionLooking: string;
   area: string;
   areaAny: string;
   checkIn: string;
   checkOut: string;
   flexLabel: string;
+  datesInline: string;
   flexibility: Record<DateFlexibility, string>;
+  guests: string;
   adults: string;
   children: string;
   childrenAges: string;
@@ -111,15 +136,33 @@ export type StayRequestLabels = {
 };
 
 const field =
-  "rounded-lg border-[1.5px] border-hairline bg-bg px-3.5 py-3 text-sm outline-none focus-visible:border-ink";
+  "w-full rounded-lg border-[1.5px] border-hairline bg-bg px-3.5 py-3 text-sm outline-none focus-visible:border-ink";
 
+/** The loud label, for a question that leads. Used sparingly on purpose. */
 const label = "text-xs font-semibold uppercase tracking-[0.06em] text-muted";
 
-const legend = "text-xs font-semibold uppercase tracking-[0.06em] text-muted";
+/** The quiet one, for a field sitting under a question already asked. */
+const labelQuiet = "text-[12.5px] text-muted";
+
+/** A select inside a sentence rather than under a label of its own. */
+const inlineSelect =
+  "rounded-md border-[1.5px] border-hairline bg-bg px-2 py-1 text-[13px] outline-none focus-visible:border-ink";
+
+const sectionHeading = "font-display text-[17px] font-bold tracking-[-0.015em]";
 
 function Optional({ word }: { word: string }) {
   return <span className="font-normal normal-case tracking-normal">({word})</span>;
 }
+
+/** The input type and autocomplete that belong to the channel they picked. The example
+ * comes from the labels, because an empty box beside a chooser says nothing about what
+ * shape the answer takes. */
+const HANDLE_INPUT: Record<ContactKind, { type: string; autoComplete: string }> = {
+  email: { type: "email", autoComplete: "email" },
+  phone: { type: "tel", autoComplete: "tel" },
+  WhatsApp: { type: "tel", autoComplete: "tel" },
+  LINE: { type: "text", autoComplete: "off" },
+};
 
 export function StayRequestForm({
   labels,
@@ -149,6 +192,7 @@ export function StayRequestForm({
 }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [contactKind, setContactKind] = useState<ContactKind>("email");
   const [children, setChildren] = useState(0);
   const [pets, setPets] = useState<Pets | "">("");
   const sentRef = useRef<HTMLDivElement>(null);
@@ -165,22 +209,26 @@ export function StayRequestForm({
     const form = new FormData(event.currentTarget);
     const text = (key: string) => String(form.get(key) ?? "");
 
-    // The one rule no HTML attribute can carry: at least one of four, none of them required
-    // on its own. Checked here as well as on the server, because the generic failure message
-    // points at the mailbox and that is no help to someone who just gave us their LINE ID
-    // and typed nothing else.
-    if (!["email", "phone", "whatsapp", "line"].some((key) => text(key).trim())) {
+    const handle = text("contactHandle").trim();
+    if (!handle) {
       setError(labels.contactMissing);
       setStatus("idle");
       return;
     }
 
+    // The handle is posted under its own channel's field name. The endpoint has always read
+    // four separate fields and named the channel by whichever carried a value, so collapsing
+    // the four boxes into a chooser is a change to the form and to nothing behind it.
+    const channel = {
+      email: contactKind === "email" ? handle : "",
+      phone: contactKind === "phone" ? handle : "",
+      whatsapp: contactKind === "WhatsApp" ? handle : "",
+      line: contactKind === "LINE" ? handle : "",
+    };
+
     const data = {
       name: text("name"),
-      email: text("email"),
-      phone: text("phone"),
-      whatsapp: text("whatsapp"),
-      line: text("line"),
+      ...channel,
       replyLanguage: text("replyLanguage"),
       checkIn: text("checkIn"),
       checkOut: text("checkOut"),
@@ -262,57 +310,71 @@ export function StayRequestForm({
   }
 
   const sending = status === "sending";
+  const handle = HANDLE_INPUT[contactKind];
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-panel border border-hairline p-6">
+    <form onSubmit={handleSubmit} className="rounded-panel border border-hairline p-6 sm:p-7">
       {propertyName ? (
-        <p className="mb-5 text-[14.5px] leading-relaxed text-body">
+        <p className="mb-6 text-[14.5px] leading-relaxed text-body">
           {labels.aboutProperty.replace("{property}", propertyName)}
         </p>
       ) : null}
 
-      <label className="grid gap-1.5 text-sm">
+      {/* You and your dates */}
+      <h3 className={sectionHeading}>{labels.sectionYou}</h3>
+
+      <label className="mt-4 grid gap-1.5 text-sm">
         <span className={label}>{labels.name}</span>
         <input required name="name" autoComplete="name" maxLength={80} className={field} />
       </label>
 
-      {/* One named channel, not four optional ones: the hint says at least one, and the
-          server refuses a submission with none. */}
-      <fieldset className="mt-5">
-        <legend className={legend}>{labels.contactTitle}</legend>
-        <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">{labels.contactHint}</p>
-        <div className="mt-3 grid gap-3.5 sm:grid-cols-2">
-          <label className="grid gap-1.5 text-sm">
-            <span className={label}>{labels.email}</span>
-            <input type="email" name="email" autoComplete="email" maxLength={160} className={field} />
-          </label>
-          <label className="grid gap-1.5 text-sm">
-            <span className={label}>{labels.phone}</span>
-            <input name="phone" autoComplete="tel" maxLength={60} className={field} />
-          </label>
-          <label className="grid gap-1.5 text-sm">
-            <span className={label}>{labels.whatsapp}</span>
-            <input name="whatsapp" maxLength={60} className={field} />
-          </label>
-          <label className="grid gap-1.5 text-sm">
-            <span className={label}>{labels.line}</span>
-            <input name="line" maxLength={60} className={field} />
-          </label>
+      {/* One channel, chosen, rather than four empty boxes that read as four required
+          fields. The handle's label, type and autocomplete follow the choice. */}
+      <div className="mt-4">
+        <span className={label}>{labels.contactTitle}</span>
+        <div className="mt-1.5 grid gap-2.5 sm:grid-cols-[minmax(0,10rem)_1fr]">
+          <select
+            aria-label={labels.contactTitle}
+            value={contactKind}
+            onChange={(event) => setContactKind(event.target.value as ContactKind)}
+            className={field}
+          >
+            {CONTACT_KINDS.map((kind) => (
+              <option key={kind} value={kind}>
+                {labels.contactKinds[kind]}
+              </option>
+            ))}
+          </select>
+          <input
+            required
+            key={contactKind}
+            name="contactHandle"
+            type={handle.type}
+            autoComplete={handle.autoComplete}
+            aria-label={labels.contactKinds[contactKind]}
+            placeholder={labels.contactExamples[contactKind]}
+            maxLength={160}
+            className={field}
+          />
         </div>
-      </fieldset>
+        <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">
+          {labels.contactPick} {labels.answerInline}{" "}
+          <select
+            name="replyLanguage"
+            aria-label={labels.replyLanguage}
+            defaultValue={locale}
+            className={inlineSelect}
+          >
+            {(Object.keys(labels.languages) as Locale[]).map((code) => (
+              <option key={code} value={code}>
+                {labels.languages[code]}
+              </option>
+            ))}
+          </select>
+        </p>
+      </div>
 
-      <label className="mt-3.5 grid gap-1.5 text-sm">
-        <span className={label}>{labels.replyLanguage}</span>
-        <select name="replyLanguage" defaultValue={locale} className={field}>
-          {(Object.keys(labels.languages) as Locale[]).map((code) => (
-            <option key={code} value={code}>
-              {labels.languages[code]}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <div className="mt-3.5 grid gap-3.5 sm:grid-cols-2">
+      <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
         <label className="grid gap-1.5 text-sm">
           <span className={label}>{labels.checkIn}</span>
           <input required type="date" name="checkIn" className={field} />
@@ -323,55 +385,30 @@ export function StayRequestForm({
         </label>
       </div>
 
-      <label className="mt-3.5 grid gap-1.5 text-sm">
-        <span className={label}>{labels.flexLabel}</span>
-        <select name="flexibility" defaultValue="exact" className={field}>
+      {/* A qualifier reads as a sentence under the thing it qualifies, not as a row of its
+          own shouting as loudly as the dates. */}
+      <p className="mt-2.5 text-[12.5px] text-muted">
+        {labels.datesInline}{" "}
+        <select
+          name="flexibility"
+          aria-label={labels.flexLabel}
+          defaultValue="exact"
+          className={inlineSelect}
+        >
           {DATE_FLEXIBILITY.map((value) => (
             <option key={value} value={value}>
               {labels.flexibility[value]}
             </option>
           ))}
         </select>
-      </label>
+      </p>
 
-      <div className="mt-3.5 grid gap-3.5 sm:grid-cols-3">
-        <label className="grid gap-1.5 text-sm">
-          <span className={label}>{labels.adults}</span>
-          <input
-            type="number"
-            name="adults"
-            defaultValue={2}
-            min={1}
-            max={MAX_ADULTS}
-            className={field}
-          />
-        </label>
-        <label className="grid gap-1.5 text-sm">
-          <span className={label}>{labels.children}</span>
-          <input
-            type="number"
-            name="children"
-            defaultValue={0}
-            min={0}
-            max={MAX_CHILDREN}
-            className={field}
-            onChange={(event) => setChildren(Number(event.target.value) || 0)}
-          />
-        </label>
-        {children > 0 ? (
-          <label className="grid gap-1.5 text-sm">
-            <span className={label}>{labels.childrenAges}</span>
-            <input
-              name="childrenAges"
-              maxLength={60}
-              className={field}
-              placeholder={labels.childrenAgesHint}
-            />
-          </label>
-        ) : null}
-      </div>
+      {/* What you are looking for */}
+      <h3 className={`${sectionHeading} mt-8 border-t border-hairline pt-7`}>
+        {labels.sectionLooking}
+      </h3>
 
-      <div className="mt-3.5 grid gap-3.5 sm:grid-cols-2">
+      <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
         <label className="grid gap-1.5 text-sm">
           <span className={label}>{labels.area}</span>
           <select name="area" defaultValue={defaultArea} className={field}>
@@ -395,16 +432,54 @@ export function StayRequestForm({
         </label>
       </div>
 
+      <div className="mt-4">
+        <span className={label}>{labels.guests}</span>
+        <div className="mt-1.5 grid gap-3.5 sm:grid-cols-3">
+          <label className="grid gap-1 text-sm">
+            <span className={labelQuiet}>{labels.adults}</span>
+            <input
+              type="number"
+              name="adults"
+              defaultValue={2}
+              min={1}
+              max={MAX_ADULTS}
+              className={field}
+            />
+          </label>
+          <label className="grid gap-1 text-sm">
+            <span className={labelQuiet}>{labels.children}</span>
+            <input
+              type="number"
+              name="children"
+              defaultValue={0}
+              min={0}
+              max={MAX_CHILDREN}
+              className={field}
+              onChange={(event) => setChildren(Number(event.target.value) || 0)}
+            />
+          </label>
+          {children > 0 ? (
+            <label className="grid gap-1 text-sm">
+              <span className={labelQuiet}>{labels.childrenAges}</span>
+              <input
+                name="childrenAges"
+                maxLength={60}
+                className={field}
+                placeholder={labels.childrenAgesHint}
+              />
+            </label>
+          ) : null}
+        </div>
+      </div>
+
       {/* A budget with no unit is the most common unusable answer in the lead file, so the
-          unit and the currency are asked beside the number rather than guessed from it. */}
-      <div className="mt-3.5 grid gap-3.5 sm:grid-cols-3">
-        <label className="grid gap-1.5 text-sm">
-          <span className={label}>
-            {labels.budget} <Optional word={labels.optional} />
-          </span>
-          {/* No `step`. With min={1} a step of 100 makes every round number invalid, so a
-              renter typing 30000 was stopped by the browser saying the nearest valid values
-              were 29901 and 30001, and the form did not submit at all. */}
+          unit and the currency sit beside the number. Unlabelled: "PER" and "CURRENCY" as
+          headings describe the database rather than the question. */}
+      <div className="mt-4">
+        <span className={label}>
+          {labels.budget} <Optional word={labels.optional} />
+        </span>
+        <div className="mt-1.5 grid gap-2.5 sm:grid-cols-[1fr_auto_auto]">
           <input
             type="number"
             name="budgetAmount"
@@ -412,43 +487,46 @@ export function StayRequestForm({
             className={field}
             placeholder={labels.budgetHint}
           />
-        </label>
-        <label className="grid gap-1.5 text-sm">
-          <span className={label}>{labels.budgetUnit}</span>
-          <select name="budgetUnit" defaultValue="per month" className={field}>
+          <select
+            name="budgetUnit"
+            aria-label={labels.budgetUnit}
+            defaultValue="per month"
+            className={field}
+          >
             {BUDGET_UNITS.map((unit) => (
               <option key={unit} value={unit}>
                 {labels.budgetUnits[unit]}
               </option>
             ))}
           </select>
-        </label>
-        <label className="grid gap-1.5 text-sm">
-          <span className={label}>{labels.budgetCurrency}</span>
-          <select name="budgetCurrency" defaultValue="THB" className={field}>
+          <select
+            name="budgetCurrency"
+            aria-label={labels.budgetCurrency}
+            defaultValue="THB"
+            className={field}
+          >
             {CURRENCIES.map((currency) => (
               <option key={currency} value={currency}>
                 {currency}
               </option>
             ))}
           </select>
-        </label>
+        </div>
       </div>
 
+      {/* Chips rather than two sparse columns of checkboxes. The input stays a real
+          checkbox behind the chip, so the keyboard and the screen reader are unaffected. */}
       <fieldset className="mt-5">
-        <legend className={legend}>
+        <legend className={label}>
           {labels.mustHavesTitle} <Optional word={labels.optional} />
         </legend>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <div className="mt-2.5 flex flex-wrap gap-2">
           {MUST_HAVES.map((want) => (
-            <label key={want} className="flex items-start gap-2.5 text-[14.5px] text-body">
-              <input
-                type="checkbox"
-                name="mustHaves"
-                value={want}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-ink"
-              />
-              <span>{labels.mustHaves[want]}</span>
+            <label key={want} className="cursor-pointer">
+              <input type="checkbox" name="mustHaves" value={want} className="peer sr-only" />
+              <span className="inline-block rounded-full border-[1.5px] border-hairline px-3.5 py-2 text-[13.5px] text-body peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:border-ink peer-focus-visible:ring-2 peer-focus-visible:ring-ink/30">
+                {labels.mustHaves[want]}
+              </span>
             </label>
           ))}
         </div>
@@ -457,15 +535,21 @@ export function StayRequestForm({
       {/* The answers only some renters have. Behind a disclosure so the majority is not
           asked to read a minority's questions, which is the house rule on minority-case
           copy applied to a form. */}
-      <details className="mt-5 rounded-box border border-hairline px-4 py-3">
-        <summary className="cursor-pointer text-[14.5px] font-semibold">
+      <details className="group mt-5 border-t border-hairline pt-5">
+        <summary className="flex cursor-pointer list-none items-center gap-2 text-[14.5px] font-semibold">
+          <span
+            aria-hidden="true"
+            className="inline-block text-muted transition-transform group-open:rotate-90"
+          >
+            &rsaquo;
+          </span>
           {labels.moreTitle}
         </summary>
         <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">{labels.moreHint}</p>
 
-        <div className="mt-3.5 grid gap-3.5 sm:grid-cols-2">
+        <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
           <label className="grid gap-1.5 text-sm">
-            <span className={label}>{labels.partyLabel}</span>
+            <span className={labelQuiet}>{labels.partyLabel}</span>
             <select name="party" defaultValue="" className={field}>
               <option value="">{labels.notSaid}</option>
               {PARTY.map((who) => (
@@ -476,7 +560,7 @@ export function StayRequestForm({
             </select>
           </label>
           <label className="grid gap-1.5 text-sm">
-            <span className={label}>{labels.vehicle}</span>
+            <span className={labelQuiet}>{labels.vehicle}</span>
             <select name="vehicle" defaultValue="" className={field}>
               <option value="">{labels.notSaid}</option>
               <option value="no">{labels.no}</option>
@@ -484,7 +568,7 @@ export function StayRequestForm({
             </select>
           </label>
           <label className="grid gap-1.5 text-sm">
-            <span className={label}>{labels.petsLabel}</span>
+            <span className={labelQuiet}>{labels.petsLabel}</span>
             <select
               name="pets"
               value={pets}
@@ -501,7 +585,7 @@ export function StayRequestForm({
           </label>
           {pets !== "" && pets !== "none" ? (
             <label className="grid gap-1.5 text-sm">
-              <span className={label}>{labels.petsCount}</span>
+              <span className={labelQuiet}>{labels.petsCount}</span>
               <input
                 type="number"
                 name="petsCount"
@@ -514,12 +598,12 @@ export function StayRequestForm({
           ) : null}
           {pets === "other" ? (
             <label className="grid gap-1.5 text-sm">
-              <span className={label}>{labels.petsSpecies}</span>
+              <span className={labelQuiet}>{labels.petsSpecies}</span>
               <input name="petsSpecies" maxLength={40} className={field} />
             </label>
           ) : null}
           <label className="grid gap-1.5 text-sm">
-            <span className={label}>{labels.smokingLabel}</span>
+            <span className={labelQuiet}>{labels.smokingLabel}</span>
             <select name="smoking" defaultValue="" className={field}>
               <option value="">{labels.notSaid}</option>
               {SMOKING.map((value) => (
@@ -532,7 +616,7 @@ export function StayRequestForm({
         </div>
 
         <label className="mt-3.5 grid gap-1.5 text-sm">
-          <span className={label}>{labels.notes}</span>
+          <span className={labelQuiet}>{labels.notes}</span>
           <textarea
             name="message"
             rows={3}
@@ -543,7 +627,8 @@ export function StayRequestForm({
         </label>
       </details>
 
-      <label className="mt-5 grid gap-1.5 text-sm">
+      {/* The last question, the consent, then send. */}
+      <label className="mt-8 grid gap-1.5 border-t border-hairline pt-7 text-sm">
         <span className={label}>
           {labels.foundVia} <Optional word={labels.required} />
         </span>
@@ -558,21 +643,23 @@ export function StayRequestForm({
       </label>
 
       {/* Opt-in, not a gate. An unticked box is a real answer and is recorded as one: the
-          renter is still answered, out of what AgentSiam runs itself. */}
-      <label className="mt-5 flex items-start gap-2.5 text-[14.5px] text-body">
-        <input
-          type="checkbox"
-          name="consentOwner"
-          value="yes"
-          className="mt-0.5 h-4 w-4 shrink-0 accent-ink"
-        />
-        <span>
-          {labels.consentOwner}
-          <span className="mt-1 block text-[12.5px] leading-relaxed text-muted">
-            {labels.consentOwnerHint}
-          </span>
-        </span>
-      </label>
+          renter is still answered, out of what AgentSiam runs itself. It sits in a panel of
+          its own because it was three lines of small print crowding the send button, which
+          is the one place on the form where nothing should read as fine print. */}
+      <div className="mt-5 rounded-box bg-surface p-4">
+        <label className="flex cursor-pointer items-start gap-2.5 text-[14.5px] text-body">
+          <input
+            type="checkbox"
+            name="consentOwner"
+            value="yes"
+            className="mt-0.5 h-4 w-4 shrink-0 accent-ink"
+          />
+          <span>{labels.consentOwner}</span>
+        </label>
+        <p className="mt-2 pl-7 text-[12.5px] leading-relaxed text-muted">
+          {labels.consentOwnerHint}
+        </p>
+      </div>
 
       {/* Honeypot. Hidden from people and from screen readers. */}
       <div className="hidden" aria-hidden="true">
@@ -591,7 +678,7 @@ export function StayRequestForm({
       <button
         type="submit"
         disabled={sending}
-        className="mt-6 w-full cursor-pointer rounded-full bg-ink px-6 py-3.5 text-[15px] font-semibold text-white hover:bg-primary disabled:cursor-not-allowed disabled:bg-muted/40"
+        className="mt-5 w-full cursor-pointer rounded-full bg-ink px-6 py-3.5 text-[15px] font-semibold text-white hover:bg-primary disabled:cursor-not-allowed disabled:bg-muted/40"
       >
         {sending ? labels.sending : labels.send}
       </button>

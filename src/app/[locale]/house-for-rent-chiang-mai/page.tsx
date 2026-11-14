@@ -53,7 +53,7 @@ function pageCopy(t: Dictionary) {
     haveBody: t.hfrHaveBody,
     haveLink: t.hfrHaveLink,
     formTitle: t.hfrFormTitle,
-    formBody: t.hfrFormBody,
+    formBody: t.srFormIntro,
     faqTitle: t.hfrFaqTitle,
     faq: [
       { q: t.hfrFaq1Q, a: t.hfrFaq1A },
