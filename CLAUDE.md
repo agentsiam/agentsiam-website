@@ -201,9 +201,15 @@ build refuses to do, is `GUIDE-RUNBOOK.md`; do not restate it here.
 - Editing the dictionaries string by string during a review is how the register split gets broken:
   owner strings take ท่าน, guest strings take คุณ, and swapping them costs more credibility than a
   clumsy sentence.
-- `POSTAL_ADDRESS` in `src/lib/site.ts` is published in three places that must not drift: the
-  footer, the `LocalBusiness` node, and the Google Business Profile, which is outside this repo
-  and is currently the one that disagrees. Changing the constant is half the job.
+- `POSTAL_ADDRESS` in `src/lib/site.ts` is published in four places that must not drift: the
+  footer, the `LocalBusiness` node, the privacy policy's controller paragraph, and the Google
+  Business Profile, which is outside this repo and is currently the one that disagrees. Changing
+  the constant is half the job. The privacy policy was the fourth only from 14/11/2026: until
+  then it carried its own hardcoded Bangkok street address, a city the company was never
+  registered in and a street at all, which had come off every other surface on 08/11/2026. It was
+  wrong for over two months on the one page that has to be legally exact, and it drifted because
+  it was the only address on the site not derived from the constant. An address written as prose
+  in a page is the shape of this bug.
 - `NEXT_PUBLIC_CRISP_WEBSITE_ID` gates three things at once, not one: the chat widget, the
   `privacyChatCookie` paragraph in the privacy policy, and the WhatsApp launcher's vertical
   offset. Anything that reads it on the client has to receive it as a prop, because

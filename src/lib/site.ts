@@ -136,7 +136,7 @@ export const POLICY_UPDATED = "2026-08-14";
 // and Upstash paragraph added on 13/11/2026 is in the policy whatever that env var says,
 // so both states were last changed on the same day and one date is the honest answer.
 // The terms carry their own literal and are untouched by this.
-export const PRIVACY_UPDATED = "2026-11-13";
+export const PRIVACY_UPDATED = "2026-11-14";
 
 /**
  * An ISO date written the way the reader's own locale writes dates.

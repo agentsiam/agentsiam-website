@@ -8,6 +8,7 @@ import {
   CONTACT_EMAIL,
   CRISP_WEBSITE_ID,
   GA_MEASUREMENT_ID,
+  POSTAL_ADDRESS,
   PRIVACY_UPDATED,
   policyUpdated,
   pageMeta,
@@ -74,11 +75,19 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
           </p>
 
           <h2>Who is responsible for your data</h2>
+          {/* Read from POSTAL_ADDRESS and district level, never its own copy. This
+              paragraph carried a Bangkok street address until 14/11/2026: a city the
+              company was never registered in, and a street at all, which came off the rest
+              of the site on 08/11/2026 so that nothing published could locate the house.
+              It drifted precisely because it was the one address here not derived from the
+              constant. The full registered office stays public at the DBD, which is where
+              a data subject entitled to it should be sent. */}
           <p>
-            AgentSiam, registered in Bangkok, Thailand at 922/11 Rama 9 Road, Huaykwang,
-            Bangkapi, Bangkok 10310, is the data controller for information submitted
-            through this site. For any question about this policy, or to exercise the rights
-            below, write to{" "}
+            {POSTAL_ADDRESS.legalName}, registered in {POSTAL_ADDRESS.district},{" "}
+            {POSTAL_ADDRESS.locality}, {POSTAL_ADDRESS.country}, is the data controller for
+            information submitted through this site. Our registered office address is on
+            public record at Thailand&rsquo;s Department of Business Development. For any
+            question about this policy, or to exercise the rights below, write to{" "}
             <a className="text-primary hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
               {CONTACT_EMAIL}
             </a>
