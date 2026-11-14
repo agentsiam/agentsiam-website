@@ -7,8 +7,10 @@ import { ResultsMap } from "@/components/results-map";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS, cityBySlug, DEFAULT_CITY } from "@/lib/areas";
+import { propertyArea, propertyCoverPhoto } from "@/lib/property";
 import {
   activeFilters,
+  distanceToCentre,
   loosestFilter,
   MAP_MIN_RESULTS,
   parseSearch,
@@ -101,15 +103,36 @@ export default async function PropertiesPage({
 
   const results = searchProperties(state);
   // Only what the map needs, and nothing that is not serialisable across the boundary.
-  const pins = results.map((property) => ({
-    slug: property.slug,
-    title: property.title,
-    // A public point, never the house. See `lat` on Property in src/lib/property.ts.
-    lat: property.lat,
-    lng: property.lng,
-    price: property.fromPrice,
-    currency: property.currency,
-  }));
+  const pins = results.map((property) => {
+    const photo = propertyCoverPhoto(property);
+    const km = distanceToCentre(property);
+    return {
+      slug: property.slug,
+      title: property.title,
+      // A public point, never the house. See `lat` on Property in src/lib/property.ts.
+      lat: property.lat,
+      lng: property.lng,
+      price: property.fromPrice,
+      currency: property.currency,
+      // What the card over the full-screen map shows when a pin is tapped. Composed here,
+      // on the server, so the map is handed finished strings rather than the dictionary:
+      // the subtitle is one string for the same reason the map's own label is, and a
+      // phrase assembled from fragments in the browser is where word order goes wrong in
+      // Chinese. The photograph crosses as a URL, not as the import, so the manifest stays
+      // on this side of the boundary.
+      card: {
+        href: href(`/${property.slug}`),
+        photo: photo ? photo.src.src : null,
+        photoAlt: photo?.alt || property.title,
+        subtitle: [
+          propertyArea(property)?.name,
+          t.kmToCentre.replace("{n}", km < 10 ? km.toFixed(1) : String(Math.round(km))),
+        ]
+          .filter(Boolean)
+          .join(" · "),
+      },
+    };
+  });
   const chips = activeFilters(state);
   const relaxable = results.length === 0 ? loosestFilter(state) : null;
   // A map is worth drawing at three pins, not one. See MAP_MIN_RESULTS in src/lib/search.ts.
@@ -224,6 +247,8 @@ export default async function PropertiesPage({
             mapLabel={t.mapLabel}
             mapOpenLabel={t.psMapOpen}
             mapCloseLabel={t.psMapClose}
+            priceFromLabel={t.fromPrice}
+            perNightLabel={t.perNight}
             locale={locale}
           />
         ) : null}

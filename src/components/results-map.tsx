@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 
@@ -34,6 +36,19 @@ export type Pin = {
   icon?: string;
   /** A host pick. Ringed on the map so it reads as one at pin size too. */
   highlight?: boolean;
+  /**
+   * What the card over the full-screen map shows when this pin is tapped, composed on the
+   * server. The guide's pins carry none, and a pin without one points at the list instead,
+   * which is what every pin did before the card existed.
+   */
+  card?: {
+    href: string;
+    /** A URL, not the import: the photo manifest stays on the server. */
+    photo: string | null;
+    photoAlt: string;
+    /** Neighbourhood and distance, already joined. One string, like the map's own label. */
+    subtitle: string;
+  };
 };
 
 /**
@@ -107,6 +122,8 @@ export function ResultsMap({
   mapLabel,
   mapOpenLabel = "",
   mapCloseLabel = "",
+  priceFromLabel = "",
+  perNightLabel = "",
   /**
    * Clicking a card flies the map to its pin.
    *
@@ -157,6 +174,9 @@ export function ResultsMap({
   /** The floating button's label, and the overlay's close control. Collapsible maps only. */
   mapOpenLabel?: string;
   mapCloseLabel?: string;
+  /** The two halves of the card's price line, in the tile's own words and order. */
+  priceFromLabel?: string;
+  perNightLabel?: string;
   panOnCardClick?: boolean;
   collapsible?: boolean;
   cluster?: boolean;
@@ -199,11 +219,24 @@ export function ResultsMap({
   /** Whether this component is what put the entry on the history stack. */
   const pushed = useRef(false);
 
+  /**
+   * The pin whose card is showing, by slug.
+   *
+   * Derived through `fullscreen` rather than cleared when the map closes, so a stale slug
+   * can never put a card on a page that has no map open. Opening and closing both reset it
+   * anyway, which covers the one path that does not go through a re-render: the back
+   * gesture, which leaves the slug behind and is then cleared by the next open.
+   */
+  const [selected, setSelected] = useState<string | null>(null);
+  const selectedPin = fullscreen ? (pins.find((pin) => pin.slug === selected) ?? null) : null;
+  const money = new Intl.NumberFormat(INTL_LOCALE[locale], { maximumFractionDigits: 0 });
+
   const openMap = useCallback(() => {
     const params = new URLSearchParams(window.location.search);
     params.set("map", "1");
     window.history.pushState(null, "", `?${params.toString()}`);
     pushed.current = true;
+    setSelected(null);
     window.dispatchEvent(new Event(MAP_URL_EVENT));
   }, []);
 
@@ -213,6 +246,7 @@ export function ResultsMap({
    * ours to pop, and going back would take them off the site, so that one is replaced.
    */
   const closeMap = useCallback(() => {
+    setSelected(null);
     if (pushed.current) {
       pushed.current = false;
       // popstate follows on its own, and that is what the store is listening for.
@@ -306,6 +340,15 @@ export function ResultsMap({
 
       const markers = new Map<string, L.Marker>();
 
+      // Anywhere that is not a pin puts the card away, which is the gesture every map
+      // app has taught people to expect and is the only dismissal the card needs.
+      instance.on("click", () => {
+        setSelected(null);
+        for (const marker of markers.values()) {
+          marker.getElement()?.classList.remove("as-pin-active");
+        }
+      });
+
       let layer: import("leaflet").MarkerClusterGroup | null = null;
       if (cluster) {
         await import("leaflet.markercluster");
@@ -362,13 +405,20 @@ export function ResultsMap({
         else marker.addTo(instance);
 
         marker.on("click", () => {
+          // On a phone the map is the whole screen and the list is behind it, so the place
+          // has to introduce itself here. Two pins can then be compared by where they are,
+          // which is the only question a map is better at answering than a list.
+          if (window.matchMedia("(max-width: 899px)").matches && pin.card) {
+            for (const other of markers.values()) {
+              other.getElement()?.classList.remove("as-pin-active");
+            }
+            marker.getElement()?.classList.add("as-pin-active");
+            setSelected(pin.slug);
+            return;
+          }
           const tile = document.querySelector<HTMLElement>(
             `[data-map-key="${pin.slug}"]`,
           );
-          // On a phone the map is the whole screen and the list is behind it, so a pin has
-          // to hand the guest back to the page before it can show them anything. The map is
-          // a way into the list there, not a surface the list is read from.
-          if (window.matchMedia("(max-width: 899px)").matches) closeMap();
           tile?.scrollIntoView({
             behavior: prefersReducedMotion() ? "auto" : "smooth",
             block: "center",
@@ -502,6 +552,46 @@ export function ResultsMap({
           aria-label={mapLabel}
           className={`as-map-canvas h-[360px] w-full overflow-hidden rounded-panel border border-hairline ${mapHeightClass}`}
         />
+
+        {/* The tapped pin, as a card. Above the attribution line rather than over it: that
+            line is the licence condition the tiles are shown under and covering it is not a
+            layout decision we get to make. */}
+        {selectedPin?.card ? (
+          <div className="absolute inset-x-3 bottom-8 z-10 min-[900px]:hidden">
+            <Link
+              href={selectedPin.card.href}
+              className="flex items-center gap-3 rounded-panel border border-hairline bg-bg p-3 shadow-lg"
+            >
+              {selectedPin.card.photo ? (
+                <Image
+                  src={selectedPin.card.photo}
+                  alt={selectedPin.card.photoAlt}
+                  lang="en"
+                  width={96}
+                  height={72}
+                  className="h-[72px] w-24 shrink-0 rounded-box object-cover"
+                />
+              ) : null}
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-display text-[15px] font-bold tracking-[-0.015em]">
+                  {selectedPin.title}
+                </span>
+                <span className="mt-0.5 block truncate text-[12.5px] text-muted">
+                  {selectedPin.card.subtitle}
+                </span>
+                {selectedPin.price !== null ? (
+                  <span className="mt-1 block text-[13px]">
+                    <span className="text-muted">{priceFromLabel} </span>
+                    <span className="font-display font-bold">
+                      {selectedPin.currency}&nbsp;{money.format(selectedPin.price)}
+                    </span>
+                    <span className="text-muted"> {perNightLabel}</span>
+                  </span>
+                ) : null}
+              </span>
+            </Link>
+          </div>
+        ) : null}
 
         {/* Over the map, not under it. Leaflet's own zoom control is top left and its
             attribution is bottom right, which is the licence condition and not ours to

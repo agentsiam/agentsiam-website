@@ -470,10 +470,13 @@ button {
     display: block;
     position: fixed;
     inset: 0;
-    /* Over the filter bar at z-30 and the site header at z-40. The fixed position makes
-       the stacking context that keeps Leaflet's own panes, which run from 200 to 1000,
-       inside the overlay rather than loose on the page. */
-    z-index: 60;
+    /* Over the filter bar at z-30, the site header at z-40, and the floating launchers at
+       z-500: the WhatsApp button is not rendered while no number is configured, and the
+       day one is it would otherwise sit on top of the card in the bottom corner. A view
+       that is the whole screen is the whole screen. The fixed position also makes the
+       stacking context that keeps Leaflet's own panes, which run from 200 to 1000, inside
+       the overlay rather than loose on the page. */
+    z-index: 501;
     background: var(--color-bg);
   }
   .as-map-pane[data-fullscreen="true"] .as-map-canvas {

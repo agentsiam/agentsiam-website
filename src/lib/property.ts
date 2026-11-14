@@ -12,6 +12,7 @@
  */
 
 import { AREAS, type Area } from "@/lib/areas";
+import { PHOTOS, type Photo } from "@/lib/photos.generated";
 import type { Dictionary } from "@/i18n";
 
 export type Property = {
@@ -646,6 +647,24 @@ export const FEATURED_PROPERTY: Property = LOTUS_HOUSE;
  * place. Undefined only if a property names an area that does not exist, which is a data
  * error worth surfacing rather than papering over with a fallback string.
  */
+/**
+ * The one photograph that stands for a property: the frame its `coverPhoto` names, or the
+ * first in its set.
+ *
+ * Here rather than at each call site because two different trees now have to agree about
+ * which frame a place is. The tile renders it on the server and the card over the
+ * full-screen map renders it on the client, and a guest who taps a pin after scrolling
+ * past the tile must not be shown a different house.
+ */
+export function propertyCoverPhoto(property: Property): Photo | undefined {
+  const set = PHOTOS[property.slug] ?? [];
+  return (
+    (property.coverPhoto &&
+      set.find((photo) => photo.file.includes(property.coverPhoto as string))) ||
+    set[0]
+  );
+}
+
 export function propertyArea(property: Property): Area | undefined {
   return AREAS.find((area) => area.slug === property.areaSlug);
 }

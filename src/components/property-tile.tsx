@@ -2,8 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Dictionary } from "@/i18n";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
-import { propertyArea, type Property } from "@/lib/property";
-import { PHOTOS } from "@/lib/photos.generated";
+import { propertyArea, propertyCoverPhoto, type Property } from "@/lib/property";
 import { distanceToCentre } from "@/lib/search";
 
 /**
@@ -69,10 +68,7 @@ export function PropertyTile({
   priority?: boolean;
 }) {
   const area = propertyArea(property);
-  const set = PHOTOS[property.slug] ?? [];
-  const photo =
-    (property.coverPhoto && set.find((p) => p.file.includes(property.coverPhoto as string))) ||
-    set[0];
+  const photo = propertyCoverPhoto(property);
   const km = distanceToCentre(property);
 
   const wide = layout === "wide";
