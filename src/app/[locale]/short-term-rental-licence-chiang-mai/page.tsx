@@ -21,6 +21,17 @@ import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
  * written as what the rules say today, to be confirmed per property, never as settled; and
  * nothing here mentions serving owners who do not apply.
  *
+ * Block order: hero (the owner's own question, both owner routes out of it) -> the four
+ * answers -> the Certificate of Exemption, as a spec panel -> the condo limit -> the ask ->
+ * the FAQ that carries the FAQPage markup -> what the page is, and its sources.
+ *
+ * Built from the same named shapes as the rest of the site rather than as a prose
+ * document, which is what it was. The hero's right-hand block is the abstract ground the
+ * guardrails call the empty image slot: no generated frame is approved for this page, and
+ * the ground is the correct treatment until one is. Neither the condo limit nor the ask
+ * takes a verdict hue, because teal and vermilion are verdict tokens and the ground would
+ * then rate copy the page never rated.
+ *
  * English, Thai and Chinese. The copy lives in the dictionaries under the `lic` keys; Thai
  * addresses the owner as ท่าน.
  */
@@ -116,79 +127,148 @@ export default async function LicencePage({ params }: PageProps<"/[locale]">) {
   const crumbs: Crumb[] = [{ name: COPY.crumb }];
 
   return (
-    <div className="mx-auto max-w-(--container-prose) px-5 pb-18 pt-9">
+    <div>
       <JsonLd data={breadcrumbSchema(locale, crumbs)} />
       <JsonLd data={faqSchema(COPY.faq.map((item) => ({ q: item.q, a: item.a })))} />
 
-      <span className="eyebrow">{COPY.eyebrow}</span>
-      <h1 className="mt-3 font-headline text-[clamp(28px,5vw,40px)] font-extrabold leading-[1.1] tracking-[-0.03em]">
-        {COPY.h1}
-      </h1>
-      <p className="mt-3 max-w-[600px] text-base leading-relaxed text-body">{COPY.intro}</p>
-
-      {/* shape: first-screen answers. The four cases an owner asks about, before anything else. */}
-      <dl className="mt-7 grid gap-3 sm:grid-cols-2">
-        {COPY.answers.map((item) => (
-          <div key={item.q} className="rounded-box border border-hairline px-5 py-4">
-            <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-              {item.q}
-            </dt>
-            <dd className="mt-1.5 text-[14.5px] leading-relaxed text-body">{item.a}</dd>
+      {/* shape: hero -- the owner's own question, and the two owner routes out of it. */}
+      <section className="px-5">
+        <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-primary px-6 py-13 sm:px-12 sm:py-14">
+          {/* The abstract ground is the empty image slot: no approved frame exists for this
+              page yet. aria-hidden, and the hue carries no verdict on the copy above it. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block"
+          />
+          <div className="relative min-[900px]:max-w-[min(680px,calc(70%-24px))]">
+            <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
+              {COPY.eyebrow}
+            </span>
+            <h1 className="mt-4.5 font-headline text-[clamp(28px,5vw,42px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
+              {COPY.h1}
+            </h1>
+            <p className="mt-4 max-w-[560px] text-base leading-relaxed text-white/85">
+              {COPY.intro}
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-5.5">
+              <Link href={href("/how-it-works")} className="pill-primary">
+                {COPY.helpLink}
+              </Link>
+              <Link
+                href={href("/contact")}
+                className="hit inline-block text-[14.5px] text-white underline underline-offset-4"
+              >
+                {COPY.contactLink}
+              </Link>
+            </div>
           </div>
-        ))}
-      </dl>
+        </div>
+      </section>
 
-      <section className="mt-12">
-        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.exemptionTitle}</h2>
-        <dl className="mt-4 max-w-[640px] divide-y divide-hairline border-y border-hairline">
-          {COPY.exemptionRows.map((row) => (
-            <div key={row.k} className="grid gap-1 py-3 sm:grid-cols-[160px_1fr] sm:gap-4">
-              <dt className="text-[14px] font-semibold text-ink">{row.k}</dt>
+      {/* shape: answer-grid -- the four cases an owner asks about, before anything else. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-14">
+        <dl className="grid gap-4 sm:grid-cols-2">
+          {COPY.answers.map((item, i) => (
+            <div key={item.q} className="rounded-panel border border-hairline px-6.5 py-6">
+              <dt className="flex items-baseline gap-3">
+                <span aria-hidden="true" className="font-mono text-[13px] font-semibold text-primary">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="eyebrow">{item.q}</span>
+              </dt>
+              <dd className="mt-3 text-[15px] leading-relaxed text-body">{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {/* shape: spec-panel -- the Certificate of Exemption, as a panel rather than six rows
+          of hairline. The rows are the page's reference content and are read by row. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
+          {COPY.exemptionTitle}
+        </h2>
+        <dl className="mt-6 overflow-hidden rounded-panel border border-hairline">
+          {COPY.exemptionRows.map((row, i) => (
+            <div
+              key={row.k}
+              className={`grid gap-1 px-6 py-4.5 sm:grid-cols-[190px_1fr] sm:gap-6 ${
+                i % 2 === 1 ? "bg-surface" : ""
+              }`}
+            >
+              <dt className="eyebrow pt-0.5">{row.k}</dt>
               <dd className="text-[15px] leading-relaxed text-body">{row.v}</dd>
             </div>
           ))}
         </dl>
       </section>
 
-      <section className="mt-12">
-        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.condoTitle}</h2>
-        <p className="mt-3 max-w-[640px] text-[15px] leading-relaxed text-body">{COPY.condoBody}</p>
-      </section>
-
-      <section className="mt-12">
-        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.helpTitle}</h2>
-        <p className="mt-3 max-w-[640px] text-[15px] leading-relaxed text-body">{COPY.helpBody}</p>
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Link href={href("/how-it-works")} className="pill-primary inline-block">
-            {COPY.helpLink}
-          </Link>
-          <Link
-            href={href("/contact")}
-            className="inline-block rounded-full border-[1.5px] border-hairline px-5 py-2.5 text-[14px] font-semibold hover:border-ink"
-          >
-            {COPY.contactLink}
-          </Link>
+      {/* shape: limit-callout -- the condo answer. Surface rather than a verdict hue: this
+          is the page's exclusion, and the excluded column on /how-it-works reads the same. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+        <div className="rounded-panel bg-surface px-6.5 py-7 sm:px-8.5">
+          <h2 className="font-display text-[23px] font-bold tracking-[-0.02em]">
+            {COPY.condoTitle}
+          </h2>
+          <p className="mt-3 max-w-[720px] text-[15px] leading-relaxed text-body">
+            {COPY.condoBody}
+          </p>
         </div>
       </section>
 
-      <section className="mt-12">
-        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.faqTitle}</h2>
+      {/* shape: highlight-panel -- the ask. The one place on the page that sells, and the
+          only block carrying both owner CTAs. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+        <div className="grad-sand rounded-panel px-6 py-8 sm:px-8.5">
+          <h2 className="font-display text-[23px] font-bold tracking-[-0.02em] text-ink">
+            {COPY.helpTitle}
+          </h2>
+          <p className="mt-2.5 max-w-[700px] text-[15px] leading-relaxed text-ink/85">
+            {COPY.helpBody}
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href={href("/how-it-works")} className="pill-primary">
+              {COPY.helpLink}
+            </Link>
+            <Link href={href("/contact")} className="pill-outline">
+              {COPY.contactLink}
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* shape: faq-rows -- the questions owners ask, carrying the FAQPage markup. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-15">
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">{COPY.faqTitle}</h2>
         <Faq items={COPY.faq.map((item) => ({ q: item.q, a: item.a }))} />
       </section>
 
-      <section className="mt-14 border-t border-hairline pt-8">
-        <h2 className="font-display text-lg font-bold tracking-[-0.015em]">{COPY.limitsTitle}</h2>
-        <p className="mt-2.5 max-w-[640px] text-[14px] leading-relaxed text-muted">{COPY.limitsBody}</p>
-        <h3 className="mt-6 text-[14px] font-semibold text-ink">{COPY.sourcesTitle}</h3>
-        <ul className="mt-2 space-y-1.5 text-[14px] leading-relaxed text-muted">
-          {COPY.sources.map((source) => (
-            <li key={source.url}>
-              <a href={source.url} rel="noopener" target="_blank" className="underline hover:text-primary">
-                {source.name}
-              </a>
-            </li>
-          ))}
-        </ul>
+      {/* shape: sources-block -- what the page is and what it is not, then the sources it
+          came from. Lower weight on purpose: it is provenance, not the argument. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pb-18 pt-16">
+        <div className="rounded-panel border border-hairline px-6.5 py-7 sm:px-8.5">
+          <h2 className="font-display text-[18px] font-bold tracking-[-0.015em]">
+            {COPY.limitsTitle}
+          </h2>
+          <p className="mt-2.5 max-w-[720px] text-[14px] leading-relaxed text-muted">
+            {COPY.limitsBody}
+          </p>
+          <h3 className="eyebrow mt-7">{COPY.sourcesTitle}</h3>
+          <ul className="mt-3 grid gap-2 text-[14px] leading-relaxed text-muted sm:grid-cols-2">
+            {COPY.sources.map((source) => (
+              <li key={source.url}>
+                <a
+                  href={source.url}
+                  rel="noopener"
+                  target="_blank"
+                  className="underline hover:text-primary"
+                >
+                  {source.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
     </div>
   );

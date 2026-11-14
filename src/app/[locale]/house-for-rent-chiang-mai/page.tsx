@@ -18,10 +18,16 @@ import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
  * Target query: "house for rent chiang mai" (Search Console, www property, 31/07 to
  * 30/10/2026: 31 variants, 101 impressions, average position 7.6, 0 clicks).
  *
- * The first screen answers the four things every long-stay guest asks: the monthly rate or
- * how to get one, what is included, deposit and terms, and where. Then the request form,
- * one line on the house we run, and the FAQ that carries the FAQPage markup. Lotus House
- * is a link, not a tile: the page answers the search, it is not a listing.
+ * Block order: hero (the search's own question, one button to the form) -> the four
+ * answers every long-stay guest asks, as cards -> the numbered steps after a request ->
+ * the request form -> the FAQ that carries the FAQPage markup -> the neighbourhoods ->
+ * the houses we run ourselves. Lotus House is a link, not a tile: the page answers the
+ * search, it is not a listing.
+ *
+ * Built from the same named shapes as the rest of the site rather than as a prose
+ * document, which is what it was. The hero's right-hand block is the abstract ground the
+ * guardrails call the empty image slot: no generated frame is approved for this page, and
+ * the ground is the correct treatment until one is.
  *
  * English, Thai and Chinese. The copy lives in the dictionaries under the `hfr` keys; Thai
  * addresses the guest as คุณ. The area names in the form stay English on every locale,
@@ -88,69 +94,104 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
   const crumbs: Crumb[] = [{ name: COPY.crumb }];
 
   return (
-    <div className="mx-auto max-w-(--container-prose) px-5 pb-18 pt-9">
+    <div>
       <JsonLd data={breadcrumbSchema(locale, crumbs)} />
       <JsonLd data={faqSchema(COPY.faq.map((item) => ({ q: item.q, a: item.a })))} />
 
-      <span className="eyebrow">{COPY.eyebrow}</span>
-      <h1 className="mt-3 font-headline text-[clamp(28px,5vw,40px)] font-extrabold leading-[1.1] tracking-[-0.03em]">
-        {COPY.h1}
-      </h1>
-      <p className="mt-3 max-w-[600px] text-base leading-relaxed text-body">{COPY.intro}</p>
-
-      {/* shape: first-screen answers. The four questions both leads asked, before anything else. */}
-      <dl className="mt-7 grid gap-3 sm:grid-cols-2">
-        {COPY.answers.map((item) => (
-          <div key={item.q} className="rounded-box border border-hairline px-5 py-4">
-            <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-              {item.q}
-            </dt>
-            <dd className="mt-1.5 text-[14.5px] leading-relaxed text-body">{item.a}</dd>
+      {/* shape: hero -- the question the page answers, and the one button that answers it. */}
+      <section className="px-5">
+        <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-primary px-6 py-13 sm:px-12 sm:py-14">
+          {/* The abstract ground is the empty image slot, not a placeholder to feel bad
+              about: no approved frame exists for this page yet. aria-hidden, and the hue
+              carries no verdict. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block"
+          />
+          <div className="relative min-[900px]:max-w-[min(680px,calc(70%-24px))]">
+            <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
+              {COPY.eyebrow}
+            </span>
+            <h1 className="mt-4.5 font-headline text-[clamp(28px,5vw,42px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
+              {COPY.h1}
+            </h1>
+            <p className="mt-4 max-w-[560px] text-base leading-relaxed text-white/85">
+              {COPY.intro}
+            </p>
+            <div className="mt-7">
+              <a href="#request" className="pill-primary">
+                {COPY.formTitle}
+              </a>
+            </div>
           </div>
-        ))}
-      </dl>
-      <a href="#request" className="pill-primary mt-6 inline-block">
-        {COPY.formTitle}
-      </a>
+        </div>
+      </section>
 
-      <section className="mt-12">
-        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.howTitle}</h2>
-        <ol className="mt-4 max-w-[640px] list-decimal space-y-2 pl-5 text-[15px] leading-relaxed text-body">
-          {COPY.how.map((step) => (
-            <li key={step}>{step}</li>
+      {/* shape: answer-grid -- the four questions both leads asked, each a card rather than
+          a row of a definition list, so the first screen reads as four answers. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-14">
+        <dl className="grid gap-4 sm:grid-cols-2">
+          {COPY.answers.map((item, i) => (
+            <div key={item.q} className="rounded-panel border border-hairline px-6.5 py-6">
+              <dt className="flex items-baseline gap-3">
+                <span aria-hidden="true" className="font-mono text-[13px] font-semibold text-primary">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="eyebrow">{item.q}</span>
+              </dt>
+              <dd className="mt-3 text-[15px] leading-relaxed text-body">{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {/* shape: step-band -- what happens after the request. The competitor baseline carries
+          a visible numbered funnel on the page; this is ours, and it was an ordered list. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">{COPY.howTitle}</h2>
+        <ol className="mt-6 grid gap-4 sm:grid-cols-2 min-[900px]:grid-cols-4">
+          {COPY.how.map((step, i) => (
+            <li key={step} className="rounded-panel bg-surface px-5.5 py-5.5">
+              <span aria-hidden="true" className="font-mono text-[13px] font-semibold text-primary">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <p className="mt-2.5 text-[14.5px] leading-relaxed">{step}</p>
+            </li>
           ))}
         </ol>
       </section>
 
-      <section id="request" className="mt-12 scroll-anchor">
-        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.formTitle}</h2>
-        <p className="mt-2.5 mb-5 max-w-[600px] text-[15px] leading-relaxed text-body">
-          {COPY.formBody}
-        </p>
-        <StayRequestForm
-          labels={stayRequestLabels(t)}
-          areas={AREAS.map((area) => area.name)}
-          page={PATH}
-          locale={locale as Locale}
-          privacyHref={href("/privacy-policy")}
-        />
+      {/* shape: contact-form -- the conversion, in a panel rather than loose on the page. */}
+      <section id="request" className="mx-auto max-w-(--container-prose) scroll-anchor px-5 pt-16">
+        <div className="rounded-panel border border-hairline px-6 py-9 sm:px-10">
+          <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
+            {COPY.formTitle}
+          </h2>
+          <p className="mt-2 mb-7 max-w-[600px] text-[15px] leading-relaxed text-muted">
+            {COPY.formBody}
+          </p>
+          <StayRequestForm
+            labels={stayRequestLabels(t)}
+            areas={AREAS.map((area) => area.name)}
+            page={PATH}
+            locale={locale as Locale}
+            privacyHref={href("/privacy-policy")}
+          />
+        </div>
       </section>
 
-      <p className="mt-6 max-w-[600px] text-[14px] leading-relaxed text-muted">
-        {COPY.haveBody}{" "}
-        <Link href={href("/properties")} className="font-semibold underline hover:text-primary">
-          {COPY.haveLink}
-        </Link>
-      </p>
-
-      <section className="mt-12">
-        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">{COPY.faqTitle}</h2>
+      {/* shape: faq-rows -- FAQ, carrying the FAQPage markup. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-15">
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">{COPY.faqTitle}</h2>
         <Faq items={COPY.faq.map((item) => ({ q: item.q, a: item.a }))} />
       </section>
 
-      <section className="mt-14 border-t border-hairline pt-8">
-        <h2 className="font-display text-lg font-bold tracking-[-0.015em]">{t.navDestinations}</h2>
-        <ul className="mt-3.5 flex flex-wrap gap-2">
+      {/* shape: area-chips -- the neighbourhoods, as the way out to the area pages. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+        <h2 className="font-display text-[20px] font-bold tracking-[-0.015em]">
+          {t.navDestinations}
+        </h2>
+        <ul className="mt-4 flex flex-wrap gap-2">
           {AREAS.map((area) => (
             <li key={area.slug}>
               <Link
@@ -162,6 +203,20 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* shape: highlight-panel -- the houses we run ourselves, as the page's closing beat
+          rather than a paragraph stranded under the form. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pb-18 pt-15">
+        <div className="grad-sand rounded-panel px-6 py-8 sm:px-8.5">
+          <p className="max-w-[700px] text-[15px] leading-relaxed text-ink/85">{COPY.haveBody}</p>
+          <Link
+            href={href("/properties")}
+            className="hit mt-3.5 inline-block text-[15px] font-semibold text-ink underline underline-offset-4 hover:text-primary"
+          >
+            {COPY.haveLink} →
+          </Link>
+        </div>
       </section>
     </div>
   );
