@@ -92,6 +92,28 @@ function subscribeToMapUrl(onChange: () => void) {
   };
 }
 
+/**
+ * The breakpoint, as something React can read, because the URL alone does not say whether
+ * the map is a view or a column.
+ *
+ * `?map=1` is width-blind: it is a link, and a link can be opened on anything. Opened on a
+ * desktop the overlay's CSS does not apply, so the page looked right, but the component
+ * still believed it was full screen and locked the body's scroll. A scroll container on
+ * <body> is how `position: sticky` stops working, so the site header and the filter bar
+ * both came unstuck on a page that otherwise looked perfectly normal.
+ */
+const PHONE_QUERY = "(max-width: 899px)";
+
+function readIsPhone(): boolean {
+  return window.matchMedia(PHONE_QUERY).matches;
+}
+
+function subscribeToWidth(onChange: () => void) {
+  const query = window.matchMedia(PHONE_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
 /** Chiang Mai, framed to the city and its immediate districts. */
 const CITY = { lat: 18.7883, lng: 98.9853, zoom: 12 };
 
@@ -215,7 +237,11 @@ export function ResultsMap({
    * map is not worth a round trip to the server for a list that has not changed.
    */
   const mapParam = useSyncExternalStore(subscribeToMapUrl, readMapParam, () => false);
-  const fullscreen = collapsible && mapParam;
+  // The width is half the answer: see PHONE_QUERY above. Both snapshots are false on the
+  // server, which is the first paint on every page, and neither is known until the client
+  // has one.
+  const isPhone = useSyncExternalStore(subscribeToWidth, readIsPhone, () => false);
+  const fullscreen = collapsible && mapParam && isPhone;
   /** Whether this component is what put the entry on the history stack. */
   const pushed = useRef(false);
 
