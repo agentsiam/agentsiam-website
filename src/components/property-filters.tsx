@@ -542,12 +542,12 @@ export function PropertyFilters({
                 {t.psSearchGroup}
               </legend>
               <div className="mt-2.5 grid gap-3">
-                <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                <label className="grid min-w-0 gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
                   {t.where}
                   <select
                     value={draft.city}
                     onChange={(event) => setDraft({ ...draft, city: event.target.value })}
-                    className={`${field} cursor-pointer`}
+                    className={`${field} w-full cursor-pointer`}
                   >
                     {CITIES.map((city) => (
                       <option key={city.slug} value={city.slug}>
@@ -559,36 +559,36 @@ export function PropertyFilters({
                 </label>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                  <label className="grid min-w-0 gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
                     {t.checkIn}
                     <input
                       type="date"
                       value={draft.from}
                       onChange={(event) => setDraft({ ...draft, from: event.target.value })}
-                      className={field}
+                      className={`${field} w-full`}
                     />
                   </label>
-                  <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                  <label className="grid min-w-0 gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
                     {t.checkOut}
                     <input
                       type="date"
                       value={draft.to}
                       min={draft.from || undefined}
                       onChange={(event) => setDraft({ ...draft, to: event.target.value })}
-                      className={field}
+                      className={`${field} w-full`}
                     />
                   </label>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                  <label className="grid min-w-0 gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
                     {t.guests}
                     <select
                       value={draft.guests || 0}
                       onChange={(event) =>
                         setDraft({ ...draft, guests: Number(event.target.value) })
                       }
-                      className={`${field} cursor-pointer`}
+                      className={`${field} w-full cursor-pointer`}
                     >
                       <option value={0}>{t.any}</option>
                       {guestOptions.map((n) => (
@@ -598,14 +598,14 @@ export function PropertyFilters({
                       ))}
                     </select>
                   </label>
-                  <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                  <label className="grid min-w-0 gap-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
                     {t.sort}
                     <select
                       value={draft.sort}
                       onChange={(event) =>
                         setDraft({ ...draft, sort: event.target.value as SearchState["sort"] })
                       }
-                      className={`${field} cursor-pointer`}
+                      className={`${field} w-full cursor-pointer`}
                     >
                       {SORTS.map((sort) => (
                         <option key={sort} value={sort}>
