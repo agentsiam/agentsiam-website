@@ -454,6 +454,26 @@ button {
     display: block;
     order: -1;
     margin-bottom: 4px;
+    /* A stacking context, which is the whole job of these two lines. Leaflet numbers its
+       own panes from 200 to 1000 and leaves `.leaflet-container` at `position: relative;
+       z-index: auto`, so with nothing to contain them those panes compete with the page
+       itself and win: the tiles painted straight over the sticky filter bar at z-30 and
+       the site header at z-40, and opening the map looked like the chrome had been sliced
+       in half. At 900px and up the pane is `position: sticky`, which is a stacking context
+       by itself, so this is only ever needed below the breakpoint. */
+    position: relative;
+    z-index: 0;
+  }
+  /* Vertical swipes scroll the page; horizontal ones still pan the map.
+
+     Leaflet sets `touch-action: none` on its container, which is right for a map that owns
+     the screen and wrong for one sitting in the middle of a scrolling list. Any swipe that
+     began on the 360px map panned the map and left the page where it was, so the map read
+     as a hole in the scroll that a thumb had to be aimed around. The override is scoped to
+     the results pane: the guide's map is not inside one and keeps Leaflet's own handling,
+     which is correct there because it is what the page is for. */
+  body[data-map-open="true"] .as-map-pane .leaflet-container {
+    touch-action: pan-y;
   }
 }
 

@@ -167,7 +167,28 @@ export function ResultsMap({
       { rootMargin: "400px" },
     );
     observer.observe(node);
-    return () => observer.disconnect();
+
+    /**
+     * Below 900px the pane is `display: none` until the filter bar's toggle opens it, and an
+     * element with no box never intersects anything, so the observer above cannot be what
+     * starts the map on a phone. It did not: tapping "Show map" opened a 360px panel that
+     * stayed empty, because nothing had asked for Leaflet yet and nothing ever would.
+     *
+     * The toggle says so directly. It sets the attribute that reveals the pane before it
+     * dispatches, so by the time this runs the container has its real height and the map is
+     * measured against a box rather than against nothing.
+     */
+    const onOpen = (event: Event) => {
+      if (!(event as CustomEvent<{ open: boolean }>).detail?.open) return;
+      setNear(true);
+      observer.disconnect();
+    };
+    window.addEventListener("as:map-toggle", onOpen);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("as:map-toggle", onOpen);
+    };
   }, []);
 
   useEffect(() => {

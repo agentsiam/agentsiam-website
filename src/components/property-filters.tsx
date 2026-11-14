@@ -1,7 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import type { Dictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { AREAS, CITIES } from "@/lib/areas";
@@ -46,6 +53,23 @@ const field =
 /** Everything inside the panel that can take focus, for the sheet's focus trap. */
 const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
+/**
+ * The map pane's open state, which lives on <body> and is read from there by everything
+ * that needs it: the CSS rule that shows the pane, and the bar's own toggle label.
+ *
+ * `document` is untouched on the server, so the store is only ever read on the client and
+ * the server snapshot is a flat false. That matches the first paint, where the attribute is
+ * unset and the pane is hidden.
+ */
+function readMapOpen() {
+  return document.body.dataset.mapOpen === "true";
+}
+
+function subscribeToMapToggle(onChange: () => void) {
+  window.addEventListener("as:map-toggle", onChange);
+  return () => window.removeEventListener("as:map-toggle", onChange);
+}
+
 export function PropertyFilters({
   t,
   locale,
@@ -75,7 +99,15 @@ export function PropertyFilters({
   // Mobile only. The split view cannot hold under 900px, so the map is opt-in there --
   // and the toggle belongs here, in the sticky bar, rather than below a list the guest
   // would have to scroll past fifty results to reach.
-  const [mapOpen, setMapOpen] = useState(false);
+  //
+  // Subscribed to rather than held in React state, because the attribute on <body> outlives
+  // this component and React state does not. Open the map, tap a property, press back: the
+  // attribute survived the client navigation and the map was still on screen, while a
+  // `useState(false)` had reset and the button underneath it read "Show map". The first tap
+  // then set a value that was already true and nothing moved, so the control read as dead
+  // and had to be pressed twice. There is one store now, and the event the toggle already
+  // dispatches for Leaflet's benefit is what tells React to read it again.
+  const mapOpen = useSyncExternalStore(subscribeToMapToggle, readMapOpen, () => false);
   // The panel's working copy. Discarded on Close, pushed to the URL on Apply.
   const [draft, setDraft] = useState<SearchState>(state);
 
@@ -90,12 +122,15 @@ export function PropertyFilters({
    * The state lives on <body> rather than in React because the pane is rendered by a
    * different component, in a different column of a server-rendered page. A data
    * attribute plus a CSS rule keeps them in step without lifting the whole results page
-   * into a client component, which would cost the crawlable list. The event is for
-   * Leaflet's benefit: it mis-measures a container that was hidden when it was built.
+   * into a client component, which would cost the crawlable list. The event does two jobs:
+   * Leaflet mis-measures a container that was hidden when it was built, and this component
+   * reads the attribute back through it rather than keeping a second copy of the answer.
+   *
+   * `next` is read from the attribute, not from the rendered value, so the first tap after
+   * a back navigation is a real toggle rather than a no-op.
    */
   function toggleMap() {
-    const next = !mapOpen;
-    setMapOpen(next);
+    const next = !readMapOpen();
     document.body.dataset.mapOpen = String(next);
     window.dispatchEvent(new CustomEvent("as:map-toggle", { detail: { open: next } }));
   }
