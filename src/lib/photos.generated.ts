@@ -138,6 +138,8 @@ import gardenvilla_52 from "@/photos/gardenvilla/53-c7de9fd4.jpeg";
 import gardenvilla_53 from "@/photos/gardenvilla/54-ce9111ff.jpeg";
 import gardenvilla_54 from "@/photos/gardenvilla/55-d309d596.jpeg";
 import gardenvilla_55 from "@/photos/gardenvilla/56-d9f4ead2.jpeg";
+import heroes_0 from "@/photos/heroes/owner-at-the-table.jpeg";
+import heroes_1 from "@/photos/heroes/residential-lane.jpeg";
 import jasminevilla_0 from "@/photos/jasminevilla/01-cover-pool-and-screen.jpeg";
 import jasminevilla_1 from "@/photos/jasminevilla/02-038b7d16.jpeg";
 import jasminevilla_2 from "@/photos/jasminevilla/03-19055d88.jpeg";
@@ -475,6 +477,10 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: gardenvilla_53, file: "54-ce9111ff.jpeg", alt: "" },
     { src: gardenvilla_54, file: "55-d309d596.jpeg", alt: "" },
     { src: gardenvilla_55, file: "56-d9f4ead2.jpeg", alt: "" },
+  ],
+  "heroes": [
+    { src: heroes_0, file: "owner-at-the-table.jpeg", alt: "A man at a dining table reading a printed document, a pen and a closed laptop beside him and a garden through the door behind" },
+    { src: heroes_1, file: "residential-lane.jpeg", alt: "A gate and garden wall on a tree-lined residential lane, bougainvillea over the wall and tended pots along the kerb" },
   ],
   "jasminevilla": [
     { src: jasminevilla_0, file: "01-cover-pool-and-screen.jpeg", alt: "" },

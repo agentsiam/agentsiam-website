@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
 import { JsonLd } from "@/components/json-ld";
 import { getDictionary, type Dictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
+import { pickPhoto } from "@/lib/photos";
 import { pageMeta } from "@/lib/site";
 import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
 
@@ -26,11 +28,11 @@ import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
  * the FAQ that carries the FAQPage markup -> what the page is, and its sources.
  *
  * Built from the same named shapes as the rest of the site rather than as a prose
- * document, which is what it was. The hero's right-hand block is the abstract ground the
- * guardrails call the empty image slot: no generated frame is approved for this page, and
- * the ground is the correct treatment until one is. Neither the condo limit nor the ask
- * takes a verdict hue, because teal and vermilion are verdict tokens and the ground would
- * then rate copy the page never rated.
+ * document, which is what it was. The hero carries a generated owner-narrative frame,
+ * approved for this one slot: an owner with the decision in front of them, not an argument
+ * about it. The solid ground stays underneath it, as the ground that shows if the file
+ * fails to load. Neither the condo limit nor the ask takes a verdict hue, because teal and
+ * vermilion are verdict tokens and the ground would then rate copy the page never rated.
  *
  * English, Thai and Chinese. The copy lives in the dictionaries under the `lic` keys; Thai
  * addresses the owner as ท่าน.
@@ -125,6 +127,7 @@ export default async function LicencePage({ params }: PageProps<"/[locale]">) {
   const COPY = pageCopy(t);
   const href = (path: string) => localePath(locale as Locale, path);
   const crumbs: Crumb[] = [{ name: COPY.crumb }];
+  const heroPhoto = pickPhoto("heroes", "owner-at-the-table");
 
   return (
     <div>
@@ -134,13 +137,29 @@ export default async function LicencePage({ params }: PageProps<"/[locale]">) {
       {/* shape: hero -- the owner's own question, and the two owner routes out of it. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-primary px-6 py-13 sm:px-12 sm:py-14">
-          {/* The abstract ground is the empty image slot: no approved frame exists for this
-              page yet. aria-hidden, and the hue carries no verdict on the copy above it. */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block"
-          />
-          <div className="relative min-[900px]:max-w-[min(680px,calc(70%-24px))]">
+          {/* The frame, with the abstract ground underneath as the ground that shows if the
+              file fails to load. The ground is also what the slot carried before a frame
+              was approved for it, and what it falls back to if one is ever removed. */}
+          {heroPhoto ? (
+            <div className="absolute inset-y-0 right-0 hidden w-[32%] min-[900px]:block">
+              <Image
+                src={heroPhoto.src}
+                alt={heroPhoto.alt}
+                lang="en"
+                placeholder="blur"
+                fill
+                priority
+                sizes="(min-width: 900px) 460px, 0px"
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <div
+              aria-hidden="true"
+              className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block"
+            />
+          )}
+          <div className="relative min-[900px]:max-w-[min(680px,calc(66%-24px))]">
             <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
               {COPY.eyebrow}
             </span>
@@ -162,6 +181,19 @@ export default async function LicencePage({ params }: PageProps<"/[locale]">) {
               </Link>
             </div>
           </div>
+          {heroPhoto ? (
+            <div className="relative mt-8 aspect-16/10 overflow-hidden rounded-box min-[900px]:hidden">
+              <Image
+                src={heroPhoto.src}
+                alt={heroPhoto.alt}
+                lang="en"
+                placeholder="blur"
+                fill
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
+          ) : null}
         </div>
       </section>
 
