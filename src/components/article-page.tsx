@@ -146,7 +146,7 @@ export function ArticlePage({
                 </figcaption>
                 {/* Overflow wrapper: three columns of prose do not fit a phone, and a table
                     that silently clips is worse than one a reader can push sideways. */}
-                <div className="mt-3 overflow-x-auto">
+                <div className="mt-3 overflow-x-auto overscroll-x-contain">
                   <table className="w-full min-w-[520px] border-collapse text-left">
                     <thead>
                       <tr className="border-y border-hairline">

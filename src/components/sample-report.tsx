@@ -130,7 +130,7 @@ export function SampleReport({ t }: { t: Dictionary }) {
           {t.hwSrCaseIntro}
         </p>
 
-        <div className="mt-3 overflow-x-auto">
+        <div className="mt-3 overflow-x-auto overscroll-x-contain">
           <table className="w-full min-w-[420px] border-collapse text-[13.5px]">
             <thead>
               <tr>

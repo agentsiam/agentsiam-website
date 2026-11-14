@@ -140,6 +140,24 @@
   }
 }
 
+/* Nothing on this site is allowed to scroll the page sideways.
+
+   Everything that is meant to move horizontally does it inside its own box and carries
+   `overscroll-x-contain` so the swipe stops at its own edge rather than chaining out to
+   the browser: the guide's card rails, the wide tables in a journal article, the channel
+   marquee. This rule is for the accidents, which until now had nothing to stop them, and
+   which on a phone read as the whole page sliding under the reader's thumb.
+
+   `clip` rather than `hidden`, and the difference is not cosmetic. `hidden` makes this
+   element a scroll container, and a scroll container on html or body is how `position:
+   sticky` quietly stops working: it would take the site header and the results bar with
+   it, and the failure would look like a layout bug rather than this line. `clip` cuts the
+   overflow off without creating one. A browser too old to know `clip` drops the
+   declaration and behaves exactly as the site does today. */
+html {
+  overflow-x: clip;
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-text);

@@ -59,7 +59,7 @@ export default async function AdminHome() {
         next action are read from that file and changed there.
       </p>
 
-      <div className="mt-6 overflow-x-auto rounded-panel border border-hairline bg-bg">
+      <div className="mt-6 overflow-x-auto overscroll-x-contain rounded-panel border border-hairline bg-bg">
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-hairline text-left text-xs font-semibold text-muted">

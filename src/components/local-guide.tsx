@@ -301,7 +301,7 @@ export function LocalGuide({
       {isDefault && favourites.length > 0 ? (
         <nav
           aria-label={t.guideJump}
-          className="mt-5 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] print:hidden"
+          className="mt-5 -mx-5 flex gap-2 overflow-x-auto overscroll-x-contain px-5 pb-1 [scrollbar-width:none] print:hidden"
         >
           {[
             ["#guide-favourites", t.guidePicks],
@@ -332,7 +332,7 @@ export function LocalGuide({
             <p className="mt-1 text-[14px] text-muted">{t.guideFavSub}</p>
             {/* A swipeable row on a phone, snapping card by card, so six picks do not push the
                 rest of the page six screens down; a grid from 640px and in print. */}
-            <ul className="mt-5 -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 print:grid print:grid-cols-2">
+            <ul className="mt-5 -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 print:grid print:grid-cols-2">
               {favourites.map((p) => (
                 <li key={p.name} className="flex w-[82%] shrink-0 snap-start flex-col rounded-panel border border-hairline border-l-4 border-l-deep-red p-5 sm:w-auto print:w-auto">
                   <p className="font-display text-[16.5px] font-bold leading-snug">
@@ -441,7 +441,7 @@ export function LocalGuide({
       <div
         role="group"
         aria-label={t.guideFilterCategory}
-        className="mt-3 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 print:hidden"
+        className="mt-3 -mx-5 flex gap-2 overflow-x-auto overscroll-x-contain px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 print:hidden"
       >
         <Link
           aria-current={chipCurrent(!category)}
@@ -471,7 +471,7 @@ export function LocalGuide({
         <div
           role="group"
           aria-label={t.guideFilterTags}
-          className="mt-3 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 print:hidden"
+          className="mt-3 -mx-5 flex gap-2 overflow-x-auto overscroll-x-contain px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 print:hidden"
         >
           <Link
             aria-current={chipCurrent(!tag)}
@@ -496,7 +496,7 @@ export function LocalGuide({
       <div
         role="group"
         aria-label={t.guideFilterArea}
-        className="mt-3 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 print:hidden"
+        className="mt-3 -mx-5 flex gap-2 overflow-x-auto overscroll-x-contain px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 print:hidden"
       >
         <Link
           aria-current={chipCurrent(!area)}

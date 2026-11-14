@@ -386,7 +386,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
             </figcaption>
           </figure>
         ) : (
-          <div className="mt-5 flex gap-4 overflow-x-auto pb-1">
+          <div className="mt-5 flex gap-4 overflow-x-auto overscroll-x-contain pb-1">
             {property.reviews.map((review) => (
               <figure
                 key={review.quote}
