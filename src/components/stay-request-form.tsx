@@ -375,11 +375,11 @@ export function StayRequestForm({
       </div>
 
       <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
-        <label className="grid gap-1.5 text-sm">
+        <label className="grid min-w-0 gap-1.5 text-sm">
           <span className={label}>{labels.checkIn}</span>
           <input required type="date" name="checkIn" className={field} />
         </label>
-        <label className="grid gap-1.5 text-sm">
+        <label className="grid min-w-0 gap-1.5 text-sm">
           <span className={label}>{labels.checkOut}</span>
           <input required type="date" name="checkOut" className={field} />
         </label>
@@ -409,7 +409,7 @@ export function StayRequestForm({
       </h3>
 
       <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
-        <label className="grid gap-1.5 text-sm">
+        <label className="grid min-w-0 gap-1.5 text-sm">
           <span className={label}>{labels.area}</span>
           <select name="area" defaultValue={defaultArea} className={field}>
             <option value="">{labels.areaAny}</option>
@@ -420,7 +420,7 @@ export function StayRequestForm({
             ))}
           </select>
         </label>
-        <label className="grid gap-1.5 text-sm">
+        <label className="grid min-w-0 gap-1.5 text-sm">
           <span className={label}>{labels.bedroomsMin}</span>
           <select name="bedrooms" defaultValue="2" className={field}>
             {BEDROOM_MINIMUMS.map((n) => (
@@ -435,7 +435,7 @@ export function StayRequestForm({
       <div className="mt-4">
         <span className={label}>{labels.guests}</span>
         <div className="mt-1.5 grid gap-3.5 sm:grid-cols-3">
-          <label className="grid gap-1 text-sm">
+          <label className="grid min-w-0 gap-1 text-sm">
             <span className={labelQuiet}>{labels.adults}</span>
             <input
               type="number"
@@ -446,7 +446,7 @@ export function StayRequestForm({
               className={field}
             />
           </label>
-          <label className="grid gap-1 text-sm">
+          <label className="grid min-w-0 gap-1 text-sm">
             <span className={labelQuiet}>{labels.children}</span>
             <input
               type="number"
@@ -459,7 +459,7 @@ export function StayRequestForm({
             />
           </label>
           {children > 0 ? (
-            <label className="grid gap-1 text-sm">
+            <label className="grid min-w-0 gap-1 text-sm">
               <span className={labelQuiet}>{labels.childrenAges}</span>
               <input
                 name="childrenAges"
@@ -548,7 +548,7 @@ export function StayRequestForm({
         <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">{labels.moreHint}</p>
 
         <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
-          <label className="grid gap-1.5 text-sm">
+          <label className="grid min-w-0 gap-1.5 text-sm">
             <span className={labelQuiet}>{labels.partyLabel}</span>
             <select name="party" defaultValue="" className={field}>
               <option value="">{labels.notSaid}</option>
@@ -559,7 +559,7 @@ export function StayRequestForm({
               ))}
             </select>
           </label>
-          <label className="grid gap-1.5 text-sm">
+          <label className="grid min-w-0 gap-1.5 text-sm">
             <span className={labelQuiet}>{labels.vehicle}</span>
             <select name="vehicle" defaultValue="" className={field}>
               <option value="">{labels.notSaid}</option>
@@ -567,7 +567,7 @@ export function StayRequestForm({
               <option value="yes">{labels.yes}</option>
             </select>
           </label>
-          <label className="grid gap-1.5 text-sm">
+          <label className="grid min-w-0 gap-1.5 text-sm">
             <span className={labelQuiet}>{labels.petsLabel}</span>
             <select
               name="pets"
@@ -584,7 +584,7 @@ export function StayRequestForm({
             </select>
           </label>
           {pets !== "" && pets !== "none" ? (
-            <label className="grid gap-1.5 text-sm">
+            <label className="grid min-w-0 gap-1.5 text-sm">
               <span className={labelQuiet}>{labels.petsCount}</span>
               <input
                 type="number"
@@ -597,12 +597,12 @@ export function StayRequestForm({
             </label>
           ) : null}
           {pets === "other" ? (
-            <label className="grid gap-1.5 text-sm">
+            <label className="grid min-w-0 gap-1.5 text-sm">
               <span className={labelQuiet}>{labels.petsSpecies}</span>
               <input name="petsSpecies" maxLength={40} className={field} />
             </label>
           ) : null}
-          <label className="grid gap-1.5 text-sm">
+          <label className="grid min-w-0 gap-1.5 text-sm">
             <span className={labelQuiet}>{labels.smokingLabel}</span>
             <select name="smoking" defaultValue="" className={field}>
               <option value="">{labels.notSaid}</option>

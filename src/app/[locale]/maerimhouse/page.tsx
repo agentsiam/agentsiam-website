@@ -199,7 +199,16 @@ export default async function MaeRimHousePage({ params }: PageProps<"/[locale]">
       {/* The request form, carrying this property's slug, so the inquiry is recorded as a
           question about this house rather than as an open requirement. It replaced a mailto
           link, which persisted nothing at all. */}
-      <section id="request" className="mt-12 scroll-anchor">
+      <section
+        id="request"
+        /* The page gutter, which this section did not have. It sits after the grid that
+           wraps the rest of the page, so it inherited no `px-5` and no measure: the
+           heading and the form panel ran edge to edge on a phone, with the panel's own
+           border flush against both sides of the screen, and the form stretched the full
+           width of a desktop. The prose container is what /house-for-rent-chiang-mai
+           already uses for the same form. */
+        className="mx-auto mt-12 max-w-(--container-prose) scroll-anchor px-5"
+      >
         <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
           {t.hfrFormTitle}
         </h2>
