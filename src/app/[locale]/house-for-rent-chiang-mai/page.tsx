@@ -3,11 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
 import { JsonLd } from "@/components/json-ld";
-import { StayRequestForm, type StayRequestLabels } from "@/components/stay-request-form";
+import { StayRequestForm } from "@/components/stay-request-form";
 import { getDictionary, type Dictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS } from "@/lib/areas";
 import { pageMeta, routeOgImage } from "@/lib/site";
+import { stayRequestLabels } from "@/lib/stay-request-copy";
 import { alt as ogAlt } from "./opengraph-image";
 import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
 
@@ -62,34 +63,6 @@ function pageCopy(t: Dictionary) {
       { q: t.hfrFaq5Q, a: t.hfrFaq5A },
       { q: t.hfrFaq6Q, a: t.hfrFaq6A },
     ],
-  };
-}
-
-function formLabels(t: Dictionary): StayRequestLabels {
-  return {
-    name: t.hfrFormName,
-    email: t.hfrFormEmail,
-    phone: t.hfrFormPhone,
-    optional: t.hfrFormOptional,
-    area: t.hfrFormArea,
-    areaAny: t.hfrFormAreaAny,
-    checkIn: t.hfrFormCheckIn,
-    checkOut: t.hfrFormCheckOut,
-    bedrooms: t.hfrFormBedrooms,
-    budget: t.hfrFormBudget,
-    budgetHint: t.hfrFormBudgetHint,
-    foundVia: t.hfrFormFoundVia,
-    foundViaHint: t.hfrFormFoundViaHint,
-    message: t.hfrFormMessage,
-    messageHint: t.hfrFormMessageHint,
-    required: t.hfrFormRequired,
-    send: t.hfrFormSend,
-    sending: t.hfrFormSending,
-    sentTitle: t.hfrFormSentTitle,
-    sentBody: t.hfrFormSentBody,
-    error: t.hfrFormError,
-    consent: t.hfrFormConsent,
-    privacy: t.hfrFormPrivacy,
   };
 }
 
@@ -155,9 +128,10 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
           {COPY.formBody}
         </p>
         <StayRequestForm
-          labels={formLabels(t)}
+          labels={stayRequestLabels(t)}
           areas={AREAS.map((area) => area.name)}
           page={PATH}
+          locale={locale as Locale}
           privacyHref={href("/privacy-policy")}
         />
       </section>

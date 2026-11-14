@@ -2,10 +2,14 @@
  * The document store, read and written from the admin.
  *
  * Paul's decision of 11/11/2026: the shortlist lives in files in the document store, not in
- * a database. guest-leads.csv stays the source of truth for the lead itself and is read
- * here, never written. The candidates live one JSON file per lead beside it, and the
+ * a database. guest-leads.csv stays the source of truth for the lead itself; the candidates
+ * live one JSON file per lead beside it, the inquiry as it arrived lives in another, and the
  * blocked-operator list is a file in the same folder. Every save is a commit, so git
  * history is the audit trail and Claude can still read a candidate.
+ *
+ * Three writers now, not one: a person in the admin, a person or Claude editing a file by
+ * hand in the document store, and the public request form through /api/stay-request, which
+ * appends a lead row and writes its inquiry record before any notification is sent.
  *
  * Two backends, picked from the environment and never mixed:
  *
@@ -38,11 +42,12 @@ import {
 import {
   addOfferedTo,
   appendHistory,
+  emptyCandidate,
   normalisedName,
   poolFactsFromCandidate,
   today,
 } from "./types";
-import type { Candidate, Lead, OwnerLead, PoolProperty, Shortlist } from "./types";
+import type { Candidate, Inquiry, Lead, OwnerLead, PoolProperty, Shortlist } from "./types";
 
 const REPO = process.env.CRM_REPO ?? "agentsiam/agentsiam-consulting";
 const BRANCH = process.env.CRM_BRANCH ?? "main";
@@ -73,6 +78,12 @@ export const CLIENT_ID = /^C-\d{4}$/;
 export function shortlistFile(leadId: string): string {
   if (!LEAD_ID.test(leadId)) throw new StoreError(`Not a lead ID: ${leadId}`);
   return `${CRM}/shortlists/${leadId}.json`;
+}
+
+/** One inquiry as it arrived, beside the shortlist it will grow. See the Inquiry type. */
+export function inquiryFile(leadId: string): string {
+  if (!LEAD_ID.test(leadId)) throw new StoreError(`Not a lead ID: ${leadId}`);
+  return `${CRM}/inquiries/${leadId}.json`;
 }
 
 export class StoreError extends Error {}
@@ -321,7 +332,15 @@ export async function readShortlist(leadId: string): Promise<Shortlist> {
   return {
     lead_id: parsed.lead_id ?? leadId,
     updated_on: parsed.updated_on ?? "",
-    candidates: Array.isArray(parsed.candidates) ? parsed.candidates : [],
+    // Every candidate comes back with every field the type names, because these files are
+    // older than some of the fields and are edited by hand as well. A candidate written
+    // before `asked_on` existed has no such key, and a form input reading an absent key
+    // stops being controlled, which React reports as a warning and a person experiences as
+    // a field that will not clear. The stored value always wins; only a missing one takes
+    // the default.
+    candidates: Array.isArray(parsed.candidates)
+      ? parsed.candidates.map((candidate) => ({ ...emptyCandidate(), ...candidate }))
+      : [],
   };
 }
 
@@ -466,6 +485,46 @@ export async function addLead(values: Partial<Lead>, who: string): Promise<strin
     "G",
     values as Record<string, string>,
     (id) => `Renter lead ${id}, ${values.name || "no name yet"}, added in the admin by ${who}`,
+  );
+}
+
+/**
+ * The same row, written by the request form on the public site rather than by a person in
+ * the admin.
+ *
+ * A separate function only because of the commit message: the history is the audit trail,
+ * and a row that arrived by itself at four in the morning should not read as something Paul
+ * or Nils typed. The id is assigned inside the retry, so two renters submitting in the same
+ * second get two rows rather than one.
+ */
+export async function addLeadFromRequestForm(
+  values: Partial<Lead>,
+  fromPage: string,
+): Promise<string> {
+  return appendWithId(
+    LEADS_FILE,
+    "lead_id",
+    "G",
+    values as Record<string, string>,
+    (id) =>
+      `Renter lead ${id}, ${values.name || "no name yet"}, from the request form on ${fromPage}`,
+  );
+}
+
+/**
+ * The structured record of one inquiry, written once, right after its lead row exists.
+ *
+ * Replaces rather than merges, which is safe because the lead ID was assigned a moment ago
+ * by the row append and so cannot already have a file. The three-attempt conflict retry
+ * inside `updateJson` still applies, because the GitHub contents API is the thing being
+ * written and a conflict there is about the file, not about the id.
+ */
+export async function writeInquiry(inquiry: Inquiry): Promise<void> {
+  await updateJson<Inquiry>(
+    inquiryFile(inquiry.lead_id),
+    () => inquiry,
+    () => inquiry,
+    `Renter inquiry ${inquiry.lead_id}, ${inquiry.routing}, from the request form on ${inquiry.from_page}`,
   );
 }
 
