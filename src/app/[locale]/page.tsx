@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getImageProps } from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 import { Faq } from "@/components/faq";
 import { IconChip } from "@/components/icon";
@@ -17,8 +17,10 @@ import { PropertyTile } from "@/components/property-tile";
 import { areaVibe } from "@/i18n/area-vibe";
 import { AREAS } from "@/lib/areas";
 import { areaName } from "@/lib/area-content";
-import heroLandscape from "@/photos/_hero/lantern_hero_wide.jpg";
-import heroPortrait from "@/photos/_hero/lantern_hero_portrait.jpg";
+import heroLandscape from "@/photos/_hero/house_garden_hero_wide.jpg";
+import heroPortrait from "@/photos/_hero/house_garden_hero_portrait.jpg";
+import longStayBackdrop from "@/photos/_panels/long-stay-house-at-dusk.webp";
+import longStayBackdropPortrait from "@/photos/_panels/long-stay-house-at-dusk-portrait.webp";
 import {
   routeOgImage,
   OG_LOCALE,
@@ -152,11 +154,40 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
 
   // Art direction. The panel's height is set by the text stack, so at 375 it is a 0.34 ratio
   // box, and object-fit cover on a landscape frame keeps only a narrow column of its width at
-  // that shape, whatever the frame is of. Phones get the 9:16 band, 785x1396, and the wide frame,
-  // 2560x1396, is held back for 900px and up, where the panel is wide enough to carry it.
-  // Both were cut and encoded before they reached the repo, so nothing in the build crops
-  // them: scripts/crop-hero-portrait.mjs cut the living-room portrait these replace and no
-  // longer feeds this page.
+  // that shape, whatever the frame is of. Phones get the 9:16 band and the wide frame is held
+  // back for 900px and up, where the panel is wide enough to carry it. Both were cut and encoded
+  // before they reached the repo, so nothing in the build crops them:
+  // scripts/crop-hero-portrait.mjs cut the living-room portrait these replace and no longer
+  // feeds this page.
+  //
+  // The wide frame is 2048x1152, a two-storey house across its own lawn and pool, and it is
+  // composed for this panel rather than cropped into it. The panel shows the photograph in
+  // exactly one place: the text column takes x 48 to 688 and the three cards take y 341 to
+  // 513, so the only clear window at 1440 is the right half between y 52 and 341, which lands
+  // on the frame's right half between 18% and 55% down. The house's roof and upper storey sit
+  // there. An interior cannot: it puts its subject on the floor, which is the part the cards
+  // cover, which is why the frame before this one read as a wall and the top of a window.
+  //
+  // At 1152 and up the panel is wider than 16:9, so cover scales the frame to the panel's
+  // width and crops a quarter of its height, and `object-[50%_42%]` is what decides which
+  // quarter: it keeps the roofline clear of the top edge and lets the pool go. Below 1152 the
+  // panel is taller than the frame and the crop turns horizontal instead, holding the full
+  // height and taking the middle two thirds of the width.
+  //
+  // The phone frame is the same photograph, cut to 9:16 at 507x902 from x 1376 and y 250 of
+  // the wide one, so both devices now show the same house. The sky is cut out of the file on
+  // purpose and this is the reason: a 9:16 frame is wider than the phone panel's 0.329, so
+  // cover scales it to the panel's height and crops its width, and the vertical anchor does
+  // nothing at all. Moving the house up the panel is something only the crop can do. Left
+  // full height, the top 40% of the frame is sky, it lands behind the headline under 0.74 to
+  // 0.66 of ink, and it flattens to grey.
+  //
+  // What it cannot do is make the photograph legible on a phone, and nothing at this layer
+  // can. The panel there is 335x1019: the copy covers y 48 to 397 over that ink, the three
+  // cards cover y 433 to 971 and are opaque, and what is left is three bands under 50px and
+  // two 24px gutters. The frame is atmosphere at that width, which is what the lantern band
+  // it replaces was good at and what a daylight house is worse at. Showing the house on a
+  // phone means giving the photograph a band of its own, which is a layout decision.
   //
   // One <picture> built from getImageProps rather than two <Image> elements, because a
   // hidden <img> is still fetched and two components would mean two hero downloads. The cost
@@ -266,15 +297,31 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
              the stops in px and the two stop fighting: the ink sits over the text column at
              every width and is spent by 800px, where nothing of the copy reaches.
 
-             Per glyph now, standfirst: 8.5 at 900, 7.6 at 1024, 7.7 at 1152, 6.3 at 1440,
-             8.2 at 1920. Headline: 5.1 at worst. The right of the frame also carries less
-             ink than the percentage scrim ever gave it, so the lanterns read better on a
-             wide screen than they did before any of this.
+             Per glyph against the night frame, standfirst: 8.5 at 900, 7.6 at 1024, 7.7 at
+             1152, 6.3 at 1440, 8.2 at 1920. Headline: 5.1 at worst. The right of the frame
+             also carries less ink than the percentage scrim ever gave it.
+
+             The wide frame is now a daylight one, and the horizontal scrim survived it
+             untouched, which was not the expected answer. The stops were set over a night
+             photograph and a bright frame would normally have to be met with more ink, but
+             the copy sits over the dark canopy of the tree and the hill behind it rather than
+             over anything lit, and the ink there is still 0.88 falling to 0.72. Composited
+             off the file itself at the measured geometry: headline 5.8 at 1152, 5.6 at 1280,
+             5.7 at 1440 and 5.8 at 1920; standfirst 6.8, 7.0, 7.1 and 7.1. Below 1152 the
+             copy wraps and the frame crops differently, and both lines sit higher: 11.2 and
+             8.0 at 900, 9.7 and 7.2 at 1024. AA asks 3.0 and 4.5.
+
+             Measure the headline by its bounding box rather than by its lines and it reads
+             3.4 at 1440, which is a measurement artefact and not a finding. The box runs to
+             x 688 and the longest line ends at 604; the empty right half of the second line
+             sits exactly where the scrim has spent itself and the sky is brightest, so the
+             box samples pixels no glyph ever covers. Anything retuned to fix that number
+             would be buying contrast for an empty rectangle and paying for it in ink across
+             the hill. The alpha the frame genuinely needs under the text peaks at 0.60.
 
              The photo stays decorative: alt="" and aria-hidden, because the h1 immediately
-             below already says what this section is, and a screen reader announcing a
-             night sky full of lanterns before the headline is noise rather than
-             information. */}
+             below already says what this section is, and a screen reader announcing a room
+             before the headline is noise rather than information. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-ink px-6 py-12 sm:px-12 sm:py-13">
           <picture className="absolute inset-0">
@@ -480,8 +527,95 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
              Breakpoints in px, not `sm:`, for the reason the property grid below already
              documents: `sm:` is in rem and sorts after the px variants in the built CSS. */}
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-15">
-        <div className="overflow-hidden rounded-[28px] bg-ink px-5 py-14 sm:px-10 sm:py-20">
-          <div className="mx-auto max-w-[1040px]">
+        <div className="relative overflow-hidden rounded-[28px] bg-ink px-5 py-14 sm:px-10 sm:py-20">
+          {/* The frame behind the panel. Three white cards cover the middle of this block, so
+              the only ink a reader ever sees is a band above them and a band below, and the
+              picture has to carry from those two strips alone. That is why it is a night
+              frame: under this scrim the only things that survive are large silhouettes and
+              light that emits its own, which here is the windows. A lit daytime room would
+              reduce to grey.
+
+              Held back from the photo manifest in `_panels/`, the way the hero frames sit in
+              `_hero/`, because it is one fixed frame a page imports rather than a gallery
+              photo. `alt=""` for the same reason it is decorative: it states nothing the
+              heading and the three cards do not already say.
+
+              Two frames and three states, because the panel changes shape rather than size:
+              it is as wide as the viewport and as tall as its own content, so it runs 2.3 on
+              a wide screen, 1.07 at 820 where the cards have gone three across but the panel
+              is still squat, and 0.31 on a phone. Below 640 the cards stack and the panel is
+              a tall column: the portrait crop. At 1024 and up: the wide frame. Between them,
+              neither, which is the flat ink the block shipped with, and that is measured
+              rather than cautious. At 820 the wide frame puts the booking line over the
+              window glow at 4.2 to 1 where it needs 4.5, and the portrait crop lands the same
+              glow in the same place, because the panel is too short there for the house to
+              clear the line.
+
+              The phone frame is a 9:16 crop of the same file, 464x825 from x 743 and y 300.
+              The sky comes off the top for the reason it does on the hero: the vertical
+              anchor does nothing once the frame is wider than the panel, so the crop is the
+              only thing that can move the house up. Trimmed there, the lit windows land
+              across the gap between the second and third cards and run down both 20px
+              gutters, which is most of what a phone ever sees of this panel: the cards are
+              opaque and take y 222 to 874 of 1074, and the only other clear ground is a 40px
+              band above the first one.
+
+              It survives being that small because of what the frame is. The windows emit
+              their own light, so they read at 45% of the photo through a 20px gap, where a
+              daylight frame would be a grey smear. The same scrim and the same gradient carry
+              both frames: the stops are percentages, and on the taller panel they still land
+              on solid ink over the heading. Measured per line off the files, worst of the
+              three text rows at each end of each band, against AA's 3.0 for the heading and
+              4.5 for the other two. Phone at 375: 11.6, 10.2, 11.1. The same band at its
+              widest, 639: 11.4, 10.1, 7.3. Wide frame at 1440: 10.8, 9.6, 11.9.
+
+              Two layers over the photo, not one. The ink at 55% holds the frame back far
+              enough to be a ground rather than a picture, while the palms, the graded sky and
+              the lit windows all still read; the gradient then returns the top third and the
+              last seventh to solid, so the gold heading sits on brand ink rather than on a
+              sky, and the pool reflections dissolve instead of being cut by the panel edge.
+
+              The crop is positioned, not centred, and the numbers are measured at 1440 rather
+              than guessed: the cards end at 72.6% of the panel and the booking line runs 78%
+              to 86.5%, which leaves two visible strips and a 33px gap between them. At 50%
+              the windows land across the booking line and are cut off at the foot, which
+              reads as a row of orange smudges rather than as a house. At 50% 90% they finish
+              at 78%, so the gap under the cards takes the whole band of them, the booking
+              line keeps dark ground behind it, and the house itself is read through what it
+              lights rather than by being shown. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+            <div className="absolute inset-0 hidden max-[640px]:block">
+              <Image
+                src={longStayBackdropPortrait}
+                alt=""
+                fill
+                placeholder="blur"
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="absolute inset-0 hidden min-[1024px]:block">
+              <Image
+                src={longStayBackdrop}
+                alt=""
+                fill
+                placeholder="blur"
+                sizes="(min-width: 1440px) 1400px, 100vw"
+                className="object-cover object-[50%_90%]"
+              />
+            </div>
+            <div className="absolute inset-0 bg-ink/55" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--color-ink)_0%,transparent_32%,transparent_86%,var(--color-ink)_100%)]" />
+            {/* Only the phone needs this, and only because of what sits at the foot of the
+                portrait crop. The booking line lands at 82% to 88% of the panel there, and the
+                crop keeps the pool and its reflections, which are the second brightest thing
+                in the frame. Without this the line measures 4.4 to 1 at 639 where it needs
+                4.5. The wide frame has the same foot and does not need it, because on a wide
+                panel the gradient's own 86% stop already covers the line. */}
+            <div className="absolute inset-0 hidden bg-[linear-gradient(180deg,transparent_74%,var(--color-ink)_92%)] max-[640px]:block" />
+          </div>
+
+          <div className="relative mx-auto max-w-[1040px]">
             <h2 className="mx-auto max-w-[816px] text-center font-display text-[clamp(26px,4.4vw,40px)] leading-[1.2] font-bold uppercase text-gold-on-ink">
               {t.longStayTitle}
             </h2>
