@@ -13,7 +13,7 @@ import { IconChip } from "@/components/icon";
 import type { Photo } from "@/lib/photos";
 
 /**
- * The four routes as a tabbed block on an ink ground, Paul's direction 03/11/2026, taking the
+ * The routes as a tabbed block on an ink ground, Paul's direction 03/11/2026, taking the
  * design of the "one platform, every task handled" block on Lodgify's home page.
  *
  * Its numbers, measured off that page at a 1440 viewport, are the ones used here: block radius
@@ -37,6 +37,14 @@ import type { Photo } from "@/lib/photos";
  * the grid tracks and the rendered buttons are different widths, and measuring also survives
  * the labels being dictionary strings, since Thai runs wider than English.
  */
+
+// One equal track per route at 640px and up, written out so Tailwind's scanner sees each class.
+const TRACKS: Record<number, string> = {
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-3",
+  4: "sm:grid-cols-4",
+  5: "sm:grid-cols-5",
+};
 
 type Route = {
   icon: ComponentProps<typeof IconChip>["name"];
@@ -95,9 +103,16 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
 
   return (
     <>
-      {/* The bar. Below 640px the four stack and the active one carries its own fill, because
-          one sliding marker cannot follow a wrapped row, and a 2x2 grid of the two-line Thai
-          labels reads as four labels crammed in a box rather than as a bar.
+      {/* The bar. Below 640px the tabs stack and the active one carries its own fill, because
+          one sliding marker cannot follow a wrapped row, and a two-column grid of the two-line
+          Thai labels reads as labels crammed in a box rather than as a bar.
+
+          The track count comes from `routes.length` rather than a literal, because it was a
+          literal four while the block has carried three routes since decision 70's fourth panel
+          was dropped. The fourth track stayed empty, so the three tabs sat in the left
+          three-quarters of a full-width bar with a gap of white at the end, which reads as the
+          bar being off centre. Tailwind only ships classes it finds written out, so the count
+          is a lookup of literal class names and not an interpolated string.
 
           No `.hit` on these buttons, deliberately, though most controls on the site carry it.
           It is a tap-target expander, `padding: 6px 4px; margin: -6px -4px`, and that negative
@@ -113,7 +128,7 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
         ref={bar}
         role="tablist"
         aria-label={panelLabel}
-        className="relative mt-14 grid grid-cols-1 gap-1 rounded-panel bg-bg p-1 sm:grid-cols-4 sm:rounded-full"
+        className={`relative mt-14 grid grid-cols-1 gap-1 rounded-panel bg-bg p-1 sm:rounded-full ${TRACKS[routes.length] ?? "sm:grid-cols-4"}`}
       >
         <span
           aria-hidden="true"
