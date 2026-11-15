@@ -138,6 +138,8 @@ import gardenvilla_52 from "@/photos/gardenvilla/53-c7de9fd4.jpeg";
 import gardenvilla_53 from "@/photos/gardenvilla/54-ce9111ff.jpeg";
 import gardenvilla_54 from "@/photos/gardenvilla/55-d309d596.jpeg";
 import gardenvilla_55 from "@/photos/gardenvilla/56-d9f4ead2.jpeg";
+import heroes_0 from "@/photos/heroes/at-the-table.jpeg";
+import heroes_1 from "@/photos/heroes/open-gate.jpeg";
 import jasminevilla_0 from "@/photos/jasminevilla/01-cover-pool-and-screen.jpeg";
 import jasminevilla_1 from "@/photos/jasminevilla/02-038b7d16.jpeg";
 import jasminevilla_2 from "@/photos/jasminevilla/03-19055d88.jpeg";
@@ -475,6 +477,10 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: gardenvilla_53, file: "54-ce9111ff.jpeg", alt: "" },
     { src: gardenvilla_54, file: "55-d309d596.jpeg", alt: "" },
     { src: gardenvilla_55, file: "56-d9f4ead2.jpeg", alt: "" },
+  ],
+  "heroes": [
+    { src: heroes_0, file: "at-the-table.jpeg", alt: "Two people at a dining table, both looking down at a printed document between them, one pointing at a line on the page" },
+    { src: heroes_1, file: "open-gate.jpeg", alt: "An open steel gate seen from inside a garden, a hose on the wall and shrubs in pots along the path, with a lane and a passer-by beyond" },
   ],
   "jasminevilla": [
     { src: jasminevilla_0, file: "01-cover-pool-and-screen.jpeg", alt: "" },

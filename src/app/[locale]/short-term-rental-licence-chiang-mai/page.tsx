@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
 import { JsonLd } from "@/components/json-ld";
 import { getDictionary, type Dictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
+import { pickPhoto } from "@/lib/photos";
 import { pageMeta } from "@/lib/site";
 import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
 
@@ -26,11 +28,12 @@ import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
  * the FAQ that carries the FAQPage markup -> what the page is, and its sources.
  *
  * Built from the same named shapes as the rest of the site rather than as a prose
- * document, which is what it was. The hero's right-hand block is the abstract ground and
- * stays that way: a hero carries `symptom`, `reframe` and `ask`, and no generated-imagery
- * class may fill a hero. A generated owner-narrative frame was put here and pulled the
- * same day, because an owner alone with a document carries the symptom and neither the
- * reframe nor the ask, so it showed the predicament this page exists to resolve.
+ * document, which is what it was. The hero carries a generated frame briefed against the
+ * hero's own slots: it serves `reframe` and `ask`, two people working the documents
+ * together rather than one owner alone. The first frame here showed a man alone, which can
+ * only carry `symptom`, so it showed the predicament this page exists to resolve and was
+ * pulled for it. The second figure is the argument. The ground stays underneath the image
+ * as what shows if the file fails to load.
  *
  * Neither the condo limit nor the ask takes a verdict hue, because teal and vermilion are
  * verdict tokens and the ground would then rate copy the page never rated.
@@ -128,6 +131,7 @@ export default async function LicencePage({ params }: PageProps<"/[locale]">) {
   const COPY = pageCopy(t);
   const href = (path: string) => localePath(locale as Locale, path);
   const crumbs: Crumb[] = [{ name: COPY.crumb }];
+  const heroPhoto = pickPhoto("heroes", "at-the-table");
 
   return (
     <div>
@@ -137,18 +141,30 @@ export default async function LicencePage({ params }: PageProps<"/[locale]">) {
       {/* shape: hero -- the owner's own question, and the two owner routes out of it. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-primary px-6 py-13 sm:px-12 sm:py-14">
-          {/* The abstract ground, and it stays. A hero carries `symptom`, `reframe` and
-              `ask`, and none of the three generated-imagery classes may fill a hero at
-              all: place fills the area grid and area page headers, owner narrative fills
-              the route grid, object fills the value-glyph grid. A slot that fits no class
-              is not covered, and the guardrails say the ground is the correct treatment
-              there rather than a placeholder. Generated frames were put here and pulled
-              the same day; see decision 96. aria-hidden, and the hue carries no verdict. */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block"
-          />
-          <div className="relative min-[900px]:max-w-[min(680px,calc(70%-24px))]">
+          {/* The frame serves this hero's own spine slots, not `fit`: a hero carries
+              `symptom`, `reframe` and `ask`, and the first pair of frames was briefed
+              against `fit` and pulled for it. The ground stays underneath as what shows
+              if the file fails to load. */}
+          {heroPhoto ? (
+            <div className="absolute inset-y-0 right-0 hidden w-[32%] min-[900px]:block">
+              <Image
+                src={heroPhoto.src}
+                alt={heroPhoto.alt}
+                lang="en"
+                placeholder="blur"
+                fill
+                priority
+                sizes="(min-width: 900px) 460px, 0px"
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <div
+              aria-hidden="true"
+              className="absolute inset-y-0 right-0 hidden w-[24%] bg-sand min-[900px]:block"
+            />
+          )}
+          <div className="relative min-[900px]:max-w-[min(680px,calc(66%-24px))]">
             <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
               {COPY.eyebrow}
             </span>
@@ -170,6 +186,25 @@ export default async function LicencePage({ params }: PageProps<"/[locale]">) {
               </Link>
             </div>
           </div>
+          {/* The phone copy. The frames are portrait, made for the tall column this hero
+              carries at 900px and up, so the ratio stays close to the source: a 16:10 band
+              out of the middle of a 2:3 frame is a slice, not a photograph. Its own
+              `sizes` keeps the two copies from both being fetched, and it is above the
+              fold on a phone, so it carries `priority`. */}
+          {heroPhoto ? (
+            <div className="relative mt-8 aspect-4/5 overflow-hidden rounded-box min-[900px]:hidden">
+              <Image
+                src={heroPhoto.src}
+                alt={heroPhoto.alt}
+                lang="en"
+                placeholder="blur"
+                fill
+                priority
+                sizes="(min-width: 900px) 0px, calc(100vw - 88px)"
+                className="object-cover"
+              />
+            </div>
+          ) : null}
         </div>
       </section>
 
