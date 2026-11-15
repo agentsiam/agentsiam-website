@@ -5,9 +5,8 @@ import { useEffect } from "react";
 import { keepLanding } from "@/lib/attribution";
 
 /**
- * Keeps the first page of a visit for the owner form's attribution. Renders nothing, and
- * stores nothing while `KEEP_LANDING` in src/lib/attribution.ts is off, which it is until
- * Paul decides it: see that file for why.
+ * Keeps the first page of a visit for the owner form's attribution. Renders nothing. What it
+ * stores, when, and why it is admitted: src/lib/attribution.ts.
  */
 export function AttributionLanding() {
   const pathname = usePathname();

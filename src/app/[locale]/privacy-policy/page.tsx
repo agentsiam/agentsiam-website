@@ -98,7 +98,10 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
           <p>
             <strong>Enquiries.</strong> When you send the contact form we receive your name,
             email address, the phone number or LINE handle if you supply one, the property
-            type and neighbourhood you selected, and the content of your message. We use it
+            type and neighbourhood you selected, and the content of your message. With it we
+            receive how you reached the site, as described under Cookies below: any campaign
+            tags on the link you followed, the website that sent you, and the first page you
+            opened. We use it
             for one purpose: to answer you and, if the enquiry becomes an engagement, to
             carry out the work you asked about. The lawful basis is your consent, and the
             steps taken at your request before entering a contract.
@@ -215,6 +218,15 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
               they are not used for advertising.
             </p>
           )}
+          <p>
+            When you arrive on this site from another website, or by a link that carries
+            campaign tags, we keep those tags, the address of that website and the first page
+            you opened in your browser&rsquo;s session storage. It is not a cookie, it holds
+            nothing that identifies you, and your browser deletes it when you close the tab.
+            It is never sent to us or anyone else on its own: it reaches us only if you send
+            the property owner enquiry form, so that we know which page or campaign brought
+            the enquiry.
+          </p>
           {/* Only when the chat is actually configured. A privacy policy describing a
               provider the site is not running is as wrong as one that stays silent about a
               provider it is. */}

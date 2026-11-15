@@ -257,7 +257,8 @@ export default async function RootLayout({
             and it stays out of the consent banner only because Crisp's Total Privacy Mode
             is on: see src/components/crisp-chat.tsx, which is where that is written down. */}
         <CrispChat locale={locale} websiteId={CRISP_WEBSITE_ID} />
-        {/* Stores nothing until KEEP_LANDING in src/lib/attribution.ts is switched on. */}
+        {/* Session storage on arrival, admitted by Paul as the one exception to the rule
+            above: see src/lib/attribution.ts and the privacy policy's Cookies section. */}
         <AttributionLanding />
       </body>
     </html>

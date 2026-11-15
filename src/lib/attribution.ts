@@ -1,7 +1,8 @@
 /**
  * What brought a visitor to the site, read in the browser and sent with the owner form.
  *
- * Two places to read it from, and only one is switched on.
+ * Two places to read it from. Both are on, and the first page of the visit wins when it
+ * carried anything.
  *
  * - **The page the form sits on.** Read at the moment of submitting, from that page's own
  *   URL and `document.referrer`. Stores nothing anywhere, so it passes the test the layout
@@ -9,16 +10,21 @@
  *   only sees UTM tags on a link that lands straight on /contact.
  * - **The first page of the visit.** Kept in `sessionStorage` on arrival, so a visitor who
  *   lands on /how-it-works from an ad and only then opens /contact is still attributed. That
- *   is storage written on page view, which the layout's rule does not admit, so it is off
- *   until Paul decides it and the privacy policy says so. `KEEP_LANDING` is the switch.
+ *   is storage written on page view, which the layout's rule does not otherwise admit. Paul
+ *   chose to admit it, knowing that, because owner links go to /how-it-works and the form
+ *   page alone would leave most owner leads unattributed. It is written only when the
+ *   arrival carries campaign tags or an external referrer, holds nothing that identifies
+ *   the visitor, dies with the tab, and the privacy policy's Cookies section says all of
+ *   that. `KEEP_LANDING` is the switch.
  *
  * Nothing here is sent anywhere except inside a form the visitor chose to submit.
  */
 
 import type { Attribution } from "@/lib/admin/types";
 
-/** Off: see the file comment. Turning it on is a privacy decision, not a code change. */
-export const KEEP_LANDING = false;
+/** On, by Paul's decision: see the file comment. Turning it off also means taking the
+ * session storage paragraph out of the privacy policy's Cookies section. */
+export const KEEP_LANDING = true;
 
 const STORAGE_KEY = "agentsiam:landing";
 
