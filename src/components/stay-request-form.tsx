@@ -145,8 +145,18 @@ const label = "text-xs font-semibold uppercase tracking-[0.06em] text-muted";
 const labelQuiet = "text-[12.5px] text-muted";
 
 /** A select inside a sentence rather than under a label of its own. */
-const inlineSelect =
-  "rounded-md border-[1.5px] border-hairline bg-bg px-2 py-1 text-[13px] outline-none focus-visible:border-ink";
+/**
+ * A qualifier's control: under the sentence it belongs to, and visibly narrower than the
+ * fields it qualifies.
+ *
+ * It used to sit inside the sentence at 13px, which read well and stopped reading well the
+ * day every control on a phone went to 16px to keep Safari from zooming the page. At that
+ * size it out-sized the words around it and pushed the last of them onto a line of its own,
+ * next to a control with a ragged right edge. The register is kept by the muted label above
+ * it rather than by shrinking the control below what a thumb can use.
+ */
+const qualifierSelect =
+  "w-full max-w-[220px] rounded-lg border-[1.5px] border-hairline bg-bg px-3 py-2 outline-none focus-visible:border-ink";
 
 const sectionHeading = "font-display text-[17px] font-bold tracking-[-0.015em]";
 
@@ -358,12 +368,15 @@ export function StayRequestForm({
           />
         </div>
         <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">
-          {labels.contactPick} {labels.answerInline}{" "}
+          {labels.contactPick}
+        </p>
+        <label className="mt-2.5 grid min-w-0 gap-1 text-[12.5px] text-muted">
+          <span>{labels.answerInline}</span>
           <select
             name="replyLanguage"
             aria-label={labels.replyLanguage}
             defaultValue={locale}
-            className={inlineSelect}
+            className={qualifierSelect}
           >
             {(Object.keys(labels.languages) as Locale[]).map((code) => (
               <option key={code} value={code}>
@@ -371,7 +384,7 @@ export function StayRequestForm({
               </option>
             ))}
           </select>
-        </p>
+        </label>
       </div>
 
       <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
@@ -385,15 +398,14 @@ export function StayRequestForm({
         </label>
       </div>
 
-      {/* A qualifier reads as a sentence under the thing it qualifies, not as a row of its
-          own shouting as loudly as the dates. */}
-      <p className="mt-2.5 text-[12.5px] text-muted">
-        {labels.datesInline}{" "}
+      {/* A qualifier sits under the thing it qualifies, quieter than it. */}
+      <label className="mt-2.5 grid min-w-0 gap-1 text-[12.5px] text-muted">
+        <span>{labels.datesInline}</span>
         <select
           name="flexibility"
           aria-label={labels.flexLabel}
           defaultValue="exact"
-          className={inlineSelect}
+          className={qualifierSelect}
         >
           {DATE_FLEXIBILITY.map((value) => (
             <option key={value} value={value}>
@@ -401,7 +413,7 @@ export function StayRequestForm({
             </option>
           ))}
         </select>
-      </p>
+      </label>
 
       {/* What you are looking for */}
       <h3 className={`${sectionHeading} mt-8 border-t border-hairline pt-7`}>

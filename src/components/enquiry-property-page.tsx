@@ -256,7 +256,7 @@ export function EnquiryPropertyPage({
            border flush against both sides of the screen, and the form stretched the full
            width of a desktop. The prose container is what /house-for-rent-chiang-mai
            already uses for the same form. */
-        className="mx-auto mt-12 max-w-(--container-prose) scroll-anchor px-5"
+        className="mx-auto mt-12 max-w-(--container-prose) scroll-anchor px-5 pb-18"
       >
         <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
           {t.hfrFormTitle}
