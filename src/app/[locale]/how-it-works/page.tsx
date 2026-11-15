@@ -123,13 +123,17 @@ export default async function HowItWorksPage({
       {/* shape: hero -- management first, then the core claim, one button to the form. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 flex max-w-(--container-chrome) flex-col justify-center overflow-hidden rounded-panel bg-ink px-6 py-13 sm:px-12 sm:py-14 min-[900px]:min-h-[560px]">
+          {/* Two different pictures, not two crops of one. At 900px and up the whole figure
+              reads beside the copy column. On a phone the copy fills the panel and a figure
+              behind the scrim disappears, so the phone gets a detail instead: a hand drawing
+              the curtain back, which survives both the scale and the scrim. */}
           <picture className="absolute inset-0">
             <source media="(min-width: 900px)" srcSet={heroWide?.srcSet} />
             <img
               {...heroTall}
               alt=""
               aria-hidden="true"
-              className="h-full w-full object-cover object-[64%_42%] min-[900px]:object-[58%_26%]"
+              className="h-full w-full object-cover object-[52%_38%] min-[900px]:object-[58%_26%]"
             />
           </picture>
           {/* One scrim, horizontal at 900px and up because the copy sits in a left column,
