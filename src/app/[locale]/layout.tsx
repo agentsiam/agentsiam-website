@@ -32,6 +32,7 @@ import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
 import { CrispChat } from "@/components/crisp-chat";
 import { AnalyticsConsent } from "@/components/analytics-consent";
+import { AttributionLanding } from "@/components/attribution-landing";
 import { NotFoundStringsProvider } from "@/components/not-found-strings";
 import { getDictionary } from "@/i18n";
 import { HTML_LANG, LOCALES, isLocale, localePath } from "@/i18n/config";
@@ -256,6 +257,8 @@ export default async function RootLayout({
             and it stays out of the consent banner only because Crisp's Total Privacy Mode
             is on: see src/components/crisp-chat.tsx, which is where that is written down. */}
         <CrispChat locale={locale} websiteId={CRISP_WEBSITE_ID} />
+        {/* Stores nothing until KEEP_LANDING in src/lib/attribution.ts is switched on. */}
+        <AttributionLanding />
       </body>
     </html>
   );

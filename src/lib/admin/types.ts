@@ -306,9 +306,32 @@ export const LEAD_SOURCES = [
   "seo",
   "agent-partner",
   "inbound",
+  "website-form",
 ] as const;
 
-/** An owner lead, exactly the twenty columns of leads.csv. */
+/** The five owner ICPs in service-model.md, by the three answers that decide one. The form
+ * only suggests, in `icp_suggested`; `icp` is the confirmed value and blank until a person
+ * sets it. A lead carries one ICP: a pair such as "ICP3 or ICP1" is the form not knowing
+ * occupancy yet, never two ICPs. */
+export const ICPS = ["ICP1", "ICP2", "ICP3", "ICP4", "ICP5"] as const;
+
+/** What the owner asked for when they arrived, beside the ICP that says where the lead is
+ * going. From the owner lead nurture playbook, proposed and not yet merged in the document
+ * store: if Paul changes the list, this constant is the one place it changes. */
+export const ENTRY_ASKS = [
+  "management",
+  "cleaning only",
+  "co-host",
+  "study",
+  "permission",
+  "price only",
+  "other",
+] as const;
+
+/** An owner lead, exactly the twenty-eight columns of leads.csv. The last eight came with the
+ * owner form writing its own leads: when it arrived, the confirmed and suggested ICP, what the
+ * owner asked for, and the three attribution fields a person filters on. The full attribution
+ * is in the owner inquiry record, `owner-inquiries/L-####.json`. */
 export type OwnerLead = {
   lead_id: string;
   name: string;
@@ -330,6 +353,65 @@ export type OwnerLead = {
   lost_reason: string;
   notes: string;
   history: string;
+  received_date: string;
+  icp: string;
+  icp_suggested: string;
+  entry_ask: string;
+  utm_source: string;
+  utm_medium: string;
+  utm_campaign: string;
+  referrer: string;
+};
+
+/**
+ * What brought a visitor to the site, as the browser saw it. Every field is optional because
+ * most visitors arrive with none of it. `referrer` is an external site only: a referrer on
+ * agentsiam.com says which page they clicked from, which `landing_path` and `form_page`
+ * already say better.
+ */
+export type Attribution = {
+  utm_source: string;
+  utm_medium: string;
+  utm_campaign: string;
+  utm_term: string;
+  utm_content: string;
+  gclid: string;
+  fbclid: string;
+  referrer: string;
+  landing_path: string;
+  /** Where the attribution was read: `landing` when it was kept from the first page of the
+   * visit, `form page` when it was read off the page the form sat on. */
+  captured: string;
+};
+
+/**
+ * One owner enquiry as it arrived, beside leads.csv:
+ * as-salesmarketing/01-crm/owner-inquiries/L-####.json in agentsiam-consulting.
+ *
+ * Written by /api/contact, never by the admin. The row is what a person reads; this is the
+ * enquiry exactly as submitted, kept so a later reader can see what the form was told
+ * rather than what somebody summarised. Unlike a renter inquiry it may hold the owner's
+ * contact details, because the owner row in leads.csv does too: the no-handles rule in the
+ * CRM README is guest-leads.csv's.
+ */
+export type OwnerInquiry = {
+  lead_id: string;
+  received_on: string;
+  received_at: string;
+  name: string;
+  email: string;
+  phone: string;
+  wrote_in: string;
+  form_page: string;
+  listed: string;
+  agency: string;
+  listing_url: string;
+  bedrooms: string;
+  property_type: string;
+  area: string;
+  message: string;
+  icp_suggested: string;
+  attribution: Attribution;
 };
 
 /** Dated contacts inside a `history` cell, newest last, separated by ` || `. The CRM README
@@ -448,6 +530,14 @@ export function emptyOwnerLead(): OwnerLead {
     lost_reason: "",
     notes: "",
     history: "",
+    received_date: "",
+    icp: "",
+    icp_suggested: "",
+    entry_ask: "",
+    utm_source: "",
+    utm_medium: "",
+    utm_campaign: "",
+    referrer: "",
   };
 }
 

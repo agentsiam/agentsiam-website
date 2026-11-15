@@ -16,8 +16,18 @@ import type { OwnerLead } from "@/lib/admin/types";
 
 export const dynamic = "force-dynamic";
 
-export default async function OwnersPage() {
+export default async function OwnersPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   await requireSession();
+  const params = await searchParams;
+  const active: Record<string, string> = {};
+  for (const { key } of OWNER.filters ?? []) {
+    const value = params[key];
+    if (typeof value === "string" && value) active[key] = value;
+  }
 
   const problem = storeProblem();
   if (problem) return <Problem>{problem}</Problem>;
@@ -36,6 +46,7 @@ export default async function OwnersPage() {
       spec={OWNER}
       rows={leads as unknown as Record<string, string>[]}
       pathFor={adminOwnerPath}
+      active={active}
       blurb="Work next_action_date daily. A lead with no next action and no date is a lead you have dropped."
     />
   );

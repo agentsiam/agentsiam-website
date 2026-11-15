@@ -15,6 +15,8 @@
 import {
   CLIENT_STATUSES,
   CONTACT_CHANNELS,
+  ENTRY_ASKS,
+  ICPS,
   LEAD_SOURCES,
   LICENCES,
   OWNER_SEGMENTS,
@@ -60,8 +62,12 @@ export type RecordSpec = {
   file: string;
   fields: FieldSpec[];
   /** What a list of these shows, and in what order. Separate from `fields` because a list
-   * shows columns nobody edits here, `offered_to` among them. */
-  listColumns: { key: string; label: string }[];
+   * shows columns nobody edits here, `offered_to` among them. `fallback` is a column shown,
+   * marked as such, while `key` is blank: the form's suggested ICP until a person confirms
+   * one. */
+  listColumns: { key: string; label: string; fallback?: string }[];
+  /** Columns the list can be filtered on, each by its exact values. */
+  filters?: { key: string; label: string }[];
 };
 
 /** Who owns a lead. Two people, named rather than free text, so the column stays sortable. */
@@ -129,16 +135,46 @@ export const OWNER: RecordSpec = {
   listColumns: [
     { key: "name", label: "Name" },
     { key: "stage", label: "Stage" },
+    { key: "icp", label: "ICP", fallback: "icp_suggested" },
+    { key: "entry_ask", label: "Asked for" },
+    { key: "source", label: "Source" },
     { key: "qualification", label: "Grade" },
     { key: "property_type", label: "Property" },
     { key: "area", label: "Area" },
     { key: "next_action", label: "Next action" },
     { key: "next_action_date", label: "When" },
   ],
+  filters: [
+    { key: "stage", label: "Stage" },
+    { key: "icp", label: "ICP" },
+    { key: "entry_ask", label: "Asked for" },
+    { key: "source", label: "Source" },
+  ],
   fields: [
     { key: "lead_id", label: "Lead ID", kind: "text", readOnly: true },
     { key: "name", label: "Name", kind: "text", required: true },
     { key: "stage", label: "Stage", kind: "select", options: OWNER_STAGES },
+    {
+      key: "icp",
+      label: "ICP",
+      kind: "select",
+      options: ICPS,
+      hint: "Confirmed by a person. One per lead; a pair from the form is settled by reading occupancy",
+    },
+    {
+      key: "icp_suggested",
+      label: "ICP suggested by the form",
+      kind: "text",
+      readOnly: true,
+    },
+    {
+      key: "entry_ask",
+      label: "Asked for",
+      kind: "select",
+      options: ENTRY_ASKS,
+      hint: "What the owner came in asking for, beside the ICP that says where the lead is going",
+    },
+    { key: "received_date", label: "Received", kind: "date" },
     {
       key: "qualification",
       label: "Grade",
@@ -173,6 +209,10 @@ export const OWNER: RecordSpec = {
       hint: "Property, situation and objections, in their words",
       wide: true,
     },
+    { key: "utm_source", label: "UTM source", kind: "text", readOnly: true },
+    { key: "utm_medium", label: "UTM medium", kind: "text", readOnly: true },
+    { key: "utm_campaign", label: "UTM campaign", kind: "text", readOnly: true },
+    { key: "referrer", label: "Referrer", kind: "text", readOnly: true },
   ],
 };
 

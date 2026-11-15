@@ -47,7 +47,15 @@ import {
   poolFactsFromCandidate,
   today,
 } from "./types";
-import type { Candidate, Inquiry, Lead, OwnerLead, PoolProperty, Shortlist } from "./types";
+import type {
+  Candidate,
+  Inquiry,
+  Lead,
+  OwnerInquiry,
+  OwnerLead,
+  PoolProperty,
+  Shortlist,
+} from "./types";
 
 const REPO = process.env.CRM_REPO ?? "agentsiam/agentsiam-consulting";
 const BRANCH = process.env.CRM_BRANCH ?? "main";
@@ -78,6 +86,12 @@ export const CLIENT_ID = /^C-\d{4}$/;
 export function shortlistFile(leadId: string): string {
   if (!LEAD_ID.test(leadId)) throw new StoreError(`Not a lead ID: ${leadId}`);
   return `${CRM}/shortlists/${leadId}.json`;
+}
+
+/** One owner enquiry as it arrived, beside leads.csv. See the OwnerInquiry type. */
+export function ownerInquiryFile(leadId: string): string {
+  if (!OWNER_ID.test(leadId)) throw new StoreError(`Not an owner lead ID: ${leadId}`);
+  return `${CRM}/owner-inquiries/${leadId}.json`;
 }
 
 /** One inquiry as it arrived, beside the shortlist it will grow. See the Inquiry type. */
@@ -578,6 +592,66 @@ export async function addOwnerLead(values: Partial<OwnerLead>, who: string): Pro
     values as Record<string, string>,
     (id) => `Owner lead ${id}, ${values.name || "no name yet"}, added in the admin by ${who}`,
   );
+}
+
+/**
+ * The same row, written by the owner form on the public site. A separate function for the
+ * same reason as the renter one: the commit message is the audit trail, and a row that
+ * arrived by itself should not read as something a person typed.
+ */
+export async function addOwnerLeadFromForm(
+  values: Partial<OwnerLead>,
+  fromPage: string,
+): Promise<string> {
+  return appendWithId(
+    OWNERS_FILE,
+    "lead_id",
+    "L",
+    values as Record<string, string>,
+    (id) => `Owner lead ${id}, ${values.name || "no name yet"}, from the owner form on ${fromPage}`,
+  );
+}
+
+/**
+ * The owner whose row already carries this email or phone, if one does, so a second enquiry
+ * from the same person lands on their row rather than opening a second lead.
+ *
+ * Matched inside `contact_info`, which is free text worked by hand as well: an email is
+ * matched case-insensitively, a phone on its digits alone, and a phone shorter than eight
+ * digits is not matched at all, because "LINE: abc12" must not collide with anything.
+ */
+export function findOwnerByContact(
+  leads: OwnerLead[],
+  email: string,
+  phone: string,
+): OwnerLead | null {
+  const wantedEmail = email.trim().toLowerCase();
+  const wantedDigits = phone.replace(/\D/g, "");
+  for (const lead of leads) {
+    const info = lead.contact_info ?? "";
+    if (wantedEmail && info.toLowerCase().includes(wantedEmail)) return lead;
+    if (wantedDigits.length >= 8 && info.replace(/\D/g, "").includes(wantedDigits)) return lead;
+  }
+  return null;
+}
+
+/** The owner enquiry record, written once, right after its row exists. A repeat enquiry from
+ * the same owner does not write one: it is a dated history line on their row, so the first
+ * enquiry, the one with the attribution that brought them, is never overwritten. */
+export async function writeOwnerInquiry(inquiry: OwnerInquiry): Promise<void> {
+  await updateJson<OwnerInquiry>(
+    ownerInquiryFile(inquiry.lead_id),
+    () => inquiry,
+    () => inquiry,
+    `Owner inquiry ${inquiry.lead_id}, from the owner form on ${inquiry.form_page}`,
+  );
+}
+
+/** Null when the lead was entered by hand and so has no enquiry record. */
+export async function readOwnerInquiry(leadId: string): Promise<OwnerInquiry | null> {
+  const stored = await readStored(ownerInquiryFile(leadId));
+  if (!stored) return null;
+  return JSON.parse(stored.text) as OwnerInquiry;
 }
 
 /* ---------------------------------------------------------------------------------------

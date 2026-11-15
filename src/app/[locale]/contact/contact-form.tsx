@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
+import { attributionForForm } from "@/lib/attribution";
 import { CONTACT_EMAIL } from "@/lib/site";
 
 /**
@@ -129,6 +130,9 @@ export function ContactForm({
       agency: listed === "Yes" ? agency : "",
       bedrooms,
       locale,
+      // Read at submit, never before: see src/lib/attribution.ts.
+      page: window.location.pathname,
+      attribution: attributionForForm(),
     };
 
     try {
