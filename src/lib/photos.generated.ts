@@ -340,7 +340,7 @@ export const PHOTOS: Record<string, Photo[]> = {
   "areas": [
     { src: areas_0, file: "chang-khian.jpeg", alt: "A house gateway and clipped hedge below a forested mountain slope, Chang Khian, Chiang Mai" },
     { src: areas_1, file: "chang-phueak.jpeg", alt: "A fresh produce stall set out early in the morning, Chang Phueak, Chiang Mai" },
-    { src: areas_2, file: "pa-daet.jpeg", alt: "A vendor grills sai ua across a lane from traditional and newer homes in Pa Daet, Chiang Mai" },
+    { src: areas_2, file: "pa-daet.jpeg", alt: "Shoppers between lit stalls of clothes and crafts at an evening walking street market, Chiang Mai" },
     { src: areas_3, file: "chang-khlan.jpeg", alt: "Textile stalls and shoppers outside a market entrance at dusk in Chang Khlan, Chiang Mai." },
     { src: areas_4, file: "hang-dong.jpeg", alt: "A villa and garden on a quiet lane below forested foothills in Nam Phrae, Hang Dong." },
     { src: areas_5, file: "mae-rim.jpeg", alt: "Flooded rice paddy and forested hills in morning haze, Mae Rim, north of Chiang Mai" },
