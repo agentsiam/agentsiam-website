@@ -723,7 +723,7 @@ export const en = {
   // Eyebrow above the results count on /properties.
   psEyebrow: "Places to stay",
   // Sits under the h1 count, before the honest-gap note.
-  psSubhead: "Every place we manage in Chiang Mai, with our own photographs and the real distance to the centre.",
+  psSubhead: "Places in Chiang Mai listed with us, with the real distance to the centre.",
   // Says why the list is short. Same register as areaEmptyBody on /destinations.
   psGapNote: "One place is live today and more are being taken on. We add properties one at a time, and only where we can look after them properly.",
   // Owner link inside the gap note, points at /how-it-works.
