@@ -27,6 +27,12 @@ import {
  * sentence is conditional. The retention periods in that text are the GA4 property's own
  * data retention settings, read from its admin screen: change one there and this changes too.
  *
+ * The second exception is the newsletter paragraph under "What we collect, and why",
+ * added 15/11/2026 in the same change as the sign-up on the two editorial hubs. A form
+ * that links to this policy from its consent line while the policy does not describe what
+ * the form just did is worse than a form with no link at all. **Draft: it has not been
+ * signed off and has not been read by counsel.**
+ *
  * Not translated -- see the note on the terms page.
  */
 
@@ -105,6 +111,25 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             for one purpose: to answer you and, if the enquiry becomes an engagement, to
             carry out the work you asked about. The lawful basis is your consent, and the
             steps taken at your request before entering a contract.
+          </p>
+          {/* The two editorial hubs, /journal and /host-newsletter, added 15/11/2026 with
+              the sign-up itself. Three things in here are unusual enough to be worth
+              stating rather than leaving a reader to assume the ordinary case: the address
+              reaches a mailbox and not a mailing-list provider, so there is no third party
+              holding the list; it is not used to market the services this company sells;
+              and withdrawing consent is replying, because a person reads that mailbox.
+              All three are true only while the list stays a mailbox. The day a sending
+              provider is chosen, this paragraph is the first thing that has to change, and
+              "Who else sees it" gains a bullet naming it. */}
+          <p>
+            <strong>The journal and the host newsletter.</strong> When you give us an email
+            address on one of our editorial pages we receive that address, which of the two
+            pages you gave it on, and the language you were reading in. We use it for one
+            purpose: to email you when we publish something new there. It is not added to
+            any other list and it is not used to market our services to you. It does not
+            reach a mailing-list provider either; it arrives in our own mailbox and stays
+            there. The lawful basis is your consent, which you can withdraw at any time by
+            replying to any issue and asking us to stop.
           </p>
           <p>
             <strong>Property owner information.</strong> If you engage us for a feasibility
@@ -277,7 +302,9 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
           <h2>How long we keep it</h2>
           <p>
             Enquiries that do not become engagements are kept for up to two years from
-            your last message, then deleted. A WhatsApp conversation is kept for twelve
+            your last message, then deleted. An email address given for the journal or the
+            host newsletter is kept until you ask us to stop sending them, and is deleted
+            when you do. A WhatsApp conversation is kept for twelve
             months from your most recent message in it, then deleted, and we hold only
             the five hundred most recent messages of one at any time. Booking records
             are kept for five years, which is the minimum the Thai Accounting Act and

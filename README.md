@@ -699,6 +699,19 @@ the admin without touching a deployment.
   list. Unsubscribing today is replying to an issue, which works only because a person reads the
   mailbox. Resend cannot verify this domain while it stays at Wix (`DNS-EMAIL-RUNBOOK.md`), so the
   provider decision is not a free one.
+- **The privacy policy's newsletter paragraph is drafted and not signed off (15/11/2026).**
+  Written the same day on Paul's instruction, after the gap was raised: a paragraph under "What we
+  collect, and why" naming the address, which hub it came from and the language read in, the single
+  purpose, and consent withdrawn by replying; a sentence under "How long we keep it"; and
+  `PRIVACY_UPDATED` moved to 2026-11-15, which the policy's own "Changes" section promises. **It has
+  not been read by counsel and Paul has not signed it off.** Three claims in it are true only while
+  the list stays a mailbox: that no mailing-list provider holds the address, that it is not used to
+  market the services, and that replying is how consent is withdrawn. The day a sending provider is
+  chosen, that paragraph changes and "Who else sees it" gains a bullet naming the provider. No
+  recipient bullet was added now, because the sign-up goes out through the transactional email and
+  mailbox providers the first bullet already names. What this entry does **not** cover is the
+  renter request form's own gap, two entries above: that one is still open and the two were not
+  written in one pass after all.
 - **The hub chrome's Thai and Chinese have had no native read (15/11/2026).** Forty-five keys, the
   `hub*` and `sub*` blocks in the three dictionaries: the masthead facts, the reading-time label,
   the three "How this is written" lines, the six rail cards, and the whole of the sign-up form
