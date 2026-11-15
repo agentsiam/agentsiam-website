@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LineFooterLink } from "./line-cta";
 import { Logo } from "./logo";
 import { getDictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
@@ -137,6 +138,7 @@ export function Footer({ locale }: { locale: Locale }) {
             >
               {CONTACT_EMAIL}
             </a>
+            <LineFooterLink label={t.lineFooterLink} />
           </div>
         </div>
 

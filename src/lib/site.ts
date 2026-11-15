@@ -81,6 +81,48 @@ export const POSTAL_ADDRESS = {
 export const WHATSAPP_NUMBER = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").replace(/[^\d]/g, "");
 
 /**
+ * The LINE Official Account, as its basic ID with the @.
+ *
+ * A constant and not an environment variable, deliberately. There is one account, the ID
+ * is public, and nothing about it varies by environment, so the only thing a variable
+ * would add is a deployment step that can be missed. This site has already lost a channel
+ * to exactly that: `NEXT_PUBLIC_WHATSAPP_NUMBER` has been unset in production since
+ * 12/09/2026, so a finished WhatsApp prompt has been invisible on the live site ever
+ * since, by design and unnoticed. A published way of reaching us belongs beside
+ * CONTACT_EMAIL and CONTACT_TELEPHONE, where it is on because it is written down.
+ *
+ * It is published in three places that must not drift: the footer link, the add-us panel
+ * under every sent form, and the QR at LINE_QR_SRC, which is an image of this same ID.
+ * Changing the ID means replacing that file in the same commit.
+ */
+export const LINE_BASIC_ID = "@555ampnu";
+
+/**
+ * The add-friend link for that account, which is also the chat link: LINE shows the
+ * account profile with Add friend on it to a visitor who has not added it, and opens the
+ * one-to-one chat for one who has. One URL serving both, so the footer and the forms
+ * cannot drift apart.
+ *
+ * The ID is percent-encoded, so the @ arrives as %40. LINE's URL scheme documents the
+ * encoded form and calls the raw @ deprecated.
+ *
+ * On a desktop browser this link cannot open the app. It lands on the profile page, or on
+ * nothing but a QR code, which is why the panel on a sent form shows the QR itself rather
+ * than the button alone.
+ */
+export const LINE_ADD_FRIEND_URL = `https://line.me/R/ti/p/${encodeURIComponent(LINE_BASIC_ID)}`;
+
+/**
+ * The account's QR code, downloaded from LINE rather than generated here, so what a
+ * visitor scans is LINE's own artwork and carries their mark. 540px square, white
+ * background rather than transparent, which is what lets it sit on the dark newsletter
+ * panel and still scan.
+ *
+ * Fetched by URL exactly as it sits on disk, so it belongs in public/.
+ */
+export const LINE_QR_SRC = "/line-qr.png";
+
+/**
  * Crisp website ID, for the live chat launcher. Public by nature: it identifies the
  * chatbox to Crisp's own script and ends up in the page either way.
  *

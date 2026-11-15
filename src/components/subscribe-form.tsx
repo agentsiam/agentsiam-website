@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { LineFollowPanel } from "./line-cta";
 import type { Dictionary } from "@/i18n";
 import type { Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
@@ -118,6 +119,15 @@ export function SubscribeForm({
         >
           {t.subSentBody}
         </p>
+        <LineFollowPanel
+          ink={ink}
+          labels={{
+            title: t.lineSentTitle,
+            body: t.lineSentBody,
+            cta: t.lineSentCta,
+            qrAlt: t.lineQrAlt,
+          }}
+        />
       </div>
     );
   }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { LineFollowPanel } from "@/components/line-cta";
 import type { Dictionary } from "@/i18n";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
@@ -188,6 +189,14 @@ export function ContactForm({
           </a>
           .
         </p>
+        <LineFollowPanel
+          labels={{
+            title: t.lineSentTitle,
+            body: t.lineSentBody,
+            cta: t.lineSentCta,
+            qrAlt: t.lineQrAlt,
+          }}
+        />
         <Link
           href={homeHref}
           className="mt-5 inline-block text-sm font-semibold underline underline-offset-4"

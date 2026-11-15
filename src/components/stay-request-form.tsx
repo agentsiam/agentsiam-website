@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { LineFollowPanel } from "./line-cta";
 import type { Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
 import { CONTACT_EMAIL } from "@/lib/site";
@@ -130,6 +131,10 @@ export type StayRequestLabels = {
   sending: string;
   sentTitle: string;
   sentBody: string;
+  lineTitle: string;
+  lineBody: string;
+  lineCta: string;
+  lineQrAlt: string;
   error: string;
   consent: string;
   privacy: string;
@@ -315,6 +320,14 @@ export function StayRequestForm({
           </a>
           .
         </p>
+        <LineFollowPanel
+          labels={{
+            title: labels.lineTitle,
+            body: labels.lineBody,
+            cta: labels.lineCta,
+            qrAlt: labels.lineQrAlt,
+          }}
+        />
       </div>
     );
   }

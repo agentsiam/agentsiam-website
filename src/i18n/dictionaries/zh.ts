@@ -1437,4 +1437,11 @@ export const zh: Dictionary = {
   // -- editorial hub closing call to action --------------------------------
   hubCtaJournal: "在找来清迈期间的住处吗？",
   hubCtaHost: "想聊聊您自己的物业了吗？",
+
+  // -- LINE ----------------------------------------------------------------
+  lineFooterLink: "在 LINE 上联系我们",
+  lineSentTitle: "在 LINE 上继续联系",
+  lineSentBody: "添加我们为好友，就能在 LINE 上继续沟通，我们在这里回复最快。扫描二维码，或在手机上点击按钮。",
+  lineSentCta: "在 LINE 上添加我们",
+  lineQrAlt: "添加 AgentSiam 的 LINE 二维码",
 };

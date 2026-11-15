@@ -1665,6 +1665,16 @@ export const en = {
   hubCtaJournal: "Looking for somewhere to stay while you are here?",
   // The same line on the owner outlet. Owner register in Thai: ท่าน.
   hubCtaHost: "Ready to talk about your own property?",
+
+  // -- LINE ----------------------------------------------------------------
+  // Footer link to the LINE official account, beside the email address in the contact column.
+  lineFooterLink: "Chat on LINE",
+  // The add-us panel under a sent form. LINE is where a Thai enquiry actually continues, and a friend is a channel we can reach again.
+  lineSentTitle: "Carry on in LINE",
+  lineSentBody: "Add us as a friend and the enquiry carries on in LINE, which is where we reply fastest. Scan the code, or tap the button on a phone.",
+  lineSentCta: "Add us on LINE",
+  // The QR is not decoration: on a desktop browser the add-friend link shows a profile page rather than opening the app, so the code is the only thing that works from a laptop.
+  lineQrAlt: "QR code that adds AgentSiam on LINE",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
