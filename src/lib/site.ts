@@ -92,8 +92,8 @@ export const WHATSAPP_NUMBER = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").r
  * CONTACT_EMAIL and CONTACT_TELEPHONE, where it is on because it is written down.
  *
  * It is published in three places that must not drift: the footer link, the add-us panel
- * under every sent form, and the QR at LINE_QR_SRC, which is an image of this same ID.
- * Changing the ID means replacing that file in the same commit.
+ * under the two enquiry forms once they are sent, and the QR at LINE_QR_SRC, which is an
+ * image of this same ID. Changing the ID means replacing that file in the same commit.
  */
 export const LINE_BASIC_ID = "@555ampnu";
 

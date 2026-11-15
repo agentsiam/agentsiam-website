@@ -830,16 +830,18 @@ the admin without touching a deployment.
   `privacyChatCookie` in the privacy policy and shifts the WhatsApp launcher up to
   `bottom-24` so the two floating buttons do not collide. `.env.example` carries the full
   warning.
-- **The LINE channel has never been seen on the live site (15/11/2026).** `LINE_BASIC_ID` in
+- **Nobody has confirmed the LINE account receives anything (15/11/2026).** `LINE_BASIC_ID` in
   `src/lib/site.ts` is `@555ampnu`, published by the footer link and by the add-us panel under
-  all three sent forms, contact, renter request and host newsletter, which serves that
-  account's own QR from `public/line-qr.png`. Checked locally: the panel and the link render,
-  and the ID and the QR are the same account, proven by opening the add-friend link and
-  comparing the QR LINE itself serves for it. Not checked: that a message sent to the account
-  reaches anybody, and the account's own setup. `page.line.me/555ampnu` returns no public
-  profile, so it is either not searchable in LINE or not finished, and a channel nobody can
-  find by name is half a channel. The Thai and Chinese of the five `line*` strings have had no
-  native read.
+  the two forms that carry a real enquiry, contact and renter request, once they are sent. The
+  panel serves the account's own QR from `public/line-qr.png`. The newsletter signup carries
+  neither, deliberately: an email address is not an enquiry, so LINE follows a requirement or
+  it does not follow at all. Verified live: the footer link is on the English, Thai and Chinese
+  pages and the QR answers 200, and the ID and the QR are the same account, proven by opening
+  the add-friend link and comparing the QR LINE itself serves for it. Not verified: that a
+  message sent to the account reaches anybody, and the panel on the live site, which needs a
+  real submission to see. `page.line.me/555ampnu` returns no public profile, so the account is
+  either not searchable in LINE or not finished, and a channel nobody can find by name is half
+  a channel. The Thai and Chinese of the five `line*` strings have had no native read.
 - **Google Analytics 4 has two parts still unreviewed.** It runs only while
   `NEXT_PUBLIC_GA_MEASUREMENT_ID` is set in Vercel: `src/components/analytics-consent.tsx`
   loads it on page view outside the EEA, UK and Switzerland and asks first inside them, and

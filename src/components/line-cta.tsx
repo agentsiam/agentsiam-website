@@ -79,21 +79,22 @@ export function LineFooterLink({ label }: { label: string }) {
 }
 
 /**
- * The panel under a sent form: the QR, the reason, and the button.
+ * The panel under a sent enquiry: the QR, the reason, and the button.
+ *
+ * Only the two forms that carry a real enquiry use it, the contact form and the renter
+ * request form, and only once they have been sent. A newsletter signup does not: an email
+ * address is not an enquiry, and a LINE friend with no requirement behind them is work
+ * without a lead. Paul's call, 15/11/2026. That is also why this only ever renders on a
+ * light panel, and why there is no dark variant: the one caller that sat on ink was the
+ * host newsletter.
  *
  * The QR is not decoration and not a duplicate of the button. On a desktop browser the
  * add-friend URL cannot open the app, so for anyone who has just filled the form in on a
  * laptop the code is the only thing that works, and they have a phone in reach.
- *
- * `ink` is for the one caller that sits on the dark panel, the host newsletter signup.
  */
-export function LineFollowPanel({ labels, ink = false }: { labels: LineLabels; ink?: boolean }) {
+export function LineFollowPanel({ labels }: { labels: LineLabels }) {
   return (
-    <div
-      className={`mt-6 flex flex-col gap-4 rounded-panel border p-4 sm:flex-row sm:items-center ${
-        ink ? "border-white/20" : "border-hairline"
-      }`}
-    >
+    <div className="mt-6 flex flex-col gap-4 rounded-panel border border-hairline p-4 sm:flex-row sm:items-center">
       {/* unoptimized: a QR is a grid of hard edges and the optimizer's job is to soften
           and recompress, which is the one thing that can stop a code scanning. */}
       <Image
@@ -105,16 +106,8 @@ export function LineFollowPanel({ labels, ink = false }: { labels: LineLabels; i
         className="h-33 w-33 shrink-0 self-start rounded-lg sm:self-center"
       />
       <div>
-        <p
-          className={`font-display text-[15px] font-bold tracking-[-0.015em] ${
-            ink ? "text-white" : ""
-          }`}
-        >
-          {labels.title}
-        </p>
-        <p className={`mt-1 text-[13.5px] leading-relaxed ${ink ? "text-white/75" : "text-muted"}`}>
-          {labels.body}
-        </p>
+        <p className="font-display text-[15px] font-bold tracking-[-0.015em]">{labels.title}</p>
+        <p className="mt-1 text-[13.5px] leading-relaxed text-muted">{labels.body}</p>
         <a
           href={LINE_ADD_FRIEND_URL}
           target="_blank"
