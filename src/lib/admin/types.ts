@@ -307,6 +307,7 @@ export const LEAD_SOURCES = [
   "agent-partner",
   "inbound",
   "website-form",
+  "proactive-search",
 ] as const;
 
 /** The five owner ICPs in service-model.md, by the three answers that decide one. The form
