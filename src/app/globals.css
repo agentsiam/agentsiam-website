@@ -458,6 +458,19 @@ button {
   select,
   textarea {
     font-size: 16px;
+    /* And a control may shrink to the column it is in.
+
+       A form field here is usually a grid item, because the label above it makes the label
+       a grid and the control its only row. A grid item's automatic minimum size is its own
+       content, and a date control's content is whatever width the browser draws the control
+       at, so `w-full` on the input could not make it any narrower than that. At 16px the two
+       dates in the filter sheet came to 186px each in a 162px column: the second ran five
+       pixels past the screen and the sheet scrolled sideways by exactly five pixels.
+
+       Raising the text to 16px is what made it show, but the floor was always there. This is
+       the line that lets the width actually apply, and it belongs beside the rule that
+       revealed it rather than at one of the call sites. */
+    min-width: 0;
   }
 }
 
