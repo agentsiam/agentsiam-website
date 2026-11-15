@@ -1075,6 +1075,20 @@ the admin without touching a deployment.
   licence page) keep the owner card on purpose. `src/lib/og-photo-card.tsx` is the shared
   renderer. The five older cards still carry their own copy of the wordmark and could adopt it.
 
+- **The hero photograph is atmosphere on a phone, not a picture (15/11/2026).** Both frames are
+  now the same house: `src/photos/_hero/house_garden_hero_wide.jpg` at 900px and up, and
+  `house_garden_hero_portrait.jpg`, a 9:16 crop of it, below that. The wide one is composed for
+  the one window the panel leaves clear, the right half between 18% and 55% down, which is where
+  the roof and upper storey sit, and it reads. The phone cannot: the panel there is 335x1019, the
+  copy covers y 48 to 397 under 0.74 to 0.66 of ink and the three opaque cards cover y 433 to 971,
+  so 90% of the frame is behind something. Trimming the sky out of the crop puts the roof and the
+  upper storey behind the copy instead of flat grey, which is as far as the frame alone goes;
+  lightening the scrim past 0.60 drops the standfirst under 4.5 to 1 over the pale wall. Showing
+  the house on a phone means giving the photograph a band of its own above the copy, which is a
+  layout change to the hero and has not been made. The scrims were not retuned for the daylight
+  frame and did not need to be: on a wide screen the headline holds 5.6 to 1 at worst and the
+  standfirst 6.8, against AA's 3.0 and 4.5.
+
 ## Getting started
 
 ```bash
