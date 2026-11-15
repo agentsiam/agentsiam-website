@@ -77,12 +77,15 @@ function quote(value) {
 }
 
 /**
- * Directories that are never scanned.
+ * Directories that are never scanned, at both levels: a top-level set folder and any
+ * subfolder inside one.
  *
  *   raw/  — camera originals kept beside the edited version. Including them would put
  *           every shot in the gallery twice, once unedited.
- *   _*    — anything deliberately held back, e.g. _excluded/. Prefixing a folder with an
- *           underscore is how you take photos out of the gallery without deleting them.
+ *   _*    — anything deliberately held back, e.g. _excluded/, or _hero/, which holds the
+ *           homepage hero frames that pages import directly rather than look up here.
+ *           Prefixing a folder with an underscore is how you take photos out of the
+ *           gallery without deleting them.
  */
 function isSkippedDir(name) {
   return name.toLowerCase() === "raw" || name.startsWith("_") || name.startsWith(".");
@@ -159,7 +162,7 @@ async function main() {
   if (!existsSync(PHOTO_DIR)) await mkdir(PHOTO_DIR, { recursive: true });
 
   const slugs = (await readdir(PHOTO_DIR, { withFileTypes: true }))
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
+    .filter((entry) => entry.isDirectory() && !isSkippedDir(entry.name))
     .map((entry) => entry.name)
     .sort();
 

@@ -730,6 +730,24 @@ the admin without touching a deployment.
   English page's 8. If a piece is ever published in one language and not translated, that check is
   gone and the rate behind its number is a guess.
 
+- ~~**The homepage hero's desktop scrim no longer carries the standfirst (15/11/2026).**~~
+  Resolved 15/11/2026 by rebuilding that scrim on px stops instead of percentages. The lantern
+  photograph replaced the Lotus House living room in the hero the same day, and the horizontal
+  scrim at 900px and up had been tuned over a flat white wall. Against a night frame the
+  standfirst measured 3.4 to 1 at 900, 3.3 at 1024, 4.4 at 1152 and 4.4 at 1440 against the 4.5
+  WCAG AA asks for body text, per glyph on the running site, with about 3 percent of its own
+  pixels under the line at the two narrow widths. It was worst at 1024, not at 1440, because the
+  text column is a fixed width, 48px of padding plus at most 470 for the standfirst, while the
+  panel grows with the viewport: the narrower the panel, the further along the gradient's falloff
+  the copy's right end sits. Raising the percentage stops cleared the numbers and emptied the
+  picture, since 0.50 at the 58 percent stop lands on the temple at 1440 and leaves a near-black
+  panel. The stops are now `0.88 0px, 0.84 300px, 0.72 520px, 0.10 800px, 0.06 100%`, which holds
+  the ink over the text column at every width and spends it by 800px. Per glyph the standfirst
+  now measures 8.5 at 900, 7.6 at 1024, 7.7 at 1152, 6.3 at 1440 and 8.2 at 1920, the headline
+  5.1 at worst against its 3.0, and the right of the frame carries less ink than the percentage
+  scrim ever gave it. A percentage gradient behind a fixed-width text column is the shape of this
+  bug.
+
 - **Channel strip shows symbols, not wordmarks (owner-page-s3-1106, 06/11/2026).**
   `src/components/channel-marquee.tsx` uses Simple Icons symbols beside each name, and Agoda and
   Vrbo have no symbol at all. Paul decided the official wordmarks replace them, sourced from each
@@ -1040,9 +1058,8 @@ the admin without touching a deployment.
   permission, and management."), so pasting it into a guest group showed an offer to someone
   who came to rent. `/properties/opengraph-image.tsx` is the renter card, and the homepage
   names it explicitly: a file-based card cannot sit at the locale root beside the site-wide
-  one. `/house-for-rent-chiang-mai` has its own. Both use the Lotus House living room the
-  homepage hero uses, not the terrace tub shot, and read their words from the English
-  dictionary (`heroEyebrow`, `heroTitleA`, `heroTitleB`, `hfrEyebrow`, `hfrH1`), so they
+  one. `/house-for-rent-chiang-mai` has its own. Both use the Lotus House living room, not
+  the terrace tub shot, and read their words from the English dictionary (`heroEyebrow`, `heroTitleA`, `heroTitleB`, `hfrEyebrow`, `hfrH1`), so they
   cannot drift from the pages. The owner pages (`/how-it-works`, `/business-services`, the
   licence page) keep the owner card on purpose. `src/lib/og-photo-card.tsx` is the shared
   renderer. The five older cards still carry their own copy of the wordmark and could adopt it.

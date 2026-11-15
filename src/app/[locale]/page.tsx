@@ -12,13 +12,13 @@ import { categoryIcon, categoryLabel } from "@/lib/guide-vocabulary";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
-import { pickPhoto } from "@/lib/photos";
 import { FEATURED_PROPERTY, PROPERTIES } from "@/lib/property";
 import { PropertyTile } from "@/components/property-tile";
 import { areaVibe } from "@/i18n/area-vibe";
 import { AREAS } from "@/lib/areas";
 import { areaName } from "@/lib/area-content";
-import heroPortrait from "@/photos/lotushouse/_hero/lotus_living_room_portrait.jpg";
+import heroLandscape from "@/photos/_hero/lantern_hero_wide.jpg";
+import heroPortrait from "@/photos/_hero/lantern_hero_portrait.jpg";
 import {
   routeOgImage,
   OG_LOCALE,
@@ -119,8 +119,6 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   // uncovered tub the rooftop-bathtub disclosure exists for. Fine as gallery photo nine,
   // wrong as the front door.
   //
-  // Falls back to the flat ink panel if the file is ever renamed, so the hero cannot break.
-  //
   // Paul, 03/11/2026: the sunset was replaced by the roof terrace itself, tub and loungers,
   // because a sky reads as anywhere and the terrace is this house. Centred rather than
   // bottom-cropped: the subject sits in the middle of the frame, not on a ridge line.
@@ -131,13 +129,34 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   // are buying. It also carries its subject across the whole frame, where the terrace corner
   // had one white object against a blank wall, so both crops below keep a readable scene
   // rather than throwing the subject away.
-  const heroGround = pickPhoto(property.slug, "20240411_052358");
+  //
+  // Paul, 15/11/2026: the Yi Peng sky lanterns instead of the living room. A generated frame
+  // of the festival at night, approved after several rounds, so this hero is the one image on
+  // the site that is not a photograph of ours. That is the deliberate exception and not a
+  // drift: the argument at the top of this comment, real and ours and actually of Chiang Mai,
+  // still governs every property photo.
+  //
+  // Both frames are static imports rather than a runtime lookup in the generated manifest.
+  // The underscore on src/photos/_hero/ is what keeps them out of the gallery and away from
+  // the re-encoder, and it only half worked: downscale-photos.mjs skips an underscored
+  // directory at any depth, but build-photo-manifest.mjs applied that rule to subfolders
+  // inside a set and not to the set folders themselves, so _hero arrived as a fourteenth
+  // photo set with two captionless entries. The manifest builder now applies it at both
+  // levels, which is what its own comment always claimed. The frames themselves arrive
+  // capped at the 2560 long edge the re-encoder uses and at the same quality, so it has
+  // nothing to do with them either way.
+  //
+  // There is no flat ink panel fallback any more, and losing it is the point of the static
+  // import. A missing file now fails the build and names itself, which is louder and safer
+  // than a hero that quietly serves a blue and gold panel nobody notices for a month.
 
   // Art direction. The panel's height is set by the text stack, so at 375 it is a 0.34 ratio
-  // box, and object-fit cover on a 4:3 frame keeps only about a quarter of its width at that
-  // shape, whatever the frame is of. Phones get the 9:16 crop that
-  // scripts/crop-hero-portrait.mjs cuts, and the wide frame is held back for 900px and up,
-  // where the panel is wide enough to carry it.
+  // box, and object-fit cover on a landscape frame keeps only a narrow column of its width at
+  // that shape, whatever the frame is of. Phones get the 9:16 band, 785x1396, and the wide frame,
+  // 2560x1396, is held back for 900px and up, where the panel is wide enough to carry it.
+  // Both were cut and encoded before they reached the repo, so nothing in the build crops
+  // them: scripts/crop-hero-portrait.mjs cut the living-room portrait these replace and no
+  // longer feeds this page.
   //
   // One <picture> built from getImageProps rather than two <Image> elements, because a
   // hidden <img> is still fetched and two components would mean two hero downloads. The cost
@@ -145,9 +164,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   // the panel's own bg-ink stands in as the ground, so the photo still resolves over brand
   // ink rather than over white.
   const heroImage = { alt: "", sizes: "(min-width: 1440px) 1400px, 100vw", priority: true };
-  const heroWide = heroGround
-    ? getImageProps({ ...heroImage, src: heroGround.src }).props
-    : null;
+  const heroWide = getImageProps({ ...heroImage, src: heroLandscape }).props;
   const heroTall = getImageProps({ ...heroImage, src: heroPortrait }).props;
   // The three checkable facts in the long-stay block. The internet line is the plan speed,
   // 500 Mbps fibre at all three houses, recorded in each property profile (Paul, 07/11/2026);
@@ -211,49 +228,68 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
              two compounded into near-black, which is the flat panel again with extra steps.
 
              So: a single horizontal scrim at 900px and up, using the system's own
-             rgba(10,8,20,...) ink, opaque enough to hold the text column and releasing
-             almost entirely by the right edge so the terrace actually reads.
+             rgba(10,8,20,...) ink, opaque enough to hold the text column and released well
+             before the right edge so the photograph actually reads. Its stops are in px
+             rather than percentages, and that is the whole trick. The text column is a fixed
+             width, 48px of padding plus at most 470 for the standfirst and 640 for the
+             headline, while the panel grows with the viewport. A percentage gradient slides
+             out from under the text as the panel narrows; a px one does not.
 
              Below 900px that scrim turns vertical after all, because the layout does. The
              copy stacks across the full panel width with the three cards beneath it, so
              there is no text column for a horizontal scrim to hold and its clear right end
              lands under the headline instead.
 
-             Held at 0.88 down to 40 percent, which is the whole text block, because what
-             sits behind the copy in the portrait crop is white wall: measured on
-             the running site, the standfirst's own white/80 lands at about 4.1 to 1 against
-             a 0.80 scrim there and about 5.4 to 1 against this one. It then releases to a
-             floor of 0.20, so the sofa and the horseshoe chair read in the gutters beside
-             the three cards, which is the only place on a phone the photograph can be seen at
-             all: the cards are opaque and cover the lower two thirds of the panel.
+             The vertical scrim held 0.90 and 0.88 across the text block, tuned to carry
+             white type over the white living-room wall that used to sit behind the copy in
+             the portrait crop. Those values crush a night frame: the lanterns go to near
+             black and nothing of the photograph reads on a phone at all, which is the flat
+             panel again by another route. So 0.74 and 0.66 across the text block, releasing
+             to 0.34 and a floor of 0.14, which lets the lanterns read in the gutters beside
+             the three cards. The cards are opaque and cover the lower two thirds of the
+             panel, so those gutters are the only place on a phone the photograph is visible.
+
+             Neither scrim is a trade against legibility, and both were measured per glyph
+             on the running site, sampling only the pixels a glyph actually covers rather
+             than the whole of a text box. WCAG AA asks 3.0 for text the size of the headline
+             and 4.5 for the standfirst. On a phone: 16.3 to 1 and 6.6 to 1.
+
+             The horizontal scrim had to be rebuilt rather than retuned, and this is why.
+             Its percentage stops were set over the white living-room wall, and against a
+             night frame the standfirst failed: 3.4 to 1 at 900, 3.3 at 1024, 4.4 at 1152 and
+             4.4 at 1440, about 3 percent of its own pixels under the line at the two narrow
+             widths. Worst at 1024 rather than at 1440, which is the clue: that is where the
+             fixed text column fills most of the panel, so its right end sits furthest along
+             the gradient's falloff. Raising the percentage stops fixes the numbers and
+             destroys the picture. 0.50 at the 58 percent stop measures 5.0 at 1024 and
+             leaves a near-black panel, because at 1440 that stop lands on the temple. Anchor
+             the stops in px and the two stop fighting: the ink sits over the text column at
+             every width and is spent by 800px, where nothing of the copy reaches.
+
+             Per glyph now, standfirst: 8.5 at 900, 7.6 at 1024, 7.7 at 1152, 6.3 at 1440,
+             8.2 at 1920. Headline: 5.1 at worst. The right of the frame also carries less
+             ink than the percentage scrim ever gave it, so the lanterns read better on a
+             wide screen than they did before any of this.
 
              The photo stays decorative: alt="" and aria-hidden, because the h1 immediately
              below already says what this section is, and a screen reader announcing a
-             sunset before the headline is noise rather than information. */}
+             night sky full of lanterns before the headline is noise rather than
+             information. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 max-w-(--container-chrome) overflow-hidden rounded-panel bg-ink px-6 py-12 sm:px-12 sm:py-13">
-          {heroGround ? (
-            <>
-              <picture className="absolute inset-0">
-                <source media="(min-width: 900px)" srcSet={heroWide?.srcSet} />
-                <img
-                  {...heroTall}
-                  alt=""
-                  aria-hidden="true"
-                  className="h-full w-full object-cover object-[50%_50%] min-[900px]:object-[50%_42%]"
-                />
-              </picture>
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,20,0.90)_0%,rgba(10,8,20,0.88)_40%,rgba(10,8,20,0.42)_62%,rgba(10,8,20,0.20)_100%)] min-[900px]:bg-[linear-gradient(90deg,rgba(10,8,20,0.88)_0%,rgba(10,8,20,0.72)_30%,rgba(10,8,20,0.28)_58%,rgba(10,8,20,0.06)_100%)]"
-              />
-            </>
-          ) : (
-            <>
-              <div className="absolute inset-y-0 right-0 hidden w-[30%] bg-primary min-[900px]:block" />
-              <div className="absolute inset-y-0 right-[30%] hidden w-[8%] bg-sand min-[900px]:block" />
-            </>
-          )}
+          <picture className="absolute inset-0">
+            <source media="(min-width: 900px)" srcSet={heroWide.srcSet} />
+            <img
+              {...heroTall}
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-cover object-[50%_50%] min-[900px]:object-[50%_42%]"
+            />
+          </picture>
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,20,0.74)_0%,rgba(10,8,20,0.66)_40%,rgba(10,8,20,0.34)_62%,rgba(10,8,20,0.14)_100%)] min-[900px]:bg-[linear-gradient(90deg,rgba(10,8,20,0.88)_0px,rgba(10,8,20,0.84)_300px,rgba(10,8,20,0.72)_520px,rgba(10,8,20,0.10)_800px,rgba(10,8,20,0.06)_100%)]"
+          />
 
           <div className="relative min-[900px]:max-w-[min(640px,calc(58%-24px))]">
             <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
