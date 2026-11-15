@@ -25,19 +25,10 @@ real city.
 **Description to type into each file:** the person's name and where it was taken, e.g. "Paul
 at Lotus House in Chang Khlan". That becomes the alt text.
 
-## 2. `agentsiam-team-group-portrait.jpg`. Currently used nowhere
+## 2. `agentsiam-team-group-portrait.jpg`. The wide team frame
 
-A **landscape 16:9** frame of the whole team. **Nothing on the site reads it.** It was the
-`/how-it-works` hero until 15/11/2026, when that hero became a photograph of the brand
-character under decision 101; it is not referenced anywhere else, and the homepage fork
-panel this section used to claim it fed does not read it either.
-
-Kept rather than deleted because decision 27, the named exception that permits it, is not
-withdrawn: the file is the asset that decision approved, and a future slot wanting a team
-frame should start here rather than generating a new one. Removing it is a separate
-decision.
-
-Deliberately not one of the portraits above. Those are ~480px square avatars and this slot is
+A **landscape 16:9** frame of the whole team, addressed by the filename fragment
+`team-group-portrait`. Deliberately not one of the portraits above. Those are ~480px square avatars and this slot is
 a wide band, so using one would crop the head and upscale it.
 
 - **2560 x 1440** ideally, **1440 x 810** absolute minimum
@@ -79,5 +70,4 @@ One panel with a photo and one without leaves a hole where the second image shou
 flat brand fill is the correct treatment whenever either photo is absent. That fill is the
 design's own fallback, not a placeholder to feel bad about.
 
-**That pairing is still true of the homepage's own two fork photographs. It no longer
-involves this file, which the homepage does not read.**
+**So a missing fork photograph costs two homepage images, not one.**
