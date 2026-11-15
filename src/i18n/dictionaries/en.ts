@@ -1602,6 +1602,69 @@ export const en = {
   // The floating button that takes the map full screen on a phone. One word: it sits over the results and is read at a glance.
   psMapOpen: "Map",
   psMapClose: "Close map",
+
+  // -- editorial hubs and the email capture --------------------------------
+  // Eyebrow on the lead card at the top of an outlet index.
+  hubLatest: "Latest",
+  hubReadFull: "Read in full",
+  // There is no bylined author on either outlet, so the organisation is the byline, exactly as the Article markup says.
+  hubByline: "AgentSiam, Chiang Mai",
+  // Carries {n}, counted from the piece in the language it is read in. Words for English, characters for Thai and Chinese.
+  hubMinRead: "{n} min read",
+  // Masthead chip. Both outlets carry all three languages, so this is true on both.
+  hubMetaLanguages: "Published in English, Thai and Chinese",
+  hubMetaSourced: "Every figure dated and sourced",
+  // Masthead link down to the capture panel. No pronoun in Thai: the key is shared by the guest outlet and the owner outlet, whose registers differ.
+  hubSubscribeJump: "Get new issues by email",
+  // Heading over the lead piece's own answer questions, which stand in for a list of other pieces while there is only one.
+  hubInsideTitle: "What this issue answers",
+  hubArchiveTitle: "Everything published so far",
+  // The rail of pages elsewhere on the site that belong in a reading hub.
+  hubAlsoTitle: "Also worth reading",
+  hubHowTitle: "How this is written",
+  hubHow1Title: "Figures carry their date",
+  hubHow1Body: "Every number is read off its source and the page says when it was checked. A figure without a date is a claim rather than a measurement.",
+  hubHow2Title: "Written where the houses are",
+  hubHow2Body: "By the people who manage property in Chiang Mai and answer the questions guests and owners actually ask, rather than by a content desk somewhere else.",
+  hubHow3Title: "The limits are on the page",
+  hubHow3Body: "Each piece closes by naming what it cannot settle, and lists its sources so the working can be checked.",
+  hubRailAreasLabel: "The neighbourhoods",
+  hubRailAreasBody: "Chiang Mai area by area: Nimman, the Old City, Santitham, Chang Khlan, Wat Ket, Hang Dong, Mae Rim and Pa Daet, and what each is like.",
+  hubRailGuideLabel: "The local guide",
+  hubRailGuideBody: "Places we have been to ourselves, with how long each one takes to reach from the door.",
+  hubRailHousesLabel: "Houses by the month",
+  hubRailHousesBody: "Private houses in Chiang Mai for a month or longer, each one checked first: photographs, the exact location and a Wi-Fi speed test.",
+  hubRailLicenceLabel: "The licence question",
+  hubRailLicenceBody: "Whether a licence is needed to let short term in Chiang Mai: the 30-night rule, the non-hotel route, and why condos cannot use it.",
+  hubRailHowLabel: "How management works",
+  hubRailHowBody: "Six services, chosen against the property rather than sold as a package: feasibility, the non-hotel exemption filing, and booking management.",
+  hubRailCitiesLabel: "Phuket and Bangkok",
+  hubRailCitiesBody: "The same management service read for the two markets outside Chiang Mai, where the rules and the seasons are not the same.",
+  subTitle: "New issues, by email",
+  // Guest register in Thai: คุณ.
+  subBodyJournal: "One email when we publish something new about visiting and staying in Chiang Mai. Nothing else.",
+  // Owner register in Thai: ท่าน.
+  subBodyHost: "One email when we publish something new for Chiang Mai property owners. Nothing else.",
+  subEmailLabel: "Email address",
+  subEmailPlaceholder: "you@example.com",
+  subButton: "Subscribe",
+  subSending: "Sending",
+  // Carries {privacy}, which is rendered as a link using subConsentPrivacy as its text. No pronoun in Thai: this key is shared by both outlets.
+  subConsent: "The address is used to send these issues and nothing else. Unsubscribe by replying to any of them. {privacy}",
+  // The link text inside subConsent. Lower case on purpose: it sits mid-sentence in English.
+  subConsentPrivacy: "Read the privacy policy",
+  subSentTitle: "That address is on the list",
+  subSentBody: "The next issue will go to it. Nothing else will arrive from us.",
+  subErrorEmail: "Please enter an email address we can reach.",
+  // Carries {email}, the contact mailbox, for a reader whose signup did not land.
+  subErrorGeneric: "That did not send. Please email us at {email}.",
+  subErrorNetwork: "No connection. Please try again, or email us at {email}.",
+
+  // -- editorial hub closing call to action --------------------------------
+  // The line over the guest outlet's own CTA pill, which carries the outlet's ctaLabel. Guest register in Thai: คุณ.
+  hubCtaJournal: "Looking for somewhere to stay while you are here?",
+  // The same line on the owner outlet. Owner register in Thai: ท่าน.
+  hubCtaHost: "Ready to talk about your own property?",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

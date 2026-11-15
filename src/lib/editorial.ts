@@ -137,7 +137,7 @@ export const OUTLETS: Record<OutletSlug, Outlet> = {
       th: {
         name: "จดหมายข่าวสำหรับเจ้าของบ้านเชียงใหม่",
         standfirst:
-          "เขียนสำหรับเจ้าของทรัพย์สินในเชียงใหม่ที่กำลังพิจารณาปล่อยเช่าระยะสั้น เผยแพร่โดย AgentSiam เป็นภาษาไทย อังกฤษ และจีน ไม่มีรายชื่อรับข่าวสารและไม่ต้องสมัคร ทุกอย่างที่เราเผยแพร่สำหรับเจ้าของทรัพย์สินอยู่บนหน้านี้",
+          "เขียนสำหรับเจ้าของทรัพย์สินในเชียงใหม่ที่กำลังพิจารณาปล่อยเช่าระยะสั้น เผยแพร่โดย AgentSiam เป็นภาษาไทย อังกฤษ และจีน ทุกอย่างที่เราเผยแพร่สำหรับเจ้าของทรัพย์สินอยู่บนหน้านี้ และท่านสามารถรับฉบับใหม่ทางอีเมลได้",
         metaTitle: "จดหมายข่าวสำหรับเจ้าของบ้านเชียงใหม่ โดย AgentSiam",
         metaDesc:
           "บันทึกสำหรับเจ้าของทรัพย์สินในเชียงใหม่ เรื่องอัตราการเข้าพัก ฤดูกาล และสิ่งที่การคาดการณ์บอกได้และบอกไม่ได้ จากผู้จัดการที่ดำเนินงานในพื้นที่",
@@ -146,7 +146,7 @@ export const OUTLETS: Record<OutletSlug, Outlet> = {
       en: {
         name: "Chiang Mai Host Newsletter",
         standfirst:
-          "Written for people who own property in Chiang Mai and are weighing whether to offer it as a short-term rental. Published by AgentSiam in Thai, English and Chinese. No mailing list and no sign-up: everything we publish for owners sits on this page.",
+          "Written for people who own property in Chiang Mai and are weighing whether to offer it as a short-term rental. Published by AgentSiam in Thai, English and Chinese. Everything we publish for owners sits on this page, and each new issue can come to you by email.",
         metaTitle: "Chiang Mai Host Newsletter: what owners need to know",
         metaDesc:
           "Notes for Chiang Mai property owners on occupancy, seasonality and what a short-let forecast can and cannot tell you. From a manager operating here.",
@@ -155,7 +155,7 @@ export const OUTLETS: Record<OutletSlug, Outlet> = {
       zh: {
         name: "清迈房东通讯",
         standfirst:
-          "写给在清迈拥有物业、正在考虑是否用于短租的业主。AgentSiam 以泰文、英文和中文发布；没有邮件订阅，我们为业主发布的内容都在本页。",
+          "写给在清迈拥有物业、正在考虑是否用于短租的业主。AgentSiam 以泰文、英文和中文发布。我们为业主发布的内容都在本页，也可以通过邮件接收每一期新刊。",
         metaTitle: "清迈房东通讯：业主需要知道的事",
         metaDesc:
           "写给清迈业主的笔记，关于入住率、季节性，以及一份短租预测能说明什么、不能说明什么。来自在当地实际运营的管理方。",
@@ -183,6 +183,16 @@ export type ArticleTable = {
 
 /** Everything in an article that is written per language. */
 export type ArticleBody = {
+  /**
+   * The subject, in two or three words, for the eyebrow on the hub card.
+   *
+   * Written per language because a reader reads it, and written per article rather than
+   * drawn from a fixed taxonomy because two articles do not make a taxonomy. The day
+   * there are enough pieces for a reader to want to filter by subject, these strings are
+   * what a tag list would be built from, and the migration is to fix the spellings rather
+   * than to invent the categories.
+   */
+  topic: string;
   /** The h1, and the Article headline in markup. */
   title: string;
   /** <title>, where a long h1 would be truncated in a result. */
@@ -215,6 +225,16 @@ export type Article = {
   checkedOn: string;
   /** The first entry is the language the piece was written in. */
   publishedIn: readonly Locale[];
+  /**
+   * The frame on the hub card, as a set and a fragment of a filename for `pickPhoto`.
+   * Named rather than imported so this file stays data: the manifest is GENERATED (R5)
+   * and a photo that is renamed or removed resolves to undefined, which the hub renders
+   * as the brand ground rather than as a broken frame.
+   *
+   * The alt text is the photograph's own, out of its metadata, so nothing here describes
+   * a picture this file cannot see.
+   */
+  image?: { set: string; file: string };
   body: Partial<Record<Locale, ArticleBody>>;
   /** The same sources whichever language the piece is read in. */
   sources: { name: string; url: string }[];
@@ -226,8 +246,12 @@ const WHEN_TO_VISIT: Article = {
   datePublished: "2026-11-09",
   checkedOn: "2026-11-09",
   publishedIn: JOURNAL_LOCALES,
+  // Paddy and hills in morning haze, north of the city. The piece is about the air as
+  // much as the weather, and this is the only frame in the library that shows it.
+  image: { set: "areas", file: "mae-rim." },
   body: {
     en: {
+      topic: "Weather and air quality",
       title: "When to come to Chiang Mai, and the weeks to think twice about",
       metaTitle: "Best time to visit Chiang Mai: weather and burning season",
       metaDesc:
@@ -347,6 +371,7 @@ const WHEN_TO_VISIT: Article = {
       ],
     },
     th: {
+      topic: "สภาพอากาศและคุณภาพอากาศ",
       title: "ควรมาเชียงใหม่เมื่อไร และช่วงไหนที่ควรคิดให้ดีก่อน",
       metaTitle: "เที่ยวเชียงใหม่ช่วงไหนดี เดือนที่ดีที่สุดและฤดูหมอกควัน",
       metaDesc:
@@ -466,6 +491,7 @@ const WHEN_TO_VISIT: Article = {
       ],
     },
     zh: {
+      topic: "天气与空气质量",
       title: "什么时候来清迈，以及哪几周需要再三考虑",
       metaTitle: "清迈旅行时间指南：最佳月份与烟霾季（烧山季）",
       metaDesc:
@@ -617,8 +643,12 @@ const OCCUPANCY_FORECAST: Article = {
   datePublished: "2026-11-09",
   checkedOn: "2026-11-09",
   publishedIn: HOST_LOCALES,
+  // A suburban house of the kind the piece is about, rather than a chart. The reader is
+  // an owner weighing one property, which is the article's whole argument.
+  image: { set: "areas", file: "san-sai." },
   body: {
     th: {
+      topic: "ข้อมูลตลาด",
       title: "สิ่งที่การคาดการณ์อัตราการเข้าพักในเชียงใหม่บอกท่านไม่ได้",
       metaTitle: "อัตราการเข้าพัก Airbnb เชียงใหม่ ตัวเลขต่างกัน 31 จุด",
       metaDesc:
@@ -741,6 +771,7 @@ const OCCUPANCY_FORECAST: Article = {
       ],
     },
     en: {
+      topic: "Market data",
       title: "What a Chiang Mai occupancy forecast cannot tell you",
       metaTitle: "Chiang Mai Airbnb occupancy: a 31-point gap between providers",
       metaDesc:
@@ -863,6 +894,7 @@ const OCCUPANCY_FORECAST: Article = {
       ],
     },
     zh: {
+      topic: "市场数据",
       title: "清迈入住率预测无法告诉您的事",
       metaTitle: "清迈 Airbnb 入住率：各家数据相差 31 个百分点",
       metaDesc:
@@ -1044,4 +1076,53 @@ export function articleBody(article: Article, locale: Locale): ArticleBody {
 
 export function outletCopy(outlet: Outlet, locale: Locale): OutletCopy {
   return outlet.copy[resolvePublishedLocale(locale, outlet.publishedIn)]!;
+}
+
+/**
+ * A rough minutes-to-read for one piece, in the language it is being read in.
+ *
+ * Counted from the prose the article page actually renders -- standfirst, answers,
+ * sections, any table, the FAQ and the limits -- so it moves when the piece does and
+ * cannot drift the way a number typed into the data would.
+ *
+ * Two scripts, two units. English is counted in words at 225 a minute. Thai and Chinese do
+ * not put spaces between words, so a word count of either is a count of sentences, and
+ * both are counted in characters instead, at 1,000 a minute for Thai and 400 for Chinese.
+ *
+ * **Those three rates are calibrated against each other, not taken from a reading study.**
+ * The three versions of a piece carry the same information, so they should report roughly
+ * the same length, and the rate is what makes them agree. Measured across both articles on
+ * 15/11/2026: 3,625 English words, 17,030 Thai characters and 6,161 Han characters, which
+ * at these rates is 8.1, 8.5 and 7.7 minutes for one piece. Thai shipped at 350 a minute
+ * for an hour on the same day and announced a 24-minute read against the English page's
+ * 8, which is what calibrating against each other is for. If an article is ever written in
+ * one language and not translated, the agreement is untestable and the rate is a guess.
+ *
+ * None of these three is a measurement, and the label the reader sees says "min read"
+ * rather than claiming a duration. Rounded up, and never below one, because "0 min read"
+ * is worse than no number at all.
+ */
+export function readingMinutes(copy: ArticleBody, locale: Locale): number {
+  const text = [
+    copy.standfirst,
+    ...copy.answers.flatMap((answer) => [answer.q, answer.a]),
+    ...copy.sections.flatMap((section) => [
+      section.heading,
+      ...section.body,
+      ...(section.table
+        ? [
+            section.table.title,
+            ...section.table.head,
+            ...section.table.rows.flat(),
+            section.table.note,
+          ]
+        : []),
+    ]),
+    ...copy.faq.flatMap((item) => [item.q, item.a]),
+    copy.limits,
+  ].join(" ");
+
+  if (locale === "th") return Math.max(1, Math.ceil(text.replace(/\s/g, "").length / 1000));
+  if (locale === "zh") return Math.max(1, Math.ceil(text.replace(/\s/g, "").length / 400));
+  return Math.max(1, Math.ceil(text.split(/\s+/).filter(Boolean).length / 225));
 }

@@ -28,6 +28,7 @@ three languages.
 | `/lotushouse/local-guide` | Real. The guest guide, filterable. Place prose is English on every locale. |
 | `/management/<city>` | Real. Owner pages for Phuket and Bangkok, from `src/lib/management-cities.ts`. |
 | `/contact` | Real. Owner intake, submits through `/api/contact` to Resend. |
+| `/journal` + `/host-newsletter` | Real. The two editorial hubs: masthead, lead piece, email sign-up through `/api/subscribe`, a rail into the rest of the site. One article each. |
 | `/business-services` | Real. The four non-STR service pillars. Footer-linked only. |
 | `/terms-and-conditions` | Real text, **not reviewed by counsel**. |
 | `/privacy-policy` | Real text. Describes the fields the contact form actually collects. |
@@ -680,6 +681,41 @@ the admin without touching a deployment.
   owner outlet is called a newsletter while no list, no signup and no sending path exists**; the
   index says so in its standfirst rather than implying one, but the name still promises a cadence
   that nothing delivers. Either an email capture is built or the name is reconsidered.
+  ~~The capture half of that last point was resolved on 15/11/2026~~: both indexes carry a one-field
+  sign-up through `POST /api/subscribe`, and the host standfirst no longer says there is no mailing
+  list, because there now is one. **What is still open is everything after the capture**, and it is
+  listed separately below rather than left inside this entry. The same change closes the outward
+  half of the routing gap above: each index now carries a rail of the pages on this site that
+  belong beside it. The inward half, links from `/short-term-rental-licence-chiang-mai`,
+  `/house-for-rent-chiang-mai` and the neighbourhood pages back into the outlets, is still open.
+
+- **The newsletter list is a mailbox, and the promise on the page is kept by hand (15/11/2026).**
+  `POST /api/subscribe` mails each sign-up to the enquiry address and that mail is the whole record:
+  there is no list, no provider, no scheduled send and no record of who has already been written to.
+  The consent line on the form promises one email when something new is published, so until a
+  sending path exists a person keeps that promise, and a reader who signed up in November and hears
+  nothing in March has been told something untrue by this site. Three things come with a real
+  sending path and none of them is built: double opt-in, an unsubscribe link, and a suppression
+  list. Unsubscribing today is replying to an issue, which works only because a person reads the
+  mailbox. Resend cannot verify this domain while it stays at Wix (`DNS-EMAIL-RUNBOOK.md`), so the
+  provider decision is not a free one.
+- **The hub chrome's Thai and Chinese have had no native read (15/11/2026).** Forty-five keys, the
+  `hub*` and `sub*` blocks in the three dictionaries: the masthead facts, the reading-time label,
+  the three "How this is written" lines, the six rail cards, and the whole of the sign-up form
+  including its consent sentence and its confirmation. Written in one scripted pass per R9 and
+  rendered at 375px in Thai and Chinese with no truncation and no horizontal scroll, which is a
+  layout check and not a language one. The consent sentence is the one to read hardest, for the
+  same reason the request form's is: it is the promise the reader agrees to. Register was split
+  where it had to be, `subBodyJournal` taking คุณ and `subBodyHost` taking ท่าน, and every key
+  shared by the two outlets is written without a pronoun in Thai. That split is the thing a native
+  read is most likely to find fault with.
+- **The reading time is calibrated, not measured (15/11/2026).** `readingMinutes` in
+  `src/lib/editorial.ts` counts English in words at 225 a minute and Thai and Chinese in characters
+  at 1,000 and 400. The three rates were set so the three versions of one piece report roughly the
+  same length, which is the only check available: the same article now shows 8, 8 and 7 minutes.
+  Thai shipped at 350 a minute for an hour on 15/11/2026 and announced a 24-minute read against the
+  English page's 8. If a piece is ever published in one language and not translated, that check is
+  gone and the rate behind its number is a guess.
 
 - **Channel strip shows symbols, not wordmarks (owner-page-s3-1106, 06/11/2026).**
   `src/components/channel-marquee.tsx` uses Simple Icons symbols beside each name, and Agoda and
