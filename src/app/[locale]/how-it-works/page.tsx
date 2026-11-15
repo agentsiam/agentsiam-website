@@ -13,8 +13,13 @@ import { ChannelMarquee } from "@/components/channel-marquee";
 import { TeamRow } from "@/components/team-row";
 import { type Dictionary, getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
-import { pickPhoto, pickPhotos } from "@/lib/photos";
-import { FEATURED_PROPERTY } from "@/lib/property";
+import { pickPhoto } from "@/lib/photos";
+import {
+  COSMOS_HOUSE,
+  FEATURED_PROPERTY,
+  MAE_RIM_HOUSE,
+  propertyCoverPhoto,
+} from "@/lib/property";
 import { pageMeta } from "@/lib/site";
 import { faqSchema } from "@/lib/structured-data";
 import { ContactForm } from "../contact/contact-form";
@@ -85,11 +90,27 @@ export default async function HowItWorksPage({
   const heroImage = { alt: "", sizes: "(min-width: 1440px) 1400px, 100vw", priority: true };
   const heroWide = getImageProps({ ...heroImage, src: heroWideSrc }).props;
   const heroTall = getImageProps({ ...heroImage, src: heroMobileSrc }).props;
-  const proofPhotos = pickPhotos(FEATURED_PROPERTY.slug, [
-    "IMG_5359",
-    "IMG_5724",
-    "mainstree_exterior_lotushouse",
-  ]);
+  // One cover frame per house, the one we run ourselves first, then two more so the three
+  // are three addresses rather than three rooms of one.
+  //
+  // This block used to be three frames of Lotus House, which was right while its claim was
+  // "a house we run ourselves". The claim is now what is listed with us, and three rooms of
+  // one house under that heading is the old claim wearing a new one. The frames each
+  // property already shows on /properties are reused through `propertyCoverPhoto`, so a
+  // reader who scrolls on does not meet a different picture of the same house.
+  //
+  // WHICH THREE IS NOT AN AESTHETIC CHOICE. Six of the nine properties carry photography
+  // taken from the owner's marketing flyer, whose ownership their profiles in the
+  // consulting repo record as not established and whose publication is an open item on each
+  // of them. Those six do not belong in a block that argues the company is worth trusting
+  // with a house, whatever they look like. Lotus House is AgentSiam's own shoot; Cosmos
+  // House and Mae Rim House came from the owner and carry no such flag. If a flagged
+  // property is ever cleared, or a real shoot replaces a flyer frame, this list is where
+  // that shows up.
+  const proofHouses = [FEATURED_PROPERTY, COSMOS_HOUSE, MAE_RIM_HOUSE].flatMap((property) => {
+    const photo = propertyCoverPhoto(property);
+    return photo ? [{ property, photo }] : [];
+  });
 
   const heroProof = [t.c2Proof1, t.c2Proof2, t.c2Proof3, t.c2Proof4];
 
@@ -271,8 +292,8 @@ export default async function HowItWorksPage({
         </p>
       </section>
 
-      {/* shape: proof-block -- the house we run, then the people who run it. */}
-      {proofPhotos.length > 0 ? (
+      {/* shape: proof-block -- the houses listed with us, then the people who run them. */}
+      {proofHouses.length > 0 ? (
         <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
           <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
             {t.proofTitle}
@@ -281,11 +302,11 @@ export default async function HowItWorksPage({
             {t.proofBody}
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            {proofPhotos.map((photo) => (
-              <div key={photo.file} className="relative aspect-4/3 overflow-hidden rounded-box">
+            {proofHouses.map(({ property, photo }) => (
+              <div key={property.slug} className="relative aspect-4/3 overflow-hidden rounded-box">
                 <Image
                   src={photo.src}
-                  alt={photo.alt || FEATURED_PROPERTY.title}
+                  alt={photo.alt || property.title}
                   lang="en"
                   placeholder="blur"
                   fill
@@ -295,11 +316,14 @@ export default async function HowItWorksPage({
               </div>
             ))}
           </div>
+          {/* /properties rather than the one house, because the block now stands for what is
+              listed with us. The guest route out at the foot of the page still points at the
+              featured house, which is the only one this site can take a booking for. */}
           <Link
-            href={href(`/${FEATURED_PROPERTY.slug}`)}
+            href={href("/properties")}
             className="hit mt-4 inline-block text-sm font-semibold text-primary hover:text-ink"
           >
-            {FEATURED_PROPERTY.title} →
+            {t.allProperties} →
           </Link>
         </section>
       ) : null}

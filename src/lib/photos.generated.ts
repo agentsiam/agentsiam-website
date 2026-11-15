@@ -377,7 +377,7 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: atriumvilla_23, file: "24-dc94e74b.jpeg", alt: "" },
   ],
   "cosmoshouse": [
-    { src: cosmoshouse_0, file: "01-b14bc0ac-4aec-4214-98a0-ce08ad9c2105.jpeg", alt: "" },
+    { src: cosmoshouse_0, file: "01-b14bc0ac-4aec-4214-98a0-ce08ad9c2105.jpeg", alt: "A living room with a dark leather corner sofa, a teal rug and the black steel staircase rising behind it" },
     { src: cosmoshouse_1, file: "02-71e0c6ce-f7fa-49bf-afdb-cec4ff45708d.jpeg", alt: "" },
     { src: cosmoshouse_2, file: "03-71082491-40a0-4736-9372-9dbe57e0dc17.jpeg", alt: "" },
     { src: cosmoshouse_3, file: "181e3121-41ec-4538-b14f-ac745551af6e.jpeg", alt: "" },
