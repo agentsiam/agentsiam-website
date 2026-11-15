@@ -139,8 +139,20 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             engagement, not through this website, and is used to perform the contract and to
             meet legal obligations.
           </p>
+          {/* The space after </strong> is written as {" "} in this paragraph and in the
+              guests one below, and nowhere else on this page. Both of those carry an
+              &rsquo; and the others do not, which is the whole of the difference: a JSX
+              text node holding an entity is split around it, and the leading space of the
+              first part is then trimmed away with the line's indentation. So the page
+              rendered "Bookings.When you request" and "we manage.Where a stay" from source
+              that has a space in it, and a hexdump of the line proves the space is there.
+              Verified 15/11/2026 against every lead-in on this page: the two with an
+              entity lost the space and the rest kept it.
+              {" "} is an expression rather than whitespace, so nothing can trim it. Add an
+              entity to any other paragraph here and it needs the same treatment. */}
           <p>
-            <strong>Bookings.</strong> When you request or make a booking on this site we
+            <strong>Bookings.</strong>{" "}
+            When you request or make a booking on this site we
             receive your name, email address, the phone number or LINE handle if you supply
             one, your arrival and departure dates, the number of guests and any message you
             write. We pass those details to the reservation system that holds our bookings,
@@ -160,7 +172,8 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             policy rather than on our instructions.
           </p>
           <p>
-            <strong>Guests of properties we manage.</strong> Where a stay is booked through a
+            <strong>Guests of properties we manage.</strong>{" "}
+            Where a stay is booked through a
             travel platform rather than this site, that platform collects the guest&rsquo;s
             details under its own policy, and we receive from it only what is needed to host
             the stay and to keep the guest records Thai law requires of an accommodation

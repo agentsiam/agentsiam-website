@@ -193,6 +193,15 @@ build refuses to do, is `GUIDE-RUNBOOK.md`; do not restate it here.
   working exactly as designed. `scripts/add-dictionary-keys.mjs` will happily write one if a
   spec file carries `""`; `en.ts` is where that does the most damage, since it is the
   fallback everything else falls through to.
+- **An HTML entity in a JSX paragraph eats the space in front of it.** A text node holding
+  `&rsquo;` or any other entity is split around it, and the leading space of the first part
+  is trimmed away with the line's indentation, so `<strong>Bookings.</strong> When you`
+  renders as "Bookings.When you" from source that has the space in it. A hexdump of the line
+  shows a plain `0x20` and proves nothing. It is invisible in review, it only bites the
+  paragraphs that happen to carry an entity, and on 15/11/2026 it was doing exactly that to
+  two paragraphs of the published privacy policy while the other six on the same page were
+  fine. Write the space as `{" "}`, which is an expression and cannot be trimmed. The scan
+  that finds it: a closing inline tag, a space, then multi-line text matching `&[a-z]+;`.
 - `t[key]` on data outside the dictionaries is the recurring i18n bug on this site, not
   missing keys. Three separate rounds of it have been found: property facts, house rules and
   the tagline in `property.ts`; the whole of `/how-it-works` in module-scope arrays; team
