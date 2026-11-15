@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Faq } from "@/components/faq";
 import heroWideSrc from "@/illustrations/brand-character/hero-wide.jpg";
-import heroTallSrc from "@/illustrations/brand-character/hero-tall.jpg";
+import heroMobileSrc from "@/illustrations/brand-character/hero-mobile.jpg";
 import vpChannels from "@/illustrations/value-props/vp-channels.png";
 import vpLegal from "@/illustrations/value-props/vp-legal.png";
 import vpTeam from "@/illustrations/value-props/vp-team.png";
@@ -84,7 +84,6 @@ export default async function HowItWorksPage({
   // with a scrim over it, rather than a photo boxed into a column beside the copy.
   const heroImage = { alt: "", sizes: "(min-width: 1440px) 1400px, 100vw", priority: true };
   const heroWide = getImageProps({ ...heroImage, src: heroWideSrc }).props;
-  const heroTall = getImageProps({ ...heroImage, src: heroTallSrc }).props;
   const proofPhotos = pickPhotos(FEATURED_PROPERTY.slug, [
     "IMG_5359",
     "IMG_5724",
@@ -123,25 +122,24 @@ export default async function HowItWorksPage({
       {/* shape: hero -- management first, then the core claim, one button to the form. */}
       <section className="px-5">
         <div className="relative mx-auto mt-4 flex max-w-(--container-chrome) flex-col justify-center overflow-hidden rounded-panel bg-ink px-6 py-13 sm:px-12 sm:py-14 min-[900px]:min-h-[560px]">
-          {/* Two different pictures, not two crops of one. At 900px and up the whole figure
-              reads beside the copy column. On a phone the copy fills the panel and a figure
-              behind the scrim disappears, so the phone gets a detail instead: a hand drawing
-              the curtain back, which survives both the scale and the scrim. */}
-          <picture className="absolute inset-0">
-            <source media="(min-width: 900px)" srcSet={heroWide?.srcSet} />
+          {/* The photograph fills the panel at 900px and up only, with a horizontal scrim
+              holding the copy column. Below that it does not: this hero's copy is a six-line
+              standfirst plus four chips, it fills a phone panel completely, and a scrim heavy
+              enough to keep that text at AA takes any photograph behind it to near-black.
+              Tested: a figure vanished, and so did a high-contrast curtain detail. The phone
+              gets its own unscrimmed block under the copy instead, which is where the
+              photograph can actually be seen. */}
+          <picture className="absolute inset-0 hidden min-[900px]:block">
             <img
-              {...heroTall}
+              {...heroWide}
               alt=""
               aria-hidden="true"
-              className="h-full w-full object-cover object-[52%_38%] min-[900px]:object-[58%_26%]"
+              className="h-full w-full object-cover object-[58%_26%]"
             />
           </picture>
-          {/* One scrim, horizontal at 900px and up because the copy sits in a left column,
-              vertical below it because the copy stacks across the full width. Same ink and
-              the same reasoning as the home page hero, which carries the measurements. */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,20,0.88)_0%,rgba(10,8,20,0.80)_52%,rgba(10,8,20,0.46)_100%)] min-[900px]:bg-[linear-gradient(90deg,rgba(10,8,20,0.90)_0%,rgba(10,8,20,0.84)_42%,rgba(10,8,20,0.30)_70%,rgba(10,8,20,0.12)_100%)]"
+            className="absolute inset-0 hidden min-[900px]:block bg-[linear-gradient(90deg,rgba(10,8,20,0.90)_0%,rgba(10,8,20,0.84)_42%,rgba(10,8,20,0.30)_70%,rgba(10,8,20,0.12)_100%)]"
           />
           <div className="relative min-[900px]:max-w-[min(660px,calc(60%-24px))]">
             <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
@@ -153,8 +151,10 @@ export default async function HowItWorksPage({
             <p className="mt-4 max-w-[560px] text-base leading-relaxed text-white/85">
               {t.c2HeroSub}
             </p>
+            {/* pill-light, not pill-primary: the panel ground changed from blue to ink when
+                the hero took a photograph, and an ink fill on ink is an invisible button. */}
             <div className="mt-7 flex flex-wrap items-center gap-5.5">
-              <a href={FORM} className="pill-primary">
+              <a href={FORM} className="pill-light">
                 {t.c2CtaManage}
               </a>
               <a
@@ -174,6 +174,18 @@ export default async function HowItWorksPage({
                 </li>
               ))}
             </ul>
+          </div>
+          {/* The phone's photograph: the hand opening the curtain, with nothing over it. */}
+          <div className="relative mt-8 aspect-4/5 overflow-hidden rounded-box min-[900px]:hidden">
+            <Image
+              src={heroMobileSrc}
+              alt=""
+              aria-hidden="true"
+              placeholder="blur"
+              fill
+              sizes="(min-width: 900px) 0px, calc(100vw - 88px)"
+              className="object-cover object-[46%_50%]"
+            />
           </div>
         </div>
       </section>
