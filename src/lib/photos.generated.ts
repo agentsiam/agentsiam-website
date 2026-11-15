@@ -274,7 +274,7 @@ import midcenturyvilla_39 from "@/photos/midcenturyvilla/40-c031f1bc.jpeg";
 import midcenturyvilla_40 from "@/photos/midcenturyvilla/41-78c9f144.jpeg";
 import routes_0 from "@/photos/routes/route-1-unbothered.jpg";
 import routes_1 from "@/photos/routes/route-2-puzzled.jpg";
-import routes_2 from "@/photos/routes/route-3-not-yet-furnished.jpg";
+import routes_2 from "@/photos/routes/route-3-cosmos-house-living-room.jpg";
 import routes_3 from "@/photos/routes/route-4-two-at-the-table.jpg";
 import silveroakvilla_0 from "@/photos/silveroakvilla/01-cover-pool-at-dusk.jpeg";
 import silveroakvilla_1 from "@/photos/silveroakvilla/02-1ba4d196.jpeg";
@@ -625,7 +625,7 @@ export const PHOTOS: Record<string, Photo[]> = {
   "routes": [
     { src: routes_0, file: "route-1-unbothered.jpg", alt: "A woman at a cafe table in Chiang Mai with her laptop closed, looking out at the street" },
     { src: routes_1, file: "route-2-puzzled.jpg", alt: "A woman sits at a dining table with a laptop and a basket of post, reading a printed sheet." },
-    { src: routes_2, file: "route-3-not-yet-furnished.jpg", alt: "A woman stands in a finished but unfurnished room of a new house, her phone in her hand, looking up at the window." },
+    { src: routes_2, file: "route-3-cosmos-house-living-room.jpg", alt: "The living room at Cosmos House, a long leather sofa under a coffered white ceiling with the staircase to the upper floors behind it" },
     { src: routes_3, file: "route-4-two-at-the-table.jpg", alt: "Two women stand at a table on a shaded veranda, going through printed statements with a pen." },
   ],
   "silveroakvilla": [
