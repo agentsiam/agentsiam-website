@@ -27,13 +27,21 @@ import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
  * search, it is not a listing.
  *
  * Built from the same named shapes as the rest of the site rather than as a prose
- * document, which is what it was. The hero carries a generated frame briefed against the
- * hero's own slots: it serves `reframe`, the misread being that there is nothing to find,
- * when what a renter can see is the agent-listed slice. The camera stands inside the
- * boundary looking out through an open gate, which is the whole argument. The first frame
- * here was shot from the pavement at a closed gate, served `fit`, which is the area grid's
- * job on /destinations, and was pulled for it. The ground stays underneath the image as
- * what shows if the file fails to load.
+ * document, which is what it was. The hero carries a generated frame serving `reframe`:
+ * the misread is that there is nothing to find, when what a renter can see is the
+ * agent-listed slice, so the frame is the owner herself opening her own door. Two earlier
+ * frames were pulled, one shot from the pavement at a closed gate, which served `fit` and
+ * belongs to the area grid, and one shot from inside the boundary at an open gate, which
+ * argued the right thing without a person in it.
+ *
+ * This frame departs from the imagery method on two points, both on Paul's direction,
+ * 15/11/2026, against references he supplied: a performed expression, and a visitor in
+ * frame. The method's acceptance checks forbid the first and the four standing limits
+ * forbid depicting a guest. Her gaze stays off the lens, on the person arriving, so the
+ * no-eye-contact half of the rule still holds, and the visitor is a shoulder and the back
+ * of a head far out of focus rather than anyone identifiable. See decision 96.
+ *
+ * The ground stays underneath the image as what shows if the file fails to load.
  *
  * English, Thai and Chinese. The copy lives in the dictionaries under the `hfr` keys; Thai
  * addresses the guest as คุณ. The area names in the form stay English on every locale,
@@ -98,7 +106,7 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
   const COPY = pageCopy(t);
   const href = (path: string) => localePath(locale as Locale, path);
   const crumbs: Crumb[] = [{ name: COPY.crumb }];
-  const heroPhoto = pickPhoto("heroes", "open-gate");
+  const heroPhoto = pickPhoto("heroes", "host-at-the-door");
 
   return (
     <div>
