@@ -624,9 +624,9 @@ export const PHOTOS: Record<string, Photo[]> = {
   ],
   "routes": [
     { src: routes_0, file: "route-1-unbothered.jpg", alt: "A woman at a cafe table in Chiang Mai with her laptop closed, looking out at the street" },
-    { src: routes_1, file: "route-2-puzzled.jpg", alt: "A man at a dining table reading printed sheets beside an open laptop" },
-    { src: routes_2, file: "route-3-not-yet-furnished.jpg", alt: "A woman standing in an unfurnished room of a new house, looking up at the window" },
-    { src: routes_3, file: "route-4-two-at-the-table.jpg", alt: "Two people at a table on a veranda, reading printed sheets together" },
+    { src: routes_1, file: "route-2-puzzled.jpg", alt: "A woman sits at a dining table with a laptop and a basket of post, reading a printed sheet." },
+    { src: routes_2, file: "route-3-not-yet-furnished.jpg", alt: "A woman stands in a finished but unfurnished room of a new house, her phone in her hand, looking up at the window." },
+    { src: routes_3, file: "route-4-two-at-the-table.jpg", alt: "Two women stand at a table on a shaded veranda, going through printed statements with a pen." },
   ],
   "silveroakvilla": [
     { src: silveroakvilla_0, file: "01-cover-pool-at-dusk.jpeg", alt: "" },
