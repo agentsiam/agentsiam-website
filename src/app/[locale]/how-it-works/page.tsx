@@ -84,6 +84,7 @@ export default async function HowItWorksPage({
   // with a scrim over it, rather than a photo boxed into a column beside the copy.
   const heroImage = { alt: "", sizes: "(min-width: 1440px) 1400px, 100vw", priority: true };
   const heroWide = getImageProps({ ...heroImage, src: heroWideSrc }).props;
+  const heroTall = getImageProps({ ...heroImage, src: heroMobileSrc }).props;
   const proofPhotos = pickPhotos(FEATURED_PROPERTY.slug, [
     "IMG_5359",
     "IMG_5724",
@@ -121,25 +122,34 @@ export default async function HowItWorksPage({
     <div>
       {/* shape: hero -- management first, then the core claim, one button to the form. */}
       <section className="px-5">
-        <div className="relative mx-auto mt-4 flex max-w-(--container-chrome) flex-col justify-center overflow-hidden rounded-panel bg-ink px-6 py-13 sm:px-12 sm:py-14 min-[900px]:min-h-[560px]">
-          {/* The photograph fills the panel at 900px and up only, with a horizontal scrim
-              holding the copy column. Below that it does not: this hero's copy is a six-line
-              standfirst plus four chips, it fills a phone panel completely, and a scrim heavy
-              enough to keep that text at AA takes any photograph behind it to near-black.
-              Tested: a figure vanished, and so did a high-contrast curtain detail. The phone
-              gets its own unscrimmed block under the copy instead, which is where the
-              photograph can actually be seen. */}
-          <picture className="absolute inset-0 hidden min-[900px]:block">
+        <div className="relative mx-auto mt-4 flex max-w-(--container-chrome) flex-col justify-center overflow-hidden rounded-panel bg-ink px-6 pt-13 pb-24 sm:px-12 sm:py-14 min-[900px]:min-h-[560px]">
+          {/* One <picture>, two frames, both breakpoints: the wide frame from 900px up and
+              the 9:16 hand-on-the-curtain below it, swapped by <source> so only one of them
+              is ever downloaded. Built from getImageProps rather than two <Image> elements
+              for that reason; the cost is the blur placeholder, which this API cannot carry,
+              and the panel's own bg-ink stands in as the ground.
+
+              The phone scrim is vertical and much lighter than the desktop one, because the
+              copy sits on the picture rather than beside it. Measured against this frame at
+              the 95th percentile of its own pixels, white body text clears 4.5 to 1 at 0.52
+              ink and the headline clears 3 to 1 at 0.39, and those numbers are flat down the
+              whole frame: it is bright everywhere, so no band needs more than another. The
+              stops hold 0.64 or more to 86 percent, which is below the last chip row, and
+              the chips' own white/12 fill is counted in that: 5.0 to 1 at their worst. Only
+              the foot drops to 0.32, and the foot is the phone's pb-24, where no copy
+              reaches and the curtain reads as a curtain rather than as a texture. */}
+          <picture className="absolute inset-0">
+            <source media="(min-width: 900px)" srcSet={heroWide.srcSet} />
             <img
-              {...heroWide}
+              {...heroTall}
               alt=""
               aria-hidden="true"
-              className="h-full w-full object-cover object-[58%_26%]"
+              className="h-full w-full object-cover object-[50%_50%] min-[900px]:object-[58%_26%]"
             />
           </picture>
           <div
             aria-hidden="true"
-            className="absolute inset-0 hidden min-[900px]:block bg-[linear-gradient(90deg,rgba(10,8,20,0.90)_0%,rgba(10,8,20,0.84)_42%,rgba(10,8,20,0.30)_70%,rgba(10,8,20,0.12)_100%)]"
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,20,0.74)_0%,rgba(10,8,20,0.70)_50%,rgba(10,8,20,0.64)_86%,rgba(10,8,20,0.32)_100%)] min-[900px]:bg-[linear-gradient(90deg,rgba(10,8,20,0.90)_0%,rgba(10,8,20,0.84)_42%,rgba(10,8,20,0.30)_70%,rgba(10,8,20,0.12)_100%)]"
           />
           <div className="relative min-[900px]:max-w-[min(660px,calc(60%-24px))]">
             <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
@@ -174,18 +184,6 @@ export default async function HowItWorksPage({
                 </li>
               ))}
             </ul>
-          </div>
-          {/* The phone's photograph: the hand opening the curtain, with nothing over it. */}
-          <div className="relative mt-8 aspect-4/5 overflow-hidden rounded-box min-[900px]:hidden">
-            <Image
-              src={heroMobileSrc}
-              alt=""
-              aria-hidden="true"
-              placeholder="blur"
-              fill
-              sizes="(min-width: 900px) 0px, calc(100vw - 88px)"
-              className="object-cover object-[46%_50%]"
-            />
           </div>
         </div>
       </section>
