@@ -316,8 +316,8 @@ export const LEAD_SOURCES = [
 export const ICPS = ["ICP1", "ICP2", "ICP3", "ICP4", "ICP5"] as const;
 
 /** What the owner asked for when they arrived, beside the ICP that says where the lead is
- * going. From the owner lead nurture playbook, proposed and not yet merged in the document
- * store: if Paul changes the list, this constant is the one place it changes. */
+ * going. The list is the owner lead nurture playbook's, in the document store at
+ * as-context/02-playbooks/owner-lead-nurture/: if it changes there, this constant changes. */
 export const ENTRY_ASKS = [
   "management",
   "cleaning only",
