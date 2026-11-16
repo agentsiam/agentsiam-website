@@ -41,6 +41,8 @@ const RETENTION_SECONDS = 60 * 60 * 24 * 365;
 export type StoredMessage = {
   id: string;
   waId: string;
+  /** The sender's business-scoped user ID, where Meta sent one. See `conversationKey`. */
+  userId?: string;
   direction: "in" | "out";
   type: string;
   body: string;
@@ -50,7 +52,11 @@ export type StoredMessage = {
 
 export type Conversation = {
   waId: string;
+  /** The guest's BSUID, kept so the pointer to this conversation dies with it. */
+  userId?: string;
   name?: string;
+  /** The guest's WhatsApp username, where they have adopted one. */
+  username?: string;
   lastInboundTs?: number;
   lastTs: number;
   lastBody: string;
@@ -73,12 +79,44 @@ async function redis<T = unknown>(command: Command): Promise<T> {
 const messagesKey = (waId: string) => `wa:msg:${waId}`;
 const CONVERSATIONS = "wa:conversations";
 const STATUSES = "wa:status";
+const BSUIDS = "wa:bsuid";
+
+/**
+ * Which key a guest's conversation lives under.
+ *
+ * A phone number is no longer guaranteed. Since WhatsApp usernames, Meta withholds the
+ * number of a guest who has adopted one unless we have exchanged messages with them in the
+ * last thirty days, and sends a business-scoped user ID instead. A new guest is exactly the
+ * case where we have not, so the number is exactly what is missing when it matters.
+ *
+ * The first identifier we ever see for a BSUID becomes that person's key and is remembered
+ * here, so the same guest cannot end up with one conversation under their number and another
+ * under their BSUID depending on which Meta felt like sending. Whichever arrives later
+ * resolves back to the key already in use. Nothing is migrated: a key, once chosen, is the
+ * key, because rewriting one would mean moving a message list and its statuses to stay
+ * honest about a conversation nobody asked us to renumber.
+ *
+ * Returns undefined when Meta sends neither, which is not a case the webhook can store.
+ */
+export async function conversationKey(phone?: string, userId?: string): Promise<string | undefined> {
+  if (userId) {
+    const known = await redis<string | null>(["HGET", BSUIDS, userId]);
+    if (known) return known;
+  }
+  const key = phone ?? userId;
+  if (!key) return undefined;
+  if (userId) await redis(["HSET", BSUIDS, userId, key]);
+  return key;
+}
 
 /**
  * Store one message, once. Meta retries a webhook it thinks failed, so the same message id
  * can arrive twice; the first write wins and the second is a no-op.
  */
-export async function saveMessage(m: StoredMessage, name?: string): Promise<boolean> {
+export async function saveMessage(
+  m: StoredMessage,
+  contact?: { name?: string; username?: string },
+): Promise<boolean> {
   const fresh = await redis<string | null>(["SET", `wa:seen:${m.id}`, "1", "NX", "EX", 60 * 60 * 24 * 30]);
   if (fresh !== "OK") return false;
 
@@ -89,7 +127,9 @@ export async function saveMessage(m: StoredMessage, name?: string): Promise<bool
   const previous = await getConversation(m.waId);
   const conversation: Conversation = {
     waId: m.waId,
-    name: name ?? previous?.name,
+    userId: m.userId ?? previous?.userId,
+    name: contact?.name ?? previous?.name,
+    username: contact?.username ?? previous?.username,
     lastInboundTs: m.direction === "in" ? Math.max(m.ts, previous?.lastInboundTs ?? 0) : previous?.lastInboundTs,
     lastTs: Math.max(m.ts, previous?.lastTs ?? 0),
     lastBody: m.ts >= (previous?.lastTs ?? 0) ? m.body : (previous?.lastBody ?? m.body),
@@ -126,6 +166,10 @@ async function pruneExpired(entries: Conversation[]): Promise<Conversation[]> {
     if (ids.length > 0) await redis(["HDEL", STATUSES, ...ids]);
     await redis(["DEL", messagesKey(c.waId)]);
   }
+  // The BSUID pointer is an identifier for a person, so it goes with the conversation it
+  // points at rather than outliving the twelve months the policy promises.
+  const userIds = expired.map((c) => c.userId).filter((id): id is string => Boolean(id));
+  if (userIds.length > 0) await redis(["HDEL", BSUIDS, ...userIds]);
   await redis(["HDEL", CONVERSATIONS, ...expired.map((c) => c.waId)]);
 
   return entries.filter((c) => c.lastTs >= cutoff);

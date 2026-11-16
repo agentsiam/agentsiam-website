@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { notificationBody, sendMail } from "@/lib/mailer";
-import { saveMessage, saveStatus, STORE_READY } from "@/lib/whatsapp-store";
+import { conversationKey, saveMessage, saveStatus, STORE_READY } from "@/lib/whatsapp-store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,6 +19,11 @@ export const dynamic = "force-dynamic";
  * Every new guest message is also emailed to the team, because a message nobody is told
  * about is a guest waiting. A retried delivery is not stored twice, so it is not emailed
  * twice either.
+ *
+ * A sender is not necessarily a phone number. A guest who has adopted a WhatsApp username
+ * arrives with their number withheld and a business-scoped user ID in its place, so nothing
+ * here may assume `from` is there: see `conversationKey` for which of the two a conversation
+ * is filed under.
  */
 
 export async function GET(request: Request) {
@@ -58,23 +63,41 @@ export async function POST(request: Request) {
   const changes = payload.entry?.flatMap((e) => e.changes ?? []) ?? (payload.field ? [payload] : []);
 
   try {
-    const fresh: { waId: string; name?: string; body: string }[] = [];
+    const fresh: FreshMessage[] = [];
     for (const change of changes) {
       const value = change.value ?? {};
-      const names = new Map((value.contacts ?? []).map((c) => [c.wa_id, c.profile?.name]));
+      // Indexed under both identifiers, because which one a contact entry carries is Meta's
+      // choice and not ours.
+      const contacts = value.contacts ?? [];
+      const byPhone = new Map(contacts.flatMap((c) => (c.wa_id ? [[c.wa_id, c] as const] : [])));
+      const byUserId = new Map(contacts.flatMap((c) => (c.user_id ? [[c.user_id, c] as const] : [])));
       for (const m of value.messages ?? []) {
+        const waId = await conversationKey(m.from, m.from_user_id);
+        if (!waId) {
+          // Nothing to file it under. Acknowledged rather than retried, because a redelivery
+          // of the same payload would be just as anonymous.
+          console.warn("[whatsapp/webhook] message", m.id, "carries neither from nor from_user_id");
+          continue;
+        }
+        const contact =
+          (m.from ? byPhone.get(m.from) : undefined) ??
+          (m.from_user_id ? byUserId.get(m.from_user_id) : undefined);
+        const name = contact?.profile?.name;
+        const username = contact?.profile?.username;
+        const body = messageBody(m);
         const saved = await saveMessage(
           {
             id: m.id,
-            waId: m.from,
+            waId,
+            userId: m.from_user_id,
             direction: "in",
             type: m.type,
-            body: messageBody(m),
+            body,
             ts: Number(m.timestamp),
           },
-          names.get(m.from),
+          { name, username },
         );
-        if (saved) fresh.push({ waId: m.from, name: names.get(m.from), body: messageBody(m) });
+        if (saved) fresh.push({ waId, phone: m.from, name, username, body });
       }
       for (const s of value.statuses ?? []) await saveStatus(s.id, s.status);
     }
@@ -86,18 +109,24 @@ export async function POST(request: Request) {
   }
 }
 
-async function notifyTeam(messages: { waId: string; name?: string; body: string }[]): Promise<void> {
+type FreshMessage = { waId: string; phone?: string; name?: string; username?: string; body: string };
+
+async function notifyTeam(messages: FreshMessage[]): Promise<void> {
   for (const m of messages) {
+    // A guest writing under a username has no number for us to show, and printing their
+    // business-scoped ID behind a plus sign would be a number nobody can ring back.
+    const who = m.name ?? (m.username ? `@${m.username}` : undefined);
+    const rows: [string, string][] = [["From", who ?? "?"]];
+    rows.push(m.phone ? ["Number", `+${m.phone}`] : ["WhatsApp ID", m.waId]);
+    if (m.name && m.username) rows.push(["Username", `@${m.username}`]);
     const { html, text } = notificationBody(
       "New guest message on WhatsApp",
-      [
-        ["From", m.name ?? "?"],
-        ["Number", `+${m.waId}`],
-      ],
+      rows,
       m.body,
       "Reply within 24 hours of the guest's last message, or only a template can be sent.",
     );
-    const sent = await sendMail({ subject: `WhatsApp: ${m.name ?? `+${m.waId}`}`, html, text });
+    const subject = who ?? (m.phone ? `+${m.phone}` : m.waId);
+    const sent = await sendMail({ subject: `WhatsApp: ${subject}`, html, text });
     if (!sent) console.error("[whatsapp/webhook] message from", m.waId, "stored but not emailed");
   }
 }
@@ -124,7 +153,10 @@ function messageBody(m: InboundMessage): string {
 }
 
 type InboundMessage = {
-  from: string;
+  /** Withheld by Meta for a guest using a username, outside its thirty-day contact window. */
+  from?: string;
+  /** The sender's business-scoped user ID. Present on every message since April 2026. */
+  from_user_id?: string;
   id: string;
   timestamp: string;
   type: string;
@@ -136,7 +168,11 @@ type InboundMessage = {
 type Change = {
   field?: string;
   value?: {
-    contacts?: { wa_id: string; profile?: { name?: string } }[];
+    contacts?: {
+      wa_id?: string;
+      user_id?: string;
+      profile?: { name?: string; username?: string };
+    }[];
     messages?: InboundMessage[];
     statuses?: { id: string; status: string }[];
   };
