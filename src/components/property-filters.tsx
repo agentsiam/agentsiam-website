@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import type { Dictionary } from "@/i18n";
+import type { FilterLabelKey, FilterLabels } from "@/lib/filter-labels";
 import { localePath, type Locale } from "@/i18n/config";
-import { AREAS, CITIES } from "@/lib/areas";
+import { AREAS, CITIES, cityName } from "@/lib/areas";
 import {
   FEATURES,
   GUEST_CHOICES,
@@ -79,7 +79,11 @@ export function PropertyFilters({
   state,
   resultCount,
 }: {
-  t: Dictionary;
+  /**
+   * The bar's own strings, not the dictionary. See `src/lib/filter-labels.ts`: this is a
+   * client component, so whatever is passed here is serialized into the page.
+   */
+  t: FilterLabels;
   locale: Locale;
   state: SearchState;
   resultCount: number;
@@ -268,11 +272,11 @@ export function PropertyFilters({
 
   const chips = [
     ...state.areas.map((v) => ({ key: "area", value: v, label: label(v) })),
-    ...state.types.map((v) => ({ key: "type", value: v, label: t[`type_${v}` as keyof Dictionary] ?? v })),
+    ...state.types.map((v) => ({ key: "type", value: v, label: t[`type_${v}`] ?? v })),
     ...state.features.map((v) => ({
       key: "features",
       value: v,
-      label: t[`feature_${v.replace(/-/g, "_")}` as keyof Dictionary] ?? v,
+      label: t[`feature_${v.replace(/-/g, "_")}` as FilterLabelKey] ?? v,
     })),
     ...(state.bedrooms
       ? [{ key: "beds", value: "", label: `${state.bedrooms}+ ${t.bedrooms}` }]
@@ -304,7 +308,8 @@ export function PropertyFilters({
   // The search, as a sentence, for the phone bar. Three facts in the order a guest holds
   // them: where, when, how many. Dates read as an invitation until they are set, because
   // they are the one field that changes what a property page can tell them afterwards.
-  const cityName = CITIES.find((city) => city.slug === state.city)?.name ?? state.city;
+  const current = CITIES.find((city) => city.slug === state.city);
+  const cityLabel = current ? cityName(t, current) : state.city;
   const dateLabel =
     state.from && state.to
       ? t.psDateRange
@@ -356,7 +361,7 @@ export function PropertyFilters({
           >
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[13.5px] font-semibold leading-tight">
-                {cityName}
+                {cityLabel}
               </span>
               <span className="block truncate text-[11.5px] leading-tight text-muted">
                 {dateLabel} · {guestLabel}
@@ -388,7 +393,7 @@ export function PropertyFilters({
             >
               {CITIES.map((city) => (
                 <option key={city.slug} value={city.slug}>
-                  {city.name}
+                  {cityName(t, city)}
                   {city.live ? "" : ` — ${t.launchingSoon}`}
                 </option>
               ))}
@@ -454,7 +459,7 @@ export function PropertyFilters({
             >
               {SORTS.map((sort) => (
                 <option key={sort} value={sort}>
-                  {t[`sort_${sort.replace(/-/g, "_")}` as keyof Dictionary] ?? sort}
+                  {t[`sort_${sort.replace(/-/g, "_")}` as FilterLabelKey] ?? sort}
                 </option>
               ))}
             </select>
@@ -551,7 +556,7 @@ export function PropertyFilters({
                   >
                     {CITIES.map((city) => (
                       <option key={city.slug} value={city.slug}>
-                        {city.name}
+                        {cityName(t, city)}
                         {city.live ? "" : ` — ${t.launchingSoon}`}
                       </option>
                     ))}
@@ -609,7 +614,7 @@ export function PropertyFilters({
                     >
                       {SORTS.map((sort) => (
                         <option key={sort} value={sort}>
-                          {t[`sort_${sort.replace(/-/g, "_")}` as keyof Dictionary] ?? sort}
+                          {t[`sort_${sort.replace(/-/g, "_")}` as FilterLabelKey] ?? sort}
                         </option>
                       ))}
                     </select>
@@ -636,7 +641,7 @@ export function PropertyFilters({
               {PROPERTY_TYPES.map((type) => (
                 <Chip
                   key={type}
-                  label={String(t[`type_${type}` as keyof Dictionary] ?? type)}
+                  label={String(t[`type_${type}`] ?? type)}
                   selected={draft.types.includes(type)}
                   onSelect={() =>
                     setDraft({ ...draft, types: toggle(draft.types, type) as typeof draft.types })
@@ -650,7 +655,7 @@ export function PropertyFilters({
                 <Chip
                   key={feature}
                   label={String(
-                    t[`feature_${feature.replace(/-/g, "_")}` as keyof Dictionary] ?? feature,
+                    t[`feature_${feature.replace(/-/g, "_")}` as FilterLabelKey] ?? feature,
                   )}
                   selected={draft.features.includes(feature)}
                   onSelect={() =>

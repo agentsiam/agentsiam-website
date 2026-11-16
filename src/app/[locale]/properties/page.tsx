@@ -6,7 +6,8 @@ import { PropertyTile } from "@/components/property-tile";
 import { ResultsMap } from "@/components/results-map";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
-import { AREAS, cityBySlug, DEFAULT_CITY } from "@/lib/areas";
+import { AREAS, cityBySlug, cityName, DEFAULT_CITY } from "@/lib/areas";
+import { filterLabels } from "@/lib/filter-labels";
 import { propertyArea, propertyCoverPhoto } from "@/lib/property";
 import {
   activeFilters,
@@ -62,6 +63,9 @@ export default async function PropertiesPage({
 
   const state = parseSearch(query);
   const city = cityBySlug(state.city) ?? DEFAULT_CITY;
+  // The city's name in the reader's language, for the three places this page prints it:
+  // the not-live panel's heading and body, and the results heading below.
+  const cityLabel = cityName(t, city);
 
   // A city we do not serve yet gets a page that says so, never an empty result list. The
   // handoff is explicit: naming a city you cannot fulfil is a deliberate signal of intent,
@@ -72,10 +76,10 @@ export default async function PropertiesPage({
         <div className="mx-auto max-w-[560px] rounded-panel bg-wash-gold px-8 py-11 text-center">
           <p className="eyebrow">{t.launchingSoon}</p>
           <h1 className="mt-3 font-headline text-[clamp(26px,4vw,34px)] font-extrabold leading-tight tracking-[-0.03em]">
-            {t.cityComingTitle.replace("{city}", city.name)}
+            {t.cityComingTitle.replaceAll("{city}", cityLabel)}
           </h1>
           <p className="mx-auto mt-3.5 max-w-[420px] text-[15px] leading-relaxed text-body">
-            {t.cityComingBody.replace("{city}", city.name)}
+            {t.cityComingBody.replaceAll("{city}", cityLabel)}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {/* Carries the search across. Someone who typed dates, a guest count and three
@@ -147,7 +151,14 @@ export default async function PropertiesPage({
   return (
     <div>
       {/* shape: page-header -- The filters are this page's header: chrome, carrying no argument. */}
-      <PropertyFilters t={t} locale={locale} state={state} resultCount={results.length} />
+      {/* `filterLabels(t)`, never `t`: the bar is a client component, so its props are
+          serialized into this document. See src/lib/filter-labels.ts. */}
+      <PropertyFilters
+        t={filterLabels(t)}
+        locale={locale}
+        state={state}
+        resultCount={results.length}
+      />
 
       {/* shape: property-grid
           -- Split view: list left, map right and sticky. The handoff's one breakpoint at
@@ -166,7 +177,7 @@ export default async function PropertiesPage({
           {results.length === 1
             ? t.oneProperty
             : t.nProperties.replace("{n}", String(results.length))}
-          <span className="text-muted"> · {city.name}</span>
+          <span className="text-muted"> · {cityLabel}</span>
         </h1>
         <p className="mt-2 max-w-[52ch] text-[15px] leading-relaxed text-body">{t.psSubhead}</p>
 
