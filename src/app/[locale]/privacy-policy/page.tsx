@@ -182,13 +182,16 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
           <p>
             <strong>Messages you send us on WhatsApp.</strong> If you write to us on
             WhatsApp we receive the name on your WhatsApp profile, the number you write
-            from, and what you write. Where you send a photograph, a document or a voice
-            message we record that you sent one and its caption, not the file itself. We
-            use all of it to answer you and to arrange or host your stay. The conversation
-            is kept for us by Upstash, on servers in Singapore. WhatsApp is operated by
-            Meta, which carries the message to us under its own policy, as it does any
-            other WhatsApp message. The lawful basis is the steps taken at your request,
-            and the performance of your booking where one follows.
+            from, and what you write. Where you use a WhatsApp username, WhatsApp
+            withholds your number and gives us your username and an identifier for you
+            that works only with us, and we keep those in its place. Where you send a
+            photograph, a document or a voice message we record that you sent one and its
+            caption, not the file itself. We use all of it to answer you and to arrange or
+            host your stay. The conversation is kept for us by Upstash, on servers in
+            Singapore. WhatsApp is operated by Meta, which carries the message to us under
+            its own policy, as it does any other WhatsApp message. The lawful basis is the
+            steps taken at your request, and the performance of your booking where one
+            follows.
           </p>
           {GA_MEASUREMENT_ID ? (
             <>
