@@ -53,9 +53,11 @@ export async function generateMetadata({
   const city = managementCityBySlug(slug);
   if (!city) notFound();
 
+  const cityName = t[city.nameKey];
+
   return pageMeta({
-    title: t.metaMgmtTitle.replace("{city}", city.name),
-    description: t.metaMgmtDesc.replace("{city}", city.name),
+    title: t.metaMgmtTitle.replaceAll("{city}", cityName),
+    description: t.metaMgmtDesc.replaceAll("{city}", cityName),
     path: `/management/${city.slug}`,
     locale,
   });
@@ -71,6 +73,12 @@ export default async function ManagementCityPage({
 
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale as Locale, path);
+
+  // The city's name in the reader's language, resolved once and interpolated into every
+  // string below. `city.name` is the English spelling and was going onto /th and /zh beside
+  // Thai and Chinese copy. `replaceAll` throughout, never `replace`: several of these
+  // strings name the city twice and `replace` swaps only the first occurrence.
+  const cityName = t[city.nameKey];
 
   // The three that travel out of Chiang Mai on their own, at full weight. Service codes
   // are fixed and never renumbered, so these stay 1, 2 and 3.
@@ -102,10 +110,10 @@ export default async function ManagementCityPage({
               {t.mgmtEyebrow}
             </span>
             <h1 className="mt-4.5 font-headline text-[clamp(28px,5vw,42px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
-              {t.mgmtHeroTitle.replace("{city}", city.name)}
+              {t.mgmtHeroTitle.replaceAll("{city}", cityName)}
             </h1>
             <p className="mt-4 max-w-[540px] text-base leading-relaxed text-white/85">
-              {t.mgmt2HeroSub.replace("{city}", city.name)}
+              {t.mgmt2HeroSub.replaceAll("{city}", cityName)}
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-5.5">
               <Link
@@ -197,18 +205,65 @@ export default async function ManagementCityPage({
         </p>
       </section>
 
+      {/* shape: prose-section -- The city's own rules, and the only thing on this page that
+          is not the same on the other city page. Until it existed, /management/phuket and
+          /management/bangkok were 650 of 658 words positionally identical, the name swapped
+          eight times, which is a near-duplicate pair that competes with itself and ranks
+          neither page.
+
+          Every line traces to the "By city" section of
+          as-context/04-industry-research/regulations-compliance/thailand/str-legal-overview.md
+          in agentsiam-consulting, approved 15/11/2026, and to nothing else. Two claims the
+          research turned up are deliberately not here, each resting on one uncorroborated
+          source. Do not add a third city's copy without adding its section there first.
+
+          It sits after the services and before the honest-scope block so the order reads:
+          what we do, what applies here, what we do not have here yet, the ask. Knowing the
+          rules is research and having operational depth is not, so the two blocks say
+          different things and the one does not soften the other.
+
+          No FAQPage markup. The licence page owns the national questions and carries that
+          block; this is two paragraphs, and markup describing a question set the page does
+          not render is the mismatch the breadcrumb rule already warns about. */}
+      <section className="mx-auto max-w-(--container-prose) px-5 pt-16">
+        <h2 className="font-display text-[26px] font-bold tracking-[-0.02em]">
+          {t.mgmt2RulesTitle.replaceAll("{city}", cityName)}
+        </h2>
+        <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-muted">
+          {t.mgmt2RulesIntro}
+        </p>
+        <p className="mt-5 max-w-[640px] text-[15px] leading-relaxed text-body">
+          {t[city.rulesRouteKey].replaceAll("{city}", cityName)}
+        </p>
+        <p className="mt-3.5 max-w-[640px] text-[15px] leading-relaxed text-body">
+          {t[city.rulesEnforceKey].replaceAll("{city}", cityName)}
+        </p>
+        {/* The one disclaimer, reused from the licence page rather than written twice, so
+            the compliance position is never stated as settled (R13 in agentsiam-consulting)
+            and is worded the same on both pages. */}
+        <p className="mt-6 max-w-[640px] text-[14.5px] leading-relaxed text-muted">
+          {t.licLimitsBody}
+        </p>
+        <Link
+          href={href("/short-term-rental-licence-chiang-mai")}
+          className="hit mt-4 inline-block text-[14.5px] font-semibold text-primary hover:text-ink"
+        >
+          {t.licCrumb}
+        </Link>
+      </section>
+
       {/* shape: honest-section -- The honest-scope block. The reason this page can exist
           ahead of depth. Do not soften it. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16 pb-4">
         <div className="rounded-panel bg-wash-gold px-6 py-7 sm:px-8">
           <h2 className="font-display text-[20px] font-bold tracking-[-0.02em]">
-            {t.mgmtScopeTitle.replace("{city}", city.name)}
+            {t.mgmtScopeTitle.replaceAll("{city}", cityName)}
           </h2>
           <p className="mt-2.5 text-[15px] leading-relaxed text-body">
-            {t.mgmt2Scope1.replaceAll("{city}", city.name)}
+            {t.mgmt2Scope1.replaceAll("{city}", cityName)}
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-body">
-            {t.mgmt2Scope2.replaceAll("{city}", city.name)}
+            {t.mgmt2Scope2.replaceAll("{city}", cityName)}
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-body">
             {t.mgmt2Scope3}
@@ -219,7 +274,7 @@ export default async function ManagementCityPage({
       {/* shape: closing-cta -- Close. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-10">
         <h2 className="font-display text-[22px] font-bold tracking-[-0.02em]">
-          {t.mgmtCtaTitle.replace("{city}", city.name)}
+          {t.mgmtCtaTitle.replaceAll("{city}", cityName)}
         </h2>
         <p className="mt-2 max-w-[620px] text-[15px] leading-relaxed text-muted">
           {t.mgmt2CtaBody}

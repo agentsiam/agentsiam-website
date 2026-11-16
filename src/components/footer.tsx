@@ -75,9 +75,13 @@ export function Footer({ locale }: { locale: Locale }) {
         // column headed "Cities we cover" reads as not working here, which is worse than
         // the orphan problem this column was added to solve.
         { href: href("/how-it-works"), label: t.homeCity },
+        // Same rule as the areas above, and for the same reason: management-cities.ts
+        // carries one English name per city, and nameKey resolves the reader's own
+        // spelling, so this column stops printing "Phuket" and "Bangkok" in Latin script
+        // under a Thai or Chinese heading and beside เชียงใหม่.
         ...MANAGEMENT_CITIES.map((city) => ({
           href: href(`/management/${city.slug}`),
-          label: city.name,
+          label: t[city.nameKey],
         })),
       ],
     },

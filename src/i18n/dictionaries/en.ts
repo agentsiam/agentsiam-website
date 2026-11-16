@@ -1665,6 +1665,26 @@ export const en = {
   hubCtaJournal: "Looking for somewhere to stay while you are here?",
   // The same line on the owner outlet. Owner register in Thai: ท่าน.
   hubCtaHost: "Ready to talk about your own property?",
+
+  // -- /management/[city]: the per-city rules section ----------------------
+  // Section h2. {city} is the city's name in this locale, resolved from ManagementCity.nameKey.
+  mgmt2RulesTitle: "Short-term rental rules in {city}",
+  // Shared intro. Names the three things that differ by city, which is what the rest of the section then answers for this one.
+  mgmt2RulesIntro: "The national rule is the same in every province. Three things are not: where the notification is filed, whether your property can use the exemption route at all, and how actively the rule is enforced.",
+  // Phuket, the filing route and whether the exemption fits the local stock. Named by ManagementCity.rulesRouteKey.
+  mgmt2PhuketRoute: "{city} is a province, so a notification goes to the Provincial Administration Office. {city} also has the villa and townhouse stock the non-hotel route was written for, so the exemption is genuinely open to many properties here rather than closed by the building.",
+  // Phuket enforcement. Every figure is from the By city section of str-legal-overview.md and traces to Thai news outlets. Reported June 2026, so it carries its own date.
+  mgmt2PhuketEnforce: "{city} is the one market of the three where enforcement is on the record. A Department of Provincial Administration team raided unlicensed accommodation businesses in Karon, Rawai and Patong in June 2026 and arrested operators who had taken bookings through online platforms without a licence. An official put the island at roughly 5,000 accommodation establishments against around 800 valid hotel licences, with a licensing drive aimed at about 4,000 operators.",
+  // Bangkok, the filing route and the condominium reality. The route differs from every other province, which is the single most useful fact on the page.
+  mgmt2BangkokRoute: "{city} files differently. A notification goes to the Bureau of Investigation and Legal Affairs at the Department of Provincial Administration, not to the district office that handles other property paperwork. And {city}'s lettable stock is overwhelmingly condominium, which the non-hotel route was not written for, so for most owners here the monthly route is not the fallback, it is the only route.",
+  // Bangkok's second limit, the juristic person, which is not the Hotel Act. Ends on the written permission the condo precondition already requires.
+  mgmt2BangkokEnforce: "{city} carries a second limit that is not the Hotel Act at all. A condominium juristic person can stop short letting under the building's own rules whatever the national position is, and the Supreme Court has heard a juristic person sue a co-owner who was letting by the day. So the first step is the building permitting short stays in writing.",
+
+  // -- City names, one spelling per language -------------------------------
+  // Phuket, in the reader's language. Named by ManagementCity.nameKey and interpolated into every string that mentions the city, so the spelling exists once per language. Chiang Mai's equivalent is homeCity, which already existed.
+  cityPhuket: "Phuket",
+  // Bangkok, same rule. The Thai carries the paiyannoi, matching hubRailCitiesLabel, so a space follows it wherever Thai text comes next.
+  cityBangkok: "Bangkok",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

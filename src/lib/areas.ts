@@ -15,6 +15,8 @@
  * intent -- but only if the resulting page says so plainly rather than returning nothing.
  */
 
+import type { Dictionary } from "@/i18n/dictionaries/en";
+
 export type Area = {
   slug: string;
   name: string;
@@ -156,17 +158,48 @@ export function distanceKm(
 // handoff is explicit that an unexplained empty result would read as a broken site, so a
 // city that is not live must never silently return nothing.
 
+/**
+ * The dictionary keys that hold a city's name, one per entry in CITIES.
+ *
+ * Narrow on purpose rather than `keyof Dictionary`, so `cityName` below can be given a
+ * small label object instead of the whole dictionary. The search bar is a client
+ * component, and `hero-search.tsx` carries the measurement of what handing one the
+ * dictionary costs: 778 keys in the RSC payload for the sake of twelve strings.
+ */
+export type CityNameKey = "homeCity" | "cityPhuket" | "cityBangkok";
+
 export type City = {
   slug: string;
   name: string;
+  /**
+   * The city's name in the reader's language.
+   *
+   * `name` is the English spelling and stays, because the slug and the `city=` query are
+   * English. Everything a reader sees resolves through `cityName`: the "Where" control,
+   * the results heading and the not-live panel all printed `name`, so /th asked
+   * "ที่ไหน" and then answered "Chiang Mai" in Latin script, and /zh did the same under
+   * a Chinese label. Chiang Mai's key is `homeCity`, which already existed and is used
+   * across the site, so it is not written a second time here.
+   *
+   * Same pattern as `areaName` in `src/lib/area-content.ts`, for the reason that file
+   * gives: the dictionary owns how a place is spelled in each language, and a second
+   * spelling is how one name ends up transliterated two ways. `ManagementCity.nameKey`
+   * in `src/lib/management-cities.ts` is the owner-side half of this.
+   */
+  nameKey: CityNameKey;
   live: boolean;
 };
 
 export const CITIES: City[] = [
-  { slug: "chiang-mai", name: "Chiang Mai", live: true },
-  { slug: "bangkok", name: "Bangkok", live: false },
-  { slug: "phuket", name: "Phuket", live: false },
+  { slug: "chiang-mai", name: "Chiang Mai", nameKey: "homeCity", live: true },
+  { slug: "bangkok", name: "Bangkok", nameKey: "cityBangkok", live: false },
+  { slug: "phuket", name: "Phuket", nameKey: "cityPhuket", live: false },
 ];
+
+/** A city's name in the reader's language. Takes the three name keys, not a dictionary. */
+export function cityName(t: Pick<Dictionary, CityNameKey>, city: City): string {
+  return t[city.nameKey];
+}
 
 export function cityBySlug(slug: string): City | undefined {
   return CITIES.find((city) => city.slug === slug);
