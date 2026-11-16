@@ -8,6 +8,18 @@
   one face per src entry and has no way to put a unicode-range on each: de-slicing it
   would make a Chinese page fetch 4.4MB instead of 1.2MB.
 
+  All 101 slices are here on purpose, and only 30 of them hold a character the site
+  currently renders. Do not trim them. Trimming saves repository bytes and nothing else:
+  unicode-range means a visitor already fetches only the slices their page needs, measured
+  at 27 files and 1.2MB on the Chinese home page either way. What it would cost is the
+  failure this site keeps finding in other forms. A character outside a shipped range drops
+  to the system CJK face mid-sentence, with no build error and no warning, and Chinese is
+  the locale nobody here reads: the open items in
+  /Users/paulb/code/agentsiam/agentsiam-consulting/as-context/00-company/decisions-log.md
+  record that the Chinese copy has never had a native read. A missing slice would be found
+  by a Chinese-speaking visitor, not by us. That is the shape of R8, where a blank
+  dictionary string ships English and the per-key fallback hides it.
+
   400 and 700 only, and the two faces are clamped rather than given a 400 to 700 range on
   purpose. font-medium and font-extrabold reach this family by CSS weight matching, and a
   range face would render them at 500 and 800 instead of snapping to the two weights the

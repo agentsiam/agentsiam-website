@@ -61,10 +61,42 @@ Sans Thai, and 30 of the 101 Noto Sans SC slices. The five therefore ship one sl
 Unbounded vietnamese, and the `latin` slice of Noto Sans Thai, which no character reaches
 because the Latin faces sit in front of it in every stack) are gone.
 
-Noto Sans SC ships all 101 slices, 4.4MB, rather than the 30 the current copy needs. Chinese
-copy gets written after this README, and a character outside a shipped slice drops to the
-system face silently. The browser still fetches only the ranges a page uses, which is the
-point of the slicing.
+Noto Sans SC ships all 101 slices rather than the 30 the current copy needs. **Do not trim
+them.** The 101 are 4.29MB of the 4.41MB of woff2 here, so trimming is the only thing in this
+directory that would save real repository weight, and it would buy nothing a visitor can feel:
+`unicode-range` means a browser already fetches only the slices its page needs, measured at 27
+files and 1217.5KB on the Chinese home page with the full set installed.
+
+What it would cost is a failure this site keeps meeting in other forms. A character outside a
+shipped range drops to the system CJK face mid-sentence, with no build error and no warning,
+and Chinese is the locale nobody here reads: the open items in
+`/Users/paulb/code/agentsiam/agentsiam-consulting/as-context/00-company/decisions-log.md`
+record that the Chinese copy has never had a native read. A missing slice would be found by a
+Chinese-speaking visitor rather than by us, which is the shape of R8, where a blank dictionary
+string ships English and the per-key fallback hides it.
+
+## The fallback faces moved, and that is the one thing this change did alter
+
+`next/font` emits a metric-matched fallback face per family, `local(Arial)` with overrides, which
+holds the line box while the real face loads and is painted for nothing else. `next/font/google`
+read those overrides from Next's own table for the whole family; `next/font/local` measures the
+file we ship, which is one subset of it. So they differ by a few percent:
+
+| Family | `size-adjust` before | after |
+|---|---|---|
+| Noto Sans Thai | 106.33% | 100.0% |
+| Unbounded | 134.59% | 146.16% |
+| Poppins | 112.16% | 115.57% |
+| IBM Plex Mono | 134.59% | 131.49% |
+| IBM Plex Sans | 101.17% | 101.13% |
+
+Noto Sans Thai is the one to know about, both because it is the largest shift and because Thai
+is a real audience rather than a theoretical one. It changes the pre-swap paint only: once the
+webfont has loaded, every measurement of the rendered text is identical, verified across 160
+text elements on four pages in three languages. There is nothing to tune here, because
+`adjustFontFallback` on `next/font/local` takes `'Arial'`, `'Times New Roman'` or `false` and no
+numbers. Noto Sans SC keeps the old values exactly, because its stylesheet is generated with
+them read from Next's table.
 
 ## Refreshing them
 
