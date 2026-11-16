@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Poppins, IBM_Plex_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "../globals.css";
 import { SignOut } from "@/components/admin/sign-out";
 import { currentSession } from "@/lib/admin/guard";
@@ -33,16 +33,26 @@ import { storeDescription } from "@/lib/admin/store";
  * two readers that is the right trade against two more megabytes of webfont.
  */
 
-const poppins = Poppins({
+// The same files the public layout loads, from src/fonts rather than from Google: see
+// src/fonts/README.md. Two weights of Poppins here against the site's three, because this
+// subtree has no hero headline to set in 800.
+const poppins = localFont({
   variable: "--font-poppins",
-  weight: ["600", "700"],
-  subsets: ["latin"],
+  display: "swap",
+  src: [
+    { path: "../../fonts/poppins-latin-600.woff2", weight: "600", style: "normal" },
+    { path: "../../fonts/poppins-latin-700.woff2", weight: "700", style: "normal" },
+  ],
 });
 
-const plexSans = IBM_Plex_Sans({
+const plexSans = localFont({
   variable: "--font-plex-sans",
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
+  display: "swap",
+  src: [
+    { path: "../../fonts/ibm-plex-sans-latin.woff2", weight: "400", style: "normal" },
+    { path: "../../fonts/ibm-plex-sans-latin.woff2", weight: "500", style: "normal" },
+    { path: "../../fonts/ibm-plex-sans-latin.woff2", weight: "600", style: "normal" },
+  ],
 });
 
 /**

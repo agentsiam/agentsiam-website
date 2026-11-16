@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import {
-  Poppins,
-  IBM_Plex_Sans,
-  IBM_Plex_Mono,
-  Unbounded,
-  Noto_Sans_Thai,
-  Noto_Sans_SC,
-} from "next/font/google";
+import localFont from "next/font/local";
 // Vercel Analytics is cookieless and stores no persistent identifier, so it runs for
 // every visitor with no question asked.
 //
@@ -26,6 +19,7 @@ import {
 // it is.
 import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
+import "../../fonts/noto-sans-sc.generated.css";
 import { Nav } from "@/components/nav";
 import { NavHeight } from "@/components/nav-height";
 import { Footer } from "@/components/footer";
@@ -53,70 +47,96 @@ import { organizationSchema, websiteSchema } from "@/lib/structured-data";
 // because every page is localised; src/proxy.ts rewrites the bare English paths onto /en so
 // the URLs stay clean. See the Next i18n guide in node_modules/next/dist/docs.
 
-const poppins = Poppins({
+// The faces are files in this repository, under src/fonts, and nothing below reaches a
+// network at build time. They were loaded through next/font/google until 16/11/2026, which
+// fetched fonts.googleapis.com and then fonts.gstatic.com on every build and cost a
+// production deployment to a fetch that did not land. src/fonts/README.md says where the
+// files came from, and scripts/fetch-fonts.mjs is how they are refreshed, by hand.
+//
+// Every src array is written out in full on purpose: localFont takes literal object
+// arguments, so a helper that builds the array fails to compile.
+//
+// The latin slice only, for all four Latin families. Google's response carries every
+// subset it has and next/font/google downloaded all of them, which is how the old build
+// came to carry 9.46MB of font files. Measured against the text of all 114 pages in all
+// three languages, no character on this site reaches Poppins devanagari, Plex cyrillic or
+// greek, or Unbounded vietnamese, so those files are not here.
+const poppins = localFont({
   variable: "--font-poppins",
-  weight: ["600", "700", "800"],
-  subsets: ["latin"],
+  display: "swap",
+  src: [
+    { path: "../../fonts/poppins-latin-600.woff2", weight: "600", style: "normal" },
+    { path: "../../fonts/poppins-latin-700.woff2", weight: "700", style: "normal" },
+    { path: "../../fonts/poppins-latin-800.woff2", weight: "800", style: "normal" },
+  ],
 });
 
-const plexSans = IBM_Plex_Sans({
+// One file, three weights. Google serves IBM Plex Sans as a variable font, one woff2 per
+// subset, and each face clamps it to the weight it declares. The same is true of Noto Sans
+// Thai below. Poppins is static, so it is one file per weight.
+const plexSans = localFont({
   variable: "--font-plex-sans",
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
+  display: "swap",
+  src: [
+    { path: "../../fonts/ibm-plex-sans-latin.woff2", weight: "400", style: "normal" },
+    { path: "../../fonts/ibm-plex-sans-latin.woff2", weight: "500", style: "normal" },
+    { path: "../../fonts/ibm-plex-sans-latin.woff2", weight: "600", style: "normal" },
+  ],
 });
 
-const plexMono = IBM_Plex_Mono({
+const plexMono = localFont({
   variable: "--font-plex-mono",
-  weight: ["500"],
-  subsets: ["latin"],
+  display: "swap",
+  src: [{ path: "../../fonts/ibm-plex-mono-latin.woff2", weight: "500", style: "normal" }],
 });
 
 // 800 only. 900 was declared and never asked for: --font-headline resolves at 800
 // everywhere, there is no font-black and no font-weight:900 anywhere in src/, and the
 // unused face was 20.6KB fetched at highest priority on every page in every language.
-const unbounded = Unbounded({
+const unbounded = localFont({
   variable: "--font-unbounded",
-  weight: ["800"],
-  subsets: ["latin"],
+  display: "swap",
+  src: [{ path: "../../fonts/unbounded-latin.woff2", weight: "800", style: "normal" }],
 });
 
 // 800 matters: Unbounded and Poppins carry no Thai glyphs, so a Thai hero headline falls
 // through to this face at the weight the heading asks for. Without a real 800 the browser
 // synthesises one and the headline reads smeared.
-const notoThai = Noto_Sans_Thai({
+// The thai slice only. Its latin slice is not here because no character ever reaches it:
+// this face sits behind Poppins, Unbounded and Plex in all four stacks in globals.css, and
+// all four carry the Latin range already.
+const notoThai = localFont({
   variable: "--font-noto-thai",
-  weight: ["400", "600", "800"],
-  subsets: ["thai"],
+  display: "swap",
+  src: [
+    { path: "../../fonts/noto-sans-thai-thai.woff2", weight: "400", style: "normal" },
+    { path: "../../fonts/noto-sans-thai-thai.woff2", weight: "600", style: "normal" },
+    { path: "../../fonts/noto-sans-thai-thai.woff2", weight: "800", style: "normal" },
+  ],
 });
 
-// The simplified-Chinese face, and the most expensive thing on this site by an order of
-// magnitude. Three things about it were wrong until 06/09/2026 and the comment that used
-// to sit here asserted the opposite of what the build produced.
+// The simplified-Chinese face is the one family not loaded here, and the most expensive
+// thing on this site by an order of magnitude. It lives in
+// src/fonts/noto-sans-sc.generated.css, imported at the top of this file.
 //
-// It said the face arrives "split across dozens of unicode-range slices" so the browser
-// fetches only what a Chinese page uses. Google's own css2 output is sliced; what
-// next/font emits is not. Every @font-face in the built stylesheet carries no
-// unicode-range at all, so each weight is one file of roughly 1.1MB and the browser has
-// to fetch the whole thing to draw a single character.
+// Why it is not a localFont call. Google slices this family into 101 unicode-range files,
+// 4.4MB in all, so a browser fetches only the ranges the page it is drawing actually
+// needs: a Chinese page costs 1.2MB of webfont, not 4.4MB. next/font/local cannot say
+// that. It emits one @font-face per src entry, each entry takes a path, a weight and a
+// style, and its declarations option applies to every face in the call, so there is no way
+// to give each face its own unicode-range. Loading the family as one file per weight would
+// hand every Chinese visitor 4.4MB before the first character appeared. The generated
+// stylesheet carries Google's own ranges instead, and the fallback face
+// next/font/google emitted, with its metrics read from Next's own table.
 //
-// Which it was doing on every page in every language, because the language switcher
-// renders the label 中文, no Latin or Thai face carries those two glyphs, and the four
-// font stacks in globals.css all end in var(--font-noto-sc). An English visitor to
-// /destinations was downloading 1.14MB of Chinese webfont to draw two characters in the
-// header. Measured, not inferred: the same page with the label written "ZH" fetches 40KB
-// instead of 1.17MB.
-//
-// Three changes. The variable is applied to <html> only on the Chinese locale, so the
-// stacks fall through to the system CJK face elsewhere and 中文 still renders. The weight
-// list drops to 400 and 700: 500 and 900 were reached only by CSS weight matching from
-// font-medium and font-extrabold, and cost 2.28MB between them, so a Chinese page goes
-// from 4.6MB of webfont to 2.3MB. preload stays false, and is load-bearing -- it is what
-// keeps even the Chinese pages from fetching this before first paint.
-const notoSC = Noto_Sans_SC({
-  variable: "--font-noto-sc",
-  weight: ["400", "700"],
-  preload: false,
-});
+// Three things that file keeps from the call that used to sit here, all three load-bearing.
+// The variable is applied to <html> on the Chinese locale only, so elsewhere the stacks
+// fall through to the system CJK face and 中文 in the language switcher still renders:
+// without that, an English visitor to /destinations downloads a Chinese webfont to draw
+// two characters in the header. Nothing is preloaded, which is what keeps even a Chinese
+// page from fetching this before first paint. And the weights stay 400 and 700, the two
+// the design asks for, with 500 and 900 reached by CSS weight matching from font-medium
+// and font-extrabold as before.
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
@@ -196,7 +216,7 @@ export default async function RootLayout({
       // through var(--font-noto-sc, sans-serif) so the declaration stays valid and CJK
       // characters fall through to whatever the system provides.
       className={`${poppins.variable} ${plexSans.variable} ${plexMono.variable} ${unbounded.variable} ${notoThai.variable} ${
-        locale === "zh" ? notoSC.variable : ""
+        locale === "zh" ? "noto-sans-sc-variable" : ""
       } h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-bg text-text">

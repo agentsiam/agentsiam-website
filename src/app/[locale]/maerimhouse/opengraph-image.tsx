@@ -16,9 +16,10 @@ import { MAE_RIM_HOUSE } from "@/lib/property";
  *
  * Deliberately language-neutral. Every word on it is a proper noun in Latin script -- the
  * house, the area, the city -- so the same card serves all three locales and no Thai or
- * Chinese glyph has to render. That matters because Satori needs raw font bytes and the
- * site's Thai and Chinese faces come from next/font/google, which would mean fetching a
- * font at build time purely for this card. The base card avoided that for the same reason.
+ * Chinese glyph has to render. That matters because Satori needs the raw bytes of every
+ * face it draws with. The Latin and Thai faces are files in src/fonts now, but the Chinese
+ * face is there only as Google's 101 unicode-range slices, and no one of them is a face
+ * Satori could be handed. The base card avoided that for the same reason.
  * Missing glyphs render as boxes, and a card full of boxes is worse than an English one.
  */
 

@@ -4,9 +4,9 @@ import { ImageResponse } from "next/og";
 // the design-system tokens the way a hand-exported image does. Colours below are the literal
 // values in src/app/globals.css, which were themselves ported from design-system.html.
 //
-// No web font is loaded here on purpose: next/font/google fetches at build time and Satori
-// would need the raw font bytes, which is a second fetch and a second failure mode. The
-// wordmark carries the brand; the supporting text uses the renderer's default face.
+// No web font is loaded here on purpose: Satori needs the raw bytes of every face it draws
+// with, and this card is built so that it never needs one. The wordmark carries the brand;
+// the supporting text uses the renderer's default face.
 const INK = "#14141c";
 const BG = "#ffffff";
 const PRIMARY = "#0100dd";

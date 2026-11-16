@@ -9,8 +9,9 @@ import { ImageResponse } from "next/og";
  * than copied a sixth time because these cards differ only in their words and their photo.
  *
  * Copy comes from the callers, who read it from the English dictionary: the cards are
- * deliberately language-neutral (Satori needs raw font bytes, and the Thai and Chinese faces
- * come from next/font/google), so every locale gets the English card.
+ * deliberately language-neutral (Satori needs raw font bytes, and the Chinese face is in
+ * src/fonts only as Google's 101 unicode-range slices), so every locale gets the English
+ * card.
  */
 
 const INK = "#14141c";
