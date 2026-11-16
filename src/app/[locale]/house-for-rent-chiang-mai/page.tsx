@@ -12,7 +12,7 @@ import { pickPhoto } from "@/lib/photos";
 import { pageMeta, routeOgImage } from "@/lib/site";
 import { stayRequestLabels } from "@/lib/stay-request-copy";
 import { alt as ogAlt } from "./opengraph-image";
-import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
+import { faqSchema } from "@/lib/structured-data";
 
 /**
  * Monthly house rental in Chiang Mai: the template for the guest-demand pages.
@@ -105,12 +105,13 @@ export default async function HouseForRentPage({ params }: PageProps<"/[locale]"
   const t = getDictionary(locale);
   const COPY = pageCopy(t);
   const href = (path: string) => localePath(locale as Locale, path);
-  const crumbs: Crumb[] = [{ name: COPY.crumb }];
   const heroPhoto = pickPhoto("heroes", "host-at-the-door");
 
+  // No BreadcrumbList, for the reason written out on the licence page: this page shows no
+  // visible trail, and the list it used to publish named only itself, unlinked. COPY.crumb
+  // stays as the label a visible trail would use if this page grows one.
   return (
     <div>
-      <JsonLd data={breadcrumbSchema(locale, crumbs)} />
       <JsonLd data={faqSchema(COPY.faq.map((item) => ({ q: item.q, a: item.a })))} />
 
       {/* shape: hero -- the question the page answers, and the one button that answers it. */}

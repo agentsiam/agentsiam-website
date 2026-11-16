@@ -4,7 +4,12 @@ import { IconChip } from "@/components/icon";
 import { JsonLd } from "@/components/json-ld";
 import { PhotoGallery } from "@/components/photo-gallery";
 import { StayRequestForm } from "@/components/stay-request-form";
-import { faqSchema } from "@/lib/structured-data";
+import {
+  breadcrumbSchema,
+  faqSchema,
+  propertySchema,
+  type Crumb,
+} from "@/lib/structured-data";
 import { getDictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { areaVibe } from "@/i18n/area-vibe";
@@ -91,8 +96,21 @@ export function EnquiryPropertyPage({
     { q: t.villaFaqExactQ, a: t.villaFaqExactA },
   ];
 
+  // The same trail the <nav> below renders, which is what lets the list be published at
+  // all: SITE_NAME, the neighbourhood, then this house.
+  const crumbs: Crumb[] = [
+    { name: SITE_NAME, path: "/" },
+    ...(area ? [{ name: area.name, path: `/destinations/${area.slug}` }] : []),
+    { name: property.title },
+  ];
+
   return (
     <div>
+      {/* The listing itself. Six villas reach this component, and until it was here only
+          Lotus House published a VacationRental node, so eight of the nine houses on this
+          site described themselves to a reader and to nothing else. */}
+      <JsonLd data={propertySchema({ locale, t, property, photos })} />
+      <JsonLd data={breadcrumbSchema(locale, crumbs)} />
       <JsonLd data={faqSchema(guestFaq)} />
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-9">
         <nav aria-label={t.breadcrumbLabel} className="eyebrow">

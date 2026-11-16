@@ -195,7 +195,11 @@ export function propertySchema({
     // Beds24 is never named in the front end.
     identifier: property.slug,
     name: property.title,
-    description: t.metaLotusDesc,
+    // The property's own published tagline, which is the one description the page actually
+    // shows for this house and is spelled once in the dictionaries. It was t.metaLotusDesc,
+    // hardcoded, which was invisible while Lotus House was the only caller and would have
+    // described Lotus House on all nine the moment a second page called this.
+    description: t[property.taglineKey],
     url,
     // Neighbourhood, city, country. No street and no coordinates, on purpose: see the
     // note at the top of this file.
@@ -245,6 +249,52 @@ export function faqSchema(items: { q: string; a: string }[]): Record<string, unk
       "@type": "Question",
       name: item.q,
       acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+}
+
+/**
+ * The six services, as a list of Service nodes pointing back at the company.
+ *
+ * `Service` rather than `Offer`: an Offer's reason to exist is its price, and
+ * `as-context/00-company/price-book.md` in the consulting repo is still `status: proposed`,
+ * so nothing here quotes a fee. What this publishes is the one thing the prose cannot, that
+ * a named provider offers these six named services in these cities, which is what an answer
+ * engine reads when it is asked who does this work in Chiang Mai. Until this existed the six
+ * services were on the site in sentences only and no machine could tell they were services.
+ *
+ * An `ItemList` of `ListItem` wrappers rather than `hasOfferCatalog` on the organisation.
+ * `organizationSchema()` is deliberately byte-identical across the three locales so the
+ * shared `@id` stays truthful, and service names have to read in the page's own language,
+ * so hanging them off that node would have cost the invariant.
+ *
+ * Names come from `step1Name` to `step6Name`, the same keys `/management/[city]` renders, so
+ * the six are spelled once and are already translated. `areaServed` follows the pages that
+ * exist, exactly as the organisation's does, rather than ambition.
+ *
+ * Emitted on `/how-it-works`, which is the page that describes them, so markup and visible
+ * text agree. That is the same rule `breadcrumbSchema` follows.
+ */
+export function serviceCatalogSchema(locale: Locale, t: Dictionary): Record<string, unknown> {
+  const names = [t.step1Name, t.step2Name, t.step3Name, t.step4Name, t.step5Name, t.step6Name];
+  const areaServed = [
+    { "@type": "City", name: "Chiang Mai" },
+    ...MANAGEMENT_CITIES.map((city) => ({ "@type": "City", name: city.name })),
+  ];
+  return {
+    "@context": SCHEMA_CONTEXT,
+    "@type": "ItemList",
+    "@id": `${absoluteUrl(locale, "/how-it-works")}#services`,
+    itemListElement: names.map((name, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Service",
+        name,
+        serviceType: name,
+        provider: { "@id": ORGANIZATION_ID },
+        areaServed,
+      },
     })),
   };
 }

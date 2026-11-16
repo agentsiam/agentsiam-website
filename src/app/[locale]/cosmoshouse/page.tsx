@@ -13,6 +13,8 @@ import { PHOTOS } from "@/lib/photos.generated";
 import { AREAS } from "@/lib/areas";
 import { COSMOS_HOUSE, type Property } from "@/lib/property";
 import { CONTACT_EMAIL, pageMeta, routeOgImage, SITE_NAME } from "@/lib/site";
+import { JsonLd } from "@/components/json-ld";
+import { breadcrumbSchema, propertySchema, type Crumb } from "@/lib/structured-data";
 import { stayRequestLabels } from "@/lib/stay-request-copy";
 import { alt as ogAlt } from "./opengraph-image";
 import type { Dictionary } from "@/i18n";
@@ -83,8 +85,20 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
     distance: distances[anchor.place],
   })).filter((anchor) => anchor.distance);
 
+  // The trail the <nav> below renders, and nothing more, which is the condition for
+  // publishing the list at all.
+  const crumbs: Crumb[] = [
+    { name: SITE_NAME, path: "/" },
+    ...(area ? [{ name: area.name, path: `/destinations/${area.slug}` }] : []),
+    { name: property.title },
+  ];
+
   return (
     <div>
+      {/* The listing. No guest FAQ node: this page deliberately carries no FAQ of its own,
+          because the answers would be Lotus House's. */}
+      <JsonLd data={propertySchema({ locale, t, property, photos })} />
+      <JsonLd data={breadcrumbSchema(locale, crumbs)} />
 
       <section className="mx-auto max-w-(--container-chrome) px-5 pt-9">
         <nav aria-label={t.breadcrumbLabel} className="eyebrow">

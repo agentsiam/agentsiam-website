@@ -8,7 +8,7 @@ import { getDictionary, type Dictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { pickPhoto } from "@/lib/photos";
 import { pageMeta } from "@/lib/site";
-import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
+import { faqSchema } from "@/lib/structured-data";
 
 /**
  * Owner page: do you need a licence to let short term in Chiang Mai.
@@ -130,12 +130,15 @@ export default async function LicencePage({ params }: PageProps<"/[locale]">) {
   const t = getDictionary(locale);
   const COPY = pageCopy(t);
   const href = (path: string) => localePath(locale as Locale, path);
-  const crumbs: Crumb[] = [{ name: COPY.crumb }];
   const heroPhoto = pickPhoto("heroes", "at-the-table");
 
+  // No BreadcrumbList. This page renders no visible trail, and the list it used to publish
+  // held one unlinked item naming the page itself, which is a trail with no ancestor: Google
+  // reads it and discards it. breadcrumbSchema() is only for a page that shows a reader the
+  // same path, which is the rule stated where that function is defined. COPY.crumb stays
+  // because it is the label a visible trail would use on the day this page grows one.
   return (
     <div>
-      <JsonLd data={breadcrumbSchema(locale, crumbs)} />
       <JsonLd data={faqSchema(COPY.faq.map((item) => ({ q: item.q, a: item.a })))} />
 
       {/* shape: hero -- the owner's own question, and the two owner routes out of it. */}
