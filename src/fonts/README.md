@@ -18,11 +18,18 @@ here now and the build touches nothing.
 | `ibm-plex-mono-latin.woff2` | IBM Plex Mono | 500 | latin | `next/font/local` |
 | `unbounded-latin.woff2` | Unbounded | 800 | latin | `next/font/local` |
 | `noto-sans-thai-thai.woff2` | Noto Sans Thai | 400, 600, 800 | thai | `next/font/local` |
-| `noto-sans-sc-cjk-*.woff2`, `-latin`, `-latin-ext`, `-cyrillic`, `-vietnamese` | Noto Sans SC | 400, 700 | all 101 slices | `noto-sans-sc.generated.css` |
+| `noto-sans-sc-r<digest>.woff2` (97), and `-cyrillic`, `-vietnamese`, `-latin-ext`, `-latin` | Noto Sans SC | 400, 700 | all 101 slices | `noto-sans-sc.generated.css` |
 
 One file serves several weights wherever Google serves a variable font: IBM Plex Sans, Noto
 Sans Thai and Noto Sans SC are one woff2 per subset, and the `@font-face` clamps it to each
 weight with `font-weight`. Poppins is static, so it is one file per weight.
+
+Google labels four of Noto Sans SC's 101 subsets and leaves the other 97 unlabelled, so those
+97 are named for a digest of the `unicode-range` they cover, which `faces.json` records in full
+beside each one. They cannot be named after Google's own files: this family is served through
+`fonts.gstatic.com/l/font?kit=...`, which carries no filename and is not the same URL twice.
+The range is the part that holds still, and naming a file after it means a refresh renames
+nothing unless the slicing itself moves.
 
 Two files are **GENERATED** by `scripts/fetch-fonts.mjs` and are never hand-edited:
 

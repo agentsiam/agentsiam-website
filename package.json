@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "guide": "node scripts/build-guide.mjs",
+    "fonts": "node scripts/fetch-fonts.mjs",
     "keys": "node scripts/add-dictionary-keys.mjs",
     "typecheck": "tsc --noEmit",
     "check:csv": "node scripts/check-csv-roundtrip.mjs",

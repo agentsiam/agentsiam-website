@@ -102,9 +102,19 @@ function css2Url({ family, weights }) {
 
 /**
  * Parses a css2 response into faces, in response order, each carrying the subset label
- * from the comment above it. Google labels the named subsets (latin, thai, cyrillic) and
- * leaves the CJK slices unlabelled, so an unlabelled face is named from the numeric
- * suffix Google puts on its own file: ....Rg5g1igg1w.4.woff2 is slice 4.
+ * from the comment above it.
+ *
+ * Google emits exactly one comment per @font-face, so a label applies to the next face and
+ * to nothing after it. That is load-bearing rather than tidy. A CJK family puts its
+ * hundred-odd unlabelled slices first and its four named subsets (cyrillic, vietnamese,
+ * latin-ext, latin) at the end of each weight's group, so a label allowed to run on would
+ * be inherited by the next weight's slices, name them all noto-sans-sc-latin.woff2, and
+ * collapse 101 files into a handful. That is what this script did on its first write.
+ *
+ * An unlabelled face is identified by its unicode-range instead, through `faceId`. It
+ * cannot be identified by its URL: Google serves Noto Sans SC through
+ * fonts.gstatic.com/l/font?kit=... which carries no filename and is not stable between
+ * requests, while the ranges it slices on are.
  */
 function parseCss2(css) {
   const faces = [];
@@ -124,17 +134,26 @@ function parseCss2(css) {
       const weight = block.match(/font-weight:\s*([^;]+)/)?.[1]?.trim() ?? "400";
       const style = block.match(/font-style:\s*([^;]+)/)?.[1]?.trim() ?? "normal";
       const unicodeRange = block.match(/unicode-range:\s*([^;]+)/)?.[1]?.trim() ?? "";
-      const sliceIndex = url.match(/\.(\d+)\.woff2$/)?.[1] ?? null;
-      faces.push({
-        subset: label ?? (sliceIndex === null ? "unlabelled" : `cjk-${sliceIndex}`),
-        weight,
-        style,
-        url,
-        unicodeRange,
-      });
+      faces.push({ subset: label, weight, style, url, unicodeRange });
+      label = null;
     }
   }
   return faces;
+}
+
+/**
+ * The stable name of a face within its family: its subset label where Google gives one,
+ * and otherwise a digest of the range it covers, which is the only thing about an
+ * unlabelled slice that holds still.
+ */
+function faceId(face) {
+  if (face.subset) return face.subset;
+  if (!face.unicodeRange) return "full";
+  const digest = createHash("sha256")
+    .update(face.unicodeRange.replace(/\s+/g, "").toLowerCase())
+    .digest("hex")
+    .slice(0, 8);
+  return `r${digest}`;
 }
 
 /**
@@ -174,7 +193,13 @@ async function main() {
   const previous = fs.existsSync(path.join(FONTS_DIR, "faces.json"))
     ? JSON.parse(fs.readFileSync(path.join(FONTS_DIR, "faces.json"), "utf8"))
     : { faces: [] };
-  const previousBySrc = new Map(previous.faces.map((f) => [f.googleUrl, f]));
+  // Keyed on the filename, which is one file, and never on the Google URL: the URL form
+  // for Noto Sans SC changes between requests, so keying on it reports every slice as new
+  // and every old slice as gone while nothing has actually moved. Family and id are not a
+  // key either, because a static family has one of those per weight: keyed that way,
+  // Poppins latin 600, 700 and 800 collapse into one entry and each weight is then
+  // compared against another weight's bytes and reported as changed.
+  const previousByFile = new Map(previous.faces.map((f) => [f.file, f]));
 
   const manifest = [];
   const downloads = new Map(); // filename -> Buffer
@@ -201,29 +226,39 @@ async function main() {
       byUrl.set(face.url, entry);
     }
 
-    // A subset with more than one file across the requested weights is a static family,
-    // so the weight goes in the filename. One file for the subset means a variable font,
-    // and the name stays weightless.
-    const filesPerSubset = new Map();
+    // A face id with more than one file across the requested weights is a static family,
+    // so the weight goes in the filename. One file for the id means a variable font, which
+    // the @font-face clamps per weight, and the name stays weightless.
+    const filesPerId = new Map();
     for (const entry of byUrl.values()) {
-      filesPerSubset.set(entry.subset, (filesPerSubset.get(entry.subset) ?? 0) + 1);
+      const id = faceId(entry);
+      filesPerId.set(id, (filesPerId.get(id) ?? 0) + 1);
     }
 
     for (const entry of byUrl.values()) {
-      const perWeight = filesPerSubset.get(entry.subset) > 1;
-      const file = `${spec.slug}-${entry.subset}${perWeight ? `-${entry.weights[0]}` : ""}.woff2`;
+      const id = faceId(entry);
+      const perWeight = filesPerId.get(id) > 1;
+      const file = `${spec.slug}-${id}${perWeight ? `-${entry.weights[0]}` : ""}.woff2`;
+      if (downloads.has(file)) {
+        throw new Error(
+          `${spec.family}: two faces both want to be ${file}. Their ids collided, so the ` +
+            `naming in faceId() no longer separates this family's faces.`,
+        );
+      }
       const buf = await get(entry.url);
       downloads.set(file, buf);
       manifest.push({
         family: spec.family,
         slug: spec.slug,
-        subset: entry.subset,
+        id,
+        subset: entry.subset ?? null,
         weights: entry.weights,
         style: entry.style,
         display: DISPLAY,
         file,
         unicodeRange: entry.unicodeRange,
         sha256: sha256(buf),
+        // Recorded for provenance, not for identity: see previousById in main().
         googleUrl: entry.url,
         sliced: Boolean(spec.sliced),
       });
@@ -236,20 +271,39 @@ async function main() {
 
   // Report what moved before writing anything.
   let changed = 0;
-  let added = 0;
+  const fresh = [];
   for (const face of manifest) {
-    const was = previousBySrc.get(face.googleUrl);
-    if (!was) added++;
-    else if (was.sha256 !== face.sha256) {
+    const was = previousByFile.get(face.file);
+    if (!was) {
+      fresh.push(face);
+    } else if (was.sha256 !== face.sha256) {
       changed++;
-      console.log(`CHANGED ${face.file}: ${was.sha256.slice(0, 12)} -> ${face.sha256.slice(0, 12)}`);
+      console.log(
+        `CHANGED ${face.file}: ${was.sha256.slice(0, 12)} -> ${face.sha256.slice(0, 12)}. ` +
+          `Google reissued this face, so the type on the site moves with it.`,
+      );
     }
   }
-  const gone = previous.faces.filter((f) => !manifest.some((m) => m.googleUrl === f.googleUrl));
-  for (const f of gone) console.log(`GONE    ${f.file} (${f.googleUrl})`);
+  const gone = previous.faces.filter((f) => !manifest.some((m) => m.file === f.file));
+  // A file that arrives with the bytes of one that left is this script's own naming
+  // changing its mind, not a new face. Worth separating: a rename is reviewable at a
+  // glance, a new face is not.
+  const renamed = [];
+  const added = [];
+  for (const face of fresh) {
+    const from = gone.find((g) => g.sha256 === face.sha256);
+    if (from) renamed.push([from, face]);
+    else added.push(face);
+  }
+  for (const [from, to] of renamed) console.log(`RENAMED ${from.file} -> ${to.file}, same bytes`);
+  for (const face of added) console.log(`NEW     ${face.file} (${face.family}, ${face.id})`);
+  for (const f of gone.filter((g) => !renamed.some(([from]) => from.file === g.file))) {
+    console.log(`GONE    ${f.file} (${f.family}, ${f.id ?? "no id recorded"})`);
+  }
   console.log(
     `\n${manifest.length} faces, ${new Set(manifest.map((f) => f.file)).size} files, ` +
-      `${added} new, ${changed} changed, ${gone.length} gone`,
+      `${added.length} new, ${changed} changed, ${renamed.length} renamed, ` +
+      `${gone.length - renamed.length} gone`,
   );
 
   if (!APPLY) {
@@ -259,6 +313,15 @@ async function main() {
 
   for (const [file, buf] of downloads) {
     fs.writeFileSync(path.join(FONTS_DIR, file), buf);
+  }
+
+  // Anything the manifest no longer points at is dead weight that the generated stylesheet
+  // and the localFont calls cannot reach, so it goes rather than sitting in src/ looking
+  // like a face the site uses.
+  for (const file of fs.readdirSync(FONTS_DIR)) {
+    if (!file.endsWith(".woff2") || downloads.has(file)) continue;
+    fs.unlinkSync(path.join(FONTS_DIR, file));
+    console.log(`REMOVED ${file}, no face in the manifest points at it`);
   }
 
   fs.writeFileSync(

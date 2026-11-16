@@ -48,15 +48,17 @@ duplicate one into the other.
 | How the three languages work, and which URL each locale gets | `README.md`, "How the three languages work" |
 | What the booking flow does, and in what order | `README.md`, "Booking" and "The ordering is the design" |
 | How photography is selected, ordered and re-encoded | `README.md`, "Photography" |
+| Which font files ship, where they came from, and how to refresh them | `src/fonts/README.md` |
 | How the CRM admin is configured, what it writes and what keeps it shut | `README.md`, "The CRM admin" |
 | Which DNS and mail records exist, and which must never be touched | `DNS-EMAIL-RUNBOOK.md` |
 | What runs on a schedule in production | `vercel.json` |
 | What is unbuilt or unreviewed right now | `README.md`, "Known gaps" |
 
-Two files are **GENERATED** and are never hand-edited (R5): `src/lib/photos.generated.ts` from
-`src/photos/` via `npm run photos`, and `src/lib/guide.generated.ts` from whatever sheet or
-resource is current plus `scripts/guide-extra.csv` (R11), via `npm run guide`. Edit the source
-and rerun the script.
+Four files are **GENERATED** and are never hand-edited (R5): `src/lib/photos.generated.ts` from
+`src/photos/` via `npm run photos`; `src/lib/guide.generated.ts` from whatever sheet or
+resource is current plus `scripts/guide-extra.csv` (R11), via `npm run guide`; and
+`src/fonts/faces.json` with `src/fonts/noto-sans-sc.generated.css` from Google Fonts via
+`npm run fonts`, by hand and never at build time (R12). Edit the source and rerun the script.
 
 `src/photos/` and `public/` are binary-heavy. Do not glob them.
 
@@ -70,6 +72,7 @@ Every value below is written in exactly one place. This is what C20 points at.
 | Locales, paths and hreflang | `src/i18n/config.ts` | en is the bare path, th is `/th`, zh is `/zh` Simplified |
 | The site's own URL | `src/lib/site.ts` | See the trap in section 7 |
 | The photo manifest | `src/lib/photos.generated.ts` | GENERATED from `src/photos/` |
+| The six font faces, and which slice of each ships | `src/fonts/faces.json` | GENERATED. Google Fonts is disposable input, not a second source of truth (R12) |
 | The guide library | `src/lib/guide.generated.ts` | GENERATED. The sheet that fed it is disposable input, not a second source of truth (R11) |
 | Scheduled jobs in production | `vercel.json` | |
 | DNS and mail records | The live zone, read on the day | Never this repo. `DNS-EMAIL-RUNBOOK.md` says why |
@@ -136,6 +139,14 @@ names in the library have been edited on purpose. A row we decline goes in that 
 list with the reason, or it is proposed again on every run. Procedure, including everything the
 build refuses to do, is `GUIDE-RUNBOOK.md`; do not restate it here.
 
+**R12.** The six font families are files in this repository, under `src/fonts`. **No build step
+fetches a font, and a `next/font/google` call is never put back.** Five families load through
+`next/font/local` in the layout that needs them, Noto Sans SC through
+`src/fonts/noto-sans-sc.generated.css`, because `localFont` emits one face per `src` entry and
+cannot give each its own `unicode-range`. `npm run fonts` refreshes the files from Google by
+hand, writes nothing without `--apply`, and names any face whose bytes changed. `src/fonts/README.md`
+owns the procedure and the provenance; do not restate them here.
+
 ## 6. Tooling and commands
 
 - `npm run dev`, which runs `npm run photos` first via `predev`.
@@ -145,6 +156,8 @@ build refuses to do, is `GUIDE-RUNBOOK.md`; do not restate it here.
 - `npm run photos` and `npm run guide`.
 - `npm run guide:import`, which reads the Google Sheet and writes nothing without `--apply`.
   See `GUIDE-RUNBOOK.md`, which owns the guide's procedure.
+- `npm run fonts`, which reads Google Fonts and writes nothing without `--apply`. By hand only,
+  never at build time (R12). See `src/fonts/README.md`.
 - Absolute path for any Terminal block (C8): `/Users/paulb/code/agentsiam/agentsiam-website`.
 
 ## 7. Traps
@@ -175,20 +188,27 @@ build refuses to do, is `GUIDE-RUNBOOK.md`; do not restate it here.
   so the header sliced the bar's own controls in half on every phone. The height is now
   published as `--nav-h` in `globals.css` and read by the bar. If the header gains a row,
   that variable is what changes, not a number in a component.
-- `next build` cannot run without reaching Google Fonts. `next/font/google` fetches at build
-  time, so an offline or firewalled machine fails with "Failed to fetch `Poppins`" and a
-  module-not-found trace that looks like a code error. `NEXT_FONT_GOOGLE_MOCKED_RESPONSES`
-  exists but is not honoured by Turbopack's font pipeline. The way to build offline is to
-  swap the six `next/font/google` calls in `layout.tsx` for `next/font/local` against real
-  `.woff2` files, build, and swap back; `localFont` needs literal object arguments, so a
-  helper function that builds the `src` array fails to compile.
-  Vercel's own builders are not exempt: a production build of `5d90301` failed at 20:28 on
-  12/11/2026 with `Turbopack build failed with 27 errors` and `Can't resolve
-  '@vercel/turbopack-next/internal/font/google/font'` on the generated IBM Plex Sans and
-  Noto Sans Thai faces, on a commit that touched `README.md` and nothing else. The next
-  build of the same code succeeded. So a failed deployment whose errors are all under
-  `[next]/internal/font/google/` is a fetch that did not land, and the first move is to
-  redeploy rather than to read the diff.
+- **A build error under `[next]/internal/font/google/` now means someone reintroduced the
+  fetch.** It cannot come from `src/fonts`. Until 16/11/2026 `next build` could not run
+  without reaching Google Fonts: `next/font/google` fetched at build time, so an offline or
+  firewalled machine failed with "Failed to fetch `Poppins`" and a module-not-found trace
+  that looks like a code error, and Vercel's own builders were not exempt. A production
+  build of `5d90301` failed at 20:28 on 12/11/2026 with `Turbopack build failed with 27
+  errors` and `Can't resolve '@vercel/turbopack-next/internal/font/google/font'` on the
+  generated IBM Plex Sans and Noto Sans Thai faces, on a commit that touched `README.md` and
+  nothing else; the next build of the same code succeeded. That whole failure mode is gone
+  with the fetch, and R12 is what keeps it gone. `NEXT_FONT_GOOGLE_MOCKED_RESPONSES` is not
+  honoured by Turbopack's font pipeline, which is why mocking was never the way out.
+  `localFont` needs literal object arguments, so a helper that builds the `src` array still
+  fails to compile.
+- The faces `next/font/google` emitted were sliced per `unicode-range` and that is why
+  removing a subset is safe but de-slicing is not. The comment in `layout.tsx` asserted the
+  opposite until 16/11/2026, that the built stylesheet carried no `unicode-range` and each
+  Noto Sans SC weight was one 1.1MB file. In Next 16.2.12 the built stylesheet carries
+  Google's own ranges, Noto Sans SC arrives as 101 sliced files per weight, and a Chinese
+  page fetches 1.2MB of them rather than the whole 4.4MB. Measure the built CSS before
+  believing a figure about webfont weight; the resolved note in `README.md` about that face
+  was written against the old behaviour and its "2.3MB" is not what a Chinese page costs now.
 - A blank dictionary string ships English and nobody notices, because the per-key fallback is
   working exactly as designed. `scripts/add-dictionary-keys.mjs` will happily write one if a
   spec file carries `""`; `en.ts` is where that does the most damage, since it is the
