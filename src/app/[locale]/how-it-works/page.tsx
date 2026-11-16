@@ -21,7 +21,7 @@ import {
   propertyCoverPhoto,
 } from "@/lib/property";
 import { pageMeta } from "@/lib/site";
-import { faqSchema, serviceCatalogSchema } from "@/lib/structured-data";
+import { faqSchema } from "@/lib/structured-data";
 import { ContactForm } from "../contact/contact-form";
 import { RouteTabs } from "./route-tabs";
 
@@ -421,7 +421,6 @@ export default async function HowItWorksPage({
         {/* The six services this page describes, named from the same dictionary keys the
             cards above render. Here rather than in the layout's organisation node, which
             stays byte-identical across the three locales on purpose. */}
-        <JsonLd data={serviceCatalogSchema(locale as Locale, t)} />
       </section>
 
       {/* shape: contact-form -- the conversion: the owner form, on the page, with what happens next. */}
