@@ -21,7 +21,7 @@ import {
   propertyCoverPhoto,
 } from "@/lib/property";
 import { pageMeta } from "@/lib/site";
-import { faqSchema } from "@/lib/structured-data";
+import { faqSchema, serviceCatalogSchema } from "@/lib/structured-data";
 import { ContactForm } from "../contact/contact-form";
 import { RouteTabs } from "./route-tabs";
 
@@ -150,27 +150,51 @@ export default async function HowItWorksPage({
               for that reason; the cost is the blur placeholder, which this API cannot carry,
               and the panel's own bg-ink stands in as the ground.
 
-              The phone scrim is vertical and much lighter than the desktop one, because the
-              copy sits on the picture rather than beside it. Measured against this frame at
-              the 95th percentile of its own pixels, white body text clears 4.5 to 1 at 0.52
-              ink and the headline clears 3 to 1 at 0.39, and those numbers are flat down the
-              whole frame: it is bright everywhere, so no band needs more than another. The
-              stops hold 0.64 or more to 86 percent, which is below the last chip row, and
-              the chips' own white/12 fill is counted in that: 5.0 to 1 at their worst. Only
-              the foot drops to 0.32, and the foot is the phone's pb-24, where no copy
-              reaches and the curtain reads as a curtain rather than as a texture. */}
+              The phone scrim runs vertically because the copy sits on the picture there,
+              and the desktop one runs horizontally because the copy sits beside the
+              subject. Measured against the phone frame at the 95th percentile of its own
+              pixels, white body text clears 4.5 to 1 at 0.52 ink and the headline clears
+              3 to 1 at 0.39, and those numbers are flat down the whole frame: it is bright
+              everywhere, so no band needs more than another. The stops hold 0.64 or more to
+              86 percent, which is below the last chip row, and the chips' own white/12 fill
+              is counted in that: 5.0 to 1 at their worst. Only the foot drops to 0.32, and
+              the foot is the phone's pb-24, where no copy reaches and the curtain reads as
+              a curtain rather than as a texture.
+
+              The desktop stops hold 0.70 to 0.64 across the copy and then fall to nothing
+              by 63 percent, so the right third of the panel is the photograph with no ink
+              over it at all and the subject's face carries 0.03. The fall is steep on
+              purpose: she stands at 57 percent and the copy block ends near 50, so there
+              is about seven percent of the panel to spend and no more. These are measured
+              on the worst single pixel under each line box rather than the 95th
+              percentile, with the chips' white/12 fill counted, and taken as the worst
+              reading across 940px, 1024, 1180 and the cap, in English and in Thai: the
+              headline clears 3 to 1 at 6.7, body at 7.1, the link at 8.1, and the worst
+              chip sits at 5.3.
+
+              1024px is the hard case rather than the wide one, which is why it is in that
+              set. The copy block is capped at 660px, so the narrower the panel the further
+              across it the copy reaches: at the cap it ends at 51 percent, at 1024 it runs
+              to 62, straight into the band being cleared for her. Anything that widens
+              that block, or a language that fills more of it, is measured again here
+              before these stops move.
+
+              object-[58%_100%] anchors the wide frame to its bottom edge, which is what
+              carries the subject's face into the upper third of the panel. Below a 16:9
+              panel there is no vertical overflow left to spend and the Y stops mattering,
+              so the one value is right at every width. */}
           <picture className="absolute inset-0">
             <source media="(min-width: 900px)" srcSet={heroWide.srcSet} />
             <img
               {...heroTall}
               alt=""
               aria-hidden="true"
-              className="h-full w-full object-cover object-[50%_50%] min-[900px]:object-[58%_26%]"
+              className="h-full w-full object-cover object-[50%_50%] min-[900px]:object-[58%_100%]"
             />
           </picture>
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,20,0.74)_0%,rgba(10,8,20,0.70)_50%,rgba(10,8,20,0.64)_86%,rgba(10,8,20,0.32)_100%)] min-[900px]:bg-[linear-gradient(90deg,rgba(10,8,20,0.90)_0%,rgba(10,8,20,0.84)_42%,rgba(10,8,20,0.30)_70%,rgba(10,8,20,0.12)_100%)]"
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,20,0.74)_0%,rgba(10,8,20,0.70)_50%,rgba(10,8,20,0.64)_86%,rgba(10,8,20,0.32)_100%)] min-[900px]:bg-[linear-gradient(90deg,rgba(10,8,20,0.70)_0%,rgba(10,8,20,0.64)_50%,rgba(10,8,20,0.03)_57%,rgba(10,8,20,0)_63%)]"
           />
           <div className="relative min-[900px]:max-w-[min(660px,calc(60%-24px))]">
             <span className="eyebrow inline-block rounded-full bg-linear-to-b from-white/95 to-white/70 px-4.5 py-2 text-ink">
@@ -394,6 +418,10 @@ export default async function HowItWorksPage({
         </h2>
         <Faq items={faq} />
         <JsonLd data={faqSchema(faq)} />
+        {/* The six services this page describes, named from the same dictionary keys the
+            cards above render. Here rather than in the layout's organisation node, which
+            stays byte-identical across the three locales on purpose. */}
+        <JsonLd data={serviceCatalogSchema(locale as Locale, t)} />
       </section>
 
       {/* shape: contact-form -- the conversion: the owner form, on the page, with what happens next. */}
