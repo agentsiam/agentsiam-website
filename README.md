@@ -769,9 +769,14 @@ the admin without touching a deployment.
   receives Meta's WhatsApp Cloud API webhook and keeps messages in Upstash Redis
   (`src/lib/whatsapp-store.ts`); `/api/whatsapp/messages` is the bridge's read and record
   endpoint, behind `WA_BRIDGE_SECRET`. The bridge itself is outside this repo, at
-  `/Users/paulb/code/whatsapp-bridge`. Open: the privacy policy does not yet say guest
+  `/Users/paulb/code/whatsapp-bridge`. ~~Open: the privacy policy does not yet say guest
   WhatsApp messages are stored with Upstash, and nothing expires old conversations beyond the
-  500-message cap per guest.
+  500-message cap per guest.~~ Both closed 13/11/2026 in `52e096c`: the policy carries a
+  WhatsApp paragraph naming Upstash and Singapore, a line for Upstash under "Who else sees
+  it" and a retention sentence, and `RETENTION_SECONDS` in `src/lib/whatsapp-store.ts`
+  expires a conversation 365 days after its most recent message, which is the twelve months
+  the policy promises, and prunes the index on the read path. Checked on the live site in all
+  three languages 16/11/2026.
 - ~~No photography yet.~~ Resolved. Real Lotus House photography landed 15/08/2026. As of
   24/08/2026 the published set is 46 Lotus House frames across seven rooms, plus five team
   portraits. Three carport shots are held back in `_excluded/` for showing the house number.
@@ -1053,11 +1058,21 @@ the admin without touching a deployment.
   verified live on the running site.
 - **`NEXT_PUBLIC_WHATSAPP_NUMBER` is unset in production**, found while fixing the item
   above. `src/components/whatsapp-cta.tsx` is fully built and is the guide's primary
-  "talk to us" prompt, but checked directly against agentsiam.com on 12/09/2026: no `wa.me`
-  link anywhere on the page. Every WhatsApp call to action on the live site is currently
+  "talk to us" prompt, but checked directly against agentsiam.com on 12/09/2026 and again on
+  16/11/2026: no `wa.me` link anywhere on the page, and the variable is absent from the
+  Vercel production environment. Every WhatsApp call to action on the live site is currently
   invisible by design, per the component's own comment ("Unset hides every WhatsApp call to
-  action"), not broken. Setting the env var is the fix, once a real number exists to put in
-  it.
+  action"), not broken. It quietly changes a second button as well: the homepage builds "Book
+  a video viewing" as a WhatsApp link where the number is configured and falls back to
+  `/house-for-rent-chiang-mai#request` where it is not, so that button opens the monthly
+  rental form rather than a chat.
+  **The number exists and the channel does not.** +66 98 331 8083 was opened for AgentSiam
+  and confirmed 13/11/2026 as the one to publish, `66983318083` as the variable, digits only
+  with the country code and no plus. Setting the variable is the last step rather than the
+  fix: the number has first to be moved onto the Cloud API app at Meta, which the bridge's
+  own README still records as carrying Meta's test number, and added to the Google Business
+  Profile in the form the site will carry. The ordered steps and the traps are in
+  `/Users/paulb/code/agentsiam/handoff-whatsapp-channel.md`.
 - ~~`robots.txt` disallowed `/opengraph-image`, the `og:image` URL of nearly every page.~~
   Resolved 04/11/2026: nothing is disallowed now. Facebook's and X's crawlers are reported to
   honour robots rules, so a Disallow on the card could blank the preview of any link pasted
