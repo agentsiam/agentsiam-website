@@ -649,11 +649,17 @@ flow, end to end, with nothing live anywhere near it.
   rendered in development and would have gone missing only in production, on the one screen
   that tells a cleaner whether what she is holding is current. Nothing in this repository
   changed for it; the app read `built_at` off the document already.
-- **Ten Thai strings in the cleaning app are placeholders (17/11/2026).** Every one of them is
-  in `src/lib/cleaning/strings.ts` and renders on screen as Latin text in square brackets, so
-  nothing half-translated can be mistaken for finished copy. Paul writes them; what each has to
-  say is in that file beside it. The schedule screen, the enrolment link and the PIN prompt all
-  carry at least one, so the app is not for a phone until they are written.
+- **The cleaning app's own Thai strings are unwritten, and every screen says so (17/11/2026).**
+  They are in `src/lib/cleaning/strings.ts`, which holds the count, and each renders on screen as
+  Latin text in square brackets. While any one of them is still a placeholder every screen under
+  `/cleaning` carries an English warning saying how many are left and naming them, so a pending
+  screen cannot be screenshotted as a finished one and a placeholder cannot pass for copy at arm's
+  length. Paul writes them on the sheet at
+  `/Users/paulb/code/agentsiam/agentsiam-consulting/as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt`,
+  one slot per string with where it appears, what it has to say and what it must not; each filled
+  slot is a one-line edit in that file and nothing else in the app changes. The schedule screen,
+  the enrolment link and the PIN prompt all carry at least one, so the app is not for a phone until
+  they are written.
 - **The cleaning app's service worker has never run in a real browser (17/11/2026).** It
   parses, it is served with the right type and the registration is wrapped so a browser that
   refuses it still gets a schedule over the network. But the browser available while it was

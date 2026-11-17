@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
+import { PendingStringsNotice } from "@/components/cleaning/pending-strings-notice";
 import { ServiceWorker } from "@/components/cleaning/service-worker";
 import { CLEANING_MANIFEST } from "@/lib/cleaning/routes";
 
@@ -15,7 +16,10 @@ import { CLEANING_MANIFEST } from "@/lib/cleaning/routes";
  * fact: each person's published document is already rendered in her own language and says
  * which one it is, so the three dictionaries buy nothing and a locale prefix would buy
  * less. The handful of strings the document cannot carry are in
- * src/lib/cleaning/strings.ts, where Paul writes them.
+ * src/lib/cleaning/strings.ts, where Paul writes them. While any of them is unwritten the
+ * warning above the children says so on every screen in the subtree, which is why it is
+ * mounted here and not on a page: the schedule, the codes, the enrolment link and the
+ * no-access screen all carry at least one placeholder and all four have to admit it.
  *
  * Two faces, not the site's six. Noto Sans Thai carries every word on these screens; Plex
  * Sans carries the digits, the Latin spelling of Ting's name and the door codes. The
@@ -74,7 +78,10 @@ export default function CleaningLayout({ children }: { children: React.ReactNode
           fontFamily: "var(--font-noto-thai), var(--font-plex-sans), system-ui, sans-serif",
         }}
       >
-        <div className="mx-auto w-full max-w-[520px] px-4 pb-16 pt-5">{children}</div>
+        <div className="mx-auto w-full max-w-[520px] px-4 pb-16 pt-5">
+          <PendingStringsNotice />
+          {children}
+        </div>
         <ServiceWorker />
       </body>
     </html>

@@ -18,12 +18,19 @@
  * mistaken for finished copy. They are deliberately ugly on screen: a half-translated app
  * that looks finished is how a wrong string ships.
  *
+ * While any of them is still a placeholder, every screen in the subtree carries one English
+ * warning saying how many are left and which ones, because Latin text in square brackets is
+ * unmistakable in this file and nearly invisible on a phone held at arm's length. See
+ * src/components/cleaning/pending-strings-notice.tsx, which is the only reader of the two
+ * pending exports at the foot of this file.
+ *
  * Replacing one is a one-line edit here and nothing else. Nothing in this file is translated
  * into the other locales: the public site's three dictionaries are for guests and owners, and
  * this app has one audience reading one language per person, which the document states.
  */
 
-/** What makes a placeholder visible, and what a check can grep for. */
+/** What makes a placeholder visible, what a check can grep for, and what
+ * TEAM_STRINGS_PENDING_KEYS below counts. */
 export const PENDING_MARK = "[TH";
 
 export type TeamStringKey = keyof typeof TEAM_STRINGS;
@@ -95,8 +102,22 @@ export function builtAtLine(when: string): string {
   return TEAM_STRINGS.builtAt.replace("{when}", when);
 }
 
-/** Whether any string here is still a placeholder. Used to put one honest warning on the
- * screens Paul tests on, rather than letting a placeholder pass for copy. */
-export const TEAM_STRINGS_PENDING: boolean = Object.values(TEAM_STRINGS).some((value) =>
-  value.includes(PENDING_MARK),
-);
+/** How many strings this app has to supply itself, which is what the warning counts
+ * against. Ten today, and the same ten slots as the sheet Paul fills in. */
+export const TEAM_STRINGS_TOTAL: number = Object.keys(TEAM_STRINGS).length;
+
+/**
+ * The keys still carrying a placeholder rather than Paul's own Thai, in the order they are
+ * declared above.
+ *
+ * The keys and not just a count, because Paul writes these one at a time and a warning
+ * saying "three left" would not say which three. Computed at module load, which is build
+ * time, so the warning that reads it is server-rendered and a phone pays nothing for it.
+ */
+export const TEAM_STRINGS_PENDING_KEYS: readonly TeamStringKey[] = (
+  Object.keys(TEAM_STRINGS) as TeamStringKey[]
+).filter((key) => TEAM_STRINGS[key].includes(PENDING_MARK));
+
+/** Whether any string here is still a placeholder. Derived from the list above rather than
+ * computed again, so the warning's count and its existence cannot disagree. */
+export const TEAM_STRINGS_PENDING: boolean = TEAM_STRINGS_PENDING_KEYS.length > 0;
