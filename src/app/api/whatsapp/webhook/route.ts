@@ -20,6 +20,12 @@ export const dynamic = "force-dynamic";
  * about is a guest waiting. A retried delivery is not stored twice, so it is not emailed
  * twice either.
  *
+ * **And when a delivery cannot be stored at all, that is emailed too.** The store was
+ * unreachable from 15/10/2026 until somebody happened to open a new admin screen a month
+ * later that showed its error on a page. Nothing else in this system was going to say so: a
+ * 503 here is answered to Meta, logged to a console nobody reads, and that is the end of it.
+ * A failure that only a retry sees is a failure nobody sees.
+ *
  * A sender is not necessarily a phone number. A guest who has adopted a WhatsApp username
  * arrives with their number withheld and a business-scoped user ID in its place, so nothing
  * here may assume `from` is there: see `conversationKey` for which of the two a conversation
@@ -40,6 +46,9 @@ export async function POST(request: Request) {
   const secret = process.env.WA_APP_SECRET;
   if (!secret || !STORE_READY) {
     console.error("[whatsapp/webhook] WA_APP_SECRET or the Redis store is not configured");
+    await alertNotStored(
+      secret ? "the store is not configured on this deployment" : "WA_APP_SECRET is not set",
+    );
     return NextResponse.json({ error: "Not configured." }, { status: 503 });
   }
 
@@ -105,11 +114,56 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, stored: fresh.length });
   } catch (error) {
     console.error("[whatsapp/webhook] store failed", error);
+    // The message only. The store's own errors carry the command name and never an
+    // argument, because an argument here can be a guest's phone number.
+    await alertNotStored(error instanceof Error ? error.message : "the store did not answer");
     return NextResponse.json({ error: "Store unavailable." }, { status: 503 });
   }
 }
 
 type FreshMessage = { waId: string; phone?: string; name?: string; username?: string; body: string };
+
+/**
+ * At most one of these an hour, per warm instance.
+ *
+ * Deliberately not kept in the store, which is the thing that has failed: an alert that
+ * needs the broken dependency to decide whether to fire is no alert. So it is a variable in
+ * this module, which means one per warm instance and a cold start forgetting, the same
+ * honest compromise `src/lib/rate-limit.ts` makes about itself. A handful of mails in an
+ * hour is the worst case, and it beats both a flood and a silence.
+ */
+const ALERT_EVERY_MS = 60 * 60 * 1000;
+let lastAlert = 0;
+
+/**
+ * Say that a guest message could not be recorded.
+ *
+ * Sent to the same address the guest-message notifications go to, because that is the
+ * inbox somebody is already watching for this channel. It never changes the response: Meta
+ * is told 503 whether or not this mail goes out, and an alert that could turn a retryable
+ * failure into a dropped one would be worse than no alert.
+ */
+async function alertNotStored(reason: string): Promise<void> {
+  const now = Date.now();
+  if (now - lastAlert < ALERT_EVERY_MS) return;
+  lastAlert = now;
+  try {
+    const { html, text } = notificationBody(
+      "A guest message could not be recorded",
+      [
+        ["What failed", reason],
+        ["When", new Date().toISOString()],
+      ],
+      "WhatsApp has been told to retry, so nothing is lost yet. Meta gives up after a few " +
+        "days, and anything still unstored then is gone with no record on our side.",
+      "Check the store is reachable, then redeploy: a corrected variable never reaches a " +
+        "deployment that is already running.",
+    );
+    await sendMail({ subject: "WhatsApp is not being recorded", html, text });
+  } catch (error) {
+    console.error("[whatsapp/webhook] could not send the store alert", error);
+  }
+}
 
 async function notifyTeam(messages: FreshMessage[]): Promise<void> {
   for (const m of messages) {
