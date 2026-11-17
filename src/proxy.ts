@@ -36,33 +36,11 @@ import {
 //
 // /cleaning is the second exception, for the same reasons. It is the cleaning team's
 // schedule app: not localised, because the language is a roster fact carried by each
-// person's own published document, and shut to a phone with no enrolled device cookie.
+// person's own published document, and shut to a phone with no enrolled device cookie. It
+// answers on this one host and at this one prefix. There is deliberately no subdomain for
+// it; the README section on that app says why, and nothing here reads a host.
 
 const PREFIXED = LOCALES.filter((locale) => locale !== DEFAULT_LOCALE);
-
-/**
- * The subdomain the cleaning team's app is served on, when one is pointed at this project.
- *
- * Unset, which it is until Paul sets it, nothing below changes and the app answers on
- * /cleaning like any other path. Set, a request to that host is served from the /cleaning
- * tree with the prefix off the URL, so the team's phones see a bare path on their own
- * subdomain and never the marketing site's locale rewrite.
- *
- * Untested against a real subdomain: no preview deployment on this project can reach the
- * team, so this cannot be rehearsed anywhere but production. See the README section on this
- * app.
- */
-const CLEANING_HOST = (process.env.CLEANING_HOST ?? "").trim().toLowerCase();
-
-/** The headers cleaning() sets, which the subdomain's rewrite has to copy across rather
- * than lose. Lowercase because that is how a Headers iterator yields names. */
-const CARRIED_TO_SUBDOMAIN = ["cache-control", CLEANING_GATE_HEADER.toLowerCase()];
-
-function onCleaningHost(request: NextRequest): boolean {
-  if (!CLEANING_HOST) return false;
-  const host = (request.headers.get("host") ?? "").toLowerCase().split(":")[0];
-  return host === CLEANING_HOST;
-}
 
 /**
  * The cleaning team's app: the first gate in front of three phones and a door code.
@@ -144,29 +122,6 @@ export async function proxy(request: NextRequest) {
 
   if (pathname === ADMIN_ROOT || pathname.startsWith(`${ADMIN_ROOT}/`)) {
     return admin(request, pathname);
-  }
-
-  // On the team's own subdomain the /cleaning prefix comes off the URL and goes back on
-  // internally. A path that already carries it is left alone, so a redirect built from
-  // src/lib/cleaning/routes.ts works on the subdomain as well as on the main host.
-  if (onCleaningHost(request)) {
-    if (pathname === CLEANING_ROOT || pathname.startsWith(`${CLEANING_ROOT}/`)) {
-      return cleaning(request, pathname);
-    }
-    const mapped = pathname === "/" ? CLEANING_ROOT : `${CLEANING_ROOT}${pathname}`;
-    const gate = await cleaning(request, mapped);
-    if (gate.status !== 200) return gate;
-    const url = request.nextUrl.clone();
-    url.pathname = mapped;
-    const rewrite = NextResponse.rewrite(url);
-    // The gate's own response is discarded here, so whatever it set has to be carried
-    // across by hand or it is silently absent on this host alone. Both of the headers
-    // cleaning() sets were being dropped: the codes page's no-store, and the schedule's
-    // gate header. A rewrite built from scratch keeps neither.
-    for (const [name, value] of gate.headers) {
-      if (CARRIED_TO_SUBDOMAIN.includes(name)) rewrite.headers.set(name, value);
-    }
-    return rewrite;
   }
 
   if (pathname === CLEANING_ROOT || pathname.startsWith(`${CLEANING_ROOT}/`)) {

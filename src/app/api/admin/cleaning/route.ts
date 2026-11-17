@@ -75,12 +75,10 @@ export async function POST(request: Request) {
  * The link Paul pastes into LINE, absolute, because a relative path is not something a
  * person can tap out of a chat.
  *
- * On the team's own subdomain the /cleaning prefix is not in the URL, so the link is built
- * without it. Off that subdomain it is built from the host this request arrived on, which is
- * whatever Paul has open.
+ * Built from the host this request arrived on, which is whatever Paul has open: the live
+ * domain from the live admin screen, localhost from a dev server. The app answers on one
+ * host at one prefix, so there is no second shape for this link to take.
  */
 function enrolUrl(request: Request, token: string): string {
-  const host = (process.env.CLEANING_HOST ?? "").trim();
-  if (host) return `https://${host}/enrol/${token}`;
   return new URL(cleaningEnrolPath(token), request.url).toString();
 }

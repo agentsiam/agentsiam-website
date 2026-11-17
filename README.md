@@ -621,10 +621,18 @@ browser and covers all of it, nineteen cases with a non-zero exit on any failure
 touching the worker or that header, because the case that matters is the one saying the door
 codes are never written to a cache. What it cannot cover is a browser, which is the known gap below.
 
-**Four environment variables**, documented in `.env.example`: `CLEANING_COOKIE_SECRET`, then
-either the `KV_REST_API_*` pair for the real store or `CLEANING_LOCAL_PATH` for development,
-and `CLEANING_HOST` when a subdomain is pointed at this project. Unset, the app fails shut: no
-link opens and no cookie resolves.
+**One host, and deliberately no subdomain.** The team's app is served at
+`agentsiam.com/cleaning` and nowhere else, and nothing in the codebase reads a host. A
+subdomain was built and taken out again, so the reason is worth keeping: it bought a tidier
+URL for three people who reach the app from a link Paul pastes into LINE, and it cost a
+rewrite that silently dropped every header the gate set, a host where the service worker
+never registered at all so there was no offline copy of anything, and a code path that
+nothing had ever exercised. Those are not three risks. They are one risk three times, which
+is that the app the team would have got was not the app anyone had tested.
+
+**Three environment variables**, documented in `.env.example`: `CLEANING_COOKIE_SECRET`, then
+either the `KV_REST_API_*` pair for the real store or `CLEANING_LOCAL_PATH` for development.
+Unset, the app fails shut: no link opens and no cookie resolves.
 
 ### Running it locally, without a live door code on this machine
 
@@ -669,12 +677,12 @@ flow, end to end, with nothing live anywhere near it.
   they are written.
 - **The cleaning app's service worker has never run in a real browser (17/11/2026).** Its
   logic is covered: `npm run test:cleaning-sw` drives `public/cleaning-sw.js` outside a browser
-  with its globals stubbed, seventeen cases, non-zero exit on any failure, and it proves the
+  with its globals stubbed, nineteen cases, non-zero exit on any failure, and it proves the
   branching that matters. The door codes, the API and the enrolment link pass through untouched
   and are never cached, a schedule saved from a good load is served when fetch throws, a cold
-  cache fails rather than inventing a page, and a navigation coming back redirected to the
-  no-access page wipes the cache. So the caching and the offline fallback are no longer
-  unproven. What is still unproven needs a browser: that one registers the script at all, that
+  cache fails rather than inventing a page, a navigation coming back redirected to the
+  no-access page wipes the cache, and the PIN gate is served without being saved over her
+  schedule. So the caching and the offline fallback are no longer unproven. What is still unproven needs a browser: that one registers the script at all, that
   it installs, that it serves the saved copy after a real network failure rather than a thrown
   fetch in a harness, and the install prompt on either iOS or Android. The browser available
   while it was built refuses registration outright, for any script on any origin, returning
@@ -682,19 +690,6 @@ flow, end to end, with nothing live anywhere near it.
   script` while a HEAD for that same URL answers 200 with `application/javascript; charset=utf-8`,
   so the refusal is the browser and not the file. It needs one real phone, which on this project
   means production.
-- **`CLEANING_HOST` has never been pointed at a real subdomain (17/11/2026).** Unset, which it
-  is, nothing changes and the app answers at `/cleaning`. Set, `src/proxy.ts` serves that host
-  from the `/cleaning` tree with the prefix off the URL. That branch is exercised by nothing,
-  and like everything else here it cannot be rehearsed on a preview. Two things are known
-  about it from reading the code rather than from running it. The rewrite it builds was
-  dropping both headers `cleaning()` sets, the codes page's `no-store` and the schedule's
-  gate header, and now copies them across. And the service worker controls nothing on that
-  host: `src/components/cleaning/service-worker.tsx` registers it with `scope: "/cleaning"`
-  while the team's pages there are `/` and `/codes`, so that scope matches nothing they open
-  and the subdomain has no offline schedule at all. The door codes are safe on either host,
-  because the page is dynamic and no worker is caching anything on the subdomain. Closing it
-  is a decision rather than a patch: either the registration learns which host it is on, or
-  the subdomain goes.
 
 - ~~**The CRM admin has never saved to GitHub (11/11/2026).**~~ Resolved 13/11/2026 by the
   first real save. Paul added a candidate to `G-0003` from the live domain and it landed as
