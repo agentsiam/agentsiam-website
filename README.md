@@ -684,6 +684,11 @@ python3 .claude/skills/cleaning-schedule/scripts/build_note.py \
   --publish <fixture>/documents.json > /dev/null
 ```
 
+A second house is a second run of the same command against a second payload, with a
+`property` block in each and `note_titles.<role>.all_houses` in one of them, merged by passing
+both files to `publish_note.py`. That is the only way to see the multi-property screens, since
+one house publishes a document that deliberately does not mention houses at all.
+
 Then set `CLEANING_LOCAL_PATH` to `<fixture>/documents.json` and `npm run dev`. The state the
 app writes, device records, PINs and last-opened timestamps, lands in
 `<fixture>/documents.state.json` beside it. The dates in the example payload are fixed, so move
@@ -712,14 +717,15 @@ flow, end to end, with nothing live anywhere near it.
   slot is a one-line edit in that file and nothing else in the app changes. The schedule screen,
   the enrolment link and the PIN prompt all carry at least one, so the app is not for a phone until
   they are written.
-- **The app reads a multi-property document the skill does not write yet (17/11/2026).** The
-  screens for several houses are built, and the fields they read are specified in
-  `as-work/2026-11-17-cleaning-app-multi-property/` in the consulting repo. `build_note.py`
-  publishes one property per run and carries no `properties`, no `property` on a visit, no
-  `day_label` and a single access block, so those screens are exercised only against a fixture
-  that merges two runs by hand, and everything in production takes the single-house path.
-  Closing it is a change to the skill rather than to this app: one run across several
-  properties, merged per person.
+- ~~**The app reads a multi-property document the skill does not write yet (17/11/2026).**~~
+  Resolved the same day in `agentsiam-consulting`, commit `b945243`. The payload names the
+  house it is for, every visit carries it along with the date as a label of its own, access is
+  a list of one block per house, and `publish_note.py` takes several of those files and merges
+  them into one document per person. One run is still one house, because a Note names its
+  house in its own title; the merge is what makes two runs one schedule. Nothing in this
+  repository changed for it: the screens already read those fields, and a payload with no
+  property block still publishes what it published yesterday, which is the single-house path
+  production is on.
 - **The cleaning app's service worker has never run in a real browser (17/11/2026).** Its
   logic is covered: `npm run test:cleaning-sw` drives `public/cleaning-sw.js` outside a browser
   with its globals stubbed and its clock movable, twenty-five cases, non-zero exit on any
