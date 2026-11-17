@@ -54,6 +54,10 @@ const PREFIXED = LOCALES.filter((locale) => locale !== DEFAULT_LOCALE);
  */
 const CLEANING_HOST = (process.env.CLEANING_HOST ?? "").trim().toLowerCase();
 
+/** The headers cleaning() sets, which the subdomain's rewrite has to copy across rather
+ * than lose. Lowercase because that is how a Headers iterator yields names. */
+const CARRIED_TO_SUBDOMAIN = ["cache-control", CLEANING_GATE_HEADER.toLowerCase()];
+
 function onCleaningHost(request: NextRequest): boolean {
   if (!CLEANING_HOST) return false;
   const host = (request.headers.get("host") ?? "").toLowerCase().split(":")[0];
@@ -154,7 +158,15 @@ export async function proxy(request: NextRequest) {
     if (gate.status !== 200) return gate;
     const url = request.nextUrl.clone();
     url.pathname = mapped;
-    return NextResponse.rewrite(url);
+    const rewrite = NextResponse.rewrite(url);
+    // The gate's own response is discarded here, so whatever it set has to be carried
+    // across by hand or it is silently absent on this host alone. Both of the headers
+    // cleaning() sets were being dropped: the codes page's no-store, and the schedule's
+    // gate header. A rewrite built from scratch keeps neither.
+    for (const [name, value] of gate.headers) {
+      if (CARRIED_TO_SUBDOMAIN.includes(name)) rewrite.headers.set(name, value);
+    }
+    return rewrite;
   }
 
   if (pathname === CLEANING_ROOT || pathname.startsWith(`${CLEANING_ROOT}/`)) {

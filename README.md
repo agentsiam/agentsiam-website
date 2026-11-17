@@ -685,7 +685,16 @@ flow, end to end, with nothing live anywhere near it.
 - **`CLEANING_HOST` has never been pointed at a real subdomain (17/11/2026).** Unset, which it
   is, nothing changes and the app answers at `/cleaning`. Set, `src/proxy.ts` serves that host
   from the `/cleaning` tree with the prefix off the URL. That branch is exercised by nothing,
-  and like everything else here it cannot be rehearsed on a preview.
+  and like everything else here it cannot be rehearsed on a preview. Two things are known
+  about it from reading the code rather than from running it. The rewrite it builds was
+  dropping both headers `cleaning()` sets, the codes page's `no-store` and the schedule's
+  gate header, and now copies them across. And the service worker controls nothing on that
+  host: `src/components/cleaning/service-worker.tsx` registers it with `scope: "/cleaning"`
+  while the team's pages there are `/` and `/codes`, so that scope matches nothing they open
+  and the subdomain has no offline schedule at all. The door codes are safe on either host,
+  because the page is dynamic and no worker is caching anything on the subdomain. Closing it
+  is a decision rather than a patch: either the registration learns which host it is on, or
+  the subdomain goes.
 
 - ~~**The CRM admin has never saved to GitHub (11/11/2026).**~~ Resolved 13/11/2026 by the
   first real save. Paul added a candidate to `G-0003` from the live domain and it landed as
