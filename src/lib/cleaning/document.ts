@@ -154,6 +154,89 @@ export function nextVisitIndex(visits: Visit[], today: string = todayInBangkok()
 }
 
 /**
+ * How far ahead the grid looks: thirty days from today, today included. Paul's number,
+ * 17/11/2026.
+ *
+ * It bounds the grid and deliberately not the list. A published document carries every job
+ * on file, which now runs months out, and thirty days is the shape of a month on a screen;
+ * but a list that stopped at thirty days would hold fewer jobs than the LINE Note she is
+ * holding in her other hand, and a screen that quietly disagrees with the Note is the second
+ * schedule this app exists not to be. So the grid answers "how busy is my month" and the
+ * list stays the whole document.
+ */
+export const SCHEDULE_WINDOW_DAYS = 30;
+
+/** A calendar date as a UTC instant. The dates in a document are calendar dates with no
+ * time in them, so they are handled as calendar dates and never as local midnight. */
+function at(iso: string): number {
+  return Date.parse(`${iso}T00:00:00Z`);
+}
+
+/** An ISO date, `days` after another one. Positive, negative or zero. */
+export function addDays(iso: string, days: number): string {
+  return new Date(at(iso) + days * 86_400_000).toISOString().slice(0, 10);
+}
+
+/** Which column a date falls in on a Sunday-first grid. 0 is Sunday, 6 is Saturday. */
+export function weekdayIndex(iso: string): number {
+  return new Date(at(iso)).getUTCDay();
+}
+
+/** The day of the month, as a number, for a cell that prints digits and no month name. */
+export function dayOfMonth(iso: string): number {
+  return new Date(at(iso)).getUTCDate();
+}
+
+export type CalendarCell = {
+  /** ISO, or null for a pad cell before the window opens or after it closes. */
+  date: string | null;
+  day: number | null;
+  /** How many jobs she has that day. Printed as a marker, never as a number. */
+  jobs: number;
+  isToday: boolean;
+  /** The one cell the hero card above the grid is about. */
+  isNext: boolean;
+};
+
+/**
+ * The window as a Sunday-first grid of whole weeks.
+ *
+ * Sunday first because that is where a Thai week starts, not Monday as ISO has it. The grid
+ * holds exactly the thirty days the list holds, padded to whole weeks so the columns line
+ * up under their headings, and it carries nothing but digits and counts: no month name and
+ * no day name, because every Thai date in this app is the skill's to render and this is the
+ * one screen that would be tempted to compose one.
+ */
+export function calendarWeeks(
+  visits: Visit[],
+  today: string = todayInBangkok(),
+  days: number = SCHEDULE_WINDOW_DAYS,
+): CalendarCell[][] {
+  const jobsOn = new Map<string, number>();
+  for (const visit of visits) jobsOn.set(visit.date, (jobsOn.get(visit.date) ?? 0) + 1);
+  const next = visits.find((visit) => visit.date >= today)?.date ?? null;
+
+  const cells: CalendarCell[] = [];
+  const pad = { date: null, day: null, jobs: 0, isToday: false, isNext: false };
+  for (let i = 0; i < weekdayIndex(today); i += 1) cells.push({ ...pad });
+  for (let i = 0; i < days; i += 1) {
+    const date = addDays(today, i);
+    cells.push({
+      date,
+      day: dayOfMonth(date),
+      jobs: jobsOn.get(date) ?? 0,
+      isToday: i === 0,
+      isNext: date === next,
+    });
+  }
+  while (cells.length % 7 !== 0) cells.push({ ...pad });
+
+  const weeks: CalendarCell[][] = [];
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
+  return weeks;
+}
+
+/**
  * A UTC timestamp as digits in Bangkok time, for `{when}` in Paul's "last updated" line.
  *
  * Digits and punctuation only, deliberately: a month name or a day name here would be this

@@ -1,24 +1,29 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { RenderedBlock } from "@/components/cleaning/blocks";
-import { PinForm } from "@/components/cleaning/pin-form";
+import { ChevronLeft } from "@/components/cleaning/glyphs";
 import { parseDocument } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
-import { pinSetAt } from "@/lib/cleaning/devices";
 import { CLEANING_SCHEDULE } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
 import { TEAM_STRINGS } from "@/lib/cleaning/strings";
 
 /**
- * Her codes: the device cookie plus her PIN.
+ * Her gate and door codes, large, and nothing else on the screen.
  *
- * The one screen in this app with a second factor on it, because a stolen unlocked phone
- * should not open a door. The gate code is shared by the whole team and cannot be revoked
- * for one person; the digital lock holds one code per person. That asymmetry is the
- * property's, not ours, and this screen keeps it: she sees her own access block and never a
- * counterpart's.
+ * **No PIN prompt here any more.** Since 17/11/2026 the PIN is the front door of the app,
+ * so by the time this page renders it has already been given: a phone that has not given it
+ * is sent back to the schedule, where the gate is. This page therefore has exactly one job,
+ * which is to be readable at a gate in daylight by someone holding a bag.
  *
- * Never cached, by two mechanisms that do not depend on each other: a no-store header in
- * next.config.ts, and the service worker refusing this path outright.
+ * Still never cached, by three mechanisms: `src/proxy.ts` sets `no-store` on this path, the
+ * service worker refuses it outright, and the page is dynamic. The codes are the one thing
+ * in this app worth stealing and they are never written to a disk on the phone.
+ *
+ * Every string is the published document's. The lines read `ประตูรั้ว: 1234` as one piece of
+ * text, label and value together, exactly as her LINE Note prints them, which is why the
+ * label is not styled apart from the number: splitting that line would mean this app
+ * deciding where a Thai sentence ends.
  */
 
 export const dynamic = "force-dynamic";
@@ -26,21 +31,9 @@ export const dynamic = "force-dynamic";
 export default async function CodesPage() {
   const holder = await requireHolder();
 
-  if (!(await pinGiven(holder))) {
-    const set = await pinSetAt(holder.person).catch(() => null);
-    return (
-      <main>
-        <BackLink />
-        {set ? (
-          <PinForm />
-        ) : (
-          <p className="mt-6 rounded-panel border border-hairline bg-surface p-5 text-[17px] leading-7 text-body">
-            {TEAM_STRINGS.pinMissing}
-          </p>
-        )}
-      </main>
-    );
-  }
+  // The front door is on the schedule screen. A phone that has not been through it does not
+  // get asked again here, because two places asking for one PIN is two places to get wrong.
+  if (!(await pinGiven(holder))) redirect(CLEANING_SCHEDULE);
 
   let document = null;
   try {
@@ -51,17 +44,26 @@ export default async function CodesPage() {
 
   return (
     <main lang={document?.lang ?? "th"}>
-      <BackLink />
+      {/* The way back carries the schedule's own title as its label, so the control has a
+          name in her language without this app owning a word for "back". */}
+      <Link
+        href={CLEANING_SCHEDULE}
+        className="mt-1 flex items-center gap-2 py-2 text-[15px] font-semibold text-muted"
+      >
+        <ChevronLeft />
+        <span className="min-w-0 truncate">{document ? document.title : ""}</span>
+      </Link>
+
       {document?.access ? (
-        <section className="mt-6 rounded-panel border border-ink bg-ink p-5">
-          <h1 className="text-[15px] font-semibold text-gold-on-ink">
+        <section className="mt-4 rounded-panel bg-ink p-5">
+          <h1 className="text-[14px] font-semibold tracking-wide text-gold-on-ink">
             {document.access.heading}
           </h1>
-          <ul className="mt-3 space-y-3">
+          <ul className="mt-4 space-y-4">
             {document.access.lines.map((line, index) => (
               <li
                 key={index}
-                className="text-[26px] font-semibold leading-9 tracking-wide text-bg"
+                className="text-[27px] font-semibold leading-10 tracking-wide text-bg"
               >
                 {line}
               </li>
@@ -73,33 +75,8 @@ export default async function CodesPage() {
           {TEAM_STRINGS.noSchedule}
         </p>
       )}
-      {document?.contact ? <RenderedBlock block={document.contact} /> : null}
-    </main>
-  );
-}
 
-/** An arrow drawn rather than written: there is no word here that Paul has not approved,
- * and the core rules keep arrow characters out of anything a person reads. */
-function BackLink() {
-  return (
-    <Link
-      href={CLEANING_SCHEDULE}
-      className="inline-flex h-11 w-11 items-center justify-center rounded-box border border-hairline text-text"
-      aria-label="Back"
-    >
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        width="22"
-        height="22"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M15 5l-7 7 7 7" />
-      </svg>
-    </Link>
+      {document?.contact ? <RenderedBlock block={document.contact} tone="panel" /> : null}
+    </main>
   );
 }

@@ -56,9 +56,16 @@ export const TEAM_STRINGS = {
    */
   changedSinceSeen: "[TH new or moved since you last looked]",
 
-  /** The prompt above the PIN field on the codes screen. Says that the codes are behind it
-   * and that Paul gave her the number in LINE. */
-  pinPrompt: "[TH enter your PIN to see the door codes]",
+  /**
+   * The prompt above the PIN field, which is now the front door of the whole app rather
+   * than a second gate in front of the codes.
+   *
+   * So it says to enter the PIN, and that Paul gave her the number in LINE, and it does not
+   * mention the codes: after this one screen she has her schedule and her codes both, and a
+   * prompt naming only the codes would be telling her the wrong thing about what she is
+   * unlocking.
+   */
+  pinPrompt: "[TH enter your PIN, the number Paul sent you in LINE]",
 
   /** A wrong PIN. Says nothing about how many tries are left and nothing about whose PIN
    * it is. */
@@ -102,9 +109,48 @@ export function builtAtLine(when: string): string {
   return TEAM_STRINGS.builtAt.replace("{when}", when);
 }
 
-/** How many strings this app has to supply itself, which is what the warning counts
- * against. Ten today, and the same ten slots as the sheet Paul fills in. */
-export const TEAM_STRINGS_TOTAL: number = Object.keys(TEAM_STRINGS).length;
+/**
+ * The seven column headings on the month grid, Sunday first.
+ *
+ * Sunday first because a Thai calendar starts on Sunday, not on Monday as ISO does, and the
+ * grid is read by three Thai speakers and nobody else.
+ *
+ * These are the one place this app needs a word that no Note has ever had to print. A job
+ * line carries the day name in full, `พฤหัส 26 พย`, which is the skill's and is far too
+ * long for a column one seventh of a phone wide, so a grid needs its own short forms and
+ * they have to come from Paul like everything else here. The conventional abbreviations are
+ * documented and are almost certainly what he will write, but documented is not approved,
+ * so they stay placeholders until he says so.
+ *
+ * One entry per column, index 0 Sunday through index 6 Saturday. Order is positional and is
+ * not his to change: the grid reads the index, not the word.
+ *
+ * The placeholders are numbered rather than spelled, `[TH1]` through `[TH7]`, because a
+ * column one seventh of a phone wide wraps anything longer onto two lines and the grid then
+ * demonstrates a layout problem it will not have once the words are short Thai ones.
+ */
+export const CALENDAR_WEEKDAYS: readonly string[] = [
+  "[TH1]",
+  "[TH2]",
+  "[TH3]",
+  "[TH4]",
+  "[TH5]",
+  "[TH6]",
+  "[TH7]",
+];
+
+/**
+ * How many things this app needs Paul to write, which is what the warning counts against,
+ * and the same slots as the sheet he fills in.
+ *
+ * The seven column headings count as one slot rather than seven. They are a single set, he
+ * writes them in one go or not at all, and a warning reading "17 of 17" over a screen with
+ * one sentence missing and six abbreviations in place would be describing the wrong problem.
+ */
+export const TEAM_STRINGS_TOTAL: number = Object.keys(TEAM_STRINGS).length + 1;
+
+/** The grid's own slot in the count above, named the way the sheet names it. */
+const WEEKDAYS_KEY = "calendarWeekdays";
 
 /**
  * The keys still carrying a placeholder rather than Paul's own Thai, in the order they are
@@ -114,9 +160,12 @@ export const TEAM_STRINGS_TOTAL: number = Object.keys(TEAM_STRINGS).length;
  * saying "three left" would not say which three. Computed at module load, which is build
  * time, so the warning that reads it is server-rendered and a phone pays nothing for it.
  */
-export const TEAM_STRINGS_PENDING_KEYS: readonly TeamStringKey[] = (
-  Object.keys(TEAM_STRINGS) as TeamStringKey[]
-).filter((key) => TEAM_STRINGS[key].includes(PENDING_MARK));
+export const TEAM_STRINGS_PENDING_KEYS: readonly string[] = [
+  ...(Object.keys(TEAM_STRINGS) as TeamStringKey[]).filter((key) =>
+    TEAM_STRINGS[key].includes(PENDING_MARK),
+  ),
+  ...(CALENDAR_WEEKDAYS.some((day) => day.includes(PENDING_MARK)) ? [WEEKDAYS_KEY] : []),
+];
 
 /** Whether any string here is still a placeholder. Derived from the list above rather than
  * computed again, so the warning's count and its existence cannot disagree. */

@@ -38,14 +38,26 @@ export const CLEANING_PIN_COOKIE = "as_clean_pin";
 export const CLEANING_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 /**
- * Fifteen minutes for the PIN.
+ * Thirty days for the PIN, which used to be fifteen minutes.
  *
- * Long enough to walk from the gate to the door and read the second code, short enough that
- * a phone left on a table is not an open door. She re-enters it next visit, which is the one
- * place in this app where something is typed every time, and it is in front of the only
- * thing worth protecting.
+ * It changed because what the PIN guards changed. Paul's decision, 17/11/2026: it stands in
+ * front of the whole app rather than in front of the codes alone, so she types it once and
+ * then has her schedule and her codes both. Fifteen minutes in that position would mean
+ * typing it at every gate before she could read a date, which is the opposite of what he
+ * asked for.
+ *
+ * Thirty days rather than the year the device cookie gets, because the two are protecting
+ * different things. The device cookie says which phone this is and Paul can revoke it from
+ * his own screen the moment a phone goes missing. The PIN says who is holding it, and the
+ * only case it covers is a phone lost and not yet revoked, which is a case that gets worse
+ * the longer the window is. A month is light to type and short enough to matter.
+ *
+ * **The cost of the move is real and it is Paul's**: a phone somebody else picks up unlocked
+ * is now one tap from the door codes for the rest of that window. The argument and the two
+ * ways to narrow it are in `as-work/2026-11-17-cleaning-app-redesign/` in the consulting
+ * repo. This number is the dial.
  */
-export const CLEANING_PIN_MAX_AGE = 60 * 15;
+export const CLEANING_PIN_MAX_AGE = 60 * 60 * 24 * 30;
 
 const SECRET = process.env.CLEANING_COOKIE_SECRET ?? "";
 
