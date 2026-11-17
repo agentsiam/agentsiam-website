@@ -58,12 +58,19 @@ export function MonthGrid({ weeks }: { weeks: CalendarCell[][] }) {
                 {cell.day}
               </span>
               {cell.jobs > 0 ? (
-                <span
-                  aria-hidden="true"
-                  className={`mt-0.5 h-1.5 w-1.5 rounded-full ${
-                    cell.isNext ? "bg-gold-on-ink" : "bg-sand"
-                  }`}
-                />
+                // One dot per job, up to three. Two houses in a day is now an ordinary
+                // Tuesday, and a single dot would say the day is spoken for while hiding
+                // that it is spoken for twice.
+                <span aria-hidden="true" className="mt-0.5 flex gap-0.5">
+                  {Array.from({ length: Math.min(cell.jobs, 3) }).map((_, dot) => (
+                    <span
+                      key={dot}
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        cell.isNext ? "bg-gold-on-ink" : "bg-sand"
+                      }`}
+                    />
+                  ))}
+                </span>
               ) : null}
             </div>
           );

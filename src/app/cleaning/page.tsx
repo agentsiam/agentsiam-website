@@ -3,35 +3,43 @@ import { MonthGrid } from "@/components/cleaning/month-grid";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { PinForm } from "@/components/cleaning/pin-form";
 import { SeenRecorder } from "@/components/cleaning/seen-recorder";
-import { NextVisitCard, VisitList } from "@/components/cleaning/visits";
+import { DayList, NextVisitCard } from "@/components/cleaning/visits";
 import { pinSetAt } from "@/lib/cleaning/devices";
 import {
+  accessFor,
   builtAtDigits,
   calendarWeeks,
+  daySections,
   nextVisitIndex,
   parseDocument,
+  propertyOf,
   todayInBangkok,
+  visitSlug,
 } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
-import { CLEANING_CODES } from "@/lib/cleaning/routes";
+import { cleaningCodesPath, cleaningJobPath } from "@/lib/cleaning/routes";
 import { sinceLastSeen, visitIdentity, visitsDigest } from "@/lib/cleaning/seen";
 import { readNote } from "@/lib/cleaning/store";
 import { TEAM_STRINGS, builtAtLine } from "@/lib/cleaning/strings";
 
 /**
- * Her schedule, behind her PIN.
+ * Her days, behind her PIN.
  *
  * **The PIN is the front door of the app, not a second gate in front of the codes.** Paul's
  * decision, 17/11/2026, in his own words: she has already put her password in, so she can
  * see all the schedules. So this screen asks for it once and from then on both the schedule
- * and the codes open with no further prompt. The cost of that, and it is a real one, is
- * written down in `as-work/2026-11-17-cleaning-app-redesign/` and is his to carry: a phone
- * somebody else picks up unlocked is now one tap from the door codes.
+ * and the codes open with no further prompt.
  *
- * Everything on screen below the gate is text the published document carries, rendered by
- * the same script that renders the LINE Note Paul pastes. This page sorts by an ISO date,
- * works out which visit is next, marks what has changed since she last looked, lays thirty
- * days out as a grid, and puts text on a phone. It composes nothing.
+ * **With more than one house the screen answers a different question.** Not when the next
+ * clean is, which is what one property makes the only question, but what the day holds and
+ * in what order, which is why the list below is days with jobs under them rather than jobs
+ * in a line. A document from a single-property run carries no houses and every one of those
+ * differences quietly disappears.
+ *
+ * Everything on screen is text the published document carries, rendered by the same script
+ * that renders the LINE Note Paul pastes. This page sorts by an ISO date, works out which
+ * visit is next, marks what has changed since she last looked, lays thirty days out as a
+ * grid, and puts text on a phone. It composes nothing.
  */
 
 export const dynamic = "force-dynamic";
@@ -81,6 +89,7 @@ export default async function SchedulePage() {
   const { changed } = await sinceLastSeen(holder.person, document.visits);
   const digest = await visitsDigest(document.visits);
   const when = document.built_at ? builtAtDigits(document.built_at) : null;
+  const nextAccess = next ? accessFor(document, next.property) : null;
 
   return (
     <main lang={document.lang}>
@@ -101,18 +110,24 @@ export default async function SchedulePage() {
         <NextVisitCard
           visit={next}
           isChanged={changed.has(visitIdentity(next))}
-          codesHeading={document.access ? document.access.heading : null}
-          codesHref={CLEANING_CODES}
+          house={propertyOf(document, next)}
+          role={document.role}
+          codesHeading={nextAccess ? nextAccess.heading : null}
+          codesHref={cleaningCodesPath(next.property)}
+          jobHref={cleaningJobPath(visitSlug(next))}
         />
       ) : null}
 
       <MonthGrid weeks={calendarWeeks(document.visits, today)} />
 
-      <VisitList
-        visits={document.visits}
+      <DayList
+        sections={daySections(document.visits)}
         nextDate={next ? next.date : null}
         today={today}
         changed={changed}
+        role={document.role}
+        houseOf={(visit) => propertyOf(document, visit)}
+        jobHref={(visit) => cleaningJobPath(visitSlug(visit))}
       />
 
       {document.contact ? <RenderedBlock block={document.contact} /> : null}

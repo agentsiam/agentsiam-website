@@ -24,6 +24,31 @@ export const CLEANING_SCHEDULE = CLEANING_ROOT;
 /** Her codes. Opened by the same PIN as the schedule, and never asked for a second time. */
 export const CLEANING_CODES = `${CLEANING_ROOT}/codes`;
 
+/**
+ * One job: the house, the line, the address and the way to its codes.
+ *
+ * New with more than one property, and the screen the comparable products all have and we
+ * did not. With one house every question but "when" was answered by there being only one
+ * house; with two, "which one and where" is the question, and it needs somewhere to live.
+ */
+export const CLEANING_JOB = `${CLEANING_ROOT}/job`;
+
+export function cleaningJobPath(slug: string): string {
+  return `${CLEANING_JOB}/${slug}`;
+}
+
+/**
+ * The codes screen, optionally opening on one house.
+ *
+ * A query string rather than a path on purpose. The service worker matches a saved page
+ * ignoring the search, so every one of these shares a single saved copy, and that copy
+ * holds **every** house's codes whichever link made it. So a phone with no signal always
+ * has all of them and the parameter only decides which is at the top.
+ */
+export function cleaningCodesPath(property?: string | null): string {
+  return property ? `${CLEANING_CODES}?house=${encodeURIComponent(property)}` : CLEANING_CODES;
+}
+
 /** What a phone with no working device cookie is shown: ask Paul for a new link, and
  * nothing else. There is no sign-in form here and no recovery flow, by design. */
 export const CLEANING_NO_ACCESS = `${CLEANING_ROOT}/no-access`;

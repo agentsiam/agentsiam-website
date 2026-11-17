@@ -19,6 +19,26 @@ export type DocumentBlock = {
   lines: string[];
 };
 
+/**
+ * A house, as the published document names it.
+ *
+ * New with more than one property. The name and the address are Paul's, written once per
+ * house and carried here finished like everything else; the map link is a URL, which has no
+ * language in it at all. A document from a single-property run carries no properties, and
+ * every screen then behaves exactly as it did before: no house on a card, no address, one
+ * set of codes.
+ */
+export type PropertyRef = {
+  id: string;
+  name: string;
+  address: string | null;
+  map: string | null;
+};
+
+/** A block of codes, and which house they open. `property` is null on a document published
+ * before there was more than one. */
+export type AccessBlock = DocumentBlock & { property: string | null };
+
 export type Visit = {
   /** ISO date. What this app sorts and compares on, and the only date arithmetic it does. */
   date: string;
@@ -31,6 +51,17 @@ export type Visit = {
   booking: string | null;
   /** The job line exactly as her LINE Note prints it. Displayed, never parsed. */
   line: string;
+  /** Which house, by id. Null on a single-property document. */
+  property: string | null;
+  /**
+   * The date on its own, as her Note prints it inside the line, rendered by the skill.
+   *
+   * It exists so that a screen can put a heading over the jobs that share a day without
+   * this app composing a Thai date or cutting one out of a line it is told never to parse.
+   * Null on a document published before the skill carried it, and a screen with no label
+   * puts no heading up rather than guessing one.
+   */
+  dayLabel: string | null;
 };
 
 export type TeamDocument = {
@@ -42,9 +73,18 @@ export type TeamDocument = {
   /** The queue title for her function, finished. */
   title: string;
   visits: Visit[];
+  /** Every house she has work at, in the order the document lists them. Empty on a
+   * single-property document, which is what makes every screen fall back to its old shape. */
+  properties: PropertyRef[];
   contact: DocumentBlock | null;
-  /** Her gate and door codes, finished. Behind the PIN, never cached, never logged. */
-  access: DocumentBlock | null;
+  /**
+   * Her gate and door codes, finished, one block per house.
+   *
+   * Always a list, even for the single house that was once a lone block, so that nothing on
+   * a screen has to ask which shape it is holding. A legacy document arrives as a list of
+   * one whose `property` is null.
+   */
+  access: AccessBlock[];
   /** The change lines from the last posted schedule, plus anything typed into that run's
    * remarks, under one heading. The skill merges the two, so this app cannot tell them
    * apart and must not claim to. */
@@ -91,7 +131,39 @@ function asVisit(value: unknown): Visit | null {
     type: asString(v.type),
     booking: asString(v.booking),
     line,
+    property: asString(v.property),
+    dayLabel: asString(v.day_label),
   };
+}
+
+function asProperty(value: unknown): PropertyRef | null {
+  if (typeof value !== "object" || value === null) return null;
+  const v = value as Record<string, unknown>;
+  const id = asString(v.id);
+  const name = asString(v.name);
+  if (!id || !name) return null;
+  return { id, name, address: asString(v.address), map: asString(v.map) };
+}
+
+/**
+ * The access blocks, out of either shape the document has had.
+ *
+ * A list once there is more than one house, a lone block before that. Both arrive here as a
+ * list, so no screen carries a branch for which era its document came from.
+ */
+function asAccess(value: unknown): AccessBlock[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => {
+        const block = asBlock(entry);
+        if (!block) return null;
+        const property = asString((entry as Record<string, unknown>).property);
+        return { ...block, property };
+      })
+      .filter((block): block is AccessBlock => block !== null);
+  }
+  const single = asBlock(value);
+  return single ? [{ ...single, property: null }] : [];
 }
 
 /**
@@ -117,11 +189,65 @@ export function parseDocument(raw: unknown): TeamDocument | null {
     role: asString(d.role) ?? "",
     title,
     visits: sortVisits(visits),
+    properties: Array.isArray(d.properties)
+      ? d.properties.map(asProperty).filter((p): p is PropertyRef => p !== null)
+      : [],
     contact: asBlock(d.contact),
-    access: asBlock(d.access),
+    access: asAccess(d.access),
     remarks: asBlock(d.remarks),
     built_at: asString(d.built_at) ?? undefined,
   };
+}
+
+/** The house a visit is at, or null when the document names no houses, which is what a
+ * single-property document looks like. */
+export function propertyOf(document: TeamDocument, visit: Visit): PropertyRef | null {
+  if (!visit.property) return null;
+  return document.properties.find((p) => p.id === visit.property) ?? null;
+}
+
+/** The codes for one house, or the only block there is when a document names no houses. */
+export function accessFor(document: TeamDocument, property: string | null): AccessBlock | null {
+  if (!property) return document.access[0] ?? null;
+  return document.access.find((block) => block.property === property) ?? null;
+}
+
+/**
+ * A visit's own address bar name: the date, the time and the house.
+ *
+ * Digits and ids, never a word, because it goes in a URL. The house is in it because two
+ * houses can want the same cleaner at the same hour on the same day, and a link that opened
+ * the wrong one of those would send her to the wrong gate.
+ */
+export function visitSlug(visit: Visit): string {
+  return [visit.date, visit.time.replace(/\D/g, ""), visit.property ?? "one"]
+    .filter(Boolean)
+    .join("-");
+}
+
+export function findVisit(visits: Visit[], slug: string): Visit | null {
+  return visits.find((visit) => visitSlug(visit) === slug) ?? null;
+}
+
+export type DaySection = { date: string; label: string | null; visits: Visit[] };
+
+/**
+ * The visits as days, in order, which is the shape the screen reads once there is more than
+ * one house: not a list of jobs but a list of days, each holding what that day asks of her.
+ *
+ * The heading on a day is the label the skill rendered. Where a document carries none, the
+ * day still groups and simply has no heading, which is how a document from before this
+ * existed keeps working.
+ */
+export function daySections(visits: Visit[]): DaySection[] {
+  const days = new Map<string, DaySection>();
+  for (const visit of visits) {
+    const day = days.get(visit.date) ?? { date: visit.date, label: visit.dayLabel, visits: [] };
+    day.label = day.label ?? visit.dayLabel;
+    day.visits.push(visit);
+    days.set(visit.date, day);
+  }
+  return [...days.values()].sort((a, b) => a.date.localeCompare(b.date));
 }
 
 /** Oldest first, which is the order her Note lists them in. Ties broken by booking id so
