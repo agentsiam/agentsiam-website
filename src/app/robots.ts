@@ -12,7 +12,11 @@ export default function robots(): MetadataRoute.Robots {
       // shut is the session check in src/proxy.ts and in every admin page and route; this
       // line only keeps a well-behaved crawler from wasting its time on a sign-in form, and
       // keeps the URL out of a search result. The pages are noindex as well.
-      disallow: ["/admin", "/api/admin"],
+      // /cleaning is the cleaning team's schedule app and is disallowed on the same terms
+      // and with the same caveat: the line publishes that the path exists and stops
+      // nothing. What keeps it shut is the device cookie checked in src/proxy.ts and again
+      // in every page and route under it. Those pages are noindex as well.
+      disallow: ["/admin", "/api/admin", "/cleaning", "/api/cleaning"],
       // Nothing else is disallowed, and /opengraph-image in particular must not be. It is the
       // og:image URL of nearly every page, and link-preview crawlers (Facebook's and X's
       // report honouring robots.txt) are told by a Disallow that they may not fetch it,
