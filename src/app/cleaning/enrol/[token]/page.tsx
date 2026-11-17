@@ -64,6 +64,12 @@ export default async function EnrolPage({
           {name}
         </h1>
       ) : null}
+      {written(TEAM_STRINGS.enrolHelp) ? (
+        <p className="mt-3 text-center text-[16px] leading-7 text-body">
+          {written(TEAM_STRINGS.enrolHelp)}
+        </p>
+      ) : null}
+
       <form method="POST" action={CLEANING_API_ENROL} className="mt-8">
         <input type="hidden" name="token" value={token} />
         <button

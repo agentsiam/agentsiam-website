@@ -18,11 +18,12 @@
  * mistaken for finished copy. They are deliberately ugly on screen: a half-translated app
  * that looks finished is how a wrong string ships.
  *
- * While any of them is still a placeholder, every screen in the subtree carries one English
- * warning saying how many are left and which ones, because Latin text in square brackets is
- * unmistakable in this file and nearly invisible on a phone held at arm's length. See
- * src/components/cleaning/pending-strings-notice.tsx, which is the only reader of the two
- * pending exports at the foot of this file.
+ * **Nothing on any screen says a string is missing.** A band at the top of every screen
+ * counted them and named them until Paul asked for it and the bracketed English gone,
+ * 17/11/2026. What replaced it is `written()` at the foot of this file: an unwritten string
+ * renders as nothing and takes its element with it, so these screens are quieter than they
+ * are finished. The grep that finds what is left is `[TH` in this file, and it is now the
+ * only thing that finds it.
  *
  * Replacing one is a one-line edit here and nothing else. Nothing in this file is translated
  * into the other locales: the public site's three dictionaries are for guests and owners, and
@@ -101,6 +102,35 @@ export const TEAM_STRINGS = {
   /** Shown when the phone has no connection and she is reading a saved copy. The age of
    * that copy is the builtAt line above it. */
   offline: "[TH no connection, this is the saved copy]",
+
+  /**
+   * The heading on the codes screen, and the line under it.
+   *
+   * Until a screen says what it is, it is a panel of digits arriving with no subject. The
+   * house names on the panels say whose codes those are; neither of them says what the
+   * screen is for, or why one house is above the other, and the ordering is the one thing on
+   * it that is not self-evident: the house she is going to next is first, and every house
+   * she works at is on the screen whichever link opened it.
+   */
+  codesTitle: "[TH your door codes]",
+  codesHelp: "[TH the house you are going to next is first, every house you work at is here]",
+
+  /** Above the address on a job, which is a line of text with a pin beside it and nothing
+   * saying that tapping it opens a map. */
+  jobAddressHeading: "[TH where it is]",
+
+  /** Above the people on a job. Their names and numbers are on the screen with a phone
+   * beside them and nothing saying who they are to her. */
+  jobPeopleHeading: "[TH who is with you]",
+
+  /** Under her name on the enrolment link Paul sends in LINE, which otherwise shows a name
+   * and a button and no account of what pressing it does. The link works once and binds this
+   * phone, which is the part she cannot undo and is not told. */
+  enrolHelp: "[TH this link works once and only on this phone]",
+
+  /** The control that opens the days already behind her. It carries a count and a chevron
+   * and no word for what is behind it. */
+  pastJobs: "[TH earlier]",
 } as const;
 
 /** Paul's wording with `{when}` filled in, or nothing while the wording is unwritten. The
