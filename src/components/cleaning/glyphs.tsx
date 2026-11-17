@@ -248,3 +248,42 @@ export function Phone({ size = 19 }: { size?: number }) {
     </svg>
   );
 }
+
+/** A list: the schedule as rows, which is what this app opens on. */
+export function ListView({ size = 19 }: { size?: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 7h16M4 12h16M4 17h11" />
+    </svg>
+  );
+}
+
+/** A calendar: a month at a time, which is the other half of the switch. */
+export function CalendarView({ size = 19 }: { size?: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+      <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" />
+    </svg>
+  );
+}

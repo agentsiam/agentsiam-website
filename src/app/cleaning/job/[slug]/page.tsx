@@ -13,7 +13,13 @@ import {
 import { CodesButton } from "@/components/cleaning/codes-button";
 import { Comments } from "@/components/cleaning/comments";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
-import { accessFor, findVisit, parseDocument, propertyOf } from "@/lib/cleaning/document";
+import {
+  accessFor,
+  findVisit,
+  parseDocument,
+  propertyOf,
+  todayInBangkok,
+} from "@/lib/cleaning/document";
 import { listComments } from "@/lib/cleaning/comments";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
@@ -34,10 +40,15 @@ import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
  * has. ZenMaid's cleaner app puts the address on the job card with a link to directions,
  * and that is exactly the shape of the gap here.
  *
- * **The codes are not on this screen.** There is a way to them, one tap, pointed at this
- * house. They stay on their own path because that path is the one the proxy marks, the
- * worker keeps on a deadline and the browser is told not to store: spreading door codes
- * over a second URL would mean spreading all of that over it too.
+ * **The codes are not on this screen, and the way to them only exists on the day.** Paul's
+ * rule, 17/11/2026: a house's codes are hers to see on a day she is at that house, because
+ * not every cleaner holds every house. So this screen shows the way in on the day of the
+ * clean and shows nothing at all on any other day, which is also what she gets if she opens
+ * next Tuesday's job this evening.
+ *
+ * They stay on their own path because that path is the one the proxy marks, the worker
+ * keeps on a deadline and the browser is told not to store: spreading door codes over a
+ * second URL would mean spreading all of that over it too.
  *
  * **Who else is on this clean, and the number to reach them.** The foot of her Note names
  * everyone she will meet anywhere in the week, which is the right shape for a message and
@@ -74,7 +85,10 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   }
 
   const house = propertyOf(document, visit);
-  const access = accessFor(document, visit.property);
+  // The day decides, not the job: her clean may be at 12.00 and she may check before she
+  // leaves home at 08.00, so the whole of the day she is on counts.
+  const isToday = visit.date === todayInBangkok();
+  const access = isToday ? accessFor(document, visit.property) : null;
   const mark = markOf(houseMarks(document), visit.property);
 
   // The thread is read here rather than in the client, so it is on the page the service

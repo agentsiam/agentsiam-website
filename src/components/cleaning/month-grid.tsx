@@ -1,38 +1,42 @@
+"use client";
+
 import Link from "next/link";
-import { HouseMark } from "@/components/cleaning/glyphs";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight, HouseMark } from "@/components/cleaning/glyphs";
 import type { CalendarCell } from "@/lib/cleaning/document";
-import { markOf } from "@/lib/cleaning/houses";
+import { markOf, type HouseMarks } from "@/lib/cleaning/houses";
 import { cleaningDayPath } from "@/lib/cleaning/routes";
 import { CALENDAR_WEEKDAYS, weekdaysWritten } from "@/lib/cleaning/strings";
 
 /**
- * The next thirty days as a grid, above the list rather than instead of it.
+ * One month at a time, with an arrow to the next.
  *
- * Paul asked for a calendar view. The one published case study of a cleaning team's app that
- * reports what its users said has the calendar as the thing they found confusing, and cards
- * as what replaced it, so this is deliberately the smaller half of the screen: an
- * at-a-glance answer to "how busy am I this month", with the list underneath carrying every
- * job in the words her LINE Note uses.
+ * It was a rolling thirty days from today until Paul asked, 17/11/2026, for a month that
+ * can be paged: a window starting on today and running out in the middle of December
+ * cannot answer "what does December look like", which is the question a calendar is opened
+ * to ask. Each month now renders whole, including the days before today, because a month
+ * missing its first ten days is not a month.
  *
- * **A day with work in it is now a link to that day**, which is Paul's instruction of
- * 17/11/2026 and closes the hole in this screen: it could say which days were busy and gave
- * her no way to ask what was on them. A day with no work is not a link, because the screen
- * behind it would be empty and an empty screen in this app says to ask Paul, which would be
- * the wrong thing to say about a Tuesday off.
+ * **Every date in it is still the skill's or a digit.** No month name and no day name is
+ * composed here. The heading is the month as digits, in the Latin face, exactly like the
+ * line that says how old the schedule is, and the seven column headings are Paul's.
  *
- * **The markers say which houses, not just how many jobs.** One mark per job, in time order,
- * each one the shape belonging to that house. Two identical dots answered "two jobs" and
- * left the question two houses actually raise, which is where they are. Where a document
- * names fewer than two houses there is nothing to tell apart and the marks are dots again.
+ * **The months it can reach come from the document**, worked out on the server: this month,
+ * and every later month she has work in. A schedule published three months out gets three
+ * months of arrows and one published to the end of the week gets none. Earlier months are
+ * not reachable, the same call the list makes by folding finished days away.
  *
- * It prints digits and markers and nothing else. No month name and no day name is composed
- * here, because every Thai date in this app belongs to the skill that renders her Note, and
- * a grid is exactly where an app starts inventing one. The column headings are the one
- * exception and they are Paul's to write, which is why they arrive from
- * src/lib/cleaning/strings.ts like every other sentence on these screens.
- *
- * Sunday first, because a Thai week starts on Sunday.
+ * A client component only because paging is state. All the dates were worked out before it
+ * got here, which is why it holds no calendar arithmetic of its own.
  */
+
+export type MonthView = {
+  /** `YYYY-MM`, used as a key and never shown. */
+  key: string;
+  /** `MM/YYYY`, which is the whole of what the heading says. */
+  digits: string;
+  weeks: CalendarCell[][];
+};
 
 /** One mark per job that day, up to three, in the order the day runs. */
 function Marks({
@@ -41,7 +45,7 @@ function Marks({
   onInk,
 }: {
   cell: CalendarCell;
-  marks: Map<string, number>;
+  marks: HouseMarks;
   onInk: boolean;
 }) {
   if (cell.jobs === 0) return null;
@@ -68,15 +72,42 @@ function Marks({
   );
 }
 
-export function MonthGrid({
-  weeks,
-  marks,
-}: {
-  weeks: CalendarCell[][];
-  marks: Map<string, number>;
-}) {
+export function MonthGrid({ months, marks }: { months: MonthView[]; marks: HouseMarks }) {
+  const [at, setAt] = useState(0);
+  if (months.length === 0) return null;
+  const month = months[Math.min(at, months.length - 1)];
+  const canGoBack = at > 0;
+  const canGoOn = at < months.length - 1;
+
   return (
-    <section className="mt-6 rounded-panel border border-border bg-bg p-3">
+    <section className="mt-4 rounded-panel border border-border bg-bg p-3">
+      <div className="flex items-center justify-between px-1 pb-2">
+        <button
+          type="button"
+          onClick={() => setAt((index) => Math.max(0, index - 1))}
+          disabled={!canGoBack}
+          aria-label={months[Math.max(0, at - 1)]?.digits}
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted disabled:opacity-25"
+        >
+          <ChevronLeft />
+        </button>
+        <span
+          className="text-[15px] font-semibold text-text"
+          style={{ fontFamily: "var(--font-plex-sans), system-ui, sans-serif" }}
+        >
+          {month.digits}
+        </span>
+        <button
+          type="button"
+          onClick={() => setAt((index) => Math.min(months.length - 1, index + 1))}
+          disabled={!canGoOn}
+          aria-label={months[Math.min(months.length - 1, at + 1)]?.digits}
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted disabled:opacity-25"
+        >
+          <ChevronRight />
+        </button>
+      </div>
+
       <div className="grid grid-cols-7 gap-1">
         {/* All seven or none: a row of empty cells over the grid would be a heading that has
             lost its words rather than a grid that never had any. */}
@@ -91,7 +122,7 @@ export function MonthGrid({
             ))
           : null}
 
-        {weeks.flat().map((cell, index) => {
+        {month.weeks.flat().map((cell, index) => {
           if (!cell.date) return <div key={index} aria-hidden="true" className="h-11" />;
 
           // Three states, and only one of them can be true at a time: the next job, any
@@ -118,6 +149,9 @@ export function MonthGrid({
             </>
           );
 
+          // A day with work is a link to that day. A day without is not: the screen behind
+          // it would be empty, and the one message this app has for an empty screen is "ask
+          // Paul", which is the wrong thing to say about a day off.
           return cell.jobs > 0 ? (
             <Link
               key={index}

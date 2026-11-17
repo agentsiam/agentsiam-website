@@ -8,7 +8,7 @@ import {
 } from "@/components/cleaning/glyphs";
 import type { DaySection, PropertyRef, Visit } from "@/lib/cleaning/document";
 import { dayOfMonth, visitSlug } from "@/lib/cleaning/document";
-import { markOf } from "@/lib/cleaning/houses";
+import { markOf, type HouseMarks } from "@/lib/cleaning/houses";
 import { cleaningDayPath } from "@/lib/cleaning/routes";
 import { visitIdentity } from "@/lib/cleaning/seen";
 import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
@@ -197,7 +197,7 @@ function Day({
   nextDate: string | null;
   changed: Set<string>;
   role: string;
-  marks: Map<string, number>;
+  marks: HouseMarks;
   houseOf: (visit: Visit) => PropertyRef | null;
   jobHref: (visit: Visit) => string;
   dimmed: boolean;
@@ -294,7 +294,7 @@ export function DayList({
   today: string;
   changed: Set<string>;
   role: string;
-  marks: Map<string, number>;
+  marks: HouseMarks;
   houseOf: (visit: Visit) => PropertyRef | null;
   jobHref: (visit: Visit) => string;
 }) {

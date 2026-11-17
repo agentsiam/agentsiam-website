@@ -107,16 +107,20 @@ export const TEAM_STRINGS = {
   offline: "ไม่มีสัญญาณ นี่คือข้อมูลที่บันทึกไว้",
 
   /**
-   * The heading on the codes screen, and the line under it.
+   * The heading on the codes screen, the line under it, and what it says on a day off.
    *
-   * Until a screen says what it is, it is a panel of digits arriving with no subject. The
-   * house names on the panels say whose codes those are; neither of them says what the
-   * screen is for, or why one house is above the other, and the ordering is the one thing on
-   * it that is not self-evident: the house she is going to next is first, and every house
-   * she works at is on the screen whichever link opened it.
+   * The help line is the rule, said once where she will read it: a house's codes are hers
+   * to see on a day she is at that house. Without it the screen is a panel of digits on one
+   * day and empty on the next with nothing accounting for the difference.
+   *
+   * `codesNotToday` exists because the empty case used to borrow the "no schedule yet, ask
+   * Paul" message, which was true when an empty screen meant a missing document and became
+   * a lie the moment a day off could empty it. She has a schedule; she just has no work
+   * today, and sending her to Paul over that wastes both of them.
    */
   codesTitle: "รหัสเข้าบ้าน",
-  codesHelp: "บ้านที่จะไปต่อไปอยู่บนสุด ทุกบ้านที่ทำงานอยู่ในหน้านี้",
+  codesHelp: "รหัสของบ้านจะแสดงเฉพาะวันที่มีงานที่บ้านหลังนั้น",
+  codesNotToday: "วันนี้ไม่มีงาน จึงไม่มีรหัสให้ดู",
 
   /** Above the address on a job, which is a line of text with a pin beside it and nothing
    * saying that tapping it opens a map. */

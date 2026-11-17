@@ -1,6 +1,7 @@
 import { Message, RemarksBlock, RenderedBlock } from "@/components/cleaning/blocks";
 import { CodesButton } from "@/components/cleaning/codes-button";
-import { MonthGrid } from "@/components/cleaning/month-grid";
+import { MonthGrid, type MonthView } from "@/components/cleaning/month-grid";
+import { ScheduleView } from "@/components/cleaning/schedule-view";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { PinForm } from "@/components/cleaning/pin-form";
 import { SeenRecorder } from "@/components/cleaning/seen-recorder";
@@ -9,11 +10,13 @@ import { pinSetAt } from "@/lib/cleaning/devices";
 import {
   accessFor,
   builtAtDigits,
-  calendarWeeks,
   daySections,
   nextVisitIndex,
   parseDocument,
   propertyOf,
+  monthDigits,
+  monthWeeks,
+  monthsAhead,
   todayInBangkok,
   visitSlug,
 } from "@/lib/cleaning/document";
@@ -87,10 +90,22 @@ export default async function SchedulePage() {
   const { changed } = await sinceLastSeen(holder.person, document.visits);
   const digest = await visitsDigest(document.visits);
   const when = document.built_at ? builtAtDigits(document.built_at) : null;
-  const nextAccess = next ? accessFor(document, next.property) : null;
+  // Only on the day, which is Paul's rule for every door code in this app: the card says
+  // which house she is going to whatever day it is, and offers the way into its codes only
+  // when that day is today.
+  const nextAccess = next && next.date === today ? accessFor(document, next.property) : null;
   // Which shape stands for which house, worked out once and handed to every part of the
   // screen, so the grid and the rows cannot disagree about it.
   const marks = houseMarks(document);
+
+  // Every month the arrows can reach, with its grid, worked out here: the calendar is a
+  // client component so that paging is state, and none of the date arithmetic crosses that
+  // boundary with it.
+  const months: MonthView[] = monthsAhead(document.visits, today).map((month) => ({
+    key: month,
+    digits: monthDigits(month),
+    weeks: monthWeeks(document.visits, month, today),
+  }));
 
   return (
     <main lang={document.lang}>
@@ -119,17 +134,20 @@ export default async function SchedulePage() {
         />
       ) : null}
 
-      <MonthGrid weeks={calendarWeeks(document.visits, today)} marks={marks} />
-
-      <DayList
-        sections={daySections(document.visits)}
-        nextDate={next ? next.date : null}
-        today={today}
-        changed={changed}
-        role={document.role}
-        marks={marks}
-        houseOf={(visit) => propertyOf(document, visit)}
-        jobHref={(visit) => cleaningJobPath(visitSlug(visit))}
+      <ScheduleView
+        list={
+          <DayList
+            sections={daySections(document.visits)}
+            nextDate={next ? next.date : null}
+            today={today}
+            changed={changed}
+            role={document.role}
+            marks={marks}
+            houseOf={(visit) => propertyOf(document, visit)}
+            jobHref={(visit) => cleaningJobPath(visitSlug(visit))}
+          />
+        }
+        calendar={<MonthGrid months={months} marks={marks} />}
       />
 
       {document.contact ? <RenderedBlock block={document.contact} /> : null}

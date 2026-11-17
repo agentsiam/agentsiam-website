@@ -3,7 +3,12 @@ import { redirect } from "next/navigation";
 import { Message, RenderedBlock } from "@/components/cleaning/blocks";
 import { ChevronLeft, HouseMark } from "@/components/cleaning/glyphs";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
-import { nextVisitIndex, parseDocument } from "@/lib/cleaning/document";
+import {
+  accessToday,
+  nextVisitIndex,
+  parseDocument,
+  todayInBangkok,
+} from "@/lib/cleaning/document";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { CLEANING_SCHEDULE } from "@/lib/cleaning/routes";
@@ -18,11 +23,17 @@ import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
  * is sent back to the schedule, where the gate is. This page therefore has exactly one job,
  * which is to be readable at a gate in daylight by someone holding a bag.
  *
- * **Every house, always, whichever link opened it.** `?house=` only decides which one is at
- * the top. The worker matches a saved copy of this page ignoring the query string, so one
- * saved copy answers every one of those links, and it has to hold all of them or a phone
- * with no signal would open the wrong house's codes. Put another way: the parameter is
- * ordering, never filtering.
+ * **Only the houses she is at today**, which reverses what this screen did until
+ * 17/11/2026. It used to carry every house she works at on any day, and the reasoning was
+ * that one saved copy has to answer every link or a phone with no signal opens the wrong
+ * house. Paul's rule replaces it: not every cleaner holds every house's codes, so a screen
+ * listing all of them hands each of them to all of them. A day she is not working shows
+ * nothing at all.
+ *
+ * `?house=` still only orders what is here. It has never filtered, and it filters less than
+ * ever now, because the filter is the day. The saved copy still holds everything the screen
+ * would show, and it now dies at the end of the day it was fetched, which is the same rule
+ * written as a deadline in src/lib/cleaning/session.ts.
  *
  * **The service worker keeps this page**, which it used to refuse outright. The page still
  * answers `no-store` and is still dynamic, so the browser's own cache and anything in
@@ -58,22 +69,25 @@ export default async function CodesPage({
     document = null;
   }
 
-  // Ordering, never filtering. See the note above about one saved copy answering every link.
-  const marks = document ? houseMarks(document) : new Map<string, number>();
+  // The day decides what is on this screen at all. Everything below only orders it.
+  const today = todayInBangkok();
+  const marks = document ? houseMarks(document) : {};
 
   /**
    * Which house sits at the top: the one a link named, or failing that the one she is going
    * to next.
    *
    * The fallback is not a nicety. The control that opens this screen from everywhere else
-   * names no house, by design, because its job is "show me all of them"; without this, every
-   * one of those taps landed on whatever order the publish merged the houses in, and the line
-   * under the heading promising that the next house is first was then simply untrue.
+   * names no house, by design, because its job is "show me the codes"; without this, every
+   * one of those taps landed on whatever order the publish merged the houses in, and the
+   * line under the heading promising that the next house is first was then simply untrue.
+   * It matters less now that only one day's houses are here, and on a day holding two it
+   * still decides which one she sees first.
    */
   const next = document ? document.visits[nextVisitIndex(document.visits)] : undefined;
   const first = asked ?? next?.property ?? null;
 
-  const blocks = [...(document?.access ?? [])].sort((a, b) => {
+  const blocks = [...(document ? accessToday(document, today) : [])].sort((a, b) => {
     if (a.property === b.property) return 0;
     if (a.property === first) return -1;
     if (b.property === first) return 1;
@@ -138,7 +152,13 @@ export default async function CodesPage({
           );
         })
       ) : (
-        <Message text={TEAM_STRINGS.noSchedule} className="mt-6" />
+        // Two different empty screens. No document at all is "ask Paul"; a document with no
+        // work today is the rule doing its job, and saying "ask Paul" about that would send
+        // her after something nobody can give her.
+        <Message
+          text={document ? TEAM_STRINGS.codesNotToday : TEAM_STRINGS.noSchedule}
+          className="mt-6"
+        />
       )}
 
       {document?.contact ? <RenderedBlock block={document.contact} tone="panel" /> : null}

@@ -252,6 +252,32 @@ export function propertyOf(document: TeamDocument, visit: Visit): PropertyRef | 
   return document.properties.find((p) => p.id === visit.property) ?? null;
 }
 
+/**
+ * The codes she may see right now, which is the codes for the houses she is working at
+ * today and nothing else.
+ *
+ * Paul's rule, 17/11/2026, and it reverses what this app did until then: she may see a
+ * house's codes only on a day she is at that house. Not every cleaner holds every house's
+ * codes, and a screen that listed all of them handed each of them to all of them.
+ *
+ * **It is a day rule, not a job rule.** Her job may be at 12.00 and she may check before she
+ * leaves home at 08.00, so the whole of the day she is on counts, in Bangkok, which is the
+ * timezone the house is in.
+ *
+ * A document naming no houses is the single-property case and is unchanged in shape: one
+ * block, hers on any day she works, nothing on a day she does not.
+ */
+export function accessToday(
+  document: TeamDocument,
+  today: string = todayInBangkok(),
+): AccessBlock[] {
+  const jobs = visitsOn(document.visits, today);
+  if (jobs.length === 0) return [];
+  if (document.properties.length === 0) return document.access;
+  const houses = new Set(jobs.map((visit) => visit.property));
+  return document.access.filter((block) => houses.has(block.property));
+}
+
 /** The codes for one house, or the only block there is when a document names no houses. */
 export function accessFor(document: TeamDocument, property: string | null): AccessBlock | null {
   if (!property) return document.access[0] ?? null;
@@ -472,6 +498,110 @@ export function calendarWeeks(
   const weeks: CalendarCell[][] = [];
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
   return weeks;
+}
+
+/** The calendar month a date falls in, as `YYYY-MM`. The key the month grid is paged by. */
+export function monthOf(iso: string): string {
+  return iso.slice(0, 7);
+}
+
+/** A month key, `delta` months later or earlier. */
+export function addMonths(month: string, delta: number): string {
+  const year = Number(month.slice(0, 4));
+  const index = Number(month.slice(5, 7)) - 1 + delta;
+  const shifted = new Date(Date.UTC(year, index, 1));
+  return shifted.toISOString().slice(0, 7);
+}
+
+/**
+ * A month as digits, `MM/YYYY`.
+ *
+ * **The one place this app prints a month, and it prints no month name.** Every Thai date
+ * here belongs to the skill that renders her Note, and a grid paged by month is exactly
+ * where an app would start inventing one: there is no Note anywhere that has ever had to
+ * print "December" on its own. Digits say which month without this file owning a word, and
+ * they are the same digits, in the same Latin face, as the line that says how old the
+ * schedule is.
+ */
+export function monthDigits(month: string): string {
+  return `${month.slice(5, 7)}/${month.slice(0, 4)}`;
+}
+
+/** How many days that month has. */
+function daysInMonth(month: string): number {
+  const year = Number(month.slice(0, 4));
+  const index = Number(month.slice(5, 7));
+  return new Date(Date.UTC(year, index, 0)).getUTCDate();
+}
+
+/**
+ * One whole calendar month as a Sunday-first grid.
+ *
+ * It replaces a rolling thirty days from today, which Paul asked for on 17/11/2026 and then
+ * asked to page by month instead: a window that starts on today and runs out mid-month
+ * cannot answer "what does December look like", and that is the question a month view is
+ * for. The whole month renders, including the days before today, because a month with its
+ * first ten days missing is not a month.
+ *
+ * Everything else about a cell is as it was: digits, a marker per job with the shape of the
+ * house it is at, today ringed, and the next job filled in ink.
+ */
+export function monthWeeks(
+  visits: Visit[],
+  month: string,
+  today: string = todayInBangkok(),
+): CalendarCell[][] {
+  const housesOn = new Map<string, (string | null)[]>();
+  for (const visit of visits) {
+    housesOn.set(visit.date, [...(housesOn.get(visit.date) ?? []), visit.property]);
+  }
+  const next = visits.find((visit) => visit.date >= today)?.date ?? null;
+
+  const first = `${month}-01`;
+  const cells: CalendarCell[] = [];
+  const pad = (): CalendarCell => ({
+    date: null,
+    day: null,
+    jobs: 0,
+    houses: [],
+    isToday: false,
+    isNext: false,
+  });
+  for (let i = 0; i < weekdayIndex(first); i += 1) cells.push(pad());
+  for (let day = 1; day <= daysInMonth(month); day += 1) {
+    const date = `${month}-${String(day).padStart(2, "0")}`;
+    const houses = housesOn.get(date) ?? [];
+    cells.push({
+      date,
+      day,
+      jobs: houses.length,
+      houses,
+      isToday: date === today,
+      isNext: date === next,
+    });
+  }
+  while (cells.length % 7 !== 0) cells.push(pad());
+
+  const weeks: CalendarCell[][] = [];
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
+  return weeks;
+}
+
+/**
+ * Which months the arrows can reach: this one, and every later month she has work in.
+ *
+ * Never a fixed number of months forward, because the answer is in the document: a schedule
+ * published three months out gets three months of arrows and one published to the end of
+ * the week gets none. Earlier months are not reachable, which is the same call the list
+ * makes by folding finished days away: the app opens on now.
+ */
+export function monthsAhead(visits: Visit[], today: string = todayInBangkok()): string[] {
+  const here = monthOf(today);
+  const months = new Set<string>([here]);
+  for (const visit of visits) {
+    if (visit.date >= today) months.add(monthOf(visit.date));
+  }
+  return [...months].sort();
 }
 
 /**

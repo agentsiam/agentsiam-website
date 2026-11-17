@@ -25,6 +25,15 @@ import type { TeamDocument } from "./document";
  * as long as it keeps its id.
  */
 
+/**
+ * Which house takes which shape, by house id.
+ *
+ * A plain object rather than a Map because the month grid is a client component now, and
+ * props cross that boundary as serialised data: an object survives the trip and needs no
+ * second shape on the other side.
+ */
+export type HouseMarks = Record<string, number>;
+
 /** The four shapes src/components/cleaning/glyphs.tsx draws, in index order. */
 export const HOUSE_MARKS = 4;
 
@@ -52,8 +61,8 @@ function hashOf(id: string): number {
  * repeat, and the name beside the mark is what keeps that readable; four covers every house
  * this venture has on its books and a few it does not.
  */
-export function houseMarks(document: TeamDocument): Map<string, number> {
-  const marks = new Map<string, number>();
+export function houseMarks(document: TeamDocument): HouseMarks {
+  const marks: HouseMarks = {};
   const taken = new Set<number>();
   const ids = document.properties.map((house) => house.id).sort((a, b) => a.localeCompare(b));
 
@@ -63,7 +72,7 @@ export function houseMarks(document: TeamDocument): Map<string, number> {
     for (let step = 0; step < HOUSE_MARKS && taken.has(mark); step += 1) {
       mark = (wanted + step + 1) % HOUSE_MARKS;
     }
-    marks.set(id, mark);
+    marks[id] = mark;
     taken.add(mark);
   }
   return marks;
@@ -76,7 +85,7 @@ export function houseMarks(document: TeamDocument): Map<string, number> {
  * was a second one looks like, and null for a single house: a mark that is on every row
  * without exception carries no information and is one more thing on the screen.
  */
-export function markOf(marks: Map<string, number>, property: string | null): number | null {
-  if (!property || marks.size < 2) return null;
-  return marks.get(property) ?? null;
+export function markOf(marks: HouseMarks, property: string | null): number | null {
+  if (!property || Object.keys(marks).length < 2) return null;
+  return marks[property] ?? null;
 }
