@@ -78,14 +78,23 @@ export function cleaningEnrolPath(token: string): string {
   return `${CLEANING_ENROL}/${token}`;
 }
 
-/** The three API routes the app posts to. */
+/** The four API routes the app posts to. The last one is the only place anybody on the
+ * team sends words rather than a fact about their own phone. */
 export const CLEANING_API_ENROL = "/api/cleaning/enrol";
 export const CLEANING_API_PIN = "/api/cleaning/pin";
 export const CLEANING_API_SEEN = "/api/cleaning/seen";
+export const CLEANING_API_COMMENT = "/api/cleaning/comment";
 
 /** Paul's one screen, inside the admin he already signs in to. It holds device
  * bookkeeping and never a door code or a schedule. */
 export const ADMIN_CLEANING = "/admin/cleaning";
+
+/** One person's cleans and the conversation about each, which is Paul's end of the thread
+ * her job screen shows. Its own screen rather than a section of the phones screen, which
+ * deliberately carries no schedule at all. */
+export function adminCleaningPersonPath(person: string): string {
+  return `${ADMIN_CLEANING}/${person}`;
+}
 export const ADMIN_API_CLEANING = "/api/admin/cleaning";
 
 /**

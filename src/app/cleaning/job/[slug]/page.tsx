@@ -11,8 +11,10 @@ import {
   Pin,
 } from "@/components/cleaning/glyphs";
 import { CodesButton } from "@/components/cleaning/codes-button";
+import { Comments } from "@/components/cleaning/comments";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { accessFor, findVisit, parseDocument, propertyOf } from "@/lib/cleaning/document";
+import { listComments } from "@/lib/cleaning/comments";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_SCHEDULE, cleaningCodesPath } from "@/lib/cleaning/routes";
@@ -75,6 +77,20 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   const access = accessFor(document, visit.property);
   const mark = markOf(houseMarks(document), visit.property);
 
+  // The thread is read here rather than in the client, so it is on the page the service
+  // worker saves and a phone with no signal still shows what was said. Writing needs the
+  // network; reading what is already there does not.
+  const comments = await listComments(slug).catch(() => []);
+
+  // The two values `type` can hold, each with its own sentence. Anything else renders no
+  // sentence at all rather than a guessed one.
+  const detail =
+    visit.type === "turnover"
+      ? written(TEAM_STRINGS.jobTurnover)
+      : visit.type === "midstay"
+        ? written(TEAM_STRINGS.jobMidstay)
+        : "";
+
   return (
     <main lang={document.lang}>
       <Link
@@ -109,6 +125,35 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
           </p>
         ) : null}
       </section>
+
+      {detail ? (
+        <section className="mt-5">
+          {written(TEAM_STRINGS.jobDetailsHeading) ? (
+            <h2 className="text-[15px] font-semibold text-muted">
+              {written(TEAM_STRINGS.jobDetailsHeading)}
+            </h2>
+          ) : null}
+          <p className="mt-2 rounded-panel border border-border bg-bg p-4 text-[17px] leading-7 text-text">
+            {detail}
+          </p>
+        </section>
+      ) : null}
+
+      {/* Anything true of this one clean, under its own heading. The text is the skill's,
+          from the payload, and it is the same text the job line already ends with: a cot or
+          an extra bed is worth saying twice and worth a heading of its own. */}
+      {visit.note ? (
+        <section className="mt-5">
+          {written(TEAM_STRINGS.jobRequestsHeading) ? (
+            <h2 className="text-[15px] font-semibold text-muted">
+              {written(TEAM_STRINGS.jobRequestsHeading)}
+            </h2>
+          ) : null}
+          <p className="mt-2 rounded-panel bg-wash-gold p-4 text-[17px] leading-7 text-deep-gold">
+            {visit.note}
+          </p>
+        </section>
+      ) : null}
 
       {house?.address && written(TEAM_STRINGS.jobAddressHeading) ? (
         <h2 className="mt-5 text-[15px] font-semibold text-muted">
@@ -227,6 +272,18 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         <RenderedBlock block={document.contact} tone="panel" />
       ) : null}
 
+      <section className="mt-6">
+        {written(TEAM_STRINGS.commentsHeading) ? (
+          <h2 className="text-[15px] font-semibold text-muted">
+            {written(TEAM_STRINGS.commentsHeading)}
+          </h2>
+        ) : null}
+        <Comments slug={slug} comments={comments} />
+      </section>
+
+      {/* Clear of the composer, which is the one place on these screens where a thumb is
+          typing rather than tapping. */}
+      <div className="h-16" />
       <CodesButton label={document.access[0]?.heading ?? null} />
     </main>
   );

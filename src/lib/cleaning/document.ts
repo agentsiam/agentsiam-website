@@ -83,6 +83,16 @@ export type Visit = {
   /** Who else is on this one visit. Empty on a document published before the skill carried
    * it, and on a job only one person is on. */
   with: VisitPerson[];
+  /**
+   * Anything true of this one clean, on its own: a cot, an extra bed, something to prepare.
+   *
+   * The same text the skill already puts on the end of the line, published twice on
+   * purpose. The line is what her LINE Note prints and it does not move; this is the half
+   * a screen can give its own heading, and having it as a field is what stops a screen
+   * cutting it back out of a line it is told never to parse. Null on a clean with no
+   * remark, and null where the remark was scoped to the other function.
+   */
+  note: string | null;
 };
 
 export type TeamDocument = {
@@ -155,6 +165,7 @@ function asVisit(value: unknown): Visit | null {
     property: asString(v.property),
     dayLabel: asString(v.day_label),
     with: asVisitPeople(v.with),
+    note: asString(v.note),
   };
 }
 

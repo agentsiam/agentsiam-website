@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ADMIN_API_CLEANING } from "@/lib/cleaning/routes";
+import { ADMIN_API_CLEANING, adminCleaningPersonPath } from "@/lib/cleaning/routes";
 
 export type DeviceRow = {
   device: string;
@@ -81,6 +82,16 @@ export function CleaningPerson({
         <span className="text-xs text-muted">
           {pinSetAt ? `PIN set ${pinSetAt.slice(0, 10)}` : "no PIN set"}
         </span>
+        {/* The one way into her threads. It is a separate screen because this one carries no
+            schedule by design, and a message about a clean has to name the clean. */}
+        {hasDocument ? (
+          <Link
+            href={adminCleaningPersonPath(person)}
+            className="text-xs font-semibold text-deep-gold underline"
+          >
+            messages
+          </Link>
+        ) : null}
       </div>
 
       {devices.length === 0 ? (

@@ -1,19 +1,24 @@
 import { NextResponse } from "next/server";
 import { currentSession } from "@/lib/admin/guard";
+import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { PIN_SHAPE, createEnrolToken, revokeDevice, setPin } from "@/lib/cleaning/devices";
+import { findVisit, parseDocument } from "@/lib/cleaning/document";
 import { cleaningEnrolPath } from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
-import { storeProblem } from "@/lib/cleaning/store";
+import { readNote, storeProblem } from "@/lib/cleaning/store";
 
 export const runtime = "nodejs";
 
 /**
- * The three things Paul does to the cleaning app: issue a link, revoke a phone, set a PIN.
+ * The four things Paul does to the cleaning app: issue a link, revoke a phone, set a PIN,
+ * and answer somebody about a clean.
  *
  * Behind the admin session, because Paul is already signed in to one and a second sign-in
- * for the same person is a second thing to lose. Nothing here reads a door code or a
- * schedule: it is device bookkeeping, and the codes live in the published document, which
- * only the person they belong to can open.
+ * for the same person is a second thing to lose. **No door code passes through here.** The
+ * codes live in the published document, which only the person they belong to can open, and
+ * that has not changed. What has changed is that the last action reads one person's visits,
+ * because answering a message about a clean means naming which clean, and a thread with no
+ * job attached is a thread nobody can act on.
  *
  * The session is checked here as well as in src/proxy.ts, for the same reason every other
  * admin route checks it: an edge check reads a cookie and cannot be the only thing standing
@@ -26,7 +31,14 @@ export async function POST(request: Request) {
   const problem = storeProblem();
   if (problem) return NextResponse.json({ error: problem }, { status: 503 });
 
-  let body: { action?: unknown; person?: unknown; device?: unknown; pin?: unknown };
+  let body: {
+    action?: unknown;
+    person?: unknown;
+    device?: unknown;
+    pin?: unknown;
+    slug?: unknown;
+    body?: unknown;
+  };
   try {
     body = (await request.json()) as typeof body;
   } catch {
@@ -49,6 +61,25 @@ export async function POST(request: Request) {
       const gone = await revokeDevice(person, device);
       if (!gone) {
         return NextResponse.json({ error: "No such device for that person." }, { status: 404 });
+      }
+      return NextResponse.json({ ok: true });
+    }
+
+    if (body.action === "comment") {
+      const slug = typeof body.slug === "string" ? body.slug : "";
+      const text = cleanBody(body.body);
+      if (!VISIT_SLUG.test(slug) || !text) {
+        return NextResponse.json({ error: "A comment needs a job and some words." }, { status: 400 });
+      }
+      // Her own document decides which jobs exist, exactly as it does on her phone. Paul
+      // cannot start a thread on a job she does not have.
+      const document = parseDocument(await readNote(person));
+      if (!document || !findVisit(document.visits, slug)) {
+        return NextResponse.json({ error: "That person has no such job." }, { status: 404 });
+      }
+      const result = await addComment(slug, { by: "agentsiam", name: "AgentSiam", body: text });
+      if (result !== "ok") {
+        return NextResponse.json({ error: `The comment was not stored: ${result}.` }, { status: 409 });
       }
       return NextResponse.json({ ok: true });
     }
