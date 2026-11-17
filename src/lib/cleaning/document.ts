@@ -52,11 +52,12 @@ export type TeamDocument = {
   /**
    * When the run that built this document happened, ISO.
    *
-   * Optional, and that is a gap rather than a choice: `documents()` in the skill puts
-   * `built_at` on the file it writes and not on each person's document, and
-   * `publish_note.py` stores one person's document per key. So a document read from the
-   * store currently has no timestamp and the screen cannot say how old it is. The local
-   * fixture, which is the whole file, does. See the README section on this app.
+   * Optional because a document published before 17/11/2026 has none: until then
+   * `documents()` in the skill put `built_at` on the file it writes and not on each
+   * person's document, while `publish_note.py` stores one person's document per key, so
+   * nothing read from the store carried a timestamp and the screen could not say how old a
+   * schedule was. The skill carries it per person now. A document without one renders no
+   * age line rather than a guessed one.
    */
   built_at?: string;
 };

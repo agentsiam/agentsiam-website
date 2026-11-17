@@ -164,9 +164,9 @@ async function writeLocalState(state: LocalState): Promise<void> {
  * One person's document out of the fixture.
  *
  * The fixture is the whole file `build_note.py --publish` wrote, `{built_at, people}`, while
- * the store holds one person's document per key. So `built_at` is lifted onto the document
- * here, and a document read from the real store has none. That asymmetry is a gap in the
- * publish step rather than a decision; the README section on this app says what closes it.
+ * the store holds one person's document per key. Each person's document carries its own
+ * `built_at` from 17/11/2026, so the lift below is only for a fixture built before that and
+ * never overwrites a timestamp the document already has.
  */
 async function localDocument(person: string): Promise<unknown | null> {
   let raw: string;
@@ -181,8 +181,9 @@ async function localDocument(person: string): Promise<unknown | null> {
   const parsed = JSON.parse(raw) as { built_at?: unknown; people?: Record<string, unknown> };
   const document = parsed.people?.[person];
   if (!document || typeof document !== "object") return null;
-  if (typeof parsed.built_at === "string") {
-    return { ...(document as Record<string, unknown>), built_at: parsed.built_at };
+  const record = document as Record<string, unknown>;
+  if (typeof parsed.built_at === "string" && typeof record.built_at !== "string") {
+    return { ...record, built_at: parsed.built_at };
   }
   return document;
 }

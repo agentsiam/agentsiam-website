@@ -3,16 +3,21 @@
     "A payload for the cleaning-schedule skill, for developing the cleaning team's app in",
     "this repository without reaching the real store and without a live door code ever",
     "being on this machine. Every code and every phone number below is invented and none",
-    "of them opens anything. The Thai in it is reused from the skill and the brief, never",
-    "written here. The README section on this app has the two commands that turn it into a",
-    "documents file, and CLEANING_LOCAL_PATH in .env.example is where that file is named.",
-    "Dates move: edit the jobs so some of them are in the future, or the whole fixture",
-    "renders as a schedule that has already happened."
+    "of them opens anything. The README section on this app has the two commands that turn",
+    "it into a documents file, and CLEANING_LOCAL_PATH in .env.example is where that file",
+    "is named. Dates move: edit the jobs so some of them are in the future, or the whole",
+    "fixture renders as a schedule that has already happened.",
+    "",
+    "Every Thai string below is one Paul already approved, copied from where it lives: the",
+    "two note titles from 275645-cleaning.md, the cot note from the same file and from the",
+    "skill, the three names from cleaning-team.md. Where no approved string exists, the",
+    "fixture carries a Latin placeholder in square brackets and never a sentence written",
+    "here. That is the rule this file broke once and the reason it now says so: an extra",
+    "bed has no approved wording, and a fixture is not where one gets written."
   ],
   "note_titles": {
     "cleaning": {
-      "th": "คิวทำความสะอาดบ้านช้างคลาน 42 ซอย1",
-      "en": "Cleaning queue - 42 Chang Khlan Soi 1"
+      "th": "คิวทำความสะอาดบ้านช้างคลาน 42 ซอย1"
     },
     "laundry": {
       "th": "คิวส่งผ้าบ้านช้างคลาน 42 ซอย1",
@@ -84,8 +89,8 @@
       "type": "midstay",
       "booking": "80551003",
       "note": {
-        "th": "เพิ่มเตียง 1 ที่ และผ้าปูอีกชุด",
-        "en": "one extra bed made up and one more set of linen"
+        "th": "[TH per-clean note: an extra bed, reaching both functions]",
+        "en": "[EN per-clean note: an extra bed, reaching both functions]"
       }
     },
     {

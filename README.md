@@ -641,15 +641,14 @@ flow, end to end, with nothing live anywhere near it.
 
 ## Known gaps
 
-- **The cleaning app cannot say how old a schedule is, in production (17/11/2026).** The
-  screen has the line and the skill has the timestamp, and they do not meet. `documents()` in
-  `build_note.py` puts `built_at` on the file it writes, once, and `publish_note.py` stores one
-  person's document per key, so the document this app reads from the store carries no
-  timestamp and the line does not render. The local fixture is the whole file, so it does
-  render there, which is why this is easy to miss. The fix is one line in the skill: put
-  `built_at` on each person's document inside `documents()`. The app already reads it and shows
-  the line the moment it is there. Until then the offline notice is the only thing telling her
-  that what she is looking at was not fetched just now.
+- ~~**The cleaning app cannot say how old a schedule is, in production (17/11/2026).**~~
+  Resolved the same day in `agentsiam-consulting`, commit `af1a9e7`: `documents()` in
+  `build_note.py` now puts `built_at` on every person's document as well as on the file, so
+  what `publish_note.py` stores under each key carries it and the line renders from the store.
+  It was worth finding because of how it hid: the local fixture is the whole file, so the line
+  rendered in development and would have gone missing only in production, on the one screen
+  that tells a cleaner whether what she is holding is current. Nothing in this repository
+  changed for it; the app read `built_at` off the document already.
 - **Ten Thai strings in the cleaning app are placeholders (17/11/2026).** Every one of them is
   in `src/lib/cleaning/strings.ts` and renders on screen as Latin text in square brackets, so
   nothing half-translated can be mistaken for finished copy. Paul writes them; what each has to
