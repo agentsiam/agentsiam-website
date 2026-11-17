@@ -11,6 +11,7 @@ import {
   ADMIN_PROPERTIES,
   ADMIN_ROOT,
 } from "@/lib/admin/routes";
+import { ADMIN_CLEANING } from "@/lib/cleaning/routes";
 import { storeDescription } from "@/lib/admin/store";
 
 /**
@@ -102,6 +103,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   </Link>
                   <Link href={ADMIN_BLOCKED} className="text-primary hover:underline">
                     Blocked operators
+                  </Link>
+                  <Link href={ADMIN_CLEANING} className="text-primary hover:underline">
+                    Cleaning phones
                   </Link>
                 </nav>
                 <div className="ml-auto flex items-center gap-4 text-xs text-muted">
