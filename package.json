@@ -15,7 +15,8 @@
     "keys": "node scripts/add-dictionary-keys.mjs",
     "typecheck": "tsc --noEmit",
     "check:csv": "node scripts/check-csv-roundtrip.mjs",
-    "guide:import": "node scripts/import-guide-sheet.mjs"
+    "guide:import": "node scripts/import-guide-sheet.mjs",
+    "cleaning:icons": "node scripts/build-cleaning-icons.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.8.1",
