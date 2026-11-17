@@ -1,4 +1,25 @@
 import type { DocumentBlock } from "@/lib/cleaning/document";
+import { written } from "@/lib/cleaning/strings";
+
+/**
+ * One of the app's own sentences, on its own panel, or nothing at all.
+ *
+ * The app's sentences are the handful Paul writes himself, and until he has written one
+ * there is nothing here to say. So the panel does not render: an empty bordered box saying
+ * nothing is worse than a screen that is simply shorter, and it is the shape "remove the
+ * placeholder text" has to take if it is not to leave holes.
+ */
+export function Message({ text, className = "mt-8" }: { text: string; className?: string }) {
+  const said = written(text);
+  if (!said) return null;
+  return (
+    <p
+      className={`${className} rounded-panel border border-hairline bg-surface p-5 text-[17px] leading-7 text-body`}
+    >
+      {said}
+    </p>
+  );
+}
 
 /**
  * The rendered blocks at the foot of a Note, put on a screen.

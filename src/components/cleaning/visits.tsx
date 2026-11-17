@@ -3,7 +3,7 @@ import { ChevronRight, JobType, Padlock } from "@/components/cleaning/glyphs";
 import type { DaySection, PropertyRef, Visit } from "@/lib/cleaning/document";
 import { dayOfMonth, visitSlug } from "@/lib/cleaning/document";
 import { visitIdentity } from "@/lib/cleaning/seen";
-import { TEAM_STRINGS } from "@/lib/cleaning/strings";
+import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
 
 /**
  * Her work, as days rather than as a list of jobs.
@@ -42,10 +42,31 @@ function House({ house }: { house: PropertyRef | null }) {
   );
 }
 
-function Changed() {
+/**
+ * That this line is new or has moved since she last looked.
+ *
+ * A pill while the sentence exists, and a dot while it does not. Without the fallback,
+ * taking the placeholder off the screen would take the whole signal with it, and this is
+ * the one thing the app does that her LINE Note cannot: silently dropping it would leave
+ * the app with no reason to exist that a pasted message does not already cover.
+ */
+function Changed({ onInk = false }: { onInk?: boolean }) {
+  const said = written(TEAM_STRINGS.changedSinceSeen);
+  if (!said) {
+    return (
+      <span
+        aria-hidden="true"
+        className={`mt-2 block h-2 w-2 rounded-full ${onInk ? "bg-gold-on-ink" : "bg-sand"}`}
+      />
+    );
+  }
   return (
-    <p className="mt-1.5 inline-block rounded-full bg-wash-gold px-2.5 py-0.5 text-[13px] font-semibold text-deep-gold">
-      {TEAM_STRINGS.changedSinceSeen}
+    <p
+      className={`mt-1.5 inline-block rounded-full px-2.5 py-0.5 text-[13px] font-semibold ${
+        onInk ? "bg-gold-on-ink text-ink" : "bg-wash-gold text-deep-gold"
+      }`}
+    >
+      {said}
     </p>
   );
 }
@@ -62,7 +83,6 @@ export function NextVisitCard({
   visit,
   isChanged,
   house,
-  role,
   codesHeading,
   codesHref,
   jobHref,
@@ -70,7 +90,6 @@ export function NextVisitCard({
   visit: Visit;
   isChanged: boolean;
   house: PropertyRef | null;
-  role: string;
   codesHeading: string | null;
   codesHref: string;
   jobHref: string;
@@ -91,11 +110,7 @@ export function NextVisitCard({
               {house.name}
             </span>
           ) : null}
-          {isChanged ? (
-            <p className="mt-2 inline-block rounded-full bg-gold-on-ink px-2.5 py-0.5 text-[13px] font-semibold text-ink">
-              {TEAM_STRINGS.changedSinceSeen}
-            </p>
-          ) : null}
+          {isChanged ? <Changed onInk /> : null}
         </div>
         <span aria-hidden="true" className="mt-1 shrink-0 text-gold-on-ink opacity-60">
           <ChevronRight />

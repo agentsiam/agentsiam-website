@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { RenderedBlock } from "@/components/cleaning/blocks";
+import { Message, RenderedBlock } from "@/components/cleaning/blocks";
 import { ChevronLeft, JobType, Padlock, Pin } from "@/components/cleaning/glyphs";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { accessFor, findVisit, parseDocument, propertyOf } from "@/lib/cleaning/document";
@@ -49,9 +49,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   if (!document || !visit) {
     return (
       <main>
-        <p className="mt-8 rounded-panel border border-hairline bg-surface p-5 text-[17px] leading-7 text-body">
-          {TEAM_STRINGS.noSchedule}
-        </p>
+        <Message text={TEAM_STRINGS.noSchedule} />
       </main>
     );
   }

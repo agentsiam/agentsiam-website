@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TEAM_STRINGS } from "@/lib/cleaning/strings";
+import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
 
 /**
  * Says, when the phone has no connection, that what is on screen is the saved copy.
@@ -27,10 +27,11 @@ export function OfflineNotice() {
     };
   }, []);
 
-  if (!offline) return null;
+  const said = written(TEAM_STRINGS.offline);
+  if (!offline || !said) return null;
   return (
     <p className="mt-2 rounded-box bg-wash-red px-3 py-2 text-[15px] text-deep-red">
-      {TEAM_STRINGS.offline}
+      {said}
     </p>
   );
 }

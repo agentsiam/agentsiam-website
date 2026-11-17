@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { RenderedBlock } from "@/components/cleaning/blocks";
+import { Message, RenderedBlock } from "@/components/cleaning/blocks";
 import { ChevronLeft } from "@/components/cleaning/glyphs";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { parseDocument } from "@/lib/cleaning/document";
@@ -107,9 +107,7 @@ export default async function CodesPage({
           );
         })
       ) : (
-        <p className="mt-6 rounded-panel border border-hairline bg-surface p-5 text-[17px] leading-7 text-body">
-          {TEAM_STRINGS.noSchedule}
-        </p>
+        <Message text={TEAM_STRINGS.noSchedule} className="mt-6" />
       )}
 
       {document?.contact ? <RenderedBlock block={document.contact} tone="panel" /> : null}

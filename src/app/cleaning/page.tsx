@@ -1,4 +1,4 @@
-import { RemarksBlock, RenderedBlock } from "@/components/cleaning/blocks";
+import { Message, RemarksBlock, RenderedBlock } from "@/components/cleaning/blocks";
 import { MonthGrid } from "@/components/cleaning/month-grid";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { PinForm } from "@/components/cleaning/pin-form";
@@ -59,9 +59,7 @@ export default async function SchedulePage() {
   if (!document) {
     return (
       <main>
-        <p className="mt-8 rounded-panel border border-hairline bg-surface p-5 text-[17px] leading-7 text-body">
-          {TEAM_STRINGS.noSchedule}
-        </p>
+        <Message text={TEAM_STRINGS.noSchedule} />
       </main>
     );
   }
@@ -75,9 +73,7 @@ export default async function SchedulePage() {
         {set ? (
           <PinForm name={document.name} />
         ) : (
-          <p className="mt-8 rounded-panel border border-hairline bg-surface p-5 text-[17px] leading-7 text-body">
-            {TEAM_STRINGS.pinMissing}
-          </p>
+          <Message text={TEAM_STRINGS.pinMissing} />
         )}
       </main>
     );
@@ -95,7 +91,7 @@ export default async function SchedulePage() {
     <main lang={document.lang}>
       <header>
         <h1 className="text-[19px] font-semibold leading-7 text-text">{document.title}</h1>
-        {when ? (
+        {when && builtAtLine(when) ? (
           <p
             className="mt-1 text-[13px] text-muted"
             style={{ fontFamily: "var(--font-plex-sans), system-ui, sans-serif" }}
@@ -111,7 +107,6 @@ export default async function SchedulePage() {
           visit={next}
           isChanged={changed.has(visitIdentity(next))}
           house={propertyOf(document, next)}
-          role={document.role}
           codesHeading={nextAccess ? nextAccess.heading : null}
           codesHref={cleaningCodesPath(next.property)}
           jobHref={cleaningJobPath(visitSlug(next))}

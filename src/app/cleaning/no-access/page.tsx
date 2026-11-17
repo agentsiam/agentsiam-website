@@ -1,3 +1,4 @@
+import { Message } from "@/components/cleaning/blocks";
 import { TEAM_STRINGS } from "@/lib/cleaning/strings";
 
 /**
@@ -18,9 +19,7 @@ export const dynamic = "force-dynamic";
 export default function NoAccessPage() {
   return (
     <main>
-      <p className="mt-8 rounded-panel border border-hairline bg-surface p-5 text-[17px] leading-7 text-body">
-        {TEAM_STRINGS.askPaul}
-      </p>
+      <Message text={TEAM_STRINGS.askPaul} />
     </main>
   );
 }

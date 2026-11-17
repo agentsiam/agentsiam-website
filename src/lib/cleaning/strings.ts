@@ -103,10 +103,12 @@ export const TEAM_STRINGS = {
   offline: "[TH no connection, this is the saved copy]",
 } as const;
 
-/** Paul's wording with `{when}` filled in. The value is digits and punctuation, never a
- * month name or a day name: those belong to the skill. */
+/** Paul's wording with `{when}` filled in, or nothing while the wording is unwritten. The
+ * value is digits and punctuation, never a month name or a day name: those belong to the
+ * skill. */
 export function builtAtLine(when: string): string {
-  return TEAM_STRINGS.builtAt.replace("{when}", when);
+  const line = written(TEAM_STRINGS.builtAt);
+  return line ? line.replace("{when}", when) : "";
 }
 
 /**
@@ -140,33 +142,29 @@ export const CALENDAR_WEEKDAYS: readonly string[] = [
 ];
 
 /**
- * How many things this app needs Paul to write, which is what the warning counts against,
- * and the same slots as the sheet he fills in.
+ * A string Paul has written, or nothing at all.
  *
- * The seven column headings count as one slot rather than seven. They are a single set, he
- * writes them in one go or not at all, and a warning reading "17 of 17" over a screen with
- * one sentence missing and six abbreviations in place would be describing the wrong problem.
- */
-export const TEAM_STRINGS_TOTAL: number = Object.keys(TEAM_STRINGS).length + 1;
-
-/** The grid's own slot in the count above, named the way the sheet names it. */
-const WEEKDAYS_KEY = "calendarWeekdays";
-
-/**
- * The keys still carrying a placeholder rather than Paul's own Thai, in the order they are
- * declared above.
+ * **Every screen in this app runs its text through this**, and what comes back empty is not
+ * rendered: no empty paragraph, no bare badge, no button with nothing on it. The element
+ * goes, not just its words.
  *
- * The keys and not just a count, because Paul writes these one at a time and a warning
- * saying "three left" would not say which three. Computed at module load, which is build
- * time, so the warning that reads it is server-rendered and a phone pays nothing for it.
+ * It replaces a band that used to sit at the top of every screen counting the strings still
+ * unwritten and naming them. Paul asked for that band and the bracketed English gone,
+ * 17/11/2026, and this is the shape of "gone" that does not leave holes.
+ *
+ * **What it costs is worth knowing**, because the band existed to say it: an app whose
+ * unwritten sentences are invisible looks finished when it is not. A wrong PIN now clears
+ * the field and says nothing, a phone with no schedule shows an empty screen rather than a
+ * line telling her to ask Paul, and nothing on any screen admits that a sentence is
+ * missing. The grep that finds them all is still `[TH` in
+ * `src/lib/cleaning/strings.ts`, and it is now the only thing that finds them.
  */
-export const TEAM_STRINGS_PENDING_KEYS: readonly string[] = [
-  ...(Object.keys(TEAM_STRINGS) as TeamStringKey[]).filter((key) =>
-    TEAM_STRINGS[key].includes(PENDING_MARK),
-  ),
-  ...(CALENDAR_WEEKDAYS.some((day) => day.includes(PENDING_MARK)) ? [WEEKDAYS_KEY] : []),
-];
+export function written(value: string): string {
+  return value.includes(PENDING_MARK) ? "" : value;
+}
 
-/** Whether any string here is still a placeholder. Derived from the list above rather than
- * computed again, so the warning's count and its existence cannot disagree. */
-export const TEAM_STRINGS_PENDING: boolean = TEAM_STRINGS_PENDING_KEYS.length > 0;
+/** The column headings, or none, so a grid with unwritten ones drops the row rather than
+ * printing seven empty cells. */
+export function weekdaysWritten(): boolean {
+  return CALENDAR_WEEKDAYS.every((day) => written(day) !== "");
+}

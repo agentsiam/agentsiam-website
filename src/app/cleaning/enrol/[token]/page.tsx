@@ -1,8 +1,10 @@
+import { Message } from "@/components/cleaning/blocks";
+import { ChevronRight } from "@/components/cleaning/glyphs";
 import { parseDocument } from "@/lib/cleaning/document";
 import { peekEnrolToken } from "@/lib/cleaning/devices";
 import { CLEANING_API_ENROL } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
-import { TEAM_STRINGS } from "@/lib/cleaning/strings";
+import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
 
 /**
  * The link Paul sends her in LINE. The one URL in this app that answers without a cookie.
@@ -40,9 +42,7 @@ export default async function EnrolPage({
   if (!person) {
     return (
       <main>
-        <p className="mt-8 rounded-panel border border-hairline bg-surface p-5 text-[17px] leading-7 text-body">
-          {TEAM_STRINGS.askPaul}
-        </p>
+        <Message text={TEAM_STRINGS.askPaul} />
       </main>
     );
   }
@@ -68,9 +68,13 @@ export default async function EnrolPage({
         <input type="hidden" name="token" value={token} />
         <button
           type="submit"
-          className="w-full rounded-box bg-ink px-4 py-5 text-[19px] font-semibold text-bg"
+          aria-label={TEAM_STRINGS.enrolOpen}
+          className="flex w-full items-center justify-center rounded-box bg-ink px-4 py-5 text-[19px] font-semibold text-bg"
         >
-          {TEAM_STRINGS.enrolOpen}
+          {/* The one control on this screen, so it cannot go quiet with its words: an
+              arrow stands in until the sentence is written, and the spoken name stays
+              whatever the string says, which is never seen. */}
+          {written(TEAM_STRINGS.enrolOpen) || <ChevronRight size={24} />}
         </button>
       </form>
     </main>

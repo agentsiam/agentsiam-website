@@ -1,5 +1,5 @@
 import type { CalendarCell } from "@/lib/cleaning/document";
-import { CALENDAR_WEEKDAYS } from "@/lib/cleaning/strings";
+import { CALENDAR_WEEKDAYS, weekdaysWritten } from "@/lib/cleaning/strings";
 
 /**
  * The next thirty days as a grid, above the list rather than instead of it.
@@ -22,14 +22,16 @@ export function MonthGrid({ weeks }: { weeks: CalendarCell[][] }) {
   return (
     <section className="mt-6 rounded-panel border border-border bg-bg p-3">
       <div className="grid grid-cols-7 gap-1">
-        {CALENDAR_WEEKDAYS.map((day, index) => (
+        {/* All seven or none: a row of empty cells over the grid would be a heading
+            that has lost its words rather than a grid that never had any. */}
+        {weekdaysWritten() ? CALENDAR_WEEKDAYS.map((day, index) => (
           <div
             key={index}
             className="pb-1 text-center text-[11px] font-semibold tracking-wide text-muted"
           >
             {day}
           </div>
-        ))}
+        )) : null}
 
         {weeks.flat().map((cell, index) => {
           if (!cell.date) return <div key={index} aria-hidden="true" className="h-11" />;

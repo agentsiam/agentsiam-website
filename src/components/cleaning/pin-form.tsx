@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Padlock } from "@/components/cleaning/glyphs";
 import { CLEANING_API_PIN } from "@/lib/cleaning/routes";
-import { TEAM_STRINGS } from "@/lib/cleaning/strings";
+import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
 
 /**
  * The front door of the app.
@@ -43,11 +43,14 @@ export function PinForm({ name }: { name: string | null }) {
         return;
       }
       const body = (await response.json().catch(() => ({}))) as { state?: string };
-      if (body.state === "locked") setMessage(TEAM_STRINGS.pinLocked);
-      else if (body.state === "unset") setMessage(TEAM_STRINGS.pinMissing);
-      else setMessage(TEAM_STRINGS.pinWrong);
+      // Unwritten, these say nothing rather than saying it in English. A wrong PIN then
+      // clears the field and reports nothing at all, which is the sharpest edge of taking
+      // the placeholders off the screens.
+      if (body.state === "locked") setMessage(written(TEAM_STRINGS.pinLocked));
+      else if (body.state === "unset") setMessage(written(TEAM_STRINGS.pinMissing));
+      else setMessage(written(TEAM_STRINGS.pinWrong));
     } catch {
-      setMessage(TEAM_STRINGS.offline);
+      setMessage(written(TEAM_STRINGS.offline));
     }
     setPin("");
     setBusy(false);
@@ -69,9 +72,11 @@ export function PinForm({ name }: { name: string | null }) {
       ) : null}
 
       <form onSubmit={submit} className="mt-7">
-        <label htmlFor="pin" className="block text-center text-[17px] leading-7 text-body">
-          {TEAM_STRINGS.pinPrompt}
-        </label>
+        {written(TEAM_STRINGS.pinPrompt) ? (
+          <label htmlFor="pin" className="block text-center text-[17px] leading-7 text-body">
+            {written(TEAM_STRINGS.pinPrompt)}
+          </label>
+        ) : null}
         <input
           id="pin"
           name="pin"
