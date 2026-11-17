@@ -1,4 +1,5 @@
 import { Message, RemarksBlock, RenderedBlock } from "@/components/cleaning/blocks";
+import { CodesButton } from "@/components/cleaning/codes-button";
 import { MonthGrid } from "@/components/cleaning/month-grid";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { PinForm } from "@/components/cleaning/pin-form";
@@ -17,6 +18,7 @@ import {
   visitSlug,
 } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
+import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { cleaningCodesPath, cleaningJobPath } from "@/lib/cleaning/routes";
 import { sinceLastSeen, visitIdentity, visitsDigest } from "@/lib/cleaning/seen";
 import { readNote } from "@/lib/cleaning/store";
@@ -86,6 +88,9 @@ export default async function SchedulePage() {
   const digest = await visitsDigest(document.visits);
   const when = document.built_at ? builtAtDigits(document.built_at) : null;
   const nextAccess = next ? accessFor(document, next.property) : null;
+  // Which shape stands for which house, worked out once and handed to every part of the
+  // screen, so the grid and the rows cannot disagree about it.
+  const marks = houseMarks(document);
 
   return (
     <main lang={document.lang}>
@@ -107,13 +112,14 @@ export default async function SchedulePage() {
           visit={next}
           isChanged={changed.has(visitIdentity(next))}
           house={propertyOf(document, next)}
+          mark={markOf(marks, next.property)}
           codesHeading={nextAccess ? nextAccess.heading : null}
           codesHref={cleaningCodesPath(next.property)}
           jobHref={cleaningJobPath(visitSlug(next))}
         />
       ) : null}
 
-      <MonthGrid weeks={calendarWeeks(document.visits, today)} />
+      <MonthGrid weeks={calendarWeeks(document.visits, today)} marks={marks} />
 
       <DayList
         sections={daySections(document.visits)}
@@ -121,6 +127,7 @@ export default async function SchedulePage() {
         today={today}
         changed={changed}
         role={document.role}
+        marks={marks}
         houseOf={(visit) => propertyOf(document, visit)}
         jobHref={(visit) => cleaningJobPath(visitSlug(visit))}
       />
@@ -129,6 +136,7 @@ export default async function SchedulePage() {
       {document.remarks ? <RemarksBlock block={document.remarks} /> : null}
 
       <SeenRecorder stamp={digest} />
+      <CodesButton label={document.access[0]?.heading ?? null} />
     </main>
   );
 }

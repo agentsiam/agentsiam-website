@@ -13,24 +13,28 @@
  * saying how old the schedule is, and the two or three things a phone has to say when
  * something is wrong.
  *
- * **Paul writes all of them.** He is a native speaker and every string the team reads is his
- * own or approved by him, so each one below is a placeholder in Latin script that cannot be
- * mistaken for finished copy. They are deliberately ugly on screen: a half-translated app
- * that looks finished is how a wrong string ships.
+ * **EVERY THAI SENTENCE BELOW IS A DRAFT I WROTE AND NOT A NATIVE SPEAKER'S.** Paul shipped
+ * them on his instruction of 17/11/2026, knowing exactly that: the screens had been rendering
+ * nothing at all, because an unwritten string takes its element off the page, and three
+ * people were being shown blank panels while seventeen sentences waited to be written from
+ * scratch. Shipping a draft he can correct in place beat shipping silence.
  *
- * While any of them is still a placeholder, every screen in the subtree carries one English
- * warning saying how many are left and which ones, because Latin text in square brackets is
- * unmistakable in this file and nearly invisible on a phone held at arm's length. See
- * src/components/cleaning/pending-strings-notice.tsx, which is the only reader of the two
- * pending exports at the foot of this file.
+ * So treat none of this as approved copy. A sentence here is wrong until he has read it, the
+ * register may be off, and the correction sheet with every slot and its draft is
+ * `as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt` in the document store.
+ * Correcting one is a one-line edit in this file and nothing else. **Anything new added here
+ * still starts as a `[TH ...]` placeholder**, which `written()` below renders as nothing, so
+ * a slot nobody has words for cannot ship English by accident.
  *
- * Replacing one is a one-line edit here and nothing else. Nothing in this file is translated
- * into the other locales: the public site's three dictionaries are for guests and owners, and
+ * The seven calendar headings are a narrower case and are marked where they sit: those are
+ * the conventional abbreviations, documented in several places rather than invented here.
+ *
+ * Nothing in this file is translated into the other locales: the public site's three dictionaries are for guests and owners, and
  * this app has one audience reading one language per person, which the document states.
  */
 
-/** What makes a placeholder visible, what a check can grep for, and what
- * TEAM_STRINGS_PENDING_KEYS below counts. */
+/** What marks a slot nobody has written yet. `written()` at the foot of this file renders
+ * anything carrying it as nothing, and it is what a check greps for. */
 export const PENDING_MARK = "[TH";
 
 export type TeamStringKey = keyof typeof TEAM_STRINGS;
@@ -43,7 +47,7 @@ export const TEAM_STRINGS = {
    * date is ever composed here. Paul's wording goes around it. It has to work when she is
    * offline looking at a saved copy, which is the case it exists for.
    */
-  builtAt: "[TH schedule built at {when}]",
+  builtAt: "อัปเดต {when}",
 
   /**
    * The marker on a visit that is new, or whose line has changed, since the last time she
@@ -54,7 +58,7 @@ export const TEAM_STRINGS = {
    * since **she** last looked. On a week she did not open the app those are different
    * answers and both are true.
    */
-  changedSinceSeen: "[TH new or moved since you last looked]",
+  changedSinceSeen: "มีการเปลี่ยนแปลง",
 
   /**
    * The prompt above the PIN field, which is now the front door of the whole app rather
@@ -65,19 +69,19 @@ export const TEAM_STRINGS = {
    * prompt naming only the codes would be telling her the wrong thing about what she is
    * unlocking.
    */
-  pinPrompt: "[TH enter your PIN, the number Paul sent you in LINE]",
+  pinPrompt: "ใส่รหัส PIN ที่พอลส่งให้ในไลน์",
 
   /** A wrong PIN. Says nothing about how many tries are left and nothing about whose PIN
    * it is. */
-  pinWrong: "[TH that PIN is not right]",
+  pinWrong: "รหัสไม่ถูกต้อง",
 
   /** Too many wrong tries. Says that she has to wait, and that Paul can be asked in LINE.
    * Distinct from a wrong PIN, because the thing she should do next is different. */
-  pinLocked: "[TH too many tries, wait a while or ask Paul in LINE]",
+  pinLocked: "ใส่ผิดหลายครั้ง รอสักครู่ หรือถามพอลในไลน์",
 
   /** No PIN has been set for her yet, so the codes screen cannot open at all. She cannot
    * fix this herself: it says to ask Paul. */
-  pinMissing: "[TH no PIN set yet, ask Paul in LINE]",
+  pinMissing: "ยังไม่ได้ตั้งรหัส PIN ถามพอลในไลน์",
 
   /**
    * The only thing a phone with no working access is ever told, and the whole of the
@@ -88,19 +92,48 @@ export const TEAM_STRINGS = {
    * answer. Saying which of them happened would tell whoever is holding the phone something
    * about the others.
    */
-  askPaul: "[TH this phone cannot open the schedule, ask Paul for a new link in LINE]",
+  askPaul: "โทรศัพท์เครื่องนี้เปิดตารางงานไม่ได้ ขอลิงก์ใหม่จากพอลในไลน์",
 
   /** The button that finishes enrolment, on the link Paul sent her. One tap, after which
    * this phone is hers and the link is dead. */
-  enrolOpen: "[TH open my schedule]",
+  enrolOpen: "เปิดตารางงานของฉัน",
 
   /** Nothing has been published for her yet, or what was published has expired. Not an
    * error she can act on, so it says to ask Paul. */
-  noSchedule: "[TH no schedule yet, ask Paul in LINE]",
+  noSchedule: "ยังไม่มีตารางงาน ถามพอลในไลน์",
 
   /** Shown when the phone has no connection and she is reading a saved copy. The age of
    * that copy is the builtAt line above it. */
-  offline: "[TH no connection, this is the saved copy]",
+  offline: "ไม่มีสัญญาณ นี่คือข้อมูลที่บันทึกไว้",
+
+  /**
+   * The heading on the codes screen, and the line under it.
+   *
+   * Until a screen says what it is, it is a panel of digits arriving with no subject. The
+   * house names on the panels say whose codes those are; neither of them says what the
+   * screen is for, or why one house is above the other, and the ordering is the one thing on
+   * it that is not self-evident: the house she is going to next is first, and every house
+   * she works at is on the screen whichever link opened it.
+   */
+  codesTitle: "รหัสเข้าบ้าน",
+  codesHelp: "บ้านที่จะไปต่อไปอยู่บนสุด ทุกบ้านที่ทำงานอยู่ในหน้านี้",
+
+  /** Above the address on a job, which is a line of text with a pin beside it and nothing
+   * saying that tapping it opens a map. */
+  jobAddressHeading: "ที่อยู่",
+
+  /** Above the people on a job. Their names and numbers are on the screen with a phone
+   * beside them and nothing saying who they are to her. */
+  jobPeopleHeading: "ทำงานกับ",
+
+  /** Under her name on the enrolment link Paul sends in LINE, which otherwise shows a name
+   * and a button and no account of what pressing it does. The link works once and binds this
+   * phone, which is the part she cannot undo and is not told. */
+  enrolHelp: "ลิงก์นี้ใช้ได้ครั้งเดียว และใช้ได้เฉพาะโทรศัพท์เครื่องนี้",
+
+  /** The control that opens the days already behind her. It carries a count and a chevron
+   * and no word for what is behind it. */
+  pastJobs: "งานที่ผ่านมา",
 } as const;
 
 /** Paul's wording with `{when}` filled in, or nothing while the wording is unwritten. The
@@ -118,31 +151,29 @@ export function builtAtLine(when: string): string {
  * grid is read by three Thai speakers and nobody else.
  *
  * These are the one place this app needs a word that no Note has ever had to print. A job
- * line carries the day name in full, `พฤหัส 26 พย`, which is the skill's and is far too
- * long for a column one seventh of a phone wide, so a grid needs its own short forms and
- * they have to come from Paul like everything else here. The conventional abbreviations are
- * documented and are almost certainly what he will write, but documented is not approved,
- * so they stay placeholders until he says so.
+ * line carries the day name in full, `พฤหัส 26 พย`, which is the skill's and is far too long
+ * for a column one seventh of a phone wide, so a grid needs its own short forms.
+ *
+ * **These seven are the conventional abbreviations**, documented in several places rather
+ * than written here, which makes them the one set in this file that is not really a draft of
+ * mine. Documented is still not approved, so they are Paul's to change like the rest.
  *
  * One entry per column, index 0 Sunday through index 6 Saturday. Order is positional and is
- * not his to change: the grid reads the index, not the word.
- *
- * The placeholders are numbered rather than spelled, `[TH1]` through `[TH7]`, because a
- * column one seventh of a phone wide wraps anything longer onto two lines and the grid then
- * demonstrates a layout problem it will not have once the words are short Thai ones.
+ * not his to change: the grid reads the index, not the word. Two or three characters each,
+ * because a column a seventh of a phone wide wraps anything longer onto two lines.
  */
 export const CALENDAR_WEEKDAYS: readonly string[] = [
-  "[TH1]",
-  "[TH2]",
-  "[TH3]",
-  "[TH4]",
-  "[TH5]",
-  "[TH6]",
-  "[TH7]",
+  "อา.",
+  "จ.",
+  "อ.",
+  "พ.",
+  "พฤ.",
+  "ศ.",
+  "ส.",
 ];
 
 /**
- * A string Paul has written, or nothing at all.
+ * A string somebody has written, or nothing at all.
  *
  * **Every screen in this app runs its text through this**, and what comes back empty is not
  * rendered: no empty paragraph, no bare badge, no button with nothing on it. The element
@@ -152,12 +183,12 @@ export const CALENDAR_WEEKDAYS: readonly string[] = [
  * unwritten and naming them. Paul asked for that band and the bracketed English gone,
  * 17/11/2026, and this is the shape of "gone" that does not leave holes.
  *
- * **What it costs is worth knowing**, because the band existed to say it: an app whose
- * unwritten sentences are invisible looks finished when it is not. A wrong PIN now clears
- * the field and says nothing, a phone with no schedule shows an empty screen rather than a
- * line telling her to ask Paul, and nothing on any screen admits that a sentence is
- * missing. The grep that finds them all is still `[TH` in
- * `src/lib/cleaning/strings.ts`, and it is now the only thing that finds them.
+ * **Every slot carries words today, so nothing here is currently hiding anything.** What it
+ * costs is worth knowing anyway, because it is what a new slot does: an app whose unwritten
+ * sentences are invisible looks finished when it is not. That was the state for one day, and
+ * it is why these screens were bare rather than badly designed. A new slot starts as a
+ * `[TH ...]` placeholder and this function renders it as nothing, which is still the right
+ * trade, as long as somebody greps `[TH` in this file before calling a screen finished.
  */
 export function written(value: string): string {
   return value.includes(PENDING_MARK) ? "" : value;

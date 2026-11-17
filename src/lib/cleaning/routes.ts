@@ -38,6 +38,24 @@ export function cleaningJobPath(slug: string): string {
 }
 
 /**
+ * One day, and everything it asks of her.
+ *
+ * Reached by tapping a date on the month grid, which until 17/11/2026 was a picture: it
+ * showed her which days were busy and gave her no way to ask what was on them. Paul asked
+ * for the tap, and the screen behind it is the one the research called for and we had not
+ * built, because with two houses the question a day raises is what it holds and in what
+ * order.
+ *
+ * The date is in the path and is a calendar date, which is the one kind of date this app is
+ * allowed to handle, because it sorts and compares rather than reads.
+ */
+export const CLEANING_DAY = `${CLEANING_ROOT}/day`;
+
+export function cleaningDayPath(date: string): string {
+  return `${CLEANING_DAY}/${date}`;
+}
+
+/**
  * The codes screen, optionally opening on one house.
  *
  * A query string rather than a path on purpose. The service worker matches a saved page

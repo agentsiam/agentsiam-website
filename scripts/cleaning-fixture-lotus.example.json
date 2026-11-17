@@ -1,0 +1,122 @@
+{
+  "_readme": [
+    "Lotus House, as one half of the two-house fixture for developing and testing the",
+    "cleaning team's app. The other half is scripts/cleaning-fixture-cosmos.example.json,",
+    "and the README section on this app has the commands that turn the pair into one merged",
+    "documents file. scripts/cleaning-fixture-payload.example.json is the older single-house",
+    "fixture and is kept on purpose: a payload naming no property is what a document from",
+    "before there was more than one house looks like, and every screen still has to render",
+    "it.",
+    "",
+    "Every code and every phone number below is invented and none of them opens or reaches",
+    "anything. The real ones live in as-operations/people-management/access-codes.md in the",
+    "document store and are never copied here.",
+    "",
+    "The Thai queue titles are the ones Paul approved for this house, copied from",
+    "275645-cleaning.md, as is the cot note. The all-houses titles are English stand-ins:",
+    "once two houses are merged the per-house title is wrong on a screen holding both, and",
+    "the Thai for that one is still Paul's to write.",
+    "",
+    "Dates move. Edit the jobs so some of them are in the future, or the whole fixture",
+    "renders as a schedule that has already happened."
+  ],
+  "note_titles": {
+    "cleaning": {
+      "th": "คิวทำความสะอาดบ้านช้างคลาน 42 ซอย1",
+      "all_houses": { "th": "Cleaning queue" }
+    },
+    "laundry": {
+      "th": "คิวส่งผ้าบ้านช้างคลาน 42 ซอย1",
+      "en": "Laundry queue - 42 Chang Khlan Soi 1",
+      "all_houses": { "th": "Laundry queue" }
+    }
+  },
+  "property": {
+    "id": "275645",
+    "name": { "th": "Lotus House" },
+    "address": "42 Veing Ping Rd, Chang Khlan, Mueang Chiang Mai, 50100",
+    "map": "https://www.google.com/maps/search/?api=1&query=42+Veing+Ping+Rd%2C+Chang+Khlan%2C+Mueang+Chiang+Mai%2C+50100"
+  },
+  "property_access": { "gate": "424242" },
+  "roster": {
+    "da": {
+      "th": "ดา",
+      "en": "Da",
+      "lang": "th",
+      "role": "cleaning",
+      "phone": "08 1111 1111",
+      "access": { "door": "111111" }
+    },
+    "aun": {
+      "th": "อัน",
+      "en": "Aun",
+      "lang": "th",
+      "role": "cleaning",
+      "phone": "08 2222 2222",
+      "access": { "door": "222222" }
+    },
+    "ting": {
+      "th": "Ting",
+      "en": "Ting",
+      "lang": "th",
+      "role": "laundry",
+      "phone": "08 3333 3333",
+      "access": { "door": "333333" }
+    }
+  },
+  "jobs": [
+    {
+      "date": "2026-11-14",
+      "time": "12.00",
+      "cleaner": "aun",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "80550900"
+    },
+    {
+      "date": "2026-11-18",
+      "time": "12.00",
+      "cleaner": "da",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "80551001"
+    },
+    {
+      "date": "2026-11-22",
+      "time": "12.00",
+      "cleaner": "aun",
+      "laundry": "ting",
+      "type": "midstay",
+      "booking": "80551002",
+      "note": {
+        "th": "เพิ่มเตียงเด็ก(อยู่ใต้บันได)",
+        "en": "add the child bed",
+        "for": ["cleaning"]
+      }
+    },
+    {
+      "date": "2026-11-26",
+      "time": "12.00",
+      "cleaner": "da",
+      "laundry": "ting",
+      "type": "midstay",
+      "booking": "80551003"
+    },
+    {
+      "date": "2026-12-01",
+      "time": "12.00",
+      "cleaner": "da",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "80551004"
+    },
+    {
+      "date": "2026-12-06",
+      "time": "12.00",
+      "cleaner": "aun",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "80551005"
+    }
+  ]
+}

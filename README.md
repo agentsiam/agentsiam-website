@@ -684,10 +684,20 @@ python3 .claude/skills/cleaning-schedule/scripts/build_note.py \
   --publish <fixture>/documents.json > /dev/null
 ```
 
-A second house is a second run of the same command against a second payload, with a
-`property` block in each and `note_titles.<role>.all_houses` in one of them, merged by passing
-both files to `publish_note.py`. That is the only way to see the multi-property screens, since
-one house publishes a document that deliberately does not mention houses at all.
+**Two houses is two runs merged.** `scripts/cleaning-fixture-lotus.example.json` and
+`scripts/cleaning-fixture-cosmos.example.json` are that pair: a `property` block in each and
+`note_titles.<role>.all_houses` in both, because the per-house title is wrong on a screen
+holding both houses. Build each with `--publish` to its own file, then merge them:
+
+```bash
+python3 .claude/skills/cleaning-schedule/scripts/publish_note.py   <fixture>/lotus.json <fixture>/cosmos.json --dry-run
+```
+
+Drop `--dry-run` to publish to the store, or merge them into one local file by calling
+`documents_from` in that script. The pair is the only way to see the multi-property screens,
+since one house publishes a document that deliberately does not mention houses at all, and
+their jobs are arranged to collide on two days so that the day screen, the house marks and the
+time ordering all have something to show.
 
 Then set `CLEANING_LOCAL_PATH` to `<fixture>/documents.json` and `npm run dev`. The state the
 app writes, device records, PINs and last-opened timestamps, lands in

@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Message, RenderedBlock } from "@/components/cleaning/blocks";
-import { ChevronLeft } from "@/components/cleaning/glyphs";
+import { ChevronLeft, HouseMark } from "@/components/cleaning/glyphs";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
-import { parseDocument } from "@/lib/cleaning/document";
+import { nextVisitIndex, parseDocument } from "@/lib/cleaning/document";
+import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { CLEANING_SCHEDULE } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
-import { TEAM_STRINGS } from "@/lib/cleaning/strings";
+import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
 
 /**
  * Her gate and door codes, large, and nothing else on the screen.
@@ -48,7 +49,7 @@ export default async function CodesPage({
   // get asked again here, because two places asking for one PIN is two places to get wrong.
   if (!(await pinGiven(holder))) redirect(CLEANING_SCHEDULE);
 
-  const { house: first } = await searchParams;
+  const { house: asked } = await searchParams;
 
   let document = null;
   try {
@@ -58,6 +59,20 @@ export default async function CodesPage({
   }
 
   // Ordering, never filtering. See the note above about one saved copy answering every link.
+  const marks = document ? houseMarks(document) : new Map<string, number>();
+
+  /**
+   * Which house sits at the top: the one a link named, or failing that the one she is going
+   * to next.
+   *
+   * The fallback is not a nicety. The control that opens this screen from everywhere else
+   * names no house, by design, because its job is "show me all of them"; without this, every
+   * one of those taps landed on whatever order the publish merged the houses in, and the line
+   * under the heading promising that the next house is first was then simply untrue.
+   */
+  const next = document ? document.visits[nextVisitIndex(document.visits)] : undefined;
+  const first = asked ?? next?.property ?? null;
+
   const blocks = [...(document?.access ?? [])].sort((a, b) => {
     if (a.property === b.property) return 0;
     if (a.property === first) return -1;
@@ -78,13 +93,29 @@ export default async function CodesPage({
       </Link>
       <OfflineNotice />
 
+      {/* What this screen is, and why one house is above the other. Both are Paul's words
+          and each takes its element with it while it is unwritten. */}
+      {written(TEAM_STRINGS.codesTitle) ? (
+        <h1 className="mt-3 text-[26px] font-semibold leading-9 text-text">
+          {written(TEAM_STRINGS.codesTitle)}
+        </h1>
+      ) : null}
+      {written(TEAM_STRINGS.codesHelp) ? (
+        <p className="mt-1 text-[15px] leading-7 text-muted">{written(TEAM_STRINGS.codesHelp)}</p>
+      ) : null}
+
       {blocks.length > 0 ? (
         blocks.map((block, index) => {
           const house = document?.properties.find((p) => p.id === block.property) ?? null;
           return (
             <section key={block.property ?? index} className="mt-4 rounded-panel bg-ink p-5">
               {house ? (
-                <p className="text-[17px] font-semibold text-bg">{house.name}</p>
+                <p className="flex items-center gap-2 text-[17px] font-semibold text-bg">
+                  {markOf(marks, house.id) === null ? null : (
+                    <HouseMark index={markOf(marks, house.id) ?? 0} size={15} />
+                  )}
+                  {house.name}
+                </p>
               ) : null}
               <h1
                 className={`text-[14px] font-semibold tracking-wide text-gold-on-ink ${

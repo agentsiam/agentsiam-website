@@ -39,6 +39,24 @@ export type PropertyRef = {
  * before there was more than one. */
 export type AccessBlock = DocumentBlock & { property: string | null };
 
+/**
+ * Someone else on the same visit, and the number to reach them.
+ *
+ * Published per visit by the skill, which already computed the same people for the contact
+ * block at the foot of her Note. The block answers "who do I work with this week"; this
+ * answers "who is on this clean", which is the question a job screen asks and the only one
+ * worth answering when two houses are in the same day.
+ *
+ * `roleLabel` is her function as the Note labels it and `phone` is as the roster holds it.
+ * Both are finished text. A phone the skill could not vouch for arrives empty, never as a
+ * placeholder: a number on a screen is a number somebody dials.
+ */
+export type VisitPerson = {
+  name: string;
+  roleLabel: string | null;
+  phone: string | null;
+};
+
 export type Visit = {
   /** ISO date. What this app sorts and compares on, and the only date arithmetic it does. */
   date: string;
@@ -62,6 +80,9 @@ export type Visit = {
    * puts no heading up rather than guessing one.
    */
   dayLabel: string | null;
+  /** Who else is on this one visit. Empty on a document published before the skill carried
+   * it, and on a job only one person is on. */
+  with: VisitPerson[];
 };
 
 export type TeamDocument = {
@@ -133,7 +154,21 @@ function asVisit(value: unknown): Visit | null {
     line,
     property: asString(v.property),
     dayLabel: asString(v.day_label),
+    with: asVisitPeople(v.with),
   };
+}
+
+function asVisitPeople(value: unknown): VisitPerson[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((entry) => {
+      if (typeof entry !== "object" || entry === null) return null;
+      const e = entry as Record<string, unknown>;
+      const name = asString(e.name);
+      if (!name) return null;
+      return { name, roleLabel: asString(e.role_label), phone: asString(e.phone) };
+    })
+    .filter((person): person is VisitPerson => person !== null);
 }
 
 function asProperty(value: unknown): PropertyRef | null {
@@ -250,11 +285,55 @@ export function daySections(visits: Visit[]): DaySection[] {
   return [...days.values()].sort((a, b) => a.date.localeCompare(b.date));
 }
 
-/** Oldest first, which is the order her Note lists them in. Ties broken by booking id so
- * two jobs on one day render the same way on every open. */
+/** Every visit on one day, in the order they are already in, which is time order. */
+export function visitsOn(visits: Visit[], date: string): Visit[] {
+  return visits.filter((visit) => visit.date === date);
+}
+
+/** That day's heading, as the skill rendered it, or null on a document that carries none. */
+export function dayLabelOn(visits: Visit[], date: string): string | null {
+  return visitsOn(visits, date).find((visit) => visit.dayLabel)?.dayLabel ?? null;
+}
+
+/** Whether a string off a URL is a calendar date at all. The day screen takes its date from
+ * the address bar, and everything downstream of here compares dates as strings. */
+export function isIsoDate(value: string): boolean {
+  return ISO_DATE.test(value);
+}
+
+/**
+ * The hour a visit is at, in minutes, for ordering and for nothing else.
+ *
+ * The time arrives as the Note prints it, `09.30`, and this is the only thing in this module
+ * that looks inside it. It reads those digits and never writes one: no screen here renders a
+ * time, because the time is already inside the line. A value it cannot read ranks 0, which
+ * puts that job at the top of its day rather than dropping it off the screen.
+ */
+export function timeRank(visit: Visit): number {
+  const digits = visit.time.replace(/\D/g, "");
+  if (digits.length < 3 || digits.length > 4) return 0;
+  const hours = Number(digits.slice(0, digits.length - 2));
+  const minutes = Number(digits.slice(-2));
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return 0;
+  return hours * 60 + minutes;
+}
+
+/**
+ * Oldest first, and within a day, earliest first.
+ *
+ * The day order is the point. One house made the booking id a harmless tie-break, because
+ * two cleans in a day were the exception and the line carried the hour anyway. With two
+ * houses a day holding two jobs is an ordinary Tuesday, and a list that put the 12.00 job
+ * above the 10.00 one would be telling her to drive the wrong way: "what is my day, and in
+ * what order" is the question the whole screen now answers. The booking id still breaks a
+ * genuine tie, so two jobs at one hour render the same way on every open.
+ */
 export function sortVisits(visits: Visit[]): Visit[] {
   return [...visits].sort(
-    (a, b) => a.date.localeCompare(b.date) || (a.booking ?? "").localeCompare(b.booking ?? ""),
+    (a, b) =>
+      a.date.localeCompare(b.date) ||
+      timeRank(a) - timeRank(b) ||
+      (a.booking ?? "").localeCompare(b.booking ?? ""),
   );
 }
 
@@ -319,6 +398,15 @@ export type CalendarCell = {
   day: number | null;
   /** How many jobs she has that day. Printed as a marker, never as a number. */
   jobs: number;
+  /**
+   * Which house each of that day's jobs is at, in time order, by id.
+   *
+   * It is what lets a cell one seventh of a phone wide say *which* houses the day holds
+   * rather than only how many jobs it holds, which with two houses is the difference between
+   * a grid she can plan from and a row of identical dots. Null entries are a single-property
+   * document, where every job is at the same house because there is only one.
+   */
+  houses: (string | null)[];
   isToday: boolean;
   /** The one cell the hero card above the grid is about. */
   isNext: boolean;
@@ -338,24 +426,37 @@ export function calendarWeeks(
   today: string = todayInBangkok(),
   days: number = SCHEDULE_WINDOW_DAYS,
 ): CalendarCell[][] {
-  const jobsOn = new Map<string, number>();
-  for (const visit of visits) jobsOn.set(visit.date, (jobsOn.get(visit.date) ?? 0) + 1);
+  const housesOn = new Map<string, (string | null)[]>();
+  for (const visit of visits) {
+    housesOn.set(visit.date, [...(housesOn.get(visit.date) ?? []), visit.property]);
+  }
   const next = visits.find((visit) => visit.date >= today)?.date ?? null;
 
   const cells: CalendarCell[] = [];
-  const pad = { date: null, day: null, jobs: 0, isToday: false, isNext: false };
-  for (let i = 0; i < weekdayIndex(today); i += 1) cells.push({ ...pad });
+  // A function rather than one object spread repeatedly, so no two pad cells can end up
+  // sharing a houses array.
+  const pad = (): CalendarCell => ({
+    date: null,
+    day: null,
+    jobs: 0,
+    houses: [],
+    isToday: false,
+    isNext: false,
+  });
+  for (let i = 0; i < weekdayIndex(today); i += 1) cells.push(pad());
   for (let i = 0; i < days; i += 1) {
     const date = addDays(today, i);
+    const houses = housesOn.get(date) ?? [];
     cells.push({
       date,
       day: dayOfMonth(date),
-      jobs: jobsOn.get(date) ?? 0,
+      jobs: houses.length,
+      houses,
       isToday: i === 0,
       isNext: date === next,
     });
   }
-  while (cells.length % 7 !== 0) cells.push({ ...pad });
+  while (cells.length % 7 !== 0) cells.push(pad());
 
   const weeks: CalendarCell[][] = [];
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));

@@ -1,13 +1,23 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Message, RenderedBlock } from "@/components/cleaning/blocks";
-import { ChevronLeft, JobType, Padlock, Pin } from "@/components/cleaning/glyphs";
+import {
+  ChevronLeft,
+  HouseMark,
+  JobType,
+  Occupied,
+  Padlock,
+  Phone,
+  Pin,
+} from "@/components/cleaning/glyphs";
+import { CodesButton } from "@/components/cleaning/codes-button";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { accessFor, findVisit, parseDocument, propertyOf } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
+import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_SCHEDULE, cleaningCodesPath } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
-import { TEAM_STRINGS } from "@/lib/cleaning/strings";
+import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
 
 /**
  * One job: which house, when, where it is, and the way to its codes.
@@ -26,6 +36,13 @@ import { TEAM_STRINGS } from "@/lib/cleaning/strings";
  * house. They stay on their own path because that path is the one the proxy marks, the
  * worker keeps on a deadline and the browser is told not to store: spreading door codes
  * over a second URL would mean spreading all of that over it too.
+ *
+ * **Who else is on this clean, and the number to reach them.** The foot of her Note names
+ * everyone she will meet anywhere in the week, which is the right shape for a message and
+ * the wrong one for a screen about one job at one house. The skill now publishes the same
+ * people per visit, so this screen names the one or two who will be at this gate, and their
+ * number dials. ZenMaid's job card is the precedent for both halves: the address goes to a
+ * map and the contact goes to a phone.
  */
 
 export const dynamic = "force-dynamic";
@@ -56,6 +73,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
 
   const house = propertyOf(document, visit);
   const access = accessFor(document, visit.property);
+  const mark = markOf(houseMarks(document), visit.property);
 
   return (
     <main lang={document.lang}>
@@ -76,11 +94,27 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
           <JobType role={document.role} />
         </span>
         <p className="mt-4 text-[22px] font-semibold leading-9 text-bg">{visit.line}</p>
-        {house ? (
-          <p className="mt-2 text-[17px] font-semibold text-gold-on-ink">{house.name}</p>
+        {house || visit.type === "midstay" ? (
+          <p className="mt-2 flex flex-wrap items-center gap-2 text-[17px] font-semibold text-gold-on-ink">
+            {house ? (
+              <span className="inline-flex items-center gap-2">
+                {mark === null ? null : <HouseMark index={mark} size={15} />}
+                {house.name}
+              </span>
+            ) : null}
+            {/* The document's own `type`, drawn. A mid-stay clean means a guest is in the
+                house, which is the one thing about a job that changes how she arrives, and
+                her line has always said it in words. */}
+            {visit.type === "midstay" ? <Occupied size={18} /> : null}
+          </p>
         ) : null}
       </section>
 
+      {house?.address && written(TEAM_STRINGS.jobAddressHeading) ? (
+        <h2 className="mt-5 text-[15px] font-semibold text-muted">
+          {written(TEAM_STRINGS.jobAddressHeading)}
+        </h2>
+      ) : null}
       {house?.address ? (
         house.map ? (
           <a
@@ -125,7 +159,75 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         </Link>
       ) : null}
 
-      {document.contact ? <RenderedBlock block={document.contact} tone="panel" /> : null}
+      {visit.with.length > 0 && written(TEAM_STRINGS.jobPeopleHeading) ? (
+        <h2 className="mt-5 text-[15px] font-semibold text-muted">
+          {written(TEAM_STRINGS.jobPeopleHeading)}
+        </h2>
+      ) : null}
+      {visit.with.length > 0 ? (
+        <section className="mt-4 overflow-hidden rounded-panel border border-border">
+          <ul className="divide-y divide-hairline">
+            {visit.with.map((person, index) => {
+              const name = (
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[16px] font-semibold leading-6 text-text">
+                    {person.roleLabel ? `${person.roleLabel} ` : ""}
+                    {person.name}
+                  </span>
+                  {person.phone ? (
+                    <span
+                      className="mt-0.5 block text-[16px] leading-6 text-body"
+                      style={{ fontFamily: "var(--font-plex-sans), system-ui, sans-serif" }}
+                    >
+                      {person.phone}
+                    </span>
+                  ) : null}
+                </span>
+              );
+              const chip = (
+                <span
+                  aria-hidden="true"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface text-muted"
+                >
+                  <Phone />
+                </span>
+              );
+              return (
+                <li key={index}>
+                  {person.phone ? (
+                    // The digits of the published number, with its spaces taken out for the
+                    // dialler and never for the screen: the number above is printed exactly
+                    // as the roster holds it.
+                    <a
+                      href={`tel:${person.phone.replace(/\s/g, "")}`}
+                      className="flex items-center gap-3 p-4 transition-colors duration-150 active:bg-surface"
+                    >
+                      {chip}
+                      {name}
+                    </a>
+                  ) : (
+                    <div className="flex items-center gap-3 p-4">
+                      {chip}
+                      {name}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
+
+      {/* The whole run's contact block, and **only** when this job has no people of its own.
+          With both on screen the same colleague and the same number were printed twice, a few
+          millimetres apart, which is what showed up the moment two houses were rendered. A
+          document published before the skill carried per-visit people still has this, and it
+          is then the only thing on screen that answers who she is working with. */}
+      {visit.with.length === 0 && document.contact ? (
+        <RenderedBlock block={document.contact} tone="panel" />
+      ) : null}
+
+      <CodesButton label={document.access[0]?.heading ?? null} />
     </main>
   );
 }
