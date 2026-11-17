@@ -612,7 +612,10 @@ schedule she loaded and serves it when the network does not answer. The worker i
 the root rather than from inside `/cleaning` because a worker's maximum scope is the directory
 it is served from. It refuses `/cleaning/codes` outright, and deletes its cache the first time
 a navigation comes back redirected to the "ask Paul" page, which is how a revoked phone loses
-its saved copy once it next has signal.
+its saved copy once it next has signal. `npm run test:cleaning-sw` drives that file outside a
+browser and covers all of it, seventeen cases with a non-zero exit on any failure; run it after
+touching the worker, because the case that matters is the one saying the door codes are never
+written to a cache. What it cannot cover is a browser, which is the known gap below.
 
 **Four environment variables**, documented in `.env.example`: `CLEANING_COOKIE_SECRET`, then
 either the `KV_REST_API_*` pair for the real store or `CLEANING_LOCAL_PATH` for development,
@@ -660,13 +663,21 @@ flow, end to end, with nothing live anywhere near it.
   slot is a one-line edit in that file and nothing else in the app changes. The schedule screen,
   the enrolment link and the PIN prompt all carry at least one, so the app is not for a phone until
   they are written.
-- **The cleaning app's service worker has never run in a real browser (17/11/2026).** It
-  parses, it is served with the right type and the registration is wrapped so a browser that
-  refuses it still gets a schedule over the network. But the browser available while it was
-  built blocks service worker registration outright, for any script on any origin, so "opens
-  with no signal" is unproven: not the caching, not the offline fallback, not the install
-  prompt on either iOS or Android. It needs one real phone, which on this project means
-  production.
+- **The cleaning app's service worker has never run in a real browser (17/11/2026).** Its
+  logic is covered: `npm run test:cleaning-sw` drives `public/cleaning-sw.js` outside a browser
+  with its globals stubbed, seventeen cases, non-zero exit on any failure, and it proves the
+  branching that matters. The door codes, the API and the enrolment link pass through untouched
+  and are never cached, a schedule saved from a good load is served when fetch throws, a cold
+  cache fails rather than inventing a page, and a navigation coming back redirected to the
+  no-access page wipes the cache. So the caching and the offline fallback are no longer
+  unproven. What is still unproven needs a browser: that one registers the script at all, that
+  it installs, that it serves the saved copy after a real network failure rather than a thrown
+  fetch in a harness, and the install prompt on either iOS or Android. The browser available
+  while it was built refuses registration outright, for any script on any origin, returning
+  `TypeError: Failed to register a ServiceWorker ... An unknown error occurred when fetching the
+  script` while a HEAD for that same URL answers 200 with `application/javascript; charset=utf-8`,
+  so the refusal is the browser and not the file. It needs one real phone, which on this project
+  means production.
 - **`CLEANING_HOST` has never been pointed at a real subdomain (17/11/2026).** Unset, which it
   is, nothing changes and the app answers at `/cleaning`. Set, `src/proxy.ts` serves that host
   from the `/cleaning` tree with the prefix off the URL. That branch is exercised by nothing,
