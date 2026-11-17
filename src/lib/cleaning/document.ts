@@ -252,32 +252,6 @@ export function propertyOf(document: TeamDocument, visit: Visit): PropertyRef | 
   return document.properties.find((p) => p.id === visit.property) ?? null;
 }
 
-/**
- * The codes she may see right now, which is the codes for the houses she is working at
- * today and nothing else.
- *
- * Paul's rule, 17/11/2026, and it reverses what this app did until then: she may see a
- * house's codes only on a day she is at that house. Not every cleaner holds every house's
- * codes, and a screen that listed all of them handed each of them to all of them.
- *
- * **It is a day rule, not a job rule.** Her job may be at 12.00 and she may check before she
- * leaves home at 08.00, so the whole of the day she is on counts, in Bangkok, which is the
- * timezone the house is in.
- *
- * A document naming no houses is the single-property case and is unchanged in shape: one
- * block, hers on any day she works, nothing on a day she does not.
- */
-export function accessToday(
-  document: TeamDocument,
-  today: string = todayInBangkok(),
-): AccessBlock[] {
-  const jobs = visitsOn(document.visits, today);
-  if (jobs.length === 0) return [];
-  if (document.properties.length === 0) return document.access;
-  const houses = new Set(jobs.map((visit) => visit.property));
-  return document.access.filter((block) => houses.has(block.property));
-}
-
 /** The codes for one house, or the only block there is when a document names no houses. */
 export function accessFor(document: TeamDocument, property: string | null): AccessBlock | null {
   if (!property) return document.access[0] ?? null;

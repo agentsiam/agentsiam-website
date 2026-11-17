@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-  ChevronRight,
-  HouseMark,
-  JobType,
-  Occupied,
-  Padlock,
-} from "@/components/cleaning/glyphs";
+import { ChevronRight, HouseMark, JobType, Occupied } from "@/components/cleaning/glyphs";
 import type { DaySection, PropertyRef, Visit } from "@/lib/cleaning/document";
 import { dayOfMonth, visitSlug } from "@/lib/cleaning/document";
 import { markOf, type HouseMarks } from "@/lib/cleaning/houses";
@@ -118,25 +112,25 @@ function Changed({ onInk = false }: { onInk?: boolean }) {
  * The next job, as the whole top of the screen.
  *
  * This is the one question she opens the app to ask, so it is answered before anything else
- * and in the largest type on the page, and the way into the codes for **that** house is
- * inside the same card. Standing at a gate, that is one tap from opening the app to reading
- * the number for the lock, and with two houses it is one tap to the right number.
+ * and in the largest type on the page.
+ *
+ * The codes used to be a bar across the bottom of this card, leading to a screen of its own.
+ * Paul, 17/11/2026: the code shows directly inside the schedule without opening a new page,
+ * so the panel sits under this card instead and there is no tap at all. It is not part of
+ * the card because it is not part of the link: a card that is one big tap to the job cannot
+ * also hold a door code she is meant to read standing still.
  */
 export function NextVisitCard({
   visit,
   isChanged,
   house,
   mark,
-  codesHeading,
-  codesHref,
   jobHref,
 }: {
   visit: Visit;
   isChanged: boolean;
   house: PropertyRef | null;
   mark: number | null;
-  codesHeading: string | null;
-  codesHref: string;
   jobHref: string;
 }) {
   return (
@@ -162,21 +156,6 @@ export function NextVisitCard({
           <ChevronRight />
         </span>
       </Link>
-
-      {codesHeading ? (
-        <Link
-          href={codesHref}
-          className="flex items-center justify-between gap-3 bg-sand px-5 py-4 text-[18px] font-semibold text-ink transition-colors duration-150 active:bg-gold-on-ink"
-        >
-          <span className="min-w-0">{codesHeading}</span>
-          <span
-            aria-hidden="true"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-ink text-gold-on-ink"
-          >
-            <Padlock />
-          </span>
-        </Link>
-      ) : null}
     </section>
   );
 }

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ChevronLeft, ChevronRight, HouseMark, JobType, Occupied } from "@/components/cleaning/glyphs";
-import { CodesButton } from "@/components/cleaning/codes-button";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import {
   dayLabelOn,
@@ -123,7 +122,6 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
         })}
       </div>
 
-      <CodesButton label={document.access[0]?.heading ?? null} />
     </main>
   );
 }

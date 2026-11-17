@@ -121,12 +121,18 @@ const response = (body, extra = {}) => ({
  * asked for, the way a real Headers does. */
 const gate = () => response("enter your PIN", { headers: { "x-cleaning-gate": "1" } });
 
-/** A door code page as the proxy answers it. The deadline is the whole difference between a
- * copy the worker may keep and one it may only serve: pass 0 for the answer a phone gets
- * when no live PIN session is behind it. */
-const codesResponse = (until) =>
-  response("THE DOOR CODES", {
-    url: `${ORIGIN}/cleaning/codes`,
+/** The door codes as /api/cleaning/codes answers them. The deadline is the whole difference
+ * between a copy the worker may keep and one it may only serve: pass 0 for the answer a
+ * phone gets when no live PIN session is behind it.
+ *
+ * They stopped being a page on 17/11/2026, when the codes moved onto the schedule itself.
+ * The rule did not change and neither did these tests; the path did, and with it the request
+ * shape: this is a fetch from a page rather than a navigation to one. */
+const CODES_PATH = "/api/cleaning/codes";
+const codesOf = (slug) => `${CODES_PATH}?slug=${slug}`;
+const codesResponse = (until, slug = "job-one", body = "THE DOOR CODES") =>
+  response(body, {
+    url: `${ORIGIN}${codesOf(slug)}`,
     headers: until ? { "x-cleaning-keep-until": String(until) } : {},
   });
 
@@ -333,18 +339,18 @@ async function cachedKeys(sw) {
   // signal, and the number for the lock has to be on the screen.
   const sw = load();
   sw.setNetwork(async () => codesResponse(Date.now() + 60_000));
-  const live = await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  const live = await sw.request(request(codesOf("job-one")));
   const keys = await cachedKeys(sw);
   check(
     "a door code the app put a deadline on is saved",
-    live.responded && live.value?.body === "THE DOOR CODES" && keys.includes("/cleaning/codes"),
+    live.responded && live.value?.body === "THE DOOR CODES" && keys.includes(codesOf("job-one")),
     `cached: ${keys.join(", ") || "nothing"}`,
   );
 
   sw.setNetwork(async () => {
     throw new TypeError("Failed to fetch");
   });
-  const offline = await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  const offline = await sw.request(request(codesOf("job-one")));
   check(
     "with no network the saved door code is served",
     offline.responded && offline.value?.body === "THE DOOR CODES",
@@ -357,7 +363,7 @@ async function cachedKeys(sw) {
   // worker. This is also what a codes page fetched by anything outside the proxy looks like.
   const sw = load();
   sw.setNetwork(async () => codesResponse(0));
-  const bare = await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  const bare = await sw.request(request(codesOf("job-one")));
   const keys = await cachedKeys(sw);
   check(
     "a door code the app did not vouch for is served and not saved",
@@ -372,12 +378,12 @@ async function cachedKeys(sw) {
   // not sit there either.
   const sw = load();
   sw.setNetwork(async () => codesResponse(Date.now() + 60_000));
-  await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  await sw.request(request(codesOf("job-one")));
   sw.advance(120_000);
   sw.setNetwork(async () => {
     throw new TypeError("Failed to fetch");
   });
-  const stale = await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  const stale = await sw.request(request(codesOf("job-one")));
   const keys = await cachedKeys(sw);
   check(
     "a saved door code past its deadline is neither served nor kept",
@@ -389,11 +395,38 @@ async function cachedKeys(sw) {
 }
 
 {
+  // Two houses in one day, which is an ordinary Tuesday now. The old codes page carried
+  // every house and was matched ignoring the query string, so one saved copy answered every
+  // link. Per job it is the opposite rule: the query string IS which job, so a saved copy
+  // must never answer for another one. Handing her the wrong gate code is the failure this
+  // test exists to prevent.
+  // Only the first house's codes were ever fetched, and then the signal goes. Asking for
+  // the second house must fail, not answer with the first house's number: a wrong gate code
+  // read out at a real gate is the worst thing this worker could do.
+  const sw = load();
+  sw.setNetwork(async (req) => {
+    const slug = new URL(req.url).searchParams.get("slug");
+    return codesResponse(Date.now() + 60_000, slug, `CODES FOR ${slug}`);
+  });
+  await sw.request(request(codesOf("job-one")));
+  sw.setNetwork(async () => {
+    throw new TypeError("Failed to fetch");
+  });
+  const one = await sw.request(request(codesOf("job-one")));
+  const two = await sw.request(request(codesOf("job-two")));
+  check(
+    "a saved door code never answers for another job",
+    one.value?.body === "CODES FOR job-one" && !!two.error && two.value === undefined,
+    `one: ${one.value?.body ?? one.error}, two: ${two.value?.body ?? two.error}`,
+  );
+}
+
+{
   // The other half of what makes keeping them carryable. Revocation does not wait for a
   // deadline: the first navigation that comes back redirected takes the codes with it.
   const sw = load();
   sw.setNetwork(async () => codesResponse(Date.now() + 60_000));
-  await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  await sw.request(request(codesOf("job-one")));
   const held = await cachedKeys(sw);
   sw.setNetwork(async () =>
     response("ask Paul", { url: `${ORIGIN}/cleaning/no-access`, redirected: true }),
@@ -402,7 +435,7 @@ async function cachedKeys(sw) {
   const left = await sw.caches.keys();
   check(
     "a revoked phone loses the saved door code too",
-    held.includes("/cleaning/codes") && left.length === 0,
+    held.includes(codesOf("job-one")) && left.length === 0,
     `held ${held.join(", ") || "nothing"}, caches left: ${left.join(", ") || "none"}`,
   );
 }

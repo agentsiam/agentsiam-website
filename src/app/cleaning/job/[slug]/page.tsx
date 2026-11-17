@@ -6,24 +6,17 @@ import {
   HouseMark,
   JobType,
   Occupied,
-  Padlock,
   Phone,
   Pin,
 } from "@/components/cleaning/glyphs";
-import { CodesButton } from "@/components/cleaning/codes-button";
+import { HouseCodes } from "@/components/cleaning/house-codes";
 import { Comments } from "@/components/cleaning/comments";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
-import {
-  accessFor,
-  findVisit,
-  parseDocument,
-  propertyOf,
-  todayInBangkok,
-} from "@/lib/cleaning/document";
+import { findVisit, parseDocument, propertyOf, todayInBangkok } from "@/lib/cleaning/document";
 import { listComments } from "@/lib/cleaning/comments";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
-import { CLEANING_SCHEDULE, cleaningCodesPath } from "@/lib/cleaning/routes";
+import { CLEANING_SCHEDULE } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
 import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
 
@@ -88,7 +81,6 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   // The day decides, not the job: her clean may be at 12.00 and she may check before she
   // leaves home at 08.00, so the whole of the day she is on counts.
   const isToday = visit.date === todayInBangkok();
-  const access = isToday ? accessFor(document, visit.property) : null;
   const mark = markOf(houseMarks(document), visit.property);
 
   // The thread is read here rather than in the client, so it is on the page the service
@@ -203,20 +195,9 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         )
       ) : null}
 
-      {access ? (
-        <Link
-          href={cleaningCodesPath(visit.property)}
-          className="mt-4 flex items-center justify-between gap-3 rounded-panel bg-sand px-5 py-4 text-[18px] font-semibold text-ink transition-colors duration-150 active:bg-gold-on-ink"
-        >
-          <span className="min-w-0">{access.heading}</span>
-          <span
-            aria-hidden="true"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-ink text-gold-on-ink"
-          >
-            <Padlock />
-          </span>
-        </Link>
-      ) : null}
+      {/* The codes themselves, on the day, fetched rather than rendered so that no saved
+          copy of this page holds one. Nothing at all on any other day. */}
+      {isToday ? <HouseCodes slug={slug} /> : null}
 
       {visit.with.length > 0 && written(TEAM_STRINGS.jobPeopleHeading) ? (
         <h2 className="mt-5 text-[15px] font-semibold text-muted">
@@ -298,7 +279,6 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
       {/* Clear of the composer, which is the one place on these screens where a thumb is
           typing rather than tapping. */}
       <div className="h-16" />
-      <CodesButton label={document.access[0]?.heading ?? null} />
     </main>
   );
 }
