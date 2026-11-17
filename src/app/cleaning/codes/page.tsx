@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { RenderedBlock } from "@/components/cleaning/blocks";
 import { ChevronLeft } from "@/components/cleaning/glyphs";
+import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { parseDocument } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { CLEANING_SCHEDULE } from "@/lib/cleaning/routes";
@@ -16,9 +17,14 @@ import { TEAM_STRINGS } from "@/lib/cleaning/strings";
  * is sent back to the schedule, where the gate is. This page therefore has exactly one job,
  * which is to be readable at a gate in daylight by someone holding a bag.
  *
- * Still never cached, by three mechanisms: `src/proxy.ts` sets `no-store` on this path, the
- * service worker refuses it outright, and the page is dynamic. The codes are the one thing
- * in this app worth stealing and they are never written to a disk on the phone.
+ * **The service worker keeps this page now, which it used to refuse outright.** Paul's
+ * decision, 17/11/2026: the one moment the app exists for is a woman at a gate needing the
+ * number for the lock, and that gate is where the signal is not. The page still answers
+ * `no-store` and is still dynamic, so the browser's own cache and anything in between may
+ * not hold it; the worker's copy is the single exception, it exists only because
+ * `src/proxy.ts` put a deadline on that response, and it dies on that deadline or on the
+ * next navigation after Paul revokes the phone. `src/lib/cleaning/routes.ts` carries the
+ * reasoning and `src/lib/cleaning/session.ts` carries the window.
  *
  * Every string is the published document's. The lines read `ประตูรั้ว: 1234` as one piece of
  * text, label and value together, exactly as her LINE Note prints them, which is why the
@@ -53,6 +59,12 @@ export default async function CodesPage() {
         <ChevronLeft />
         <span className="min-w-0 truncate">{document ? document.title : ""}</span>
       </Link>
+
+      {/* A saved code can be a stale code: Paul may have changed the lock and republished
+          since this copy was fetched. The schedule screen answers the same question with
+          the same string, and she should be able to tell on this screen too whether what
+          she is reading came off the phone or off the network. */}
+      <OfflineNotice />
 
       {document?.access ? (
         <section className="mt-4 rounded-panel bg-ink p-5">

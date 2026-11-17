@@ -78,3 +78,25 @@ export const CLEANING_MANIFEST = "/cleaning/manifest.webmanifest";
  * /cleaning itself, and both are commented there.
  */
 export const CLEANING_GATE_HEADER = "X-Cleaning-Gate";
+
+/**
+ * The header that tells the service worker it may keep this door code page, and the moment
+ * its copy stops being allowed.
+ *
+ * It carries an absolute deadline in epoch milliseconds, never a flag, because the phone
+ * checking it may have been offline for days and a flag would mean "keep this forever". The
+ * number is codesKeepUntil in src/lib/cleaning/session.ts, which is the shorter of her
+ * remaining PIN session and seven days, and that file carries the reasoning for both.
+ *
+ * **A codes response that arrives without this header is served and never saved**, the same
+ * way the PIN gate is, so a copy fetched by anything that did not come through src/proxy.ts
+ * is not written down. The worker is the only cache allowed to hold these at all: the page
+ * still answers no-store, so the browser's own HTTP cache and anything in between still may
+ * not keep them, and the one copy that exists is under this app's control, with a deadline
+ * on it and a wipe that fires the moment a phone is revoked.
+ *
+ * public/cleaning-sw.js carries the same string as a literal, for the reason given above
+ * CLEANING_GATE_HEADER: a static file in public/ cannot import from src/. Changing one
+ * means changing both.
+ */
+export const CLEANING_KEEP_HEADER = "X-Cleaning-Keep-Until";

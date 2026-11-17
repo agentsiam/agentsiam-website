@@ -5,13 +5,18 @@
  *
  * **What it proves.** The worker's branching, which is where its risk is: what it refuses to
  * touch, what it saves, what it serves when fetch throws, and that a navigation coming back
- * redirected to the ask-Paul page wipes the cache. Nineteen cases, a line each, non-zero exit
- * on any failure. The door codes, the API and the enrolment link are passed through untouched
- * and never cached, and that is the case worth running before every change to this worker: a
- * door code written into a cache on a shared phone survives a revocation that the server
- * thinks it has carried out.
+ * redirected to the ask-Paul page wipes the cache. Twenty-five cases, a line each, non-zero
+ * exit on any failure.
  *
- * Two of the nineteen are about the PIN gate, which is the other way this worker can do harm.
+ * Six of them are the door codes, which this worker keeps as of 17/11/2026 and used to refuse
+ * outright, and that reversal is what makes them the cases worth running before every change
+ * to this file. A codes page is saved only when the app put a deadline on that response,
+ * served with no network only while that deadline holds, deleted rather than served once it
+ * has passed, and wiped with everything else the moment a phone is revoked. The failure they
+ * exist to catch is a door code sitting in a cache that outlives a revocation the server
+ * thinks it has carried out, or one read out at a gate a month after it was fetched.
+ *
+ * Two more are about the PIN gate, which is the other way this worker can do harm.
  * /cleaning answers with the PIN form to a phone that has not given it and with her schedule
  * to one that has, so a worker that saved both would replace the schedule she needs offline
  * with a form whose submit cannot reach the network. The app marks the gate with a header;
@@ -64,6 +69,16 @@ class FakeCache {
     }
     return undefined;
   }
+  async delete(request, options) {
+    const k = keyOf(request);
+    if (this.store.delete(k)) return true;
+    if (options?.ignoreSearch) {
+      for (const stored of [...this.store.keys()]) {
+        if (bare(stored) === bare(k)) return this.store.delete(stored);
+      }
+    }
+    return false;
+  }
   async keys() {
     return [...this.store.keys()];
   }
@@ -106,6 +121,15 @@ const response = (body, extra = {}) => ({
  * asked for, the way a real Headers does. */
 const gate = () => response("enter your PIN", { headers: { "x-cleaning-gate": "1" } });
 
+/** A door code page as the proxy answers it. The deadline is the whole difference between a
+ * copy the worker may keep and one it may only serve: pass 0 for the answer a phone gets
+ * when no live PIN session is behind it. */
+const codesResponse = (until) =>
+  response("THE DOOR CODES", {
+    url: `${ORIGIN}/cleaning/codes`,
+    headers: until ? { "x-cleaning-keep-until": String(until) } : {},
+  });
+
 const request = (path, extra = {}) => ({
   url: path.startsWith("http") ? path : `${ORIGIN}${path}`,
   method: "GET",
@@ -140,11 +164,17 @@ function load() {
     },
   };
 
+  // The worker reads Date.now() and nothing else off Date, so the fake is one function and
+  // the harness can move it. Without that, a deadline passing could only be tested by
+  // seeding the cache by hand, which would not exercise the path that put it there.
+  const clock = { now: Date.now() };
+
   const sandbox = {
     self,
     caches,
     URL,
     console,
+    Date: { now: () => clock.now },
     fetch: async (r) => {
       counts.fetches += 1;
       return network(r);
@@ -163,6 +193,10 @@ function load() {
     counts,
     setNetwork(fn) {
       network = fn;
+    },
+    /** Moves this worker's clock forward, in milliseconds. */
+    advance(ms) {
+      clock.now += ms;
     },
     async install() {
       const waits = [];
@@ -295,19 +329,103 @@ async function cachedKeys(sw) {
 }
 
 {
+  // The reversal, and the one moment the app exists for: she is at a gate, there is no
+  // signal, and the number for the lock has to be on the screen.
   const sw = load();
-  sw.setNetwork(async () => response("THE DOOR CODES"));
-  const codes = await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  sw.setNetwork(async () => codesResponse(Date.now() + 60_000));
+  const live = await sw.request(request("/cleaning/codes", { mode: "navigate" }));
   const keys = await cachedKeys(sw);
   check(
-    "the door codes are never touched",
-    codes.responded === false && keys.length === 0,
-    codes.responded ? "the worker answered it" : "passed straight through, nothing cached",
+    "a door code the app put a deadline on is saved",
+    live.responded && live.value?.body === "THE DOOR CODES" && keys.includes("/cleaning/codes"),
+    `cached: ${keys.join(", ") || "nothing"}`,
   );
 
+  sw.setNetwork(async () => {
+    throw new TypeError("Failed to fetch");
+  });
+  const offline = await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  check(
+    "with no network the saved door code is served",
+    offline.responded && offline.value?.body === "THE DOOR CODES",
+    offline.error ? `threw: ${offline.error}` : `served: ${offline.value?.body}`,
+  );
+}
+
+{
+  // No live PIN session behind it, so the proxy vouches for nothing and neither does the
+  // worker. This is also what a codes page fetched by anything outside the proxy looks like.
+  const sw = load();
+  sw.setNetwork(async () => codesResponse(0));
+  const bare = await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  const keys = await cachedKeys(sw);
+  check(
+    "a door code the app did not vouch for is served and not saved",
+    bare.responded && bare.value?.body === "THE DOOR CODES" && keys.length === 0,
+    `cached: ${keys.join(", ") || "nothing"}`,
+  );
+}
+
+{
+  // Saved properly, then the deadline passes with the phone never online again. A code a
+  // month old read out at a gate is worse than no code, so it is not served, and it does
+  // not sit there either.
+  const sw = load();
+  sw.setNetwork(async () => codesResponse(Date.now() + 60_000));
+  await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  sw.advance(120_000);
+  sw.setNetwork(async () => {
+    throw new TypeError("Failed to fetch");
+  });
+  const stale = await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  const keys = await cachedKeys(sw);
+  check(
+    "a saved door code past its deadline is neither served nor kept",
+    stale.responded && !!stale.error && keys.length === 0,
+    stale.error
+      ? `threw: ${stale.error}, holding: ${keys.join(", ") || "nothing"}`
+      : `served: ${stale.value?.body}`,
+  );
+}
+
+{
+  // The other half of what makes keeping them carryable. Revocation does not wait for a
+  // deadline: the first navigation that comes back redirected takes the codes with it.
+  const sw = load();
+  sw.setNetwork(async () => codesResponse(Date.now() + 60_000));
+  await sw.request(request("/cleaning/codes", { mode: "navigate" }));
+  const held = await cachedKeys(sw);
+  sw.setNetwork(async () =>
+    response("ask Paul", { url: `${ORIGIN}/cleaning/no-access`, redirected: true }),
+  );
+  await sw.request(request("/cleaning", { mode: "navigate" }));
+  const left = await sw.caches.keys();
+  check(
+    "a revoked phone loses the saved door code too",
+    held.includes("/cleaning/codes") && left.length === 0,
+    `held ${held.join(", ") || "nothing"}, caches left: ${left.join(", ") || "none"}`,
+  );
+}
+
+{
+  const sw = load();
+  sw.setNetwork(async () => response("should not be reached"));
   for (const path of ["/api/cleaning/pin", "/cleaning/enrol/abc123"]) {
     const out = await sw.request(request(path, { mode: "navigate" }));
     check(`${path} is never touched`, out.responded === false, out.responded ? "answered" : "passed through");
+  }
+
+  // And not even when the answer carries a deadline of its own. Nothing sets one on these
+  // paths today, and a deadline must never become the way in to a path that is refused.
+  sw.setNetwork(async () => codesResponse(Date.now() + 60_000));
+  for (const path of ["/api/cleaning/pin", "/cleaning/enrol/abc123"]) {
+    const out = await sw.request(request(path, { mode: "navigate" }));
+    const keys = await cachedKeys(sw);
+    check(
+      `${path} is never touched, deadline or not`,
+      out.responded === false && keys.length === 0,
+      out.responded ? "answered" : "passed through, nothing cached",
+    );
   }
 }
 

@@ -576,8 +576,8 @@ order, weight and position.
 
 | Screen | Needs | Is |
 |---|---|---|
-| `/cleaning` | the device cookie | Her schedule: the title, her visits in date order with the next one filled in ink, a marker on anything new or moved since she last looked, the contact block and the change lines |
-| `/cleaning/codes` | the device cookie and her PIN | Her gate and door codes, large. Never cached, by three mechanisms |
+| `/cleaning` | the device cookie, then her PIN | Her schedule: the title, her visits in date order with the next one filled in ink, a marker on anything new or moved since she last looked, the contact block and the change lines |
+| `/cleaning/codes` | the same PIN, never asked for twice | Her gate and door codes, large. Kept by the service worker alone, on a deadline, and by no other cache |
 | `/cleaning/enrol/<token>` | the link itself | The one URL that answers without a cookie. A GET greets her; the POST behind the button spends the token |
 | `/cleaning/no-access` | nothing | The one thing a phone with no working access is ever told: ask Paul for a new link in LINE |
 | `/admin/cleaning` | the admin session | Paul's screen: three people, their enrolled phones, a revoke each, a PIN each, a fresh link each |
@@ -610,16 +610,38 @@ for that reason.
 `npm run cleaning:icons` and committed, and `public/cleaning-sw.js`, which keeps the last
 schedule she loaded and serves it when the network does not answer. The worker is served from
 the root rather than from inside `/cleaning` because a worker's maximum scope is the directory
-it is served from. It refuses `/cleaning/codes` outright, and deletes its cache the first time
-a navigation comes back redirected to the "ask Paul" page, which is how a revoked phone loses
-its saved copy once it next has signal. It also refuses to save the PIN gate, which `/cleaning`
-answers with to a phone that has not given it: `src/proxy.ts` marks that answer with the header
-named in `src/lib/cleaning/routes.ts`, and without it one load of the gate would overwrite the
-saved schedule with a form whose submit cannot reach the network.
-`npm run test:cleaning-sw` drives that file outside a
-browser and covers all of it, nineteen cases with a non-zero exit on any failure; run it after
-touching the worker or that header, because the case that matters is the one saying the door
-codes are never written to a cache. What it cannot cover is a browser, which is the known gap below.
+it is served from. It deletes its cache the first time a navigation comes back redirected to
+the "ask Paul" page, which is how a revoked phone loses its saved copy once it next has
+signal. It refuses to save the PIN gate, which `/cleaning` answers with to a phone that has
+not given it, because one load of the gate would otherwise overwrite the saved schedule with
+a form whose submit cannot reach the network.
+
+**The door codes are kept too, and that is a reversal.** Until 17/11/2026 they were the one
+thing the app refused to write down anywhere. Paul's decision: the one moment this app exists
+for is a woman at a gate needing the number for the lock, and that gate is exactly where the
+signal is not, so giving her the dates offline and not the code sent her back to LINE, which
+is the thing the app was built to replace. What makes the copy carryable is that it is not
+unconditional. `src/proxy.ts` puts a deadline on that response and only when a live PIN
+session is behind it, so a codes page fetched any other way is served and never saved; the
+deadline is the shorter of her remaining PIN session and seven days, so a phone lost and
+never online again holds the codes for a week at the outside rather than the month the session
+runs; a copy past its deadline is deleted rather than served; and a revocation wipes it with
+everything else. The header is named in `src/lib/cleaning/routes.ts` and the window is in
+`src/lib/cleaning/session.ts`.
+
+**The page is still set to `no-store`, which is not a contradiction.** The rule has not
+become "the codes may be cached", it has become "the codes may be cached by us". No cache
+this app cannot reach is meant to hold them: not the browser's own HTTP cache, not a proxy in
+between. The service worker's copy is the single exception, and it is the exception precisely
+because it takes a deadline and answers to a kill switch. That is the whole difference
+between a cache we can wipe and one we cannot. What the page is set to and what it answers
+are not the same thing today: the known gap on this page's `Cache-Control` says what was
+actually observed.
+
+`npm run test:cleaning-sw` drives that file outside a browser and covers all of it,
+twenty-five cases with a non-zero exit on any failure; run it after touching the worker, that
+header or that window. Six of the cases are the door codes, which is where the risk now is.
+What it cannot cover is a browser, which is the known gap below.
 
 **One host, and deliberately no subdomain.** The team's app is served at
 `agentsiam.com/cleaning` and nowhere else, and nothing in the codebase reads a host. A
@@ -677,12 +699,15 @@ flow, end to end, with nothing live anywhere near it.
   they are written.
 - **The cleaning app's service worker has never run in a real browser (17/11/2026).** Its
   logic is covered: `npm run test:cleaning-sw` drives `public/cleaning-sw.js` outside a browser
-  with its globals stubbed, nineteen cases, non-zero exit on any failure, and it proves the
-  branching that matters. The door codes, the API and the enrolment link pass through untouched
-  and are never cached, a schedule saved from a good load is served when fetch throws, a cold
-  cache fails rather than inventing a page, a navigation coming back redirected to the
-  no-access page wipes the cache, and the PIN gate is served without being saved over her
-  schedule. So the caching and the offline fallback are no longer unproven. What is still unproven needs a browser: that one registers the script at all, that
+  with its globals stubbed and its clock movable, twenty-five cases, non-zero exit on any
+  failure, and it proves the branching that matters. The API and the enrolment link pass
+  through untouched whatever they answer, a schedule saved from a good load is served when
+  fetch throws, a cold cache fails rather than inventing a page, a navigation coming back
+  redirected to the no-access page wipes the cache, the PIN gate is served without being saved
+  over her schedule, and a door code is saved only on the app's say-so, served with no network
+  only while its deadline holds, and deleted rather than served once it has passed. Every one
+  of those was watched to fail against a worker broken on purpose. So the caching and the
+  offline fallback are no longer unproven. What is still unproven needs a browser: that one registers the script at all, that
   it installs, that it serves the saved copy after a real network failure rather than a thrown
   fetch in a harness, and the install prompt on either iOS or Android. The browser available
   while it was built refuses registration outright, for any script on any origin, returning
@@ -690,6 +715,20 @@ flow, end to end, with nothing live anywhere near it.
   script` while a HEAD for that same URL answers 200 with `application/javascript; charset=utf-8`,
   so the refusal is the browser and not the file. It needs one real phone, which on this project
   means production.
+
+- **The codes page does not actually answer `no-store`, and the browser cache claim above
+  rests on it (17/11/2026).** `src/proxy.ts` sets `Cache-Control: no-store, must-revalidate`
+  on `/cleaning/codes`, and what the page answers is `Cache-Control: no-cache,
+  must-revalidate`. Observed against the dev server on this tree, with a live device cookie
+  and PIN cookie, by reading the response headers directly; Next's own header for a dynamic
+  render wins over the one the proxy sets. The difference is not cosmetic: `no-store` means a
+  cache may not keep the response at all, and `no-cache` means it may keep it as long as it
+  revalidates before reusing it, so a door code may be sitting in the browser's own HTTP
+  cache on disk, which is the one place the design says it must not be. The service worker's
+  copy is unaffected and is still the only copy this app can reach, delete or put a deadline
+  on. Unverified in production: whether a production build answers the same way was not
+  checked, and it is worth the first real deploy looking at before anything else. The fix, if
+  it is needed, is not in the proxy, because a header set there is what is being overridden.
 
 - ~~**The CRM admin has never saved to GitHub (11/11/2026).**~~ Resolved 13/11/2026 by the
   first real save. Paul added a candidate to `G-0003` from the live domain and it landed as

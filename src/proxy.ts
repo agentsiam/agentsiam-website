@@ -5,6 +5,7 @@ import { ADMIN_ROOT, ADMIN_SIGN_IN } from "@/lib/admin/routes";
 import {
   CLEANING_COOKIE,
   CLEANING_PIN_COOKIE,
+  codesKeepUntil,
   readDeviceCookie,
   readPinCookie,
 } from "@/lib/cleaning/session";
@@ -12,6 +13,7 @@ import {
   CLEANING_CODES,
   CLEANING_ENROL,
   CLEANING_GATE_HEADER,
+  CLEANING_KEEP_HEADER,
   CLEANING_NO_ACCESS,
   CLEANING_ROOT,
   CLEANING_SCHEDULE,
@@ -63,26 +65,42 @@ async function cleaning(request: NextRequest, pathname: string) {
   const session = await readDeviceCookie(request.cookies.get(CLEANING_COOKIE)?.value);
   if (session) {
     const response = NextResponse.next();
-    // The codes are never written to a disk anywhere: not in a browser cache, not in a
-    // proxy in between, and not by the service worker, which refuses this path for itself.
-    // Set here rather than in next.config.ts because a header set there is overridden in
-    // development, which is the one place this can be checked.
+
+    // Both paths below turn on whether her PIN is live, so it is read once. On every other
+    // path under /cleaning it is not read at all.
+    const pin =
+      pathname === CLEANING_SCHEDULE || pathname === CLEANING_CODES
+        ? await readPinCookie(
+            request.cookies.get(CLEANING_PIN_COOKIE)?.value,
+            session.person,
+            session.device,
+          )
+        : null;
+
     if (pathname === CLEANING_CODES) {
+      // Still no-store, and that is not the contradiction it looks like next to the header
+      // below. No cache we cannot reach may hold a door code: not the browser's own, not a
+      // proxy in between. The service worker's is the one exception because it is ours, it
+      // takes a deadline, and a revoked phone's copy is wiped on its next navigation. Set
+      // here rather than in next.config.ts because a header set there is overridden in
+      // development, which is the one place this can be checked.
       response.headers.set("Cache-Control", "no-store, must-revalidate");
+      // What lets her read the code at a gate with no signal, which is the one moment this
+      // app exists for. Only with a live PIN session behind it, and only until the deadline
+      // in src/lib/cleaning/session.ts, which is the shorter of that session and seven
+      // days. Without this header the worker serves the page and writes nothing down.
+      if (pin) response.headers.set(CLEANING_KEEP_HEADER, String(codesKeepUntil(pin.expires)));
     }
+
     // The schedule URL answers with the PIN gate to a phone that has not given it, and the
     // service worker saves every schedule that loads. Marked so the worker can tell the
     // two apart, because one save of the gate would overwrite the saved schedule she needs
     // when the house has no signal. A hint about storage, never the gate itself: the gate
     // is the pinGiven check inside the page, which also knows about revocation.
-    if (pathname === CLEANING_SCHEDULE) {
-      const pin = await readPinCookie(
-        request.cookies.get(CLEANING_PIN_COOKIE)?.value,
-        session.person,
-        session.device,
-      );
-      if (!pin) response.headers.set(CLEANING_GATE_HEADER, "1");
+    if (pathname === CLEANING_SCHEDULE && !pin) {
+      response.headers.set(CLEANING_GATE_HEADER, "1");
     }
+
     return response;
   }
 

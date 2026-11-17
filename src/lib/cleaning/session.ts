@@ -59,6 +59,42 @@ export const CLEANING_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
  */
 export const CLEANING_PIN_MAX_AGE = 60 * 60 * 24 * 30;
 
+/**
+ * Seven days, which is the longest a saved door code may sit on a phone.
+ *
+ * The codes were the one thing this app refused to write down anywhere. Paul's decision,
+ * 17/11/2026, reverses that, and the reason is the whole point of the app: the one moment
+ * it exists for is a woman standing at a gate needing the number for the lock, and a Thai
+ * house is exactly where the signal is not. Offline she had her dates and not the code, so
+ * she opened LINE, which is the thing this app was built to replace.
+ *
+ * **The window is the shorter of this and what is left of her PIN session**, never seven
+ * days on its own, so this is a ceiling and not a lifetime. Thirty days is light to type
+ * and the right length for reading a schedule, and far too long for a door code to sit in
+ * a phone's storage with nobody having touched the app. A phone lost and never online
+ * again holds the codes for a week at the outside rather than a month.
+ *
+ * Because the ceiling is taken as a minimum against the session's own expiry, a saved copy
+ * can never outlive the session it was fetched under. That expiry is fixed when the cookie
+ * is issued, so a stored copy whose session has lapsed is already past its own deadline and
+ * the worker deletes it instead of serving it. Revocation does not wait for either number:
+ * the first navigation that comes back redirected to the ask-Paul page wipes the whole
+ * cache, and the codes copy goes with it.
+ */
+export const CLEANING_CODES_KEEP_MAX_AGE = 60 * 60 * 24 * 7;
+
+/**
+ * When a door code page fetched right now may be kept until, in epoch milliseconds.
+ *
+ * A deadline rather than a flag or a duration, because the arithmetic is done on a phone
+ * that may have been offline for a week and the only honest thing to hand it is the moment
+ * its copy stops being allowed. Set by src/proxy.ts as a response header, and checked by
+ * public/cleaning-sw.js against that phone's own clock.
+ */
+export function codesKeepUntil(pinExpires: number): number {
+  return Math.min(pinExpires, Date.now() + CLEANING_CODES_KEEP_MAX_AGE * 1000);
+}
+
 const SECRET = process.env.CLEANING_COOKIE_SECRET ?? "";
 
 /** A secret shorter than this is a typo, not a secret. `openssl rand -base64 32` gives 44
