@@ -708,10 +708,12 @@ flow, end to end, with nothing live anywhere near it.
   changed for it; the app read `built_at` off the document already.
 - **The cleaning app's own Thai strings are unwritten, and every screen says so (17/11/2026).**
   They are in `src/lib/cleaning/strings.ts`, which holds the count, and each renders on screen as
-  Latin text in square brackets. While any one of them is still a placeholder every screen under
-  `/cleaning` carries an English warning saying how many are left and naming them, so a pending
-  screen cannot be screenshotted as a finished one and a placeholder cannot pass for copy at arm's
-  length. Paul writes them on the sheet at
+  Latin text in square brackets **in the file and nowhere else**: since 17/11/2026 an unwritten
+  string renders as nothing on screen and takes its element with it, at Paul's instruction, and
+  the band that used to count them on every screen is gone. So nothing in the running app says a
+  sentence is missing, which is the cost of that instruction and the reason this entry says it:
+  `grep '\[TH' src/lib/cleaning/strings.ts` is now the only thing that finds them. Paul writes
+  them on the sheet at
   `/Users/paulb/code/agentsiam/agentsiam-consulting/as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt`,
   one slot per string with where it appears, what it has to say and what it must not; each filled
   slot is a one-line edit in that file and nothing else in the app changes. The schedule screen,
