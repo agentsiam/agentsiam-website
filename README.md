@@ -652,6 +652,21 @@ never registered at all so there was no offline copy of anything, and a code pat
 nothing had ever exercised. Those are not three risks. They are one risk three times, which
 is that the app the team would have got was not the app anyone had tested.
 
+**More than one house, and the screens that come with it.** The published document can name
+the properties she works at, put one on each visit, carry one access block per house and hand
+over the date as a label of its own. When it does, the schedule becomes days with jobs under
+them rather than a flat list, each job carries its house, a job screen appears behind every
+card holding the address as a tappable map link and the way into that house's codes, and the
+codes screen lists every house with the one she is going to next at the top. When it does not,
+which is every document the skill publishes today, all of that quietly disappears and the
+screens are exactly what they were: one house, implied, with no chip, no address and one set
+of codes. That fallback is not theoretical, it is the only shape in production, and it is
+checked by pointing the local fixture at a document built before any of this existed.
+
+The codes screen takes `?house=`, and it is ordering and never filtering. The worker matches a
+saved page ignoring the query string, so one saved copy answers every one of those links and
+it has to hold every house or a phone with no signal would open the wrong gate.
+
 **Three environment variables**, documented in `.env.example`: `CLEANING_COOKIE_SECRET`, then
 either the `KV_REST_API_*` pair for the real store or `CLEANING_LOCAL_PATH` for development.
 Unset, the app fails shut: no link opens and no cookie resolves.
@@ -697,6 +712,14 @@ flow, end to end, with nothing live anywhere near it.
   slot is a one-line edit in that file and nothing else in the app changes. The schedule screen,
   the enrolment link and the PIN prompt all carry at least one, so the app is not for a phone until
   they are written.
+- **The app reads a multi-property document the skill does not write yet (17/11/2026).** The
+  screens for several houses are built, and the fields they read are specified in
+  `as-work/2026-11-17-cleaning-app-multi-property/` in the consulting repo. `build_note.py`
+  publishes one property per run and carries no `properties`, no `property` on a visit, no
+  `day_label` and a single access block, so those screens are exercised only against a fixture
+  that merges two runs by hand, and everything in production takes the single-house path.
+  Closing it is a change to the skill rather than to this app: one run across several
+  properties, merged per person.
 - **The cleaning app's service worker has never run in a real browser (17/11/2026).** Its
   logic is covered: `npm run test:cleaning-sw` drives `public/cleaning-sw.js` outside a browser
   with its globals stubbed and its clock movable, twenty-five cases, non-zero exit on any
