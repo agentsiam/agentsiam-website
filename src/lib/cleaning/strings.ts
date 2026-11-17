@@ -134,6 +134,40 @@ export const TEAM_STRINGS = {
   /** The control that opens the days already behind her. It carries a count and a chevron
    * and no word for what is behind it. */
   pastJobs: "งานที่ผ่านมา",
+
+  /**
+   * What kind of clean this is, in words, under its own heading.
+   *
+   * The document has carried `type` since the first run and the app drew it as a figure and
+   * nothing else. Paul, 17/11/2026: a job should say whether it is a turnover for a new
+   * check-in or a clean during somebody's stay. These are the two values that field can
+   * hold, so these are the two sentences; a third value would render no sentence rather
+   * than a guessed one.
+   *
+   * Her job line already carries the occupied marker on a mid-stay. This is the same fact
+   * said plainly, which is the difference between a marker she has learned and a sentence
+   * she can read the first time.
+   */
+  jobDetailsHeading: "รายละเอียดงาน",
+  jobTurnover: "แขกเช็คเอาท์ แล้วมีแขกใหม่เช็คอิน",
+  jobMidstay: "แขกยังพักอยู่ ทำความสะอาดระหว่างที่แขกพัก",
+
+  /** Above anything true of this one clean: a cot, an extra bed, something to prepare. The
+   * text under it is the skill's, from the payload, and is never written here. */
+  jobRequestsHeading: "คำขอพิเศษ",
+
+  /**
+   * The conversation about one clean, and the two words its box needs.
+   *
+   * The first place in this app where somebody on the team types something. The heading is
+   * what the section is; the placeholder sits in an empty box; the button sends it; the
+   * last one is what a phone says when the send did not land, which offline is the ordinary
+   * case rather than the exception.
+   */
+  commentsHeading: "ข้อความ",
+  commentPlaceholder: "เขียนข้อความ",
+  commentSend: "ส่ง",
+  commentFailed: "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง",
 } as const;
 
 /** Paul's wording with `{when}` filled in, or nothing while the wording is unwritten. The
