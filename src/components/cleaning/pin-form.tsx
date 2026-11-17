@@ -69,8 +69,16 @@ export function PinForm() {
         style={{ fontFamily: "var(--font-plex-sans), system-ui, sans-serif" }}
         required
       />
+      {/* The only thing in this button is a padlock, correctly aria-hidden, which left it
+          announcing nothing at all: a bare submit button in the accessibility tree. It
+          borrows the prompt above the field rather than taking a string of its own, because
+          that sentence already says what the button is for and Paul writes every string here
+          from a sheet. A screen reader therefore reads the same line twice, once for the
+          field and once for the button, which is worth an eleventh string one day and is not
+          worth inventing one. */}
       <button
         type="submit"
+        aria-label={TEAM_STRINGS.pinPrompt}
         disabled={busy || pin.length < 4}
         className="mt-5 w-full rounded-box bg-ink px-4 py-4 text-[18px] font-semibold text-bg disabled:opacity-40"
       >
