@@ -15,6 +15,28 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
+  async headers() {
+    return [
+      {
+        // The cleaning team's door codes, which are the one thing in that app worth
+        // stealing. Two mechanisms keep them off every disk between the store and her
+        // eyes, and neither depends on the other: this, and the same header set in
+        // src/proxy.ts. The service worker refuses the path outright, which is a third.
+        // Belt and braces on purpose: a header that silently stops being applied is not
+        // something anybody would notice until it mattered.
+        source: "/cleaning/codes",
+        headers: [{ key: "Cache-Control", value: "no-store, must-revalidate" }],
+      },
+      {
+        // A service worker a browser holds for a day is a day of the app not updating.
+        source: "/cleaning-sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache" },
+          { key: "Content-Type", value: "application/javascript; charset=utf-8" },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       // The design folds the company story into /how-it-works and drops /about. The old

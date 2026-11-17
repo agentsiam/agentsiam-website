@@ -1,0 +1,113 @@
+{
+  "_readme": [
+    "A payload for the cleaning-schedule skill, for developing the cleaning team's app in",
+    "this repository without reaching the real store and without a live door code ever",
+    "being on this machine. Every code and every phone number below is invented and none",
+    "of them opens anything. The README section on this app has the two commands that turn",
+    "it into a documents file, and CLEANING_LOCAL_PATH in .env.example is where that file",
+    "is named. Dates move: edit the jobs so some of them are in the future, or the whole",
+    "fixture renders as a schedule that has already happened.",
+    "",
+    "Every Thai string below is one Paul already approved, copied from where it lives: the",
+    "two note titles from 275645-cleaning.md, the cot note from the same file and from the",
+    "skill, the three names from cleaning-team.md. Where no approved string exists, the",
+    "fixture carries a Latin placeholder in square brackets and never a sentence written",
+    "here. That is the rule this file broke once and the reason it now says so: an extra",
+    "bed has no approved wording, and a fixture is not where one gets written."
+  ],
+  "note_titles": {
+    "cleaning": {
+      "th": "คิวทำความสะอาดบ้านช้างคลาน 42 ซอย1"
+    },
+    "laundry": {
+      "th": "คิวส่งผ้าบ้านช้างคลาน 42 ซอย1",
+      "en": "Laundry queue - 42 Chang Khlan Soi 1"
+    }
+  },
+  "property_access": { "gate": "424242" },
+  "roster": {
+    "da": {
+      "th": "ดา",
+      "en": "Da",
+      "lang": "th",
+      "role": "cleaning",
+      "phone": "08 1111 1111",
+      "access": { "door": "111111" }
+    },
+    "aun": {
+      "th": "อัน",
+      "en": "Aun",
+      "lang": "th",
+      "role": "cleaning",
+      "phone": "08 2222 2222",
+      "access": { "door": "222222" }
+    },
+    "ting": {
+      "th": "Ting",
+      "en": "Ting",
+      "lang": "th",
+      "role": "laundry",
+      "phone": "08 3333 3333",
+      "access": { "door": "333333" }
+    }
+  },
+  "jobs": [
+    {
+      "date": "2026-11-14",
+      "time": "12.00",
+      "cleaner": "aun",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "80550900"
+    },
+    {
+      "date": "2026-11-18",
+      "time": "12.00",
+      "cleaner": "da",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "80551001"
+    },
+    {
+      "date": "2026-11-22",
+      "time": "12.00",
+      "cleaner": "aun",
+      "laundry": "ting",
+      "type": "midstay",
+      "booking": "80551002",
+      "note": {
+        "th": "เพิ่มเตียงเด็ก(อยู่ใต้บันได)",
+        "en": "add the child bed",
+        "for": ["cleaning"]
+      }
+    },
+    {
+      "date": "2026-11-26",
+      "time": "12.00",
+      "cleaner": "da",
+      "laundry": "ting",
+      "type": "midstay",
+      "booking": "80551003",
+      "note": {
+        "th": "[TH per-clean note: an extra bed, reaching both functions]",
+        "en": "[EN per-clean note: an extra bed, reaching both functions]"
+      }
+    },
+    {
+      "date": "2026-12-01",
+      "time": "12.00",
+      "cleaner": "da",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "80551004"
+    },
+    {
+      "date": "2026-12-06",
+      "time": "12.00",
+      "cleaner": "aun",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "80551005"
+    }
+  ]
+}
