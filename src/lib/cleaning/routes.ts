@@ -12,10 +12,16 @@
 
 export const CLEANING_ROOT = "/cleaning";
 
-/** Her schedule. The device cookie alone opens it. */
+/**
+ * Her schedule, behind her PIN.
+ *
+ * Since 17/11/2026 this one URL answers with two different documents: the PIN gate to a
+ * phone that has not given it, and her schedule to one that has. That is the whole reason
+ * CLEANING_GATE_HEADER below exists.
+ */
 export const CLEANING_SCHEDULE = CLEANING_ROOT;
 
-/** Her codes. The device cookie plus her PIN. */
+/** Her codes. Opened by the same PIN as the schedule, and never asked for a second time. */
 export const CLEANING_CODES = `${CLEANING_ROOT}/codes`;
 
 /** What a phone with no working device cookie is shown: ask Paul for a new link, and
@@ -49,3 +55,26 @@ export const ADMIN_API_CLEANING = "/api/admin/cleaning";
  */
 export const CLEANING_SERVICE_WORKER = "/cleaning-sw.js";
 export const CLEANING_MANIFEST = "/cleaning/manifest.webmanifest";
+
+/**
+ * The header that tells the service worker it is looking at the PIN gate and not a
+ * schedule, so that it serves the page and saves nothing.
+ *
+ * It exists because CLEANING_SCHEDULE is one URL serving two documents. The worker saves
+ * every schedule that loads, which is what lets her read one at a gate with no signal, and
+ * a cache is keyed on the URL alone. Without this, one load of the gate replaces the saved
+ * schedule with a PIN form, and the next time she has no signal the phone shows her a form
+ * whose submit cannot reach the network: the thing the worker exists for becomes the one
+ * thing it cannot do.
+ *
+ * Set in src/proxy.ts, which is the only layer here that can set a header, because a server
+ * component cannot. **It is a hint about storage and never the gate.** The gate is the
+ * pinGiven check inside the page, which also knows about revocation; if this header were
+ * wrong in either direction the cost would be a stale cache entry or a missed one, never a
+ * door code on a screen.
+ *
+ * public/cleaning-sw.js carries the same string as a literal, because a static file in
+ * public/ cannot import from src/. It is the second value that file duplicates, after
+ * /cleaning itself, and both are commented there.
+ */
+export const CLEANING_GATE_HEADER = "X-Cleaning-Gate";

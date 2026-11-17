@@ -2,12 +2,19 @@ import { NextResponse, type NextRequest } from "next/server";
 import { DEFAULT_LOCALE, LOCALES } from "@/i18n/config";
 import { ADMIN_COOKIE, readSession } from "@/lib/admin/session";
 import { ADMIN_ROOT, ADMIN_SIGN_IN } from "@/lib/admin/routes";
-import { CLEANING_COOKIE, readDeviceCookie } from "@/lib/cleaning/session";
+import {
+  CLEANING_COOKIE,
+  CLEANING_PIN_COOKIE,
+  readDeviceCookie,
+  readPinCookie,
+} from "@/lib/cleaning/session";
 import {
   CLEANING_CODES,
   CLEANING_ENROL,
+  CLEANING_GATE_HEADER,
   CLEANING_NO_ACCESS,
   CLEANING_ROOT,
+  CLEANING_SCHEDULE,
 } from "@/lib/cleaning/routes";
 
 // `proxy` is Next 16's rename of `middleware`. Same file position, same API.
@@ -80,6 +87,19 @@ async function cleaning(request: NextRequest, pathname: string) {
     // development, which is the one place this can be checked.
     if (pathname === CLEANING_CODES) {
       response.headers.set("Cache-Control", "no-store, must-revalidate");
+    }
+    // The schedule URL answers with the PIN gate to a phone that has not given it, and the
+    // service worker saves every schedule that loads. Marked so the worker can tell the
+    // two apart, because one save of the gate would overwrite the saved schedule she needs
+    // when the house has no signal. A hint about storage, never the gate itself: the gate
+    // is the pinGiven check inside the page, which also knows about revocation.
+    if (pathname === CLEANING_SCHEDULE) {
+      const pin = await readPinCookie(
+        request.cookies.get(CLEANING_PIN_COOKIE)?.value,
+        session.person,
+        session.device,
+      );
+      if (!pin) response.headers.set(CLEANING_GATE_HEADER, "1");
     }
     return response;
   }

@@ -20,6 +20,10 @@
  *   page   /cleaning and anything under it: network first, and the saved copy when the
  *          network does not answer. Network first rather than cache first because a
  *          schedule that changed this morning matters more than a few hundred milliseconds.
+ *          One exception, and it is not about freshness: a page carrying the gate header is
+ *          served and never saved, because /cleaning answers with the PIN form to a phone
+ *          that has not given it, and saving that would overwrite the schedule she needs
+ *          when the house has no signal.
  *   asset  Next's hashed build files and the icons: cache first. The hash in the name is
  *          what makes that safe.
  *
@@ -32,6 +36,23 @@
 const CACHE = "cleaning-v1";
 const ROOT = "/cleaning";
 const NO_ACCESS = "/cleaning/no-access";
+
+/**
+ * The header the app sets on the PIN gate, which is the one page under /cleaning that is
+ * served and never saved.
+ *
+ * /cleaning is one URL serving two documents: the PIN form to a phone that has not given
+ * it, her schedule to one that has. A cache is keyed on the URL alone, so without this,
+ * one load of the form would replace the saved schedule, and the next time she stood at a
+ * gate with no signal the phone would show her a form whose submit cannot reach the
+ * network.
+ *
+ * The same string is CLEANING_GATE_HEADER in src/lib/cleaning/routes.ts, which sets it in
+ * src/proxy.ts and carries the full reasoning. Duplicated as a literal here because a
+ * static file in public/ cannot import from src/, which is also why ROOT above repeats
+ * CLEANING_ROOT. Changing one means changing both.
+ */
+const GATE_HEADER = "X-Cleaning-Gate";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(self.skipWaiting());
@@ -72,7 +93,7 @@ async function page(request) {
       await caches.delete(CACHE);
       return response;
     }
-    if (response.ok && response.type === "basic") {
+    if (response.ok && response.type === "basic" && !response.headers.get(GATE_HEADER)) {
       await cache.put(request, response.clone());
     }
     return response;

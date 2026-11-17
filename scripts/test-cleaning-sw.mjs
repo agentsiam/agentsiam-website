@@ -5,11 +5,17 @@
  *
  * **What it proves.** The worker's branching, which is where its risk is: what it refuses to
  * touch, what it saves, what it serves when fetch throws, and that a navigation coming back
- * redirected to the ask-Paul page wipes the cache. Seventeen cases, a line each, non-zero exit
+ * redirected to the ask-Paul page wipes the cache. Nineteen cases, a line each, non-zero exit
  * on any failure. The door codes, the API and the enrolment link are passed through untouched
  * and never cached, and that is the case worth running before every change to this worker: a
  * door code written into a cache on a shared phone survives a revocation that the server
  * thinks it has carried out.
+ *
+ * Two of the nineteen are about the PIN gate, which is the other way this worker can do harm.
+ * /cleaning answers with the PIN form to a phone that has not given it and with her schedule
+ * to one that has, so a worker that saved both would replace the schedule she needs offline
+ * with a form whose submit cannot reach the network. The app marks the gate with a header;
+ * these cases are what proves the worker honours it.
  *
  * **What it does not prove.** That a browser registers the script, installs it, or serves the
  * saved copy after a real network failure, and nothing about the install prompt on either
@@ -87,10 +93,18 @@ const response = (body, extra = {}) => ({
   redirected: false,
   url: extra.url ?? `${ORIGIN}/cleaning`,
   ...extra,
+  headers: {
+    get: (name) => (extra.headers ?? {})[name.toLowerCase()] ?? null,
+  },
   clone() {
     return { ...this, clone: () => this.clone() };
   },
 });
+
+/** The PIN gate, which the app marks with a header so this worker serves it and saves
+ * nothing. Keys in the fixture are lowercase because the fake's get() lowercases what it is
+ * asked for, the way a real Headers does. */
+const gate = () => response("enter your PIN", { headers: { "x-cleaning-gate": "1" } });
 
 const request = (path, extra = {}) => ({
   url: path.startsWith("http") ? path : `${ORIGIN}${path}`,
@@ -232,6 +246,38 @@ async function cachedKeys(sw) {
     "a query string still finds the saved copy",
     withQuery.responded && withQuery.value?.body === "her schedule, 18 Nov",
     withQuery.error ? `threw: ${withQuery.error}` : "served the saved copy",
+  );
+}
+
+{
+  const sw = load();
+  sw.setNetwork(async () => gate());
+  const first = await sw.request(request("/cleaning", { mode: "navigate" }));
+  const keys = await cachedKeys(sw);
+  check(
+    "the PIN gate is served but never saved",
+    first.responded && first.value?.body === "enter your PIN" && keys.length === 0,
+    `cached: ${keys.join(", ") || "nothing"}`,
+  );
+}
+
+{
+  // The sequence that costs her a schedule if the header is not honoured: she loads it on
+  // wifi, the PIN expires a month later and she opens the app once at home, then she is at
+  // a house with no signal. The saved copy has to still be the schedule.
+  const sw = load();
+  sw.setNetwork(async () => response("her schedule, 18 Nov"));
+  await sw.request(request("/cleaning", { mode: "navigate" }));
+  sw.setNetwork(async () => gate());
+  await sw.request(request("/cleaning", { mode: "navigate" }));
+  sw.setNetwork(async () => {
+    throw new TypeError("Failed to fetch");
+  });
+  const offline = await sw.request(request("/cleaning", { mode: "navigate" }));
+  check(
+    "a PIN gate does not overwrite the saved schedule",
+    offline.responded && offline.value?.body === "her schedule, 18 Nov",
+    offline.error ? `threw: ${offline.error}` : `served: ${offline.value?.body}`,
   );
 }
 

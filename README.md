@@ -612,10 +612,14 @@ schedule she loaded and serves it when the network does not answer. The worker i
 the root rather than from inside `/cleaning` because a worker's maximum scope is the directory
 it is served from. It refuses `/cleaning/codes` outright, and deletes its cache the first time
 a navigation comes back redirected to the "ask Paul" page, which is how a revoked phone loses
-its saved copy once it next has signal. `npm run test:cleaning-sw` drives that file outside a
-browser and covers all of it, seventeen cases with a non-zero exit on any failure; run it after
-touching the worker, because the case that matters is the one saying the door codes are never
-written to a cache. What it cannot cover is a browser, which is the known gap below.
+its saved copy once it next has signal. It also refuses to save the PIN gate, which `/cleaning`
+answers with to a phone that has not given it: `src/proxy.ts` marks that answer with the header
+named in `src/lib/cleaning/routes.ts`, and without it one load of the gate would overwrite the
+saved schedule with a form whose submit cannot reach the network.
+`npm run test:cleaning-sw` drives that file outside a
+browser and covers all of it, nineteen cases with a non-zero exit on any failure; run it after
+touching the worker or that header, because the case that matters is the one saying the door
+codes are never written to a cache. What it cannot cover is a browser, which is the known gap below.
 
 **Four environment variables**, documented in `.env.example`: `CLEANING_COOKIE_SECRET`, then
 either the `KV_REST_API_*` pair for the real store or `CLEANING_LOCAL_PATH` for development,
