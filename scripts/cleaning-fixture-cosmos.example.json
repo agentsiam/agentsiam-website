@@ -1,0 +1,137 @@
+{
+  "_readme": [
+    "Cosmos House, the second half of the two-house fixture for developing and testing the",
+    "cleaning team's app. The first half is scripts/cleaning-fixture-lotus.example.json,",
+    "and the README section on this app has the commands that turn the pair into one merged",
+    "documents file.",
+    "",
+    "Every code and every phone number below is invented and none of them opens or reaches",
+    "anything. The personal door codes are the same digits as the Lotus House fixture's",
+    "because the skill holds them on the roster and not on the property: its own words are",
+    "that they are per person and identical across every property. Only the gate code is the",
+    "house's. A fixture that gave one person two different door codes would be describing a",
+    "payload shape that does not exist.",
+    "",
+    "The address is the house's own, copied from the Address row of",
+    "as-operations/properties/pending_36ChangKhlan/36ChangKhlan-property-profile.md in the",
+    "document store. The map link is derived from it and from nothing else.",
+    "",
+    "The id is the house's website slug rather than a Beds24 property id, because Cosmos",
+    "House has no Beds24 room: the site lists it for enquiry only. Lotus House's id is its",
+    "Beds24 property id for the same reason, which is that in both cases it is the key the",
+    "venture already uses for that house. Whatever the id is, it has to be stable: a screen",
+    "tells two houses apart by it.",
+    "",
+    "The queue titles are Latin placeholders in square brackets. A house name is Paul's to",
+    "write and a fixture is not where Thai gets written, which is the rule the older fixture",
+    "carries too.",
+    "",
+    "The jobs are built to exercise what the screens now do, not to look plausible:",
+    "- 18/11 and 22/11 collide with Lotus House jobs, so one day holds two houses",
+    "- 22/11 at 09.30 and 18/11 at 10.00 fall earlier than the Lotus jobs on those days,",
+    "  so a day whose jobs are ordered by anything but the hour is visibly wrong",
+    "- 19/11 and 30/11 are mid-stay, so the occupied mark and the mid-stay line appear",
+    "- Da is on both houses on 18/11 and 22/11, and Ting is on every job in both houses",
+    "",
+    "Dates move. Edit the jobs so some of them are in the future, or the whole fixture",
+    "renders as a schedule that has already happened."
+  ],
+  "note_titles": {
+    "cleaning": {
+      "th": "[TH Cosmos House cleaning queue title]",
+      "all_houses": { "th": "Cleaning queue" }
+    },
+    "laundry": {
+      "th": "[TH Cosmos House laundry queue title]",
+      "en": "[EN Cosmos House laundry queue title]",
+      "all_houses": { "th": "Laundry queue" }
+    }
+  },
+  "property": {
+    "id": "cosmoshouse",
+    "name": { "th": "Cosmos House" },
+    "address": "36 Soi 1, Chang Khlan Rd, Chiang Mai 50100",
+    "map": "https://www.google.com/maps/search/?api=1&query=36+Soi+1%2C+Chang+Khlan+Rd%2C+Chiang+Mai+50100"
+  },
+  "property_access": { "gate": "515151" },
+  "roster": {
+    "da": {
+      "th": "ดา",
+      "en": "Da",
+      "lang": "th",
+      "role": "cleaning",
+      "phone": "08 1111 1111",
+      "access": { "door": "111111" }
+    },
+    "aun": {
+      "th": "อัน",
+      "en": "Aun",
+      "lang": "th",
+      "role": "cleaning",
+      "phone": "08 2222 2222",
+      "access": { "door": "222222" }
+    },
+    "ting": {
+      "th": "Ting",
+      "en": "Ting",
+      "lang": "th",
+      "role": "laundry",
+      "phone": "08 3333 3333",
+      "access": { "door": "333333" }
+    }
+  },
+  "jobs": [
+    {
+      "date": "2026-11-18",
+      "time": "10.00",
+      "cleaner": "da",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "90220001"
+    },
+    {
+      "date": "2026-11-19",
+      "time": "13.00",
+      "cleaner": "aun",
+      "laundry": "ting",
+      "type": "midstay",
+      "booking": "90220002"
+    },
+    {
+      "date": "2026-11-22",
+      "time": "09.30",
+      "cleaner": "da",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "90220003"
+    },
+    {
+      "date": "2026-11-24",
+      "time": "12.00",
+      "cleaner": "aun",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "90220004",
+      "note": {
+        "th": "[TH per-clean note at the second house]",
+        "en": "[EN per-clean note at the second house]"
+      }
+    },
+    {
+      "date": "2026-11-30",
+      "time": "11.00",
+      "cleaner": "da",
+      "laundry": "ting",
+      "type": "midstay",
+      "booking": "90220005"
+    },
+    {
+      "date": "2026-12-04",
+      "time": "14.00",
+      "cleaner": "aun",
+      "laundry": "ting",
+      "type": "turnover",
+      "booking": "90220006"
+    }
+  ]
+}
