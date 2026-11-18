@@ -667,9 +667,31 @@ The codes screen takes `?house=`, and it is ordering and never filtering. The wo
 saved page ignoring the query string, so one saved copy answers every one of those links and
 it has to hold every house or a phone with no signal would open the wrong gate.
 
-**Three environment variables**, documented in `.env.example`: `CLEANING_COOKIE_SECRET`, then
-either the `KV_REST_API_*` pair for the real store or `CLEANING_LOCAL_PATH` for development.
-Unset, the app fails shut: no link opens and no cookie resolves.
+**Four environment variables**, documented in `.env.example`: `CLEANING_COOKIE_SECRET`, then
+either the `KV_REST_API_*` pair for the real store or `CLEANING_LOCAL_PATH` for development,
+and `BLOB_READ_WRITE_TOKEN` for the photographs on a comment thread. Without the first the
+app fails shut: no link opens and no cookie resolves. Without the last, everything works
+except an upload, which answers 503 and says `unconfigured`.
+
+**The door codes are not on a screen of their own and there is no screen that lists them.**
+A house's codes appear inside the schedule, and on that job, on the day she is at that
+house, and nowhere else. They are fetched from `/api/cleaning/codes` rather than rendered
+into the page, because the service worker saves the schedule with no deadline so she can
+read her dates at a house with no signal, and a code in that saved copy would still be
+there next week. That one answer carries its own deadline, the end of the day, and is the
+only path under `/api/` the worker keeps. Three things hold it off every other disk: the
+route's own `no-store`, the same header in `next.config.ts`, and the worker refusing to
+serve a copy past its deadline.
+
+**Photographs live in Vercel Blob and are deleted after a month.** The phone shrinks each
+one to a longest edge of 1600 before it is sent, the photo is stored first and the comment
+carries its URL, and that URL is checked against the store's own host and this app's prefix
+before it is kept. Blob has no expiry of its own, so `/api/cron/cleaning-photos` is the only
+thing enforcing the month: it runs daily, lists the one prefix this app writes to, and
+deletes by what the store says rather than by what a comment says, so a photo whose comment
+has already expired is still swept. `scripts/check-cron.mjs` refuses a build whose
+`vercel.json` has lost that entry, because a sweep that silently stops running looks exactly
+like one that is working.
 
 ### Running it locally, without a live door code on this machine
 
