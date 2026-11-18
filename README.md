@@ -639,7 +639,7 @@ are not the same thing today: the known gap on this page's `Cache-Control` says 
 actually observed.
 
 `npm run test:cleaning-sw` drives that file outside a browser and covers all of it,
-twenty-five cases with a non-zero exit on any failure; run it after touching the worker, that
+twenty-six cases with a non-zero exit on any failure; run it after touching the worker, that
 header or that window. Six of the cases are the door codes, which is where the risk now is.
 What it cannot cover is a browser, which is the known gap below.
 
@@ -730,6 +730,21 @@ flow, end to end, with nothing live anywhere near it.
 
 ## Known gaps
 
+- **Photographs cannot be uploaded in production, because there is no Blob store (18/11/2026).**
+  Everything photographs need is built and live, and one missing store is all that holds them.
+  `npx vercel storage status` lists `upstash-kv-chestnut-ribbon` and `agentsiam-whatsapp`, both
+  Upstash for Redis, and `npx vercel env ls` carries no `BLOB_READ_WRITE_TOKEN`, so
+  `photosConfigured()` is false on every environment. From a phone that looks like this: the
+  camera button is there, the photo is picked and shrunk on the device, and the upload answers
+  503 `unconfigured`, which the thread shows as a send that failed. In the logs it looks like
+  this: `/api/cron/cleaning-photos` refuses once a day at 03:20 UTC saying
+  `BLOB_READ_WRITE_TOKEN is not set`, which is the sweep declining to run rather than a sweep
+  that broke. Words on a comment are unaffected and are the whole of what a thread carries
+  today. The fix is creating a Blob store in the Vercel dashboard and connecting it to this
+  project including development: the routes read that one variable and no code changes for it.
+  What is then unproven and needs the store is the only part of the path that was never run end
+  to end, a real upload landing in the store and rendering on a thread, and the sweep deleting a
+  month-old photo while leaving today's.
 - ~~**The cleaning app cannot say how old a schedule is, in production (17/11/2026).**~~
   Resolved the same day in `agentsiam-consulting`, commit `af1a9e7`: `documents()` in
   `build_note.py` now puts `built_at` on every person's document as well as on the file, so
@@ -762,7 +777,7 @@ flow, end to end, with nothing live anywhere near it.
   production is on.
 - **The cleaning app's service worker has never run in a real browser (17/11/2026).** Its
   logic is covered: `npm run test:cleaning-sw` drives `public/cleaning-sw.js` outside a browser
-  with its globals stubbed and its clock movable, twenty-five cases, non-zero exit on any
+  with its globals stubbed and its clock movable, twenty-six cases, non-zero exit on any
   failure, and it proves the branching that matters. The API and the enrolment link pass
   through untouched whatever they answer, a schedule saved from a good load is served when
   fetch throws, a cold cache fails rather than inventing a page, a navigation coming back
