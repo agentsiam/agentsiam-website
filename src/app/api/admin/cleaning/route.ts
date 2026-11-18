@@ -3,6 +3,7 @@ import { currentSession } from "@/lib/admin/guard";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { PIN_SHAPE, createEnrolToken, revokeDevice, setPin } from "@/lib/cleaning/devices";
 import { findVisit, parseDocument } from "@/lib/cleaning/document";
+import { isOurPhoto } from "@/lib/cleaning/photos";
 import { cleaningEnrolPath } from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
 import { readNote, storeProblem } from "@/lib/cleaning/store";
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
     pin?: unknown;
     slug?: unknown;
     body?: unknown;
+    image?: unknown;
   };
   try {
     body = (await request.json()) as typeof body;
@@ -68,8 +70,13 @@ export async function POST(request: Request) {
     if (body.action === "comment") {
       const slug = typeof body.slug === "string" ? body.slug : "";
       const text = cleanBody(body.body);
-      if (!VISIT_SLUG.test(slug) || !text) {
-        return NextResponse.json({ error: "A comment needs a job and some words." }, { status: 400 });
+      // Checked against the store's own host, the same way her route checks hers.
+      const image = isOurPhoto(body.image) ? body.image : null;
+      if (!VISIT_SLUG.test(slug) || (!text && !image)) {
+        return NextResponse.json(
+          { error: "A comment needs a job, and words or a photo." },
+          { status: 400 },
+        );
       }
       // Her own document decides which jobs exist, exactly as it does on her phone. Paul
       // cannot start a thread on a job she does not have.
@@ -77,7 +84,12 @@ export async function POST(request: Request) {
       if (!document || !findVisit(document.visits, slug)) {
         return NextResponse.json({ error: "That person has no such job." }, { status: 404 });
       }
-      const result = await addComment(slug, { by: "agentsiam", name: "AgentSiam", body: text });
+      const result = await addComment(slug, {
+        by: "agentsiam",
+        name: "AgentSiam",
+        body: text,
+        image,
+      });
       if (result !== "ok") {
         return NextResponse.json({ error: `The comment was not stored: ${result}.` }, { status: 409 });
       }

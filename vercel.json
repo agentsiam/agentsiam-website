@@ -3,6 +3,10 @@
     {
       "path": "/api/booking/release-holds",
       "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/cleaning-photos",
+      "schedule": "20 3 * * *"
     }
   ]
 }

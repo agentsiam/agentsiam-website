@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JobComment } from "@/components/admin/job-comment";
 import { requireSession } from "@/lib/admin/guard";
+import { photoStillKept } from "@/lib/cleaning/comment-shape";
 import { listComments } from "@/lib/cleaning/comments";
 import {
   builtAtDigits,
@@ -116,7 +117,21 @@ export default async function AdminCleaningPersonPage({
                         {comment.name}
                         {builtAtDigits(comment.at) ? ` · ${builtAtDigits(comment.at)}` : ""}
                       </p>
-                      <p className="mt-1 whitespace-pre-wrap text-text">{comment.body}</p>
+                      {comment.body ? (
+                        <p className="mt-1 whitespace-pre-wrap text-text">{comment.body}</p>
+                      ) : null}
+                      {/* Only while the month it is kept for lasts, the same as her screen:
+                          after that the sweep has taken it and a broken image is worse than
+                          none. */}
+                      {comment.image && photoStillKept(comment.at) ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={comment.image}
+                          alt=""
+                          loading="lazy"
+                          className="mt-2 max-h-[280px] rounded-box object-contain"
+                        />
+                      ) : null}
                     </li>
                   ))}
                 </ul>

@@ -83,6 +83,11 @@ export const CLEANING_API_SEEN = "/api/cleaning/seen";
 export const CLEANING_API_CODES = "/api/cleaning/codes";
 export const CLEANING_API_COMMENT = "/api/cleaning/comment";
 
+/** Where a photograph goes before the comment that carries it. Two requests rather than
+ * one, so a comment that fails does not take the upload with it, and so neither route has
+ * to parse multipart. */
+export const CLEANING_API_PHOTO = "/api/cleaning/photo";
+
 /** Paul's one screen, inside the admin he already signs in to. It holds device
  * bookkeeping and never a door code or a schedule. */
 export const ADMIN_CLEANING = "/admin/cleaning";
@@ -94,6 +99,11 @@ export function adminCleaningPersonPath(person: string): string {
   return `${ADMIN_CLEANING}/${person}`;
 }
 export const ADMIN_API_CLEANING = "/api/admin/cleaning";
+
+/** Where Paul's photograph of a payment goes, before the comment that carries it. Her
+ * photographs go to CLEANING_API_PHOTO; the store and the month are the same, and what is
+ * checked before the upload is not. */
+export const ADMIN_API_CLEANING_PHOTO = "/api/admin/cleaning/photo";
 
 /**
  * The service worker and the manifest, both static files in public/.

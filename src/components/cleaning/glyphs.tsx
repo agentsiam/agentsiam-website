@@ -287,3 +287,24 @@ export function CalendarView({ size = 19 }: { size?: number }) {
     </svg>
   );
 }
+
+/** A camera: the one control that attaches a photograph to a comment. Proof that a room is
+ * finished at her end, proof that a payment went at ours. */
+export function Camera({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3.5 8.5a2 2 0 0 1 2-2h2l1.2-2h6.6l1.2 2h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z" />
+      <circle cx="12" cy="13" r="3.6" />
+    </svg>
+  );
+}

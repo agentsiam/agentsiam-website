@@ -19,12 +19,18 @@ const nextConfig: NextConfig = {
     return [
       {
         // The cleaning team's door codes, which are the one thing in that app worth
-        // stealing. Two mechanisms keep them off every disk between the store and her
-        // eyes, and neither depends on the other: this, and the same header set in
-        // src/proxy.ts. The service worker refuses the path outright, which is a third.
-        // Belt and braces on purpose: a header that silently stops being applied is not
-        // something anybody would notice until it mattered.
-        source: "/cleaning/codes",
+        // stealing. **This is the path they actually travel on since 17/11/2026**, when
+        // the codes stopped being a page and became an answer the schedule asks for: the
+        // page they appear on is saved by the service worker with no deadline, and a code
+        // in that copy would still be there next week.
+        //
+        // It used to say /cleaning/codes, and for a few hours after that page was deleted
+        // it was guarding a URL that 404s, which is the shape of a protection nobody
+        // notices has stopped working. Two mechanisms keep a code off every disk between
+        // the store and her eyes and neither depends on the other: this, and the same
+        // header set by the route itself. The service worker keeping it only until the end
+        // of the day is a third.
+        source: "/api/cleaning/codes",
         headers: [{ key: "Cache-Control", value: "no-store, must-revalidate" }],
       },
       {
