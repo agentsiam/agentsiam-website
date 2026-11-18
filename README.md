@@ -688,11 +688,25 @@ serve a copy past its deadline.
 is Paul's decision of 18/11/2026 and it is the reason none of this looks like ordinary image
 hosting. A public store answers its own URLs to anybody holding one, and what travels here
 is a bank transfer screenshot at one end and the inside of a guest's bedroom at the other.
-So no URL is ever handed out: the phone shrinks the photo to a longest edge of 1600, the
-upload answers with the blob's **pathname**, the comment carries that pathname, and the only
-thing that can turn it back into bytes is `/api/cleaning/photo`, which checks the same two
-gates as her schedule, or the admin session, before it streams one. There is no link to leak
-and nothing with an expiry to keep fresh.
+So no URL is ever handed out: the phone shrinks the photo before it is sent, the upload
+answers with the blob's **pathname**, the comment carries that pathname, and the only thing
+that can turn it back into bytes is `/api/cleaning/photo`, which checks the same two gates as
+her schedule, or the admin session, before it streams one. There is no link to leak and
+nothing with an expiry to keep fresh.
+
+**The shrink aims at a weight, not at a quality.** Paul, 18/11/2026: compress them, the
+quality does not matter, he does not want storage eaten. A fixed quality setting cannot
+promise a size, because what a JPEG weighs depends on what is in it, and the heaviest thing
+that travels here is the one with the most detail in it, a screenshot of a transfer slip. So
+`src/lib/cleaning/shrink.ts` scales to a longest edge of 1280, encodes at quality 0.6,
+weighs the result, and encodes again at 0.45 and then 0.35 until it is under
+`PHOTO_TARGET_BYTES`, which is 150KB. Measured on three real property photographs of
+2560x3523 and around 700KB each, that is 131KB, 91KB and 69KB, against 245KB, 174KB and
+140KB under the longest edge of 1600 and the single quality of 0.75 it replaced: a little
+under half, and a worst case that is now a number rather than a hope. `MAX_PHOTO_BYTES`
+stays at 6MB and is nowhere near the target on purpose, because it is the backstop for a
+browser whose shrink failed, and a failed shrink costing bandwidth is better than a refused
+upload costing her the proof.
 
 **A comment carries up to six photographs, shown as tiles**, which is Paul's instruction of
 18/11/2026 after the first one landed: a finished house is a bedroom, a bathroom and a kitchen,

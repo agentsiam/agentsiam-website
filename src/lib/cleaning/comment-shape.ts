@@ -44,15 +44,32 @@ export const PHOTO_KEPT_DAYS = 30;
 /**
  * The most a photo may weigh when it reaches the server.
  *
- * The phone shrinks it first, to the longest edge in MAX_PHOTO_EDGE, which puts an ordinary
- * camera photo somewhere around 200KB. This is the backstop for a phone whose shrink failed
- * and for anything that did not come from the app at all.
+ * The phone shrinks it first, to the longest edge in MAX_PHOTO_EDGE and down towards
+ * PHOTO_TARGET_BYTES. This is the backstop for a phone whose shrink failed and for anything
+ * that did not come from the app at all, which is why it is nowhere near the target: a
+ * failed shrink costing bandwidth is better than a refused upload costing her the proof.
  */
 export const MAX_PHOTO_BYTES = 6 * 1024 * 1024;
 
 /** The longest edge a photo is shrunk to before it is sent. Proof that a room is clean and
  * proof that a transfer went through are both legible well under this. */
-export const MAX_PHOTO_EDGE = 1600;
+export const MAX_PHOTO_EDGE = 1280;
+
+/**
+ * What a photograph should weigh by the time it leaves the phone.
+ *
+ * Paul, 18/11/2026: compress them, the quality does not matter, he does not want storage
+ * eaten. So the shrink does not encode once and hope. It encodes, weighs the result, and
+ * encodes again at a lower quality until the photo is under this or it runs out of steps,
+ * which is the only way a budget survives a photograph whose content happens to compress
+ * badly: a screenshot of a transfer slip and a photo of a patterned bedspread come out of
+ * one fixed quality setting at wildly different sizes.
+ *
+ * Six of these is one comment, so this number times six is the worst a thread can cost in
+ * a month, and it is set where a bank slip is still readable rather than where a photograph
+ * still looks good.
+ */
+export const PHOTO_TARGET_BYTES = 150 * 1024;
 
 /**
  * How many photographs one comment may carry.
