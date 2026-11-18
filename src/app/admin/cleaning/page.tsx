@@ -1,6 +1,9 @@
+import Link from "next/link";
 import { CleaningPerson, type DeviceRow } from "@/components/admin/cleaning-person";
 import { requireSession } from "@/lib/admin/guard";
-import { ADMIN_CLEANING } from "@/lib/cleaning/routes";
+import { acceptState } from "@/lib/cleaning/accept";
+import { parseDocument, propertyOf, todayInBangkok, visitSlug } from "@/lib/cleaning/document";
+import { ADMIN_CLEANING, adminCleaningPersonPath } from "@/lib/cleaning/routes";
 import { knownPeople, listDevices, pinSetAt } from "@/lib/cleaning/devices";
 import { readNote, storeDescription, storeProblem } from "@/lib/cleaning/store";
 
@@ -20,6 +23,13 @@ import { readNote, storeDescription, storeProblem } from "@/lib/cleaning/store";
  *
  * There is no door code and no schedule on this screen, deliberately. Both live in a
  * published document that only the phone it belongs to can open.
+ *
+ * **The one exception is a clean somebody turned down.** Paul, 18/11/2026: a clean she has
+ * rejected should not be on her schedule, and it should come back here for him to give to
+ * somebody else. It is off her screens entirely from that moment, so this is the only place
+ * it exists, and a block nobody notices would be a clean nobody does. It stands above the
+ * people for that reason, in red, and it clears itself when the next run of the
+ * `cleaning-schedule` skill gives that clean to another person or moves it.
  */
 
 export const dynamic = "force-dynamic";
@@ -53,16 +63,44 @@ export default async function AdminCleaningPage() {
     pinSetAt: string | null;
     hasDocument: boolean;
   }> = [];
+  // Every clean somebody has turned down and nobody has picked up, in the order they happen.
+  // Past ones are left out: a clean last week that was declined is a fact about last week and
+  // there is nothing left to reassign.
+  const turnedDown: Array<{
+    person: string;
+    line: string;
+    date: string;
+    house: string | null;
+    at: string;
+  }> = [];
+  const today = todayInBangkok();
   for (const person of people) {
+    // readNote rather than a bare key read, because the local fixture keeps the documents
+    // in the file CLEANING_LOCAL_PATH names and not in the state beside it.
+    const document = parseDocument(await readNote(person).catch(() => null));
     rows.push({
       person,
       devices: await listDevices(person),
       pinSetAt: await pinSetAt(person),
-      // readNote rather than a bare key read, because the local fixture keeps the documents
-      // in the file CLEANING_LOCAL_PATH names and not in the state beside it.
-      hasDocument: Boolean(await readNote(person).catch(() => null)),
+      hasDocument: Boolean(document),
     });
+    if (!document) continue;
+    const { declinedAt } = await acceptState(person, document.visits).catch(() => ({
+      declinedAt: new Map<string, string>(),
+    }));
+    for (const visit of document.visits) {
+      const at = declinedAt.get(visitSlug(visit));
+      if (!at || visit.date < today) continue;
+      turnedDown.push({
+        person,
+        line: visit.line,
+        date: visit.date,
+        house: propertyOf(document, visit)?.name ?? null,
+        at,
+      });
+    }
   }
+  turnedDown.sort((a, b) => a.date.localeCompare(b.date));
 
   return (
     <div>
@@ -78,6 +116,37 @@ export default async function AdminCleaningPage() {
           publishes a document per person on every run; until it has, this screen has no rows.
         </p>
       ) : null}
+      {turnedDown.length > 0 ? (
+        <section className="mt-4 rounded-box border border-deep-red/30 bg-wash-red p-4">
+          <h2 className="text-sm font-semibold text-deep-red">
+            Turned down, waiting for you to reassign
+          </h2>
+          <p className="mt-1 max-w-[60ch] text-xs text-deep-red">
+            She has said she cannot do these and they are off her screens. Nothing here moves
+            work: give the clean to somebody else in the cleaning-schedule skill and re-run it,
+            and this clears on the next publish.
+          </p>
+          <ul className="mt-3 space-y-2">
+            {turnedDown.map((one) => (
+              <li
+                key={`${one.person}-${one.date}-${one.line}`}
+                className="rounded-box bg-bg p-3 text-sm"
+              >
+                <p className="font-semibold text-text">{one.line}</p>
+                <p className="mt-1 text-xs text-muted">
+                  {one.date}
+                  {one.house ? ` · ${one.house}` : ""} · declined by{" "}
+                  <Link href={adminCleaningPersonPath(one.person)} className="underline">
+                    {one.person}
+                  </Link>{" "}
+                  on {one.at.slice(0, 16).replace("T", " ")}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       {rows.map((row) => (
         <CleaningPerson
           key={row.person}

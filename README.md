@@ -664,16 +664,25 @@ agreeing to turn up at a particular house on a particular day. It is the brand b
 the ink the rest of the app is built on, at Paul's instruction in the same message, and the blue
 is also what says this is not a schedule before she has read a word.
 
-**Answering is an acknowledgement and never a reassignment**, which is the part of his design I
-argued with and he took. The clean is hers from the moment it is published, it is in her
-schedule the whole time whichever way she answers, and nothing in this app decides who does
-what: that is the skill's, and the rule is still Monday to Friday Da, the weekend Aun, Ting on
-every laundry. A declined clean therefore stays on her schedule wearing the declined pill, in
-red, which is the one mark in these screens that says something will not happen unless somebody
-acts. **Acting on it is Paul's**, in the skill, and until the skill reads this record a decline
-he has not read changes nothing at all; the known gap on reassigning says what that would take.
-A schedule that showed only the cleans she had agreed to would be a schedule she could not
-trust.
+**Answering is never a reassignment.** Nothing in this app decides who does what: that is the
+skill's, and the rule is still Monday to Friday Da, the weekend Aun, Ting on every laundry.
+
+**A clean she turns down leaves her screens entirely**, which is Paul's instruction a few hours
+after the first version shipped and reverses what that version did. It shipped staying, marked
+with a red pill, on the argument that nothing here can take a clean off a published document and
+that a schedule holding fewer jobs than the LINE Note in her other hand is a second schedule. He
+watched Aun turn three down and still see all three, and said plainly that a clean she has
+rejected is not her schedule. So it is gone from the list, the next-visit card, the month grid's
+counts, the day behind a tapped date and the job screen behind a kept link, through one filter,
+`hidingDeclined`, applied once per screen rather than as a condition on every row.
+
+**It is then on Paul's screen and nowhere else.** `/admin/cleaning` carries every declined clean
+still ahead of it at the top, in red, with who turned it down and when, because a clean that is
+invisible to the person it was published to and buried on an admin screen is a clean nobody
+does. **Moving it is his**, in the skill, and the block clears on the next publish that gives
+that clean to somebody else. **The LINE Note is unchanged** until that run, so hers still lists
+the clean she turned down: the app and the Note disagree about it on purpose, which is the first
+time they ever have.
 
 The record is keyed on the **visit slug**, the date, the time and the property, and deliberately
 not on the `visitIdentity` the changed marker uses. That one falls back to the date when a job
@@ -907,12 +916,16 @@ flow, end to end, with nothing live anywhere near it.
   skill publishing a document per language rather than per person, which is a change in
   `/Users/paulb/code/agentsiam/agentsiam-consulting` and not here. Nobody on the team reads
   English today, so this is Paul's own screen in practice.
-- **A decline is a fact nothing acts on (18/11/2026).** She can turn a clean down, her schedule
-  marks it, and `/admin/cleaning/<person>` prints it in red with the time. Nothing moves the
-  work: the next run of the skill rebuilds the schedule from the file and republishes the same
-  clean to the same person, so a decline Paul has not read changes nothing at all. It is the
-  same dependency as the gap below and the same fix, the skill reading the store at build time.
-  Until then, a declined clean is a message on a screen Paul has to open.
+- **A decline is a fact nothing acts on (18/11/2026).** She can turn a clean down and it leaves
+  her screens at once. Nothing moves the work: the next run of the skill rebuilds the schedule
+  from the file and republishes the same clean to the same person, so a decline Paul has not
+  read changes nothing at all. It is the same dependency as the gap below and the same fix, the
+  skill reading the store at build time. **Until then a declined clean is nobody's**: she cannot
+  see it, nobody else has been given it, the LINE Note from the last run still says it is hers,
+  and the one place it exists is the red block at the top of `/admin/cleaning`. **It cannot be
+  undone from her phone either.** The job screen let her take a decline back for a few hours and
+  no longer can, because the clean is gone from her screens before she can reach it, so a
+  mis-tap on a cross is now a message to Paul.
 - **Reassigning a clean is still a file edit and a re-run (18/11/2026).** The admin screen says
   who has accepted what and gives Paul no way to change who a clean belongs to. The skill owns
   that decision and rebuilds from `<beds24_property_id>-cleaning.md` on every run, so a button here
