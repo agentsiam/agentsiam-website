@@ -694,6 +694,18 @@ thing that can turn it back into bytes is `/api/cleaning/photo`, which checks th
 gates as her schedule, or the admin session, before it streams one. There is no link to leak
 and nothing with an expiry to keep fresh.
 
+**A comment carries up to six photographs, shown as tiles**, which is Paul's instruction of
+18/11/2026 after the first one landed: a finished house is a bedroom, a bathroom and a kitchen,
+and sending it was a comment each. They are picked in one go, shrunk as they are picked and
+uploaded one at a time, because six uploads at once on mobile data in somebody's house is six
+that all slow down. Both ends of the thread render them through the same component,
+`src/components/cleaning/photo-tiles.tsx`, as a three-wide grid of cropped squares with the
+whole picture one tap away, so a thread full of evidence still scrolls like a conversation.
+
+A comment stores `images`, a list. Comments written before that afternoon carry `image`, a
+single pathname, and `photoList` reads both, which is why the first two photographs Paul sent
+still render. Nothing migrates and nothing needs to: the old shape is read, never written.
+
 The pathname is the boundary that replaced the URL check, and it is a stricter one. A
 pathname has been to a phone and back and is handed to the store, so `isOurPhotoPath` accepts
 only the shape this app writes, the prefix, a calendar date and a name, and the read route
@@ -751,11 +763,15 @@ flow, end to end, with nothing live anywhere near it.
 
 ## Known gaps
 
-- **Photographs cannot be uploaded in production, because there is no Blob store (18/11/2026).**
-  Everything photographs need is built, and one missing store is all that holds them. It has
-  to be a **private** store, which is Paul's decision of the same day: the code stores with
-  `access: 'private'` and reads through `/api/cleaning/photo`, so a public store would be the
-  wrong one and the uploads would fail differently rather than work.
+- ~~**Photographs cannot be uploaded in production, because there is no Blob store (18/11/2026).**~~
+  Resolved the same day. The store is `agentsiam-cleaning-photos`, private, in `iad1`, linked
+  to production, preview and development, and production was redeployed for it, because a
+  variable added after a deployment is built never reaches that deployment. The whole path was
+  then run against the real store: a photograph stored, read back byte for byte through the
+  gated route's own reader, carrying an expiry 31 days out, a traversal refused, the sweep
+  leaving it alone the same day and deleting it with the clock a month on, and the store left
+  empty. Paul's first two photographs from `/admin/cleaning` landed at 09:50 UTC. What the
+  rest of this entry said is kept below because it is still what a missing store looks like.
   `npx vercel storage status` lists `upstash-kv-chestnut-ribbon` and `agentsiam-whatsapp`, both
   Upstash for Redis, and `npx vercel env ls` carries no `BLOB_READ_WRITE_TOKEN`, so
   `photosConfigured()` is false on every environment. From a phone that looks like this: the
@@ -766,11 +782,9 @@ flow, end to end, with nothing live anywhere near it.
   that broke. Words on a comment are unaffected and are the whole of what a thread carries
   today. The fix is creating a Blob store in the Vercel dashboard and connecting it to this
   project including development: the routes read that one variable and no code changes for it.
-  What is then unproven and needs the store is the only part of the path that cannot be run
-  without one: an upload landing, the gated route streaming it back onto a thread, `ttlDays`
-  arriving on the blob, and the sweep deleting a month-old photo while leaving today's. The
-  checks that do not need a store are green, `npm run test:cleaning-photos`, and were watched
-  to fail against a guard broken on purpose.
+  The one thing still unproven is the one that needs a phone rather than a store: a
+  photograph taken on an actual phone, through its own camera sheet, on mobile data in a
+  house. That is the same gap as the service worker's below and it needs the same thing.
 - ~~**The cleaning app cannot say how old a schedule is, in production (17/11/2026).**~~
   Resolved the same day in `agentsiam-consulting`, commit `af1a9e7`: `documents()` in
   `build_note.py` now puts `built_at` on every person's document as well as on the file, so

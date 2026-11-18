@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { findVisit, parseDocument } from "@/lib/cleaning/document";
 import { currentHolder, pinGiven } from "@/lib/cleaning/guard";
-import { isOurPhotoPath } from "@/lib/cleaning/photos";
+import { ourPhotoPaths } from "@/lib/cleaning/photos";
 import { incr, readNote } from "@/lib/cleaning/store";
 
 export const runtime = "nodejs";
@@ -37,21 +37,26 @@ export async function POST(request: Request) {
 
   let slug = "";
   let body = "";
-  let image: string | null = null;
+  let images: string[] = [];
   try {
-    const sent = (await request.json()) as { slug?: unknown; body?: unknown; image?: unknown };
+    const sent = (await request.json()) as {
+      slug?: unknown;
+      body?: unknown;
+      images?: unknown;
+      image?: unknown;
+    };
     slug = typeof sent.slug === "string" ? sent.slug : "";
     body = cleanBody(sent.body);
     // The photo was stored by /api/cleaning/photo a moment ago and its pathname came back
     // through the client, so it is checked against the shape this app writes. Anything else
     // is dropped rather than refused: a comment with words still lands, and a name this app
     // did not write would otherwise be handed back to the store on every render.
-    image = isOurPhotoPath(sent.image) ? sent.image : null;
+    images = ourPhotoPaths(sent.images, sent.image);
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
-  // Words or a photo. A comment with neither is nothing.
-  if (!VISIT_SLUG.test(slug) || (!body && !image)) {
+  // Words or photographs. A comment with neither is nothing.
+  if (!VISIT_SLUG.test(slug) || (!body && images.length === 0)) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
@@ -65,7 +70,7 @@ export async function POST(request: Request) {
     const used = await incr(`cleaning:commentrate:${holder.person}`, RATE_WINDOW_SECONDS);
     if (used > PER_MINUTE) return NextResponse.json({ ok: false }, { status: 429 });
 
-    const result = await addComment(slug, { by: "team", name: document.name, body, image });
+    const result = await addComment(slug, { by: "team", name: document.name, body, images });
     if (result !== "ok") return NextResponse.json({ ok: false, result }, { status: 409 });
   } catch {
     return NextResponse.json({ ok: false }, { status: 503 });

@@ -16,6 +16,13 @@
  * the prefix put back on this side of the check, so the composition is under test and not
  * only the regular expression.
  *
+ * Since 18/11/2026 a comment carries several photographs, which adds two functions worth
+ * testing for the same reason. `ourPhotoPaths` is what the write routes filter a list
+ * through, and one crafted entry must cost that entry rather than the whole comment.
+ * `photoList` is what reads a stored comment back, and it has to understand both shapes:
+ * the list written since, and the single `image` written before it, because the store holds
+ * comments of each.
+ *
  * **What it does not prove.** Anything that needs the store: that an upload lands, that the
  * route streams it, that `ttlDays` deletes it, or that the sweep finds what the store kept.
  * Those need a real Blob token and are the open half of README.md's known gap.
@@ -68,9 +75,11 @@ try {
 }
 
 const require = createRequire(join(out, "test.cjs"));
-const { isOurPhotoPath } = require(join(out, "photos.js"));
+const { isOurPhotoPath, ourPhotoPaths } = require(join(out, "photos.js"));
 const { cleaningPhotoSrc } = require(join(out, "routes.js"));
-const { PHOTO_PREFIX } = require(join(out, "comment-shape.js"));
+const { PHOTO_PREFIX, photoList, MAX_PHOTOS_PER_COMMENT } = require(
+  join(out, "comment-shape.js"),
+);
 
 let failures = 0;
 let ran = 0;
@@ -155,6 +164,39 @@ check(
       .map((part) => decodeURIComponent(part)),
   ),
   "cleaning/2026-11-18/photo-Hs82kdLq0Zx",
+);
+
+console.log("\nseveral photographs on one comment, as the routes filter them");
+const good = "cleaning/2026-11-18/photo-aaa";
+const also = "cleaning/2026-11-18/photo-bbb";
+check("two of ours are both kept", ourPhotoPaths([good, also]).join(","), `${good},${also}`);
+check(
+  "a crafted one beside a real one is dropped alone",
+  ourPhotoPaths([good, "cleaning/../x"]).join(","),
+  good,
+);
+check("nothing but crafted ones leaves nothing", ourPhotoPaths(["../x", 7, null]).length, 0);
+check("not an array at all", ourPhotoPaths("cleaning/2026-11-18/photo-aaa").length, 0);
+check(
+  "more than a comment may carry is cut to the cap",
+  ourPhotoPaths(Array.from({ length: 10 }, (_, at) => `cleaning/2026-11-18/photo-${at}`)).length,
+  MAX_PHOTOS_PER_COMMENT,
+);
+
+console.log("\nthe comment a phone running the previous bundle sends");
+check("a single image is read as a list of one", ourPhotoPaths(undefined, good).join(","), good);
+check("a crafted single image is still refused", ourPhotoPaths(undefined, "../x").length, 0);
+check("a list wins over a single image", ourPhotoPaths([also], good).join(","), also);
+
+console.log("\nreading back a comment the store already holds");
+check("the two shapes, list first", photoList([good, also]).join(","), `${good},${also}`);
+check("a comment written before 18/11/2026", photoList(undefined, good).join(","), good);
+check("a comment with neither", photoList(undefined, null).length, 0);
+check("junk in the list is dropped", photoList([good, "", null, 3]).join(","), good);
+check(
+  "a list longer than the cap is cut",
+  photoList(Array.from({ length: 9 }, (_, at) => `p${at}`)).length,
+  MAX_PHOTOS_PER_COMMENT,
 );
 
 rmSync(out, { recursive: true, force: true });
