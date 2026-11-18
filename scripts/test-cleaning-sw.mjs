@@ -5,7 +5,7 @@
  *
  * **What it proves.** The worker's branching, which is where its risk is: what it refuses to
  * touch, what it saves, what it serves when fetch throws, and that a navigation coming back
- * redirected to the ask-Paul page wipes the cache. Twenty-six cases, a line each, non-zero
+ * redirected to the ask-Paul page wipes the cache. Twenty-eight cases, a line each, non-zero
  * exit on any failure.
  *
  * Six of them are the door codes, which this worker keeps as of 17/11/2026 and used to refuse
@@ -318,6 +318,38 @@ async function cachedKeys(sw) {
     "a PIN gate does not overwrite the saved schedule",
     offline.responded && offline.value?.body === "her schedule, 18 Nov",
     offline.error ? `threw: ${offline.error}` : `served: ${offline.value?.body}`,
+  );
+}
+
+{
+  // The same sequence with the other thing /cleaning can answer with. Since 18/11/2026 it
+  // redirects to the new-work screen while anything ahead of her is unanswered, so the answer
+  // to a navigation to /cleaning is a different page at a different URL. Written down under
+  // the schedule's own key it would be both the wrong page and one a browser will not accept
+  // for a navigation, so the schedule would stop opening at a gate with no signal.
+  const sw = load();
+  sw.setNetwork(async () => response("her schedule, 18 Nov"));
+  await sw.request(request("/cleaning", { mode: "navigate" }));
+  sw.setNetwork(async () =>
+    response("two new jobs to answer", {
+      redirected: true,
+      url: `${ORIGIN}/cleaning/new`,
+    }),
+  );
+  const held = await sw.request(request("/cleaning", { mode: "navigate" }));
+  check(
+    "the new-work screen is served when the schedule redirects to it",
+    held.responded && held.value?.body === "two new jobs to answer",
+    held.error ? `threw: ${held.error}` : `served: ${held.value?.body}`,
+  );
+  sw.setNetwork(async () => {
+    throw new TypeError("Failed to fetch");
+  });
+  const offlineAfter = await sw.request(request("/cleaning", { mode: "navigate" }));
+  check(
+    "and a redirect does not overwrite the saved schedule",
+    offlineAfter.responded && offlineAfter.value?.body === "her schedule, 18 Nov",
+    offlineAfter.error ? `threw: ${offlineAfter.error}` : `served: ${offlineAfter.value?.body}`,
   );
 }
 

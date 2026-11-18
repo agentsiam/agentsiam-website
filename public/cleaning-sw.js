@@ -36,10 +36,14 @@
  *   page   /cleaning and anything under it: network first, and the saved copy when the
  *          network does not answer. Network first rather than cache first because a
  *          schedule that changed this morning matters more than a few hundred milliseconds.
- *          One exception, and it is not about freshness: a page carrying the gate header is
+ *          Two exceptions, and neither is about freshness. A page carrying the gate header is
  *          served and never saved, because /cleaning answers with the PIN form to a phone
  *          that has not given it, and saving that would overwrite the schedule she needs
- *          when the house has no signal.
+ *          when the house has no signal. **An answer that arrives having been redirected is
+ *          served and never saved either**: since 18/11/2026 /cleaning redirects to the
+ *          new-work screen while anything is unanswered, and a redirected response written
+ *          under the schedule's own URL is both the wrong page and one a browser refuses to
+ *          accept for a navigation at all, so the schedule would stop opening offline.
  *   asset  Next's hashed build files and the icons: cache first. The hash in the name is
  *          what makes that safe.
  *
@@ -160,7 +164,14 @@ async function page(request) {
       await caches.delete(CACHE);
       return response;
     }
-    if (mayKeep(url, response)) await cache.put(request, response.clone());
+    // Never a redirected answer, whatever it redirected to. The request this would be saved
+    // under is the URL she asked for and the answer is a different page, so her schedule's
+    // own entry would come to hold the new-work screen or the PIN gate; and a navigation
+    // cannot be answered from a redirected response, so the entry would not even load. The
+    // gate header covers the two pages this app redirects to today, and this covers the rule.
+    if (!response.redirected && mayKeep(url, response)) {
+      await cache.put(request, response.clone());
+    }
     return response;
   } catch (error) {
     const saved = await cache.match(request, { ignoreSearch: true });

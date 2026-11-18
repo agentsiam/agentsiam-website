@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronRight, HouseMark, JobType, Occupied } from "@/components/cleaning/glyphs";
 import type { DaySection, PropertyRef, Visit } from "@/lib/cleaning/document";
 import { dayOfMonth, visitSlug } from "@/lib/cleaning/document";
+import { dayHeading, visitLine } from "@/lib/cleaning/english";
 import { markOf, type HouseMarks } from "@/lib/cleaning/houses";
 import { cleaningDayPath } from "@/lib/cleaning/routes";
 import { visitIdentity } from "@/lib/cleaning/seen";
@@ -14,12 +15,14 @@ import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
  * and in what order, which is the shape every comparable product converged on and the shape
  * this file takes: a heading per day, a card per job under it, the house on the card.
  *
- * Every row prints `visit.line` and nothing else: the day name, the date, the time, who is
- * on it, the occupied marker and anything true of that one clean, exactly as the Note
- * renders them. **Nothing here formats a date or words a sentence.** The day heading is a
- * label the skill rendered, the day number beside a line is a digit lifted off the ISO date
- * for scanning, the house is a shape and a name the document carries, and the figure on a
- * mid-stay row is the document's own `type` drawn rather than written.
+ * Every row prints one job line: the day name, the date, the time, who is on it, the occupied
+ * marker and anything true of that one clean, exactly as the Note renders them. **Nothing here
+ * formats a date or words a sentence.** On a Thai phone the line and the day heading are the
+ * skill's own finished text; on an English one they are composed from the structure beside it
+ * by src/lib/cleaning/english.ts, which is the only file in this app allowed to compose a
+ * date and composes one only in English. The day number beside a line is a digit lifted off
+ * the ISO date for scanning, the house is a shape and a name the document carries, and the
+ * figure on a mid-stay row is the document's own `type` drawn rather than written.
  */
 
 /** A number in the Latin face, so digits never render in the Thai one beside Thai text. */
@@ -106,6 +109,30 @@ function Waiting({ lang, onInk = false }: { lang: TeamLang; onInk?: boolean }) {
 }
 
 /**
+ * That she said she cannot do this one.
+ *
+ * It stays on her schedule because nothing in this app can take a clean off a published
+ * document, and a schedule holding fewer jobs than the LINE Note in her other hand is the
+ * second schedule this app exists not to be. So the row stays and says what she answered.
+ *
+ * Red, unlike the two gold marks above it, and it is the one place in these screens where red
+ * is right: this is the only mark that says something will not happen unless somebody acts.
+ */
+function Declined({ lang, onInk = false }: { lang: TeamLang; onInk?: boolean }) {
+  const said = written(teamStrings(lang).declined);
+  if (!said) return null;
+  return (
+    <p
+      className={`mt-1.5 inline-block rounded-full px-2.5 py-0.5 text-[13px] font-semibold ${
+        onInk ? "bg-wash-red text-deep-red" : "bg-wash-red text-deep-red ring-1 ring-deep-red/30"
+      }`}
+    >
+      {said}
+    </p>
+  );
+}
+
+/**
  * That this line is new or has moved since she last looked.
  *
  * A pill while the sentence exists, and a dot while it does not. Without the fallback,
@@ -154,6 +181,7 @@ export function NextVisitCard({
   jobHref,
   lang,
   isWaiting,
+  isDeclined,
 }: {
   visit: Visit;
   isChanged: boolean;
@@ -162,6 +190,7 @@ export function NextVisitCard({
   jobHref: string;
   lang: TeamLang;
   isWaiting: boolean;
+  isDeclined: boolean;
 }) {
   return (
     <section className="mt-5 overflow-hidden rounded-panel bg-ink">
@@ -170,7 +199,7 @@ export function NextVisitCard({
           {dayOfMonth(visit.date)}
         </Digits>
         <div className="min-w-0 flex-1">
-          <p className="text-[20px] font-semibold leading-8 text-bg">{visit.line}</p>
+          <p className="text-[20px] font-semibold leading-8 text-bg">{visitLine(visit, lang)}</p>
           {/* No job-type glyph up here. In the rows below it sits in a 40px chip and reads
               cleanly; shrunk into a pill beside text it is a smudge, and the card already
               says what the job is in her own words. */}
@@ -182,6 +211,8 @@ export function NextVisitCard({
           />
           {isWaiting ? (
             <Waiting lang={lang} onInk />
+          ) : isDeclined ? (
+            <Declined lang={lang} onInk />
           ) : isChanged ? (
             <Changed lang={lang} onInk />
           ) : null}
@@ -201,6 +232,7 @@ function Day({
   nextDate,
   changed,
   waiting,
+  declined,
   role,
   lang,
   marks,
@@ -212,6 +244,7 @@ function Day({
   nextDate: string | null;
   changed: Set<string>;
   waiting: Set<string>;
+  declined: Set<string>;
   role: string;
   lang: TeamLang;
   marks: HouseMarks;
@@ -226,12 +259,12 @@ function Day({
           like, and it should read as the old flat list and not as a screen with its headings
           missing. The heading is also the way into the day, which is why the whole of it is
           the link and not a control beside it. */}
-      {day.label ? (
+      {dayHeading(day, lang) ? (
         <Link
           href={cleaningDayPath(day.date)}
           className="mt-5 flex items-baseline gap-2 py-1 text-[15px] font-semibold text-text"
         >
-          {day.label}
+          {dayHeading(day, lang)}
           {day.visits.length > 1 ? (
             <Digits className="rounded-full bg-surface-2 px-2 py-0.5 text-[12px] text-muted">
               {day.visits.length}
@@ -262,7 +295,7 @@ function Day({
                       isNext ? "font-semibold text-text" : "text-body"
                     }`}
                   >
-                    {visit.line}
+                    {visitLine(visit, lang)}
                   </p>
                   <VisitMeta
                     house={houseOf(visit)}
@@ -271,6 +304,8 @@ function Day({
                   />
                   {waiting.has(visitSlug(visit)) ? (
                     <Waiting lang={lang} />
+                  ) : declined.has(visitSlug(visit)) ? (
+                    <Declined lang={lang} />
                   ) : changed.has(visitIdentity(visit)) ? (
                     <Changed lang={lang} />
                   ) : null}
@@ -306,6 +341,7 @@ export function DayList({
   today,
   changed,
   waiting,
+  declined,
   role,
   lang,
   marks,
@@ -317,6 +353,7 @@ export function DayList({
   today: string;
   changed: Set<string>;
   waiting: Set<string>;
+  declined: Set<string>;
   role: string;
   lang: TeamLang;
   marks: HouseMarks;
@@ -329,7 +366,7 @@ export function DayList({
   const ahead = sections.filter((day) => day.date >= today);
   const pastJobs = past.reduce((count, day) => count + day.visits.length, 0);
 
-  const shared = { nextDate, changed, waiting, role, lang, marks, houseOf, jobHref };
+  const shared = { nextDate, changed, waiting, declined, role, lang, marks, houseOf, jobHref };
 
   return (
     <div className="mt-7">

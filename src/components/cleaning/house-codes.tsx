@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CLEANING_API_CODES } from "@/lib/cleaning/routes";
+import { blockHeading } from "@/lib/cleaning/english";
 import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
 
 /**
@@ -68,7 +69,7 @@ export function HouseCodes({ slug, lang }: { slug: string; lang: TeamLang }) {
   return (
     <section className="mt-4 rounded-panel bg-sand p-5">
       <h2 className="text-[14px] font-semibold tracking-wide text-ink opacity-70">
-        {block.heading}
+        {blockHeading("codes", block.heading, lang)}
       </h2>
       {/* The lines read as one piece of text, label and number together, exactly as her LINE
           Note prints them. Splitting one would mean this app deciding where a Thai sentence

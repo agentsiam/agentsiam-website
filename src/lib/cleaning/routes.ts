@@ -24,6 +24,25 @@ export const CLEANING_ROOT = "/cleaning";
 export const CLEANING_SCHEDULE = CLEANING_ROOT;
 
 /**
+ * The new work, and the one screen in this app she cannot walk past.
+ *
+ * Paul, 18/11/2026: the accept screen has to be a different screen from the calendar and the
+ * list, because that is what makes her answer everything new before she goes into her
+ * schedule. So this is a screen of its own and the schedule, the day and the month grid all
+ * send her here while anything ahead of her is unanswered. It sends her back to the schedule
+ * the moment nothing is, so it is never an empty screen and never a stop she has to dismiss.
+ *
+ * **Only cleans from today onwards hold her here.** A clean last Tuesday that nobody ever
+ * answered is a fact about last week, and gating on it would lock her out of her own schedule
+ * for good.
+ *
+ * It carries the gate header, so the service worker serves it and saves nothing: this is a
+ * prompt about a moment and not a schedule to read at a gate with no signal. src/proxy.ts sets
+ * it and CLEANING_GATE_HEADER below says why that layer.
+ */
+export const CLEANING_NEW = `${CLEANING_ROOT}/new`;
+
+/**
  * One job: the house, the line, the address, the codes on the day, and the thread.
  *
  * New with more than one property, and the screen the comparable products all have and we

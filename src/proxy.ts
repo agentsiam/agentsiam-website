@@ -11,6 +11,7 @@ import {
 import {
   CLEANING_ENROL,
   CLEANING_GATE_HEADER,
+  CLEANING_NEW,
   CLEANING_NO_ACCESS,
   CLEANING_ROOT,
   CLEANING_SCHEDULE,
@@ -82,7 +83,12 @@ async function cleaning(request: NextRequest, pathname: string) {
     // two apart, because one save of the gate would overwrite the saved schedule she needs
     // when the house has no signal. A hint about storage, never the gate itself: the gate
     // is the pinGiven check inside the page, which also knows about revocation.
-    if (pathname === CLEANING_SCHEDULE && !pin) {
+    //
+    // The new-work screen is marked for a related reason of its own: it is a prompt about this
+    // moment, it stops existing the instant she has answered everything on it, and a saved
+    // copy would be a screen asking her to accept cleans she accepted last week. It is served
+    // and never kept.
+    if ((pathname === CLEANING_SCHEDULE && !pin) || pathname === CLEANING_NEW) {
       response.headers.set(CLEANING_GATE_HEADER, "1");
     }
 

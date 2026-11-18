@@ -2,19 +2,23 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ChevronLeft, ChevronRight, HouseMark, JobType, Occupied } from "@/components/cleaning/glyphs";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
+import { acceptState } from "@/lib/cleaning/accept";
+import { englishDay, visitLine } from "@/lib/cleaning/english";
 import {
   dayLabelOn,
   isIsoDate,
   parseDocument,
   propertyOf,
+  todayInBangkok,
   visitSlug,
   visitsOn,
 } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
-import { CLEANING_SCHEDULE, cleaningJobPath } from "@/lib/cleaning/routes";
+import { CLEANING_NEW, CLEANING_SCHEDULE, cleaningJobPath } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
+import { teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
  * One day, and what it asks of her, in the order it asks.
@@ -40,6 +44,8 @@ export const dynamic = "force-dynamic";
 export default async function DayPage({ params }: { params: Promise<{ date: string }> }) {
   const { date } = await params;
   const holder = await requireHolder();
+  const lang = await teamLang();
+  const t = teamStrings(lang);
 
   // The front door is the schedule screen, which is also where a phone that has not been
   // through it is sent from anywhere else under /cleaning.
@@ -63,19 +69,34 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
   // grid does not link such a day; this is for a URL that was kept or typed.
   if (!document || visits.length === 0) redirect(CLEANING_SCHEDULE);
 
-  const label = dayLabelOn(document.visits, date);
+  // New work holds her on its own screen before any of this, the same cut-off and the same
+  // reason as the schedule screen: the calendar is where she tapped to get here, and letting
+  // this screen through would be a way around the one screen Paul asked to be unavoidable.
+  const { waiting } = await acceptState(holder.person, document.visits).catch(() => ({
+    waiting: new Set<string>(),
+  }));
+  if (document.visits.some((one) => one.date >= todayInBangkok() && waiting.has(visitSlug(one)))) {
+    redirect(CLEANING_NEW);
+  }
+
+  // The skill's label on a Thai phone, and the composed English one otherwise. Null on a
+  // document published before the skill rendered day labels, and then no heading at all
+  // rather than a guessed one.
+  const label = lang === "en" ? englishDay(date) : dayLabelOn(document.visits, date);
   const marks = houseMarks(document);
 
   return (
-    <main lang={document.lang}>
+    <main lang={lang === "en" ? lang : document.lang}>
       <Link
         href={CLEANING_SCHEDULE}
         className="mt-1 flex items-center gap-2 py-2 text-[15px] font-semibold text-muted"
       >
         <ChevronLeft />
-        <span className="min-w-0 truncate">{document.title}</span>
+        {/* The app's own title, never the document's: the published one names one property,
+            and this app serves two. */}
+        <span className="min-w-0 truncate">{written(t.scheduleTitle)}</span>
       </Link>
-      <OfflineNotice lang={await teamLang()} />
+      <OfflineNotice lang={lang} />
 
       {label ? (
         <h1 className="mt-3 text-[26px] font-semibold leading-9 text-text">{label}</h1>
@@ -98,7 +119,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
                 <JobType role={document.role} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[17px] leading-7 text-text">{visit.line}</p>
+                <p className="text-[17px] leading-7 text-text">{visitLine(visit, lang)}</p>
                 {house || visit.type === "midstay" ? (
                   <span className="mt-2 flex flex-wrap items-center gap-2">
                     {house ? (
