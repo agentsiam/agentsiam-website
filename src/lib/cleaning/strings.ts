@@ -13,18 +13,26 @@
  * saying how old the schedule is, and the two or three things a phone has to say when
  * something is wrong.
  *
- * **EVERY THAI SENTENCE BELOW IS A DRAFT I WROTE AND NOT A NATIVE SPEAKER'S.** Paul shipped
- * them on his instruction of 17/11/2026, knowing exactly that: the screens had been rendering
- * nothing at all, because an unwritten string takes its element off the page, and three
- * people were being shown blank panels while seventeen sentences waited to be written from
- * scratch. Shipping a draft he can correct in place beat shipping silence.
+ * **THE THAI HAS BEEN READ BY A THAI SPEAKER, 18/11/2026.** It had not been until then. The
+ * seventeen sentences shipped on 17/11/2026 as drafts of mine, on Paul's instruction, because
+ * the screens had been rendering nothing at all: an unwritten string takes its element off
+ * the page, and three people were being shown blank panels while the sentences waited to be
+ * written from scratch.
  *
- * So treat none of this as approved copy. A sentence here is wrong until he has read it, the
- * register may be off, and the correction sheet with every slot and its draft is
- * `as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt` in the document store.
- * Correcting one is a one-line edit in this file and nothing else. **Anything new added here
- * still starts as a `[TH ...]` placeholder**, which `written()` below renders as nothing, so
- * a slot nobody has words for cannot ship English by accident.
+ * Eleven came back corrected and are here exactly as they were given, not adapted. Two of the
+ * corrections turned on a question about this app rather than about Thai, and both were
+ * answered from the code: the enrolment link is not tied to a phone in advance but binds
+ * whichever phone opens it, so it now asks her to open it on the phone she will use; and the
+ * marker on a changed visit fires on any difference in the whole job line, the per-clean note
+ * included, so it says the job details changed rather than naming the date and the time.
+ *
+ * The rest were confirmed as they stood. **The English table is still mine and has had no
+ * read**; it is moved only where a correction moved the meaning. The sheet that carries every
+ * slot, what it has to say and what it must not, is
+ * `as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt` in the document store;
+ * correcting one is still a one-line edit in this file and nothing else. **Anything new added
+ * here starts as a `[TH ...]` or `[EN ...]` placeholder**, which `written()` below renders as
+ * nothing, so a slot nobody has words for cannot ship the other language by accident.
  *
  * The seven calendar headings are a narrower case and are marked where they sit: those are
  * the conventional abbreviations, documented in several places rather than invented here.
@@ -88,18 +96,23 @@ export const TEAM_STRINGS_TH = {
    * date is ever composed here. Paul's wording goes around it. It has to work when she is
    * offline looking at a saved copy, which is the case it exists for.
    */
-  builtAt: "อัปเดต {when}",
+  builtAt: "อัปเดตล่าสุด {when}",
 
   /**
    * The marker on a visit that is new, or whose line has changed, since the last time she
-   * opened the app. Short: it sits beside a job line, on a phone.
+   * opened the app. It sits beside a job line, on a phone, so it wraps rather than running on.
+   *
+   * It names the job's details rather than its date and time, which is the correction of
+   * 18/11/2026 and is a fact about this app: `sinceLastSeen` compares the whole rendered
+   * line, so a new per-clean note or a newly occupied stay flips it exactly as a moved date
+   * does. A marker that said the date had changed would be wrong on most of what trips it.
    *
    * It must not read as a correction of the change lines at the foot of her schedule. Those
    * say what changed since the last schedule was **posted**; this one says what changed
    * since **she** last looked. On a week she did not open the app those are different
    * answers and both are true.
    */
-  changedSinceSeen: "มีการเปลี่ยนแปลง",
+  changedSinceSeen: "รายละเอียดงานมีการเปลี่ยนแปลง",
 
   /**
    * The prompt above the PIN field, which is now the front door of the whole app rather
@@ -111,7 +124,7 @@ export const TEAM_STRINGS_TH = {
    * prompt naming only the codes would be telling her the wrong thing about what she is
    * unlocking.
    */
-  pinPrompt: "ใส่รหัสที่พอลส่งให้ในไลน์",
+  pinPrompt: "ใส่รหัสที่พอลส่งให้ทางไลน์",
 
   /** A wrong PIN. Says nothing about how many tries are left and nothing about whose PIN
    * it is. */
@@ -119,11 +132,11 @@ export const TEAM_STRINGS_TH = {
 
   /** Too many wrong tries. Says that she has to wait, and that Paul can be asked in LINE.
    * Distinct from a wrong PIN, because the thing she should do next is different. */
-  pinLocked: "ใส่ผิดหลายครั้ง รอสักครู่ หรือถามพอลในไลน์",
+  pinLocked: "ใส่รหัสผิดหลายครั้ง กรุณารอสักครู่แล้วลองใหม่ หรือติดต่อพอลทางไลน์",
 
   /** No PIN has been set for her yet, so the codes screen cannot open at all. She cannot
    * fix this herself: it says to ask Paul. */
-  pinMissing: "ยังไม่ได้ตั้งรหัส ถามพอลในไลน์",
+  pinMissing: "ยังไม่ได้ตั้งรหัสสำหรับคุณ ติดต่อพอลทางไลน์",
 
   /**
    * The only thing a phone with no working access is ever told, and the whole of the
@@ -134,7 +147,7 @@ export const TEAM_STRINGS_TH = {
    * answer. Saying which of them happened would tell whoever is holding the phone something
    * about the others.
    */
-  askPaul: "โทรศัพท์เครื่องนี้เปิดตารางงานไม่ได้ ขอลิงก์ใหม่จากพอลในไลน์",
+  askPaul: "โทรศัพท์เครื่องนี้ยังเข้าดูตารางงานไม่ได้ ขอลิงก์ใหม่จากพอลทางไลน์",
 
   /** The button that finishes enrolment, on the link Paul sent her. One tap, after which
    * this phone is hers and the link is dead. */
@@ -142,11 +155,11 @@ export const TEAM_STRINGS_TH = {
 
   /** Nothing has been published for her yet, or what was published has expired. Not an
    * error she can act on, so it says to ask Paul. */
-  noSchedule: "ยังไม่มีตารางงาน ถามพอลในไลน์",
+  noSchedule: "ยังไม่มีตารางงานให้ดู สอบถามพอลทางไลน์",
 
   /** Shown when the phone has no connection and she is reading a saved copy. The age of
    * that copy is the builtAt line above it. */
-  offline: "ไม่มีสัญญาณ นี่คือข้อมูลที่บันทึกไว้",
+  offline: "ขณะนี้ออฟไลน์ กำลังแสดงข้อมูลที่บันทึกไว้ล่าสุด",
 
   /** Above the address on a job, which is a line of text with a pin beside it and nothing
    * saying that tapping it opens a map. */
@@ -154,12 +167,18 @@ export const TEAM_STRINGS_TH = {
 
   /** Above the people on a job. Their names and numbers are on the screen with a phone
    * beside them and nothing saying who they are to her. */
-  jobPeopleHeading: "ทำงานกับ",
+  jobPeopleHeading: "ผู้ร่วมงาน",
 
-  /** Under her name on the enrolment link Paul sends in LINE, which otherwise shows a name
-   * and a button and no account of what pressing it does. The link works once and binds this
-   * phone, which is the part she cannot undo and is not told. */
-  enrolHelp: "ลิงก์นี้ใช้ได้ครั้งเดียว และใช้ได้เฉพาะโทรศัพท์เครื่องนี้",
+  /**
+   * Under her name on the enrolment link Paul sends in LINE, which otherwise shows a name and
+   * a button and no account of what pressing it does.
+   *
+   * It asks her to open the link on the phone she will use, rather than saying the link works
+   * on this phone only. That is the correction of 18/11/2026 and it is the truer sentence:
+   * the GET answers on any phone and the POST binds whichever one presses the button, so the
+   * choice of phone is hers to make once and cannot be undone.
+   */
+  enrolHelp: "ลิงก์นี้ใช้ได้ครั้งเดียว กรุณาเปิดบนโทรศัพท์ที่จะใช้ดูตารางงาน",
 
   /** The control that opens the days already behind her. It carries a count and a chevron
    * and no word for what is behind it. */
@@ -179,8 +198,8 @@ export const TEAM_STRINGS_TH = {
    * she can read the first time.
    */
   jobDetailsHeading: "รายละเอียดงาน",
-  jobTurnover: "แขกเช็คเอาท์ แล้วมีแขกใหม่เช็คอิน",
-  jobMidstay: "แขกยังพักอยู่ ทำความสะอาดระหว่างที่แขกพัก",
+  jobTurnover: "ทำความสะอาดหลังแขกเช็กเอาต์ เพื่อเตรียมรับแขกใหม่",
+  jobMidstay: "ทำความสะอาดระหว่างเข้าพัก",
 
   /** Above anything true of this one clean: a cot, an extra bed, something to prepare. The
    * text under it is the skill's, from the payload, and is never written here. */
@@ -222,23 +241,23 @@ export const TEAM_STRINGS_TH = {
  * quietly ships inside the other, which is the bug R8 describes on the public site.
  */
 export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
-  builtAt: "Updated {when}",
-  changedSinceSeen: "Changed",
+  builtAt: "Last updated {when}",
+  changedSinceSeen: "Job details changed",
   pinPrompt: "Enter the PIN Paul sent you on LINE",
   pinWrong: "That is not the right code",
-  pinLocked: "Too many tries. Wait a moment, or ask Paul on LINE",
-  pinMissing: "No code has been set yet. Ask Paul on LINE",
-  askPaul: "This phone cannot open the schedule. Ask Paul for a new link on LINE",
+  pinLocked: "Too many tries. Wait a moment and try again, or contact Paul on LINE",
+  pinMissing: "No code has been set for you yet. Contact Paul on LINE",
+  askPaul: "This phone cannot open the schedule yet. Ask Paul for a new link on LINE",
   enrolOpen: "Open my schedule",
-  noSchedule: "No schedule yet. Ask Paul on LINE",
-  offline: "No signal. This is the saved copy",
+  noSchedule: "There is no schedule to show yet. Ask Paul on LINE",
+  offline: "You are offline. Showing the last saved copy",
   jobAddressHeading: "Address",
   jobPeopleHeading: "Working with",
-  enrolHelp: "This link works once, and only on this phone",
+  enrolHelp: "This link works once. Open it on the phone you will use for your schedule",
   pastJobs: "Past jobs",
   jobDetailsHeading: "About this job",
-  jobTurnover: "The guest checks out, then a new guest checks in",
-  jobMidstay: "The guest is still staying. Clean during the stay",
+  jobTurnover: "Clean after the guest checks out, ready for the new guest",
+  jobMidstay: "Clean during the stay",
   jobRequestsHeading: "Special requests",
   commentsHeading: "Messages",
   commentPlaceholder: "Write a message",

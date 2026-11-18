@@ -831,22 +831,22 @@ flow, end to end, with nothing live anywhere near it.
   rendered in development and would have gone missing only in production, on the one screen
   that tells a cleaner whether what she is holding is current. Nothing in this repository
   changed for it; the app read `built_at` off the document already.
-- **The cleaning app's Thai is mine and has had no native read, and now its English is too
-  (18/11/2026).** Every slot in `src/lib/cleaning/strings.ts` carries words: the seventeen
-  sentences shipped on 17/11/2026 on Paul's instruction, because the screens had been rendering
-  nothing at all and a draft he can correct beat silence. What has not happened is the reading.
-  No Thai speaker has been through any of it, which matters most on the three screens a cleaner
-  cannot get past: the PIN prompt, the enrolment link and the "ask Paul" message. The correction
-  sheet is
-  `/Users/paulb/code/agentsiam/agentsiam-consulting/as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt`,
-  one slot per string with where it appears, what it has to say and what it must not; each
-  correction is a one-line edit in that file and nothing else in the app changes. The English
-  table beside it, written 18/11/2026 with the switch, is mine on the same terms and has had no
-  read either. **A slot nobody has written ships as silence rather than as English**: an unwritten
-  string renders as nothing and takes its element with it, at Paul's instruction of 17/11/2026,
-  and the band that used to count them on every screen is gone, so nothing in the running app
-  says a sentence is missing. `npm run test:cleaning-strings` is what finds one now, and the same
-  run is what refuses a Latin letter in the Thai.
+- ~~**The cleaning app's Thai is mine and has had no native read (18/11/2026).**~~ Resolved
+  the same day. A Thai speaker read every line and eleven came back corrected; they are in
+  `src/lib/cleaning/strings.ts` exactly as they were given. Two of the corrections turned on
+  how the app works rather than on Thai and were answered from the code: the enrolment link
+  binds whichever phone opens it rather than being tied to one in advance, so it now asks her
+  to open it on the phone she will use; and the marker on a changed visit compares the whole
+  job line, a new per-clean note included, so it says the job details changed rather than
+  naming the date and the time. The sheet that carries every slot, what it has to say and what
+  it must not, now records what was read and what moved:
+  `/Users/paulb/code/agentsiam/agentsiam-consulting/as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt`.
+  **What is still unread is the English table**, which is mine and was moved only where a
+  correction moved the meaning; nobody on the team reads it, so it is the lesser half. **And a
+  slot nobody has written still ships as silence rather than as English**: an unwritten string
+  renders as nothing and takes its element with it, at Paul's instruction of 17/11/2026, so
+  nothing in the running app says a sentence is missing. `npm run test:cleaning-strings` is
+  what finds one, and the same run refuses a Latin letter in the Thai.
 - ~~**The app reads a multi-property document the skill does not write yet (17/11/2026).**~~
   Resolved the same day in `agentsiam-consulting`, commit `b945243`. The payload names the
   house it is for, every visit carries it along with the date as a label of its own, access is
