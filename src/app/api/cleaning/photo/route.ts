@@ -18,8 +18,10 @@ const WINDOW_SECONDS = 60 * 60;
  * The photo and the comment are two requests, which is the one thing worth explaining. A
  * single request carrying both would mean parsing multipart in a route that already has
  * three checks to make, and a failed comment would lose the photo with it. This stores the
- * photo and answers with its URL; the comment that follows carries that URL and is checked
- * against the store's own host before it is kept.
+ * photo and answers with its pathname inside the private store; the comment that follows
+ * carries that pathname and is checked against the shape this app writes before it is
+ * kept. There is no URL in any of this: a private blob answers nothing to a link, and
+ * /api/cleaning/photo is the only thing that can read one.
  *
  * Same two gates as everything else she can reach: the device cookie resolves and the
  * device is still enrolled, and her PIN has been given on this phone. Deliberately **not**
@@ -45,5 +47,8 @@ export async function POST(request: Request) {
     const status = stored.reason === "unconfigured" || stored.reason === "failed" ? 503 : 400;
     return NextResponse.json({ ok: false, reason: stored.reason }, { status });
   }
-  return NextResponse.json({ ok: true, url: stored.url });
+  // A pathname and not a URL: the store is private since 18/11/2026, so there is no URL
+  // that answers anything. The comment carries this, and the thread asks
+  // /api/cleaning/photo for the bytes.
+  return NextResponse.json({ ok: true, path: stored.path });
 }

@@ -17,7 +17,8 @@
     "check:csv": "node scripts/check-csv-roundtrip.mjs",
     "guide:import": "node scripts/import-guide-sheet.mjs",
     "cleaning:icons": "node scripts/build-cleaning-icons.mjs",
-    "test:cleaning-sw": "node scripts/test-cleaning-sw.mjs"
+    "test:cleaning-sw": "node scripts/test-cleaning-sw.mjs",
+    "test:cleaning-photos": "node scripts/test-cleaning-photos.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.8.1",

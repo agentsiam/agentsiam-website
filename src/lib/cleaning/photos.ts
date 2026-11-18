@@ -1,5 +1,10 @@
-import { del, list, put } from "@vercel/blob";
-import { MAX_PHOTO_BYTES, PHOTO_KEPT_DAYS } from "./comment-shape";
+import { del, get, list, put } from "@vercel/blob";
+import {
+  MAX_PHOTO_BYTES,
+  PHOTO_KEPT_DAYS,
+  PHOTO_PREFIX,
+  photoStillKept,
+} from "./comment-shape";
 
 /**
  * The photos on a comment thread: proof that a room is finished, proof that a payment went.
@@ -12,46 +17,52 @@ import { MAX_PHOTO_BYTES, PHOTO_KEPT_DAYS } from "./comment-shape";
  * possible: it lists `cleaning/` and nothing else, so no other part of this project can
  * ever be caught by it, and nothing of ours can escape it.
  *
- * **The URLs are public to anyone holding them.** That is how image hosting works: the
- * name carries a random suffix nobody can guess, and there is no second check at the edge.
- * Worth knowing because one end of this thread is a payment slip. They are only ever written
- * into a thread that sits behind her PIN, and they stop existing after a month.
+ * **The store is private, at Paul's instruction of 18/11/2026**, which is the decision the
+ * rest of this file follows from. A public Blob store answers its own URLs to anybody
+ * holding one, and one end of this thread is a bank transfer screenshot while the other is
+ * the inside of a guest's bedroom. So nothing here hands out a URL: a comment carries the
+ * blob's pathname inside the store, and the only thing that can read it is
+ * /api/cleaning/photo, which checks the same two gates as everything else she can reach
+ * before it streams a byte. There is no link to leak, with or without an expiry.
+ *
+ * **The month is enforced three times over**, deliberately, because the one thing worse
+ * than keeping a payment slip too long is thinking it was deleted. `ttlDays` on the upload
+ * means the store itself deletes it; the daily cron sweeps anything the store somehow kept;
+ * and the read path below refuses a blob that is already too old, so a stale pathname in an
+ * old comment cannot answer with a picture.
  */
 
-/** Every photo this app stores, and the only thing the sweep is allowed to delete. */
-export const PHOTO_PREFIX = "cleaning/";
-
-/** The host Vercel Blob serves from. Checked rather than assumed, because a comment carries
- * the URL as text and a URL pointing anywhere else would load a stranger's image inside a
- * screen that is otherwise entirely this app's. */
-const BLOB_HOST = ".public.blob.vercel-storage.com";
+/**
+ * What a pathname this app wrote looks like, exactly.
+ *
+ * The prefix, a calendar date, and a name made of the characters `put` can return with a
+ * random suffix on it. This is the one thing standing between a string that arrived from a
+ * client and a read out of the store, so it is a whitelist and not a blacklist: no second
+ * slash, no `..`, no percent escapes, nothing but what this app itself writes.
+ */
+const PHOTO_PATH = /^cleaning\/\d{4}-\d{2}-\d{2}\/[A-Za-z0-9._-]{1,120}$/;
 
 export function photosConfigured(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
 /**
- * Whether a URL is one of ours.
+ * Whether a pathname is one this app wrote.
  *
- * The two routes that write a comment take the photo URL from the client, because the
- * upload and the comment are two requests and the first one's answer has to survive to the
- * second. So it is checked: the right host, and the prefix this app owns. Anything else is
- * dropped rather than refused, so a comment with words still lands.
+ * The two routes that write a comment take the pathname from the client, because the upload
+ * and the comment are two requests and the first one's answer has to survive to the second.
+ * So it is checked against the shape this app writes, and anything else is dropped rather
+ * than refused, so a comment with words still lands.
+ *
+ * The read route checks the same thing, after it has put the prefix back on, so a request
+ * cannot name a blob outside `cleaning/` even if the store holds one.
  */
-export function isOurPhoto(url: unknown): url is string {
-  if (typeof url !== "string" || url.length === 0) return false;
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol !== "https:") return false;
-    if (!parsed.hostname.endsWith(BLOB_HOST)) return false;
-    return parsed.pathname.slice(1).startsWith(PHOTO_PREFIX);
-  } catch {
-    return false;
-  }
+export function isOurPhotoPath(path: unknown): path is string {
+  return typeof path === "string" && PHOTO_PATH.test(path);
 }
 
 export type StoreResult =
-  | { ok: true; url: string }
+  | { ok: true; path: string }
   | { ok: false; reason: "unconfigured" | "too-big" | "not-an-image" | "failed" };
 
 /**
@@ -72,13 +83,57 @@ export async function storePhoto(file: Blob): Promise<StoreResult> {
     // characters for everything else.
     const day = new Date().toISOString().slice(0, 10);
     const result = await put(`${PHOTO_PREFIX}${day}/photo`, file, {
-      access: "public",
+      access: "private",
       addRandomSuffix: true,
       contentType: file.type,
+      // The store's own expiry, which is the only one that still works if this app stops
+      // running. The cron is the sweep for anything it misses, not the mechanism.
+      ttlDays: PHOTO_KEPT_DAYS,
     });
-    return { ok: true, url: result.url };
+    // The pathname and never the URL: a private blob's URL answers nothing without a token,
+    // and storing one would read like a link that works.
+    return { ok: true, path: result.pathname };
   } catch {
     return { ok: false, reason: "failed" };
+  }
+}
+
+export type ReadResult =
+  | { ok: true; stream: ReadableStream<Uint8Array>; contentType: string; size: number }
+  | { ok: false; reason: "unconfigured" | "gone" | "failed" };
+
+/**
+ * Read one photo out of the private store, for the route that streams it.
+ *
+ * Nothing else in this app reads a blob. A private store answers no URL, so the bytes come
+ * back through here and out through /api/cleaning/photo, which has already decided whether
+ * whoever is asking may see a photograph at all.
+ *
+ * A blob older than the month it is kept for is "gone" even while the store still has it.
+ * The store deletes on its own clock and the sweep runs once a day, so for a few hours a
+ * pathname can outlive the rule; this is what makes the rule exact rather than approximate.
+ */
+export async function readPhoto(path: string): Promise<ReadResult> {
+  if (!photosConfigured()) return { ok: false, reason: "unconfigured" };
+  if (!isOurPhotoPath(path)) return { ok: false, reason: "gone" };
+
+  try {
+    const found = await get(path, { access: "private" });
+    if (!found || found.statusCode !== 200) return { ok: false, reason: "gone" };
+    if (!photoStillKept(found.blob.uploadedAt.toISOString())) {
+      return { ok: false, reason: "gone" };
+    }
+    return {
+      ok: true,
+      stream: found.stream,
+      contentType: found.blob.contentType,
+      size: found.blob.size,
+    };
+  } catch {
+    // A missing blob throws rather than answering null, and from the route there is nothing
+    // to tell it apart from a store that is having a bad minute. Both are "gone" to the
+    // phone, which shows no image either way.
+    return { ok: false, reason: "gone" };
   }
 }
 
@@ -92,6 +147,11 @@ export async function storePhoto(file: Blob): Promise<StoreResult> {
  * It reads `uploadedAt` from the store rather than anything written in a comment, so a
  * photo whose comment has already expired out of Redis is still swept. Deleting in batches
  * because `del` takes a list and a month of photos is a short one.
+ *
+ * Since the store became private on 18/11/2026 every upload also carries `ttlDays`, so this
+ * is the second of three mechanisms rather than the only one. It stays because it is the one
+ * that can be checked: it reports what it found and what it deleted, and `scripts/check-cron.mjs`
+ * refuses a build that has lost it.
  */
 export async function sweepPhotos(now: Date = new Date()): Promise<{
   checked: number;
@@ -106,7 +166,9 @@ export async function sweepPhotos(now: Date = new Date()): Promise<{
     const page = await list({ prefix: PHOTO_PREFIX, cursor, limit: 1000 });
     for (const blob of page.blobs) {
       checked += 1;
-      if (blob.uploadedAt.getTime() < cutoff) doomed.push(blob.url);
+      // By pathname, not by url: `del` takes either, and a private store's url is not a
+      // thing this app ever holds on to.
+      if (blob.uploadedAt.getTime() < cutoff) doomed.push(blob.pathname);
     }
     cursor = page.hasMore ? page.cursor : undefined;
   } while (cursor);

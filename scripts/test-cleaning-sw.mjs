@@ -5,7 +5,7 @@
  *
  * **What it proves.** The worker's branching, which is where its risk is: what it refuses to
  * touch, what it saves, what it serves when fetch throws, and that a navigation coming back
- * redirected to the ask-Paul page wipes the cache. Twenty-five cases, a line each, non-zero
+ * redirected to the ask-Paul page wipes the cache. Twenty-six cases, a line each, non-zero
  * exit on any failure.
  *
  * Six of them are the door codes, which this worker keeps as of 17/11/2026 and used to refuse

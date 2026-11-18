@@ -34,6 +34,15 @@ const nextConfig: NextConfig = {
         headers: [{ key: "Cache-Control", value: "no-store, must-revalidate" }],
       },
       {
+        // One photograph out of the private store, which since 18/11/2026 is the only way
+        // to see one. A bank transfer screenshot and the inside of a guest's bedroom are
+        // what travels here, so the same belt and braces as the door codes: the route sets
+        // this header itself and this says it again, because the one that matters is
+        // whichever of the two somebody has not accidentally deleted.
+        source: "/api/cleaning/photo/:path*",
+        headers: [{ key: "Cache-Control", value: "private, no-store" }],
+      },
+      {
         // A service worker a browser holds for a day is a day of the app not updating.
         source: "/cleaning-sw.js",
         headers: [

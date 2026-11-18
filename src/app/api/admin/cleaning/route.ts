@@ -3,7 +3,7 @@ import { currentSession } from "@/lib/admin/guard";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { PIN_SHAPE, createEnrolToken, revokeDevice, setPin } from "@/lib/cleaning/devices";
 import { findVisit, parseDocument } from "@/lib/cleaning/document";
-import { isOurPhoto } from "@/lib/cleaning/photos";
+import { isOurPhotoPath } from "@/lib/cleaning/photos";
 import { cleaningEnrolPath } from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
 import { readNote, storeProblem } from "@/lib/cleaning/store";
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
       const slug = typeof body.slug === "string" ? body.slug : "";
       const text = cleanBody(body.body);
       // Checked against the store's own host, the same way her route checks hers.
-      const image = isOurPhoto(body.image) ? body.image : null;
+      const image = isOurPhotoPath(body.image) ? body.image : null;
       if (!VISIT_SLUG.test(slug) || (!text && !image)) {
         return NextResponse.json(
           { error: "A comment needs a job, and words or a photo." },

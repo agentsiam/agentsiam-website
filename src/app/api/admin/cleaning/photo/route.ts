@@ -22,5 +22,5 @@ export async function POST(request: Request) {
     const status = stored.reason === "unconfigured" || stored.reason === "failed" ? 503 : 400;
     return NextResponse.json({ error: `The photo was not stored: ${stored.reason}.` }, { status });
   }
-  return NextResponse.json({ ok: true, url: stored.url });
+  return NextResponse.json({ ok: true, path: stored.path });
 }
