@@ -15,10 +15,11 @@ import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { findVisit, parseDocument, propertyOf, todayInBangkok } from "@/lib/cleaning/document";
 import { listComments } from "@/lib/cleaning/comments";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
+import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_SCHEDULE } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
-import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
+import { teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
  * One job: which house, when, where it is, and the way to its codes.
@@ -56,6 +57,8 @@ export const dynamic = "force-dynamic";
 export default async function JobPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const holder = await requireHolder();
+  const lang = await teamLang();
+  const t = teamStrings(lang);
 
   // The front door is on the schedule screen, which is also where a phone that has not been
   // through it is sent from anywhere else under /cleaning.
@@ -72,7 +75,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   if (!document || !visit) {
     return (
       <main>
-        <Message text={TEAM_STRINGS.noSchedule} />
+        <Message text={t.noSchedule} />
       </main>
     );
   }
@@ -92,9 +95,9 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   // sentence at all rather than a guessed one.
   const detail =
     visit.type === "turnover"
-      ? written(TEAM_STRINGS.jobTurnover)
+      ? written(t.jobTurnover)
       : visit.type === "midstay"
-        ? written(TEAM_STRINGS.jobMidstay)
+        ? written(t.jobMidstay)
         : "";
 
   return (
@@ -106,7 +109,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         <ChevronLeft />
         <span className="min-w-0 truncate">{document.title}</span>
       </Link>
-      <OfflineNotice />
+      <OfflineNotice lang={lang} />
 
       <section className="mt-4 rounded-panel bg-ink p-5">
         <span
@@ -134,9 +137,9 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
 
       {detail ? (
         <section className="mt-5">
-          {written(TEAM_STRINGS.jobDetailsHeading) ? (
+          {written(t.jobDetailsHeading) ? (
             <h2 className="text-[15px] font-semibold text-muted">
-              {written(TEAM_STRINGS.jobDetailsHeading)}
+              {written(t.jobDetailsHeading)}
             </h2>
           ) : null}
           <p className="mt-2 rounded-panel border border-border bg-bg p-4 text-[17px] leading-7 text-text">
@@ -150,9 +153,9 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
           an extra bed is worth saying twice and worth a heading of its own. */}
       {visit.note ? (
         <section className="mt-5">
-          {written(TEAM_STRINGS.jobRequestsHeading) ? (
+          {written(t.jobRequestsHeading) ? (
             <h2 className="text-[15px] font-semibold text-muted">
-              {written(TEAM_STRINGS.jobRequestsHeading)}
+              {written(t.jobRequestsHeading)}
             </h2>
           ) : null}
           <p className="mt-2 rounded-panel bg-wash-gold p-4 text-[17px] leading-7 text-deep-gold">
@@ -161,9 +164,9 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         </section>
       ) : null}
 
-      {house?.address && written(TEAM_STRINGS.jobAddressHeading) ? (
+      {house?.address && written(t.jobAddressHeading) ? (
         <h2 className="mt-5 text-[15px] font-semibold text-muted">
-          {written(TEAM_STRINGS.jobAddressHeading)}
+          {written(t.jobAddressHeading)}
         </h2>
       ) : null}
       {house?.address ? (
@@ -197,11 +200,11 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
 
       {/* The codes themselves, on the day, fetched rather than rendered so that no saved
           copy of this page holds one. Nothing at all on any other day. */}
-      {isToday ? <HouseCodes slug={slug} /> : null}
+      {isToday ? <HouseCodes slug={slug} lang={lang} /> : null}
 
-      {visit.with.length > 0 && written(TEAM_STRINGS.jobPeopleHeading) ? (
+      {visit.with.length > 0 && written(t.jobPeopleHeading) ? (
         <h2 className="mt-5 text-[15px] font-semibold text-muted">
-          {written(TEAM_STRINGS.jobPeopleHeading)}
+          {written(t.jobPeopleHeading)}
         </h2>
       ) : null}
       {visit.with.length > 0 ? (
@@ -268,12 +271,12 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
       ) : null}
 
       <section className="mt-6">
-        {written(TEAM_STRINGS.commentsHeading) ? (
+        {written(t.commentsHeading) ? (
           <h2 className="text-[15px] font-semibold text-muted">
-            {written(TEAM_STRINGS.commentsHeading)}
+            {written(t.commentsHeading)}
           </h2>
         ) : null}
-        <Comments slug={slug} comments={comments} />
+        <Comments slug={slug} comments={comments} lang={lang} />
       </section>
 
       {/* Clear of the composer, which is the one place on these screens where a thumb is

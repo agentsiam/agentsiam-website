@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight, HouseMark } from "@/components/cleaning/glyp
 import type { CalendarCell } from "@/lib/cleaning/document";
 import { markOf, type HouseMarks } from "@/lib/cleaning/houses";
 import { cleaningDayPath } from "@/lib/cleaning/routes";
-import { CALENDAR_WEEKDAYS, weekdaysWritten } from "@/lib/cleaning/strings";
+import { calendarWeekdays, weekdaysWritten, type TeamLang } from "@/lib/cleaning/strings";
 
 /**
  * One month at a time, with an arrow to the next.
@@ -72,7 +72,15 @@ function Marks({
   );
 }
 
-export function MonthGrid({ months, marks }: { months: MonthView[]; marks: HouseMarks }) {
+export function MonthGrid({
+  months,
+  marks,
+  lang,
+}: {
+  months: MonthView[];
+  marks: HouseMarks;
+  lang: TeamLang;
+}) {
   const [at, setAt] = useState(0);
   if (months.length === 0) return null;
   const month = months[Math.min(at, months.length - 1)];
@@ -111,8 +119,8 @@ export function MonthGrid({ months, marks }: { months: MonthView[]; marks: House
       <div className="grid grid-cols-7 gap-1">
         {/* All seven or none: a row of empty cells over the grid would be a heading that has
             lost its words rather than a grid that never had any. */}
-        {weekdaysWritten()
-          ? CALENDAR_WEEKDAYS.map((day, index) => (
+        {weekdaysWritten(lang)
+          ? calendarWeekdays(lang).map((day, index) => (
               <div
                 key={index}
                 className="pb-1 text-center text-[11px] font-semibold tracking-wide text-muted"

@@ -30,6 +30,22 @@ export const CLEANING_COOKIE = "as_clean";
 export const CLEANING_PIN_COOKIE = "as_clean_pin";
 
 /**
+ * Which of the two languages this phone reads the app in.
+ *
+ * Unsigned, unlike the two above, because it is the one cookie here that guards nothing. It
+ * carries a display choice, it is read only by src/lib/cleaning/strings.ts through
+ * `asTeamLang`, and anything that is not one of the two language codes means Thai. A phone
+ * that has never touched the switch sends no cookie at all and gets Thai.
+ *
+ * A cookie rather than a path, which is the opposite of how the public site does its three
+ * languages. There every locale is a URL because a guest shares a link and a crawler indexes
+ * it; here nothing is shared and nothing is crawled, and every saved copy the service worker
+ * holds is keyed on the URL, so a second path for the same schedule would mean a second
+ * saved copy and a phone offline on the wrong one.
+ */
+export const CLEANING_LANG_COOKIE = "as_clean_lang";
+
+/**
  * A year. Longer than the admin's thirty days on purpose: nobody here has a password to
  * fall back on, so an expiring cookie is a cleaner locked out at a door with Paul asleep.
  * What makes it safe is that revocation does not wait for it: deleting the device record
@@ -58,6 +74,11 @@ export const CLEANING_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
  * repo. This number is the dial.
  */
 export const CLEANING_PIN_MAX_AGE = 60 * 60 * 24 * 30;
+
+/** A year for the language choice, the same as the phone itself gets. Nothing is protected
+ * by forgetting it, and a cleaner whose app reverts to Thai in a month would have to find
+ * the switch again in a language she cannot read. */
+export const CLEANING_LANG_MAX_AGE = 60 * 60 * 24 * 365;
 
 /**
  * Seven days, which is the longest a saved door code may sit on a phone.

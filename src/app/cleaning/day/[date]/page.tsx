@@ -11,6 +11,7 @@ import {
   visitsOn,
 } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
+import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_SCHEDULE, cleaningJobPath } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
@@ -74,7 +75,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
         <ChevronLeft />
         <span className="min-w-0 truncate">{document.title}</span>
       </Link>
-      <OfflineNotice />
+      <OfflineNotice lang={await teamLang()} />
 
       {label ? (
         <h1 className="mt-3 text-[26px] font-semibold leading-9 text-text">{label}</h1>

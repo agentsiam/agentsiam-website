@@ -29,17 +29,58 @@
  * The seven calendar headings are a narrower case and are marked where they sit: those are
  * the conventional abbreviations, documented in several places rather than invented here.
  *
- * Nothing in this file is translated into the other locales: the public site's three dictionaries are for guests and owners, and
- * this app has one audience reading one language per person, which the document states.
+ * **Since 18/11/2026 there are two tables, Thai and English, and a switch.** Paul's
+ * instruction: the cleaner should be able to switch between English and Thai, and the Thai
+ * version must carry no English at all. The switch is
+ * src/components/cleaning/lang-switch.tsx, the choice is a cookie on her phone, and what it
+ * changes is this file and nothing else. The Thai table is checked for Latin letters by
+ * scripts/test-cleaning-strings.mjs, so the no-English half of that instruction is a test
+ * rather than a promise.
+ *
+ * Nothing in this file is translated into the public site's three dictionaries, and nothing
+ * there is read here: those are for guests and owners, this is for three phones.
  */
 
-/** What marks a slot nobody has written yet. `written()` at the foot of this file renders
- * anything carrying it as nothing, and it is what a check greps for. */
-export const PENDING_MARK = "[TH";
+/** What marks a slot nobody has written yet, one per language. `written()` at the foot of
+ * this file renders anything carrying one as nothing, and they are what a check greps for. */
+export const PENDING_MARKS = ["[TH", "[EN"] as const;
 
-export type TeamStringKey = keyof typeof TEAM_STRINGS;
+/**
+ * The two languages a phone can be set to.
+ *
+ * Thai first and Thai by default, because the team reads Thai and a phone nobody has
+ * touched the switch on is a phone whose owner reads Thai. English exists because Paul
+ * asked for the switch on 18/11/2026.
+ */
+export const TEAM_LANGS = ["th", "en"] as const;
 
-export const TEAM_STRINGS = {
+export type TeamLang = (typeof TEAM_LANGS)[number];
+
+export const DEFAULT_TEAM_LANG: TeamLang = "th";
+
+/** Whichever of the two a string is, or null for anything else: a cookie somebody edited,
+ * an old value, a query parameter. Null means Thai, by way of DEFAULT_TEAM_LANG. */
+export function asTeamLang(value: string | null | undefined): TeamLang | null {
+  return TEAM_LANGS.find((lang) => lang === value) ?? null;
+}
+
+/**
+ * What each language is called, on the switch itself.
+ *
+ * **The one Latin word on a Thai screen that is there on purpose.** A language is named in
+ * its own language, which is the convention everywhere this switch exists, and the whole
+ * point of the English option is that somebody who cannot read Thai can find it. Every
+ * other string in TEAM_STRINGS_TH is checked for Latin letters; this export is exempt by
+ * name and nothing else is.
+ */
+export const TEAM_LANG_NAMES: Record<TeamLang, string> = {
+  th: "ไทย",
+  en: "English",
+};
+
+export type TeamStringKey = keyof typeof TEAM_STRINGS_TH;
+
+export const TEAM_STRINGS_TH = {
   /**
    * The line under the title saying how old this schedule is.
    *
@@ -64,12 +105,13 @@ export const TEAM_STRINGS = {
    * The prompt above the PIN field, which is now the front door of the whole app rather
    * than a second gate in front of the codes.
    *
-   * So it says to enter the PIN, and that Paul gave her the number in LINE, and it does not
-   * mention the codes: after this one screen she has her schedule and her codes both, and a
+   * The Thai says the code rather than the PIN, because the word PIN is Latin letters and
+   * the Thai version carries none. It says Paul gave her the number in LINE, and it does not
+   * mention the door codes: after this one screen she has her schedule and her codes both, and a
    * prompt naming only the codes would be telling her the wrong thing about what she is
    * unlocking.
    */
-  pinPrompt: "ใส่รหัส PIN ที่พอลส่งให้ในไลน์",
+  pinPrompt: "ใส่รหัสที่พอลส่งให้ในไลน์",
 
   /** A wrong PIN. Says nothing about how many tries are left and nothing about whose PIN
    * it is. */
@@ -81,7 +123,7 @@ export const TEAM_STRINGS = {
 
   /** No PIN has been set for her yet, so the codes screen cannot open at all. She cannot
    * fix this herself: it says to ask Paul. */
-  pinMissing: "ยังไม่ได้ตั้งรหัส PIN ถามพอลในไลน์",
+  pinMissing: "ยังไม่ได้ตั้งรหัส ถามพอลในไลน์",
 
   /**
    * The only thing a phone with no working access is ever told, and the whole of the
@@ -158,11 +200,70 @@ export const TEAM_STRINGS = {
   commentFailed: "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง",
 } as const;
 
+/**
+ * The same slots in English.
+ *
+ * Why each one says what it says is written above its Thai twin and is not repeated here.
+ * What is worth saying once more is what this table cannot reach. **The schedule itself is
+ * not translated.** The title, every job line, the day headings, the address, the contact
+ * block, the door codes and the change lines are finished text, published per person by the
+ * `cleaning-schedule` skill in that person's own language, which is Thai for all three
+ * today. So English switches the app's own words, the headings, the prompts, the markers and
+ * the buttons, and the lines under them stay in the language they were published in. A
+ * cleaner who reads only English would need her document published in English, which is a
+ * change in the skill and not in this repository.
+ *
+ * The house names are the other thing a switch cannot touch, in either direction: they are
+ * the names on the doors and in LINE, so they read the same in both languages and are Latin
+ * in both.
+ *
+ * `[EN ...]` marks an unwritten slot here for the same reason `[TH ...]` does there, and
+ * there is deliberately no fallback to the other table: a fallback is how one language
+ * quietly ships inside the other, which is the bug R8 describes on the public site.
+ */
+export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
+  builtAt: "Updated {when}",
+  changedSinceSeen: "Changed",
+  pinPrompt: "Enter the PIN Paul sent you on LINE",
+  pinWrong: "That is not the right code",
+  pinLocked: "Too many tries. Wait a moment, or ask Paul on LINE",
+  pinMissing: "No code has been set yet. Ask Paul on LINE",
+  askPaul: "This phone cannot open the schedule. Ask Paul for a new link on LINE",
+  enrolOpen: "Open my schedule",
+  noSchedule: "No schedule yet. Ask Paul on LINE",
+  offline: "No signal. This is the saved copy",
+  jobAddressHeading: "Address",
+  jobPeopleHeading: "Working with",
+  enrolHelp: "This link works once, and only on this phone",
+  pastJobs: "Past jobs",
+  jobDetailsHeading: "About this job",
+  jobTurnover: "The guest checks out, then a new guest checks in",
+  jobMidstay: "The guest is still staying. Clean during the stay",
+  jobRequestsHeading: "Special requests",
+  commentsHeading: "Messages",
+  commentPlaceholder: "Write a message",
+  commentSend: "Send",
+  commentFailed: "Not sent. Try again",
+};
+
+/**
+ * Her screens' words, in the language this phone is set to.
+ *
+ * Every screen takes its table from here and no screen imports one directly, so a screen
+ * cannot be the one that stayed in Thai. The two tables were one export until 18/11/2026
+ * and renaming it was the point: a switch whose new language is missing from one screen
+ * should fail to compile rather than ship a half-translated phone.
+ */
+export function teamStrings(lang: TeamLang): Record<TeamStringKey, string> {
+  return lang === "en" ? TEAM_STRINGS_EN : TEAM_STRINGS_TH;
+}
+
 /** Paul's wording with `{when}` filled in, or nothing while the wording is unwritten. The
  * value is digits and punctuation, never a month name or a day name: those belong to the
- * skill. */
-export function builtAtLine(when: string): string {
-  const line = written(TEAM_STRINGS.builtAt);
+ * skill, which is why this one line reads the same in both languages but for its first
+ * word. */
+export function builtAtLine(lang: TeamLang, when: string): string {
+  const line = written(teamStrings(lang).builtAt);
   return line ? line.replace("{when}", when) : "";
 }
 
@@ -184,7 +285,7 @@ export function builtAtLine(when: string): string {
  * not his to change: the grid reads the index, not the word. Two or three characters each,
  * because a column a seventh of a phone wide wraps anything longer onto two lines.
  */
-export const CALENDAR_WEEKDAYS: readonly string[] = [
+export const CALENDAR_WEEKDAYS_TH: readonly string[] = [
   "อา.",
   "จ.",
   "อ.",
@@ -193,6 +294,30 @@ export const CALENDAR_WEEKDAYS: readonly string[] = [
   "ศ.",
   "ส.",
 ];
+
+/**
+ * The same seven columns in English, in the same positions.
+ *
+ * **Sunday stays first in English too**, which is not a statement about English calendars.
+ * The grid is built by `monthWeeks` in src/lib/cleaning/document.ts, which puts the first of
+ * the month in a column by its weekday number, Sunday being zero. The order here is that
+ * arithmetic's, not the language's, and a Monday-first English row would label every cell in
+ * the grid wrongly by one day.
+ */
+export const CALENDAR_WEEKDAYS_EN: readonly string[] = [
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+];
+
+/** The seven column headings in the language this phone is set to. */
+export function calendarWeekdays(lang: TeamLang): readonly string[] {
+  return lang === "en" ? CALENDAR_WEEKDAYS_EN : CALENDAR_WEEKDAYS_TH;
+}
 
 /**
  * A string somebody has written, or nothing at all.
@@ -213,11 +338,11 @@ export const CALENDAR_WEEKDAYS: readonly string[] = [
  * trade, as long as somebody greps `[TH` in this file before calling a screen finished.
  */
 export function written(value: string): string {
-  return value.includes(PENDING_MARK) ? "" : value;
+  return PENDING_MARKS.some((mark) => value.includes(mark)) ? "" : value;
 }
 
 /** The column headings, or none, so a grid with unwritten ones drops the row rather than
  * printing seven empty cells. */
-export function weekdaysWritten(): boolean {
-  return CALENDAR_WEEKDAYS.every((day) => written(day) !== "");
+export function weekdaysWritten(lang: TeamLang): boolean {
+  return calendarWeekdays(lang).every((day) => written(day) !== "");
 }

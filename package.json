@@ -18,7 +18,8 @@
     "guide:import": "node scripts/import-guide-sheet.mjs",
     "cleaning:icons": "node scripts/build-cleaning-icons.mjs",
     "test:cleaning-sw": "node scripts/test-cleaning-sw.mjs",
-    "test:cleaning-photos": "node scripts/test-cleaning-photos.mjs"
+    "test:cleaning-photos": "node scripts/test-cleaning-photos.mjs",
+  "test:cleaning-strings": "node scripts/test-cleaning-strings.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.8.1",

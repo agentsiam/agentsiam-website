@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
+import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
 
 /**
  * Says, when the phone has no connection, that what is on screen is the saved copy.
@@ -13,7 +13,7 @@ import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
  * Starts hidden and is shown only once the browser says it is offline, so a phone that
  * never goes offline never shows it.
  */
-export function OfflineNotice() {
+export function OfflineNotice({ lang }: { lang: TeamLang }) {
   const [offline, setOffline] = useState(false);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export function OfflineNotice() {
     };
   }, []);
 
-  const said = written(TEAM_STRINGS.offline);
+  const said = written(teamStrings(lang).offline);
   if (!offline || !said) return null;
   return (
     <p className="mt-2 rounded-box bg-wash-red px-3 py-2 text-[15px] text-deep-red">

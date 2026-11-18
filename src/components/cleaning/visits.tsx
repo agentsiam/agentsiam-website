@@ -5,7 +5,7 @@ import { dayOfMonth, visitSlug } from "@/lib/cleaning/document";
 import { markOf, type HouseMarks } from "@/lib/cleaning/houses";
 import { cleaningDayPath } from "@/lib/cleaning/routes";
 import { visitIdentity } from "@/lib/cleaning/seen";
-import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
+import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
 
 /**
  * Her work, as days rather than as a list of jobs.
@@ -87,8 +87,8 @@ function VisitMeta({
  * the one thing the app does that her LINE Note cannot: silently dropping it would leave
  * the app with no reason to exist that a pasted message does not already cover.
  */
-function Changed({ onInk = false }: { onInk?: boolean }) {
-  const said = written(TEAM_STRINGS.changedSinceSeen);
+function Changed({ lang, onInk = false }: { lang: TeamLang; onInk?: boolean }) {
+  const said = written(teamStrings(lang).changedSinceSeen);
   if (!said) {
     return (
       <span
@@ -126,12 +126,14 @@ export function NextVisitCard({
   house,
   mark,
   jobHref,
+  lang,
 }: {
   visit: Visit;
   isChanged: boolean;
   house: PropertyRef | null;
   mark: number | null;
   jobHref: string;
+  lang: TeamLang;
 }) {
   return (
     <section className="mt-5 overflow-hidden rounded-panel bg-ink">
@@ -150,7 +152,7 @@ export function NextVisitCard({
             occupied={visit.type === "midstay"}
             onInk
           />
-          {isChanged ? <Changed onInk /> : null}
+          {isChanged ? <Changed lang={lang} onInk /> : null}
         </div>
         <span aria-hidden="true" className="mt-1 shrink-0 text-gold-on-ink opacity-60">
           <ChevronRight />
@@ -167,6 +169,7 @@ function Day({
   nextDate,
   changed,
   role,
+  lang,
   marks,
   houseOf,
   jobHref,
@@ -176,6 +179,7 @@ function Day({
   nextDate: string | null;
   changed: Set<string>;
   role: string;
+  lang: TeamLang;
   marks: HouseMarks;
   houseOf: (visit: Visit) => PropertyRef | null;
   jobHref: (visit: Visit) => string;
@@ -231,7 +235,7 @@ function Day({
                     mark={markOf(marks, visit.property)}
                     occupied={visit.type === "midstay"}
                   />
-                  {changed.has(visitIdentity(visit)) ? <Changed /> : null}
+                  {changed.has(visitIdentity(visit)) ? <Changed lang={lang} /> : null}
                 </div>
                 <span aria-hidden="true" className="mt-2 shrink-0 text-muted">
                   <ChevronRight />
@@ -264,6 +268,7 @@ export function DayList({
   today,
   changed,
   role,
+  lang,
   marks,
   houseOf,
   jobHref,
@@ -273,6 +278,7 @@ export function DayList({
   today: string;
   changed: Set<string>;
   role: string;
+  lang: TeamLang;
   marks: HouseMarks;
   houseOf: (visit: Visit) => PropertyRef | null;
   jobHref: (visit: Visit) => string;
@@ -283,15 +289,17 @@ export function DayList({
   const ahead = sections.filter((day) => day.date >= today);
   const pastJobs = past.reduce((count, day) => count + day.visits.length, 0);
 
-  const shared = { nextDate, changed, role, marks, houseOf, jobHref };
+  const shared = { nextDate, changed, role, lang, marks, houseOf, jobHref };
 
   return (
     <div className="mt-7">
       {past.length > 0 ? (
         <details className="group">
           <summary className="flex cursor-pointer list-none items-center justify-center gap-2 rounded-box bg-surface py-2.5 text-muted [&::-webkit-details-marker]:hidden">
-            {written(TEAM_STRINGS.pastJobs) ? (
-              <span className="text-[14px] font-semibold">{written(TEAM_STRINGS.pastJobs)}</span>
+            {written(teamStrings(lang).pastJobs) ? (
+              <span className="text-[14px] font-semibold">
+                {written(teamStrings(lang).pastJobs)}
+              </span>
             ) : null}
             <Digits className="text-[14px] font-semibold">{pastJobs}</Digits>
             <span

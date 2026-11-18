@@ -1,5 +1,6 @@
 import { Message } from "@/components/cleaning/blocks";
-import { TEAM_STRINGS } from "@/lib/cleaning/strings";
+import { teamLang } from "@/lib/cleaning/lang";
+import { teamStrings } from "@/lib/cleaning/strings";
 
 /**
  * The only thing a phone with no working access is ever told.
@@ -16,10 +17,14 @@ import { TEAM_STRINGS } from "@/lib/cleaning/strings";
 
 export const dynamic = "force-dynamic";
 
-export default function NoAccessPage() {
+export default async function NoAccessPage() {
+  // The language cookie outlives the device cookie, so a phone Paul has revoked still
+  // says this in whichever language its holder set.
+  const lang = await teamLang();
+
   return (
     <main>
-      <Message text={TEAM_STRINGS.askPaul} />
+      <Message text={teamStrings(lang).askPaul} />
     </main>
   );
 }

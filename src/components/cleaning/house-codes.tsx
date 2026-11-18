@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CLEANING_API_CODES } from "@/lib/cleaning/routes";
-import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
+import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
 
 /**
  * The gate and door codes for one job, on the screen she is already looking at.
@@ -25,7 +25,7 @@ import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
  * Nothing is rendered until the answer arrives, so a day she is not working, a job that is
  * not hers and a store that cannot be reached all look the same on screen, which is nothing.
  */
-export function HouseCodes({ slug }: { slug: string }) {
+export function HouseCodes({ slug, lang }: { slug: string; lang: TeamLang }) {
   const [block, setBlock] = useState<{ heading: string; lines: string[] } | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -56,7 +56,7 @@ export function HouseCodes({ slug }: { slug: string }) {
   }, [slug]);
 
   if (failed) {
-    const said = written(TEAM_STRINGS.offline);
+    const said = written(teamStrings(lang).offline);
     return said ? (
       <p className="mt-4 rounded-box bg-wash-red px-4 py-3 text-[15px] leading-6 text-deep-red">
         {said}
