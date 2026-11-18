@@ -72,6 +72,10 @@ export const CLEANING_API_ENROL = "/api/cleaning/enrol";
 export const CLEANING_API_PIN = "/api/cleaning/pin";
 export const CLEANING_API_SEEN = "/api/cleaning/seen";
 
+/** Where she takes a clean on. Separate from the comment route because a comment is words
+ * about a clean and this is her answer to being given one. */
+export const CLEANING_API_ACCEPT = "/api/cleaning/accept";
+
 /**
  * The switch between Thai and English, which is a form post and not a link.
  *

@@ -18,6 +18,7 @@
     "guide:import": "node scripts/import-guide-sheet.mjs",
     "cleaning:icons": "node scripts/build-cleaning-icons.mjs",
     "cleaning:wipe": "node scripts/wipe-cleaning.mjs",
+  "test:cleaning-accept": "node scripts/test-cleaning-accept.mjs",
   "test:cleaning-sw": "node scripts/test-cleaning-sw.mjs",
     "test:cleaning-photos": "node scripts/test-cleaning-photos.mjs",
   "test:cleaning-strings": "node scripts/test-cleaning-strings.mjs"

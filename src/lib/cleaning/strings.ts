@@ -217,6 +217,24 @@ export const TEAM_STRINGS_TH = {
   commentPlaceholder: "เขียนข้อความ",
   commentSend: "ส่ง",
   commentFailed: "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง",
+
+  /**
+   * Taking a clean on, which is the first thing in this app she answers rather than reads.
+   *
+   * Paul, 18/11/2026: a new clean, and a clean that has moved, should reach her as something
+   * to accept. The heading stands over the card on her first screen; the button is on each
+   * clean in it; the pill marks the same clean down in her list, so the schedule tells the
+   * same story as the card above it; the last is what a phone says when the tap did not
+   * reach us, which offline is the ordinary case rather than the exception.
+   *
+   * One verb throughout, ยืนยัน, rather than a button that says take and a pill that says
+   * confirm. These four are drafts of mine and have not been read by a Thai speaker, unlike
+   * the twenty-two above them.
+   */
+  acceptHeading: "งานใหม่ที่ต้องยืนยัน",
+  acceptButton: "ยืนยันรับงาน",
+  acceptWaiting: "รอยืนยัน",
+  acceptFailed: "ยืนยันไม่สำเร็จ ลองใหม่อีกครั้ง",
 } as const;
 
 /**
@@ -263,6 +281,10 @@ export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
   commentPlaceholder: "Write a message",
   commentSend: "Send",
   commentFailed: "Not sent. Try again",
+  acceptHeading: "New jobs to confirm",
+  acceptButton: "Accept this job",
+  acceptWaiting: "Not confirmed",
+  acceptFailed: "Not confirmed. Try again",
 };
 
 /**

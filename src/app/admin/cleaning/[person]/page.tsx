@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JobComment } from "@/components/admin/job-comment";
+import { acceptState } from "@/lib/cleaning/accept";
 import { PhotoTiles } from "@/components/cleaning/photo-tiles";
 import { requireSession } from "@/lib/admin/guard";
 import { photoStillKept } from "@/lib/cleaning/comment-shape";
@@ -49,6 +50,14 @@ export default async function AdminCleaningPersonPage({
 
   const today = todayInBangkok();
   const visits = document ? [...document.visits].reverse() : [];
+  // Her side of the agreement, which is the half of this screen that was missing: it has
+  // always said what was scheduled and never whether she had answered.
+  const { waiting, takenAt } = document
+    ? await acceptState(person, document.visits).catch(() => ({
+        waiting: new Set<string>(),
+        takenAt: new Map<string, string>(),
+      }))
+    : { waiting: new Set<string>(), takenAt: new Map<string, string>() };
   const threads = await Promise.all(
     visits.map(async (visit) => ({
       visit,
@@ -104,6 +113,20 @@ export default async function AdminCleaningPersonPage({
                 {visit.type ? ` · ${visit.type}` : ""}
                 {comments.length > 0 ? ` · ${comments.length} message${comments.length === 1 ? "" : "s"}` : ""}
               </p>
+              {/* Accepted and when, or still waiting, and nothing at all for a clean that
+                  has already happened: an unanswered prompt on a past date is a fact about
+                  last week and not something to chase. */}
+              {visit.date >= today ? (
+                <p
+                  className={`mt-1 text-xs font-semibold ${
+                    waiting.has(slug) ? "text-deep-red" : "text-muted"
+                  }`}
+                >
+                  {waiting.has(slug)
+                    ? "Not accepted yet"
+                    : `Accepted ${(takenAt.get(slug) ?? "").slice(0, 16).replace("T", " ")}`}
+                </p>
+              ) : null}
 
               {comments.length > 0 ? (
                 <ul className="mt-3 space-y-2">

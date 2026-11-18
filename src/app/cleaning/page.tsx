@@ -1,3 +1,4 @@
+import { AcceptCard, type WaitingVisit } from "@/components/cleaning/accept-card";
 import { Message, RemarksBlock, RenderedBlock } from "@/components/cleaning/blocks";
 import { HouseCodes } from "@/components/cleaning/house-codes";
 import { MonthGrid, type MonthView } from "@/components/cleaning/month-grid";
@@ -6,6 +7,7 @@ import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { PinForm } from "@/components/cleaning/pin-form";
 import { SeenRecorder } from "@/components/cleaning/seen-recorder";
 import { DayList, NextVisitCard } from "@/components/cleaning/visits";
+import { acceptState } from "@/lib/cleaning/accept";
 import { pinSetAt } from "@/lib/cleaning/devices";
 import {
   builtAtDigits,
@@ -92,6 +94,11 @@ export default async function SchedulePage() {
   const nextIndex = nextVisitIndex(document.visits, today);
   const next = nextIndex >= 0 ? document.visits[nextIndex] : null;
   const { changed } = await sinceLastSeen(holder.person, document.visits);
+  // What she has not taken on yet. Read before anything is drawn, because it decides both the
+  // card at the top and the marks down the list, and the two must not disagree.
+  const { waiting } = await acceptState(holder.person, document.visits).catch(() => ({
+    waiting: new Set<string>(),
+  }));
   const digest = await visitsDigest(document.visits);
   const when = document.built_at ? builtAtDigits(document.built_at) : null;
   // Only on the day, which is Paul's rule for every door code in this app. The card names
@@ -102,6 +109,18 @@ export default async function SchedulePage() {
   // Which shape stands for which house, worked out once and handed to every part of the
   // screen, so the grid and the rows cannot disagree about it.
   const marks = houseMarks(document);
+
+  // The waiting cleans in the order they happen, flattened here so the card is handed text
+  // and never a document. Past cleans are left out: a clean that has already happened is not
+  // something to agree to, and a row she cannot act on is a row she has to scroll past.
+  const toAccept: WaitingVisit[] = document.visits
+    .filter((visit) => visit.date >= today && waiting.has(visitSlug(visit)))
+    .map((visit) => ({
+      slug: visitSlug(visit),
+      line: visit.line,
+      house: propertyOf(document, visit)?.name ?? null,
+      mark: markOf(marks, visit.property),
+    }));
 
   // Every month the arrows can reach, with its grid, worked out here: the calendar is a
   // client component so that paging is state, and none of the date arithmetic crosses that
@@ -127,6 +146,8 @@ export default async function SchedulePage() {
       </header>
       <OfflineNotice lang={lang} />
 
+      <AcceptCard waiting={toAccept} lang={lang} />
+
       {next ? (
         <NextVisitCard
           visit={next}
@@ -135,6 +156,7 @@ export default async function SchedulePage() {
           mark={markOf(marks, next.property)}
           jobHref={cleaningJobPath(visitSlug(next))}
           lang={lang}
+          isWaiting={waiting.has(visitSlug(next))}
         />
       ) : null}
 
@@ -147,6 +169,7 @@ export default async function SchedulePage() {
             nextDate={next ? next.date : null}
             today={today}
             changed={changed}
+            waiting={waiting}
             role={document.role}
             lang={lang}
             marks={marks}
