@@ -84,6 +84,17 @@ export const seenKey = (person: string) => `cleaning:seen:${person}`;
  */
 export const acceptKey = (person: string) => `cleaning:accept:${person}`;
 
+/**
+ * Every clean Paul has moved from the person it was published to, in one key.
+ *
+ * One key rather than one per person, because a move is a fact about a clean and not about
+ * either of them: both sides of it have to be read on every render, and two keys that
+ * disagree would mean a clean on nobody's screen or on two. Reserved for this app, and the
+ * skill never writes it; until the skill reads it, the LINE Note still names the person it
+ * was published to.
+ */
+export const ASSIGN_KEY = "cleaning:assign";
+
 /** One enrolled phone. Deleting this is what revokes that phone, which is how Paul kills a
  * device without touching the lock. */
 export const deviceKey = (device: string) => `cleaning:device:${device}`;

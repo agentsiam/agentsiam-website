@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { currentSession } from "@/lib/admin/guard";
+import { clearMove, moveVisit } from "@/lib/cleaning/assign";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { PIN_SHAPE, createEnrolToken, revokeDevice, setPin } from "@/lib/cleaning/devices";
-import { findVisit, parseDocument } from "@/lib/cleaning/document";
+import { findVisit, parseDocument, todayInBangkok } from "@/lib/cleaning/document";
 import { ourPhotoPaths } from "@/lib/cleaning/photos";
 import { cleaningEnrolPath } from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
@@ -11,8 +12,9 @@ import { readNote, storeProblem } from "@/lib/cleaning/store";
 export const runtime = "nodejs";
 
 /**
- * The four things Paul does to the cleaning app: issue a link, revoke a phone, set a PIN,
- * and answer somebody about a clean.
+ * The six things Paul does to the cleaning app: issue a link, revoke a phone, set a PIN,
+ * answer somebody about a clean, give a clean she turned down to another cleaner, and give
+ * it back.
  *
  * Behind the admin session, because Paul is already signed in to one and a second sign-in
  * for the same person is a second thing to lose. **No door code passes through here.** The
@@ -38,6 +40,7 @@ export async function POST(request: Request) {
     device?: unknown;
     pin?: unknown;
     slug?: unknown;
+    to?: unknown;
     body?: unknown;
     images?: unknown;
     image?: unknown;
@@ -57,6 +60,40 @@ export async function POST(request: Request) {
     if (body.action === "link") {
       const token = await createEnrolToken(person);
       return NextResponse.json({ url: enrolUrl(request, token) });
+    }
+
+    // **Moving a clean, and putting it back.** `person` is the one it was published to, which
+    // is how every other action here names the person it is about. The clean is checked against
+    // her published document rather than against what she is shown, because a clean already
+    // moved once is no longer on her screens and moving it on is exactly what this is for.
+    if (body.action === "assign" || body.action === "unassign") {
+      const slug = typeof body.slug === "string" ? body.slug : "";
+      if (!VISIT_SLUG.test(slug)) {
+        return NextResponse.json({ error: "That is not a job." }, { status: 400 });
+      }
+      if (body.action === "unassign") {
+        await clearMove(slug, todayInBangkok());
+        return NextResponse.json({ ok: true });
+      }
+      const to = typeof body.to === "string" ? body.to : "";
+      if (!PERSON_KEY.test(to) || to === person) {
+        return NextResponse.json({ error: "Pick somebody else." }, { status: 400 });
+      }
+      const from = parseDocument(await readNote(person));
+      const visit = from ? findVisit(from.visits, slug) : null;
+      if (!visit) {
+        return NextResponse.json({ error: "That person has no such job." }, { status: 404 });
+      }
+      // She has to have a schedule of her own to receive it: a moved clean is merged into a
+      // published document, and there is nothing to merge it into otherwise.
+      if (!(await readNote(to).catch(() => null))) {
+        return NextResponse.json(
+          { error: `Nothing is published for ${to}, so there is no schedule to add it to.` },
+          { status: 409 },
+        );
+      }
+      await moveVisit({ slug, from: person, to, line: visit.line }, todayInBangkok());
+      return NextResponse.json({ ok: true });
     }
 
     if (body.action === "revoke") {

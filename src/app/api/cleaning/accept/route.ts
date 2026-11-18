@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { answerVisit, type AcceptAnswer } from "@/lib/cleaning/accept";
+import { scheduleFor } from "@/lib/cleaning/assign";
 import { VISIT_SLUG } from "@/lib/cleaning/comment-shape";
-import { parseDocument } from "@/lib/cleaning/document";
 import { currentHolder, pinGiven } from "@/lib/cleaning/guard";
-import { readNote } from "@/lib/cleaning/store";
 
 export const runtime = "nodejs";
 
@@ -49,7 +48,7 @@ export async function POST(request: Request) {
 
   let document = null;
   try {
-    document = parseDocument(await readNote(holder.person));
+    document = await scheduleFor(holder.person);
   } catch {
     document = null;
   }

@@ -7,13 +7,13 @@ import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { PinForm } from "@/components/cleaning/pin-form";
 import { SeenRecorder } from "@/components/cleaning/seen-recorder";
 import { DayList, NextVisitCard } from "@/components/cleaning/visits";
-import { acceptState } from "@/lib/cleaning/accept";
+import { acceptState, hidingDeclined } from "@/lib/cleaning/accept";
+import { scheduleFor } from "@/lib/cleaning/assign";
 import { pinSetAt } from "@/lib/cleaning/devices";
 import {
   builtAtDigits,
   daySections,
   nextVisitIndex,
-  parseDocument,
   propertyOf,
   monthDigits,
   monthWeeks,
@@ -26,7 +26,6 @@ import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_NEW, cleaningJobPath } from "@/lib/cleaning/routes";
 import { sinceLastSeen, visitIdentity, visitsDigest } from "@/lib/cleaning/seen";
-import { readNote } from "@/lib/cleaning/store";
 import { builtAtLine, teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
@@ -60,7 +59,7 @@ export default async function SchedulePage() {
 
   let document = null;
   try {
-    document = parseDocument(await readNote(holder.person));
+    document = await scheduleFor(holder.person);
   } catch {
     // The store is unreachable, or what is under her key is not readable. She cannot act on
     // either, so she gets the one message she can act on.
@@ -91,25 +90,32 @@ export default async function SchedulePage() {
   }
 
   const today = todayInBangkok();
-  const nextIndex = nextVisitIndex(document.visits, today);
-  const next = nextIndex >= 0 ? document.visits[nextIndex] : null;
-  const { changed } = await sinceLastSeen(holder.person, document.visits);
-  // How she has answered her cleans. Read before anything is drawn, because it decides both
-  // whether this screen renders at all and the marks down the list.
-  const { waiting, declinedAt } = await acceptState(holder.person, document.visits).catch(() => ({
+  // How she has answered her cleans. Read before anything is drawn, because it decides whether
+  // this screen renders at all and which visits are hers to see.
+  const state = await acceptState(holder.person, document.visits).catch(() => ({
     waiting: new Set<string>(),
+    takenAt: new Map<string, string>(),
     declinedAt: new Map<string, string>(),
   }));
-  const declined = new Set(declinedAt.keys());
   // **Anything new holds her on its own screen first.** Paul, 18/11/2026: the accept screen
   // has to be a different screen from the calendar and the list, so that she answers all of
   // the new work before she goes into her schedule. Only cleans from today onwards count: a
   // clean last Tuesday that was never answered would otherwise shut her out for good, and
   // src/app/cleaning/new/page.tsx applies the same cut-off so the two cannot disagree.
-  if (document.visits.some((visit) => visit.date >= today && waiting.has(visitSlug(visit)))) {
+  if (document.visits.some((visit) => visit.date >= today && state.waiting.has(visitSlug(visit)))) {
     redirect(CLEANING_NEW);
   }
-  const digest = await visitsDigest(document.visits);
+
+  // **What she turned down is not her schedule.** Paul, 18/11/2026, after watching Aun decline
+  // three cleans and still see all three. Everything below this line reads `visits` and never
+  // the document's own list, so the list, the next-visit card and the month grid's counts
+  // cannot disagree about which cleans are hers.
+  const visits = hidingDeclined(document.visits, state);
+  const nextIndex = nextVisitIndex(visits, today);
+  const next = nextIndex >= 0 ? visits[nextIndex] : null;
+  const { changed } = await sinceLastSeen(holder.person, visits);
+  const { waiting } = state;
+  const digest = await visitsDigest(visits);
   const when = document.built_at ? builtAtDigits(document.built_at) : null;
   // Only on the day, which is Paul's rule for every door code in this app. The card names
   // the house she is going to whatever day it is; the codes appear under it only when that
@@ -123,10 +129,10 @@ export default async function SchedulePage() {
   // Every month the arrows can reach, with its grid, worked out here: the calendar is a
   // client component so that paging is state, and none of the date arithmetic crosses that
   // boundary with it.
-  const months: MonthView[] = monthsAhead(document.visits, today).map((month) => ({
+  const months: MonthView[] = monthsAhead(visits, today).map((month) => ({
     key: month,
     digits: monthDigits(month),
-    weeks: monthWeeks(document.visits, month, today),
+    weeks: monthWeeks(visits, month, today),
   }));
 
   return (
@@ -166,7 +172,6 @@ export default async function SchedulePage() {
           jobHref={cleaningJobPath(visitSlug(next))}
           lang={lang}
           isWaiting={waiting.has(visitSlug(next))}
-          isDeclined={declined.has(visitSlug(next))}
         />
       ) : null}
 
@@ -175,12 +180,11 @@ export default async function SchedulePage() {
       <ScheduleView
         list={
           <DayList
-            sections={daySections(document.visits)}
+            sections={daySections(visits)}
             nextDate={next ? next.date : null}
             today={today}
             changed={changed}
             waiting={waiting}
-            declined={declined}
             role={document.role}
             lang={lang}
             marks={marks}

@@ -16,6 +16,12 @@
  * afternoon. The accept record is keyed on the visit slug instead, and that is what the two
  * same-day checks below prove.
  *
+ * **A declined clean leaves her screens and stays in the record**, which is the pair of facts
+ * this file exists to keep true together. Paul, 18/11/2026: a clean she has rejected is not her
+ * schedule. The record is the only thing that knows she said no, because the document still
+ * carries that clean on every run until somebody changes the run, so filtering it out of what
+ * is written back would bring it straight back as a question.
+ *
  * **Both answers are a write to the same record**, which is the other half of what is easy to
  * get wrong. Paul, 18/11/2026: she has to be able to reject the new schedule as well. A clean
  * she declined must leave her waiting list, stay off her accepted list, and come back to
@@ -79,7 +85,7 @@ try {
 }
 
 const require = createRequire(join(out, "test.cjs"));
-const { acceptState, answerVisit } = require(join(out, "accept.js"));
+const { acceptState, answerVisit, hidingDeclined } = require(join(out, "accept.js"));
 
 let failures = 0;
 let ran = 0;
@@ -144,6 +150,20 @@ state = await acceptState("da", all);
 check("it is no longer waiting for an answer", state.waiting.has(LATER), false);
 check("it does not count as accepted", state.takenAt.has(LATER), false);
 check("and it carries when she declined it", typeof state.declinedAt.get(LATER), "string");
+
+console.log("\nand it comes off her screens");
+state = await acceptState("da", all);
+check(
+  "the clean she declined is not in what she is shown",
+  hidingDeclined(all, state).some((one) => one.date === "2026-11-26"),
+  false,
+);
+check("the other two still are", hidingDeclined(all, state).length, 2);
+check(
+  "and the record still holds it, which is what keeps it gone",
+  state.declinedAt.has(LATER),
+  true,
+);
 
 console.log("\na declined clean that moves is asked again");
 const movedLater = visit("2026-11-27", "12.00", "275645", "ศ 27 พย - 12.00 (ดา)");

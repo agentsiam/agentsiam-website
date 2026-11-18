@@ -13,15 +13,15 @@ import { AcceptChoice } from "@/components/cleaning/accept-choice";
 import { HouseCodes } from "@/components/cleaning/house-codes";
 import { Comments } from "@/components/cleaning/comments";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
-import { findVisit, parseDocument, propertyOf, todayInBangkok } from "@/lib/cleaning/document";
-import { acceptState } from "@/lib/cleaning/accept";
+import { findVisit, propertyOf, todayInBangkok } from "@/lib/cleaning/document";
+import { acceptState, hidingDeclined } from "@/lib/cleaning/accept";
+import { scheduleFor } from "@/lib/cleaning/assign";
 import { visitLine } from "@/lib/cleaning/english";
 import { listComments } from "@/lib/cleaning/comments";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_SCHEDULE } from "@/lib/cleaning/routes";
-import { readNote } from "@/lib/cleaning/store";
 import { teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
@@ -69,13 +69,27 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
 
   let document = null;
   try {
-    document = parseDocument(await readNote(holder.person));
+    document = await scheduleFor(holder.person);
   } catch {
     document = null;
   }
 
-  const visit = document ? findVisit(document.visits, slug) : null;
-  if (!document || !visit) {
+  // Her answers, read before the job is drawn: one of them decides whether this clean is hers
+  // to look at at all.
+  const state = document
+    ? await acceptState(holder.person, document.visits).catch(() => ({
+        waiting: new Set<string>(),
+        takenAt: new Map<string, string>(),
+        declinedAt: new Map<string, string>(),
+      }))
+    : null;
+  // **A clean she turned down is gone from here too.** Paul, 18/11/2026. The link she came
+  // in by is gone with it, so this is for one she kept, and the honest answer is her
+  // schedule rather than a screen about work that is no longer hers.
+  if (document && state && state.declinedAt.has(slug)) redirect(CLEANING_SCHEDULE);
+
+  const visit = document && state ? findVisit(hidingDeclined(document.visits, state), slug) : null;
+  if (!document || !state || !visit) {
     return (
       <main>
         <Message text={t.noSchedule} />
@@ -93,16 +107,11 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   // worker saves and a phone with no signal still shows what was said. Writing needs the
   // network; reading what is already there does not.
   const comments = await listComments(slug).catch(() => []);
-  // Whether this one is still hers to answer. Same record the new-work screen reads, so that
-  // screen and this one cannot disagree about one clean.
-  //
-  // The pair of buttons shows for a clean she has declined as well as one she has not
-  // answered, which is how she changes her mind without going through Paul: she declined a
-  // Tuesday, the guest moved, and she can take it after all. An accepted clean shows nothing,
-  // because withdrawing from work she agreed to is a conversation and the thread is below.
-  const unanswered = await acceptState(holder.person, document.visits)
-    .then((state) => state.waiting.has(slug) || state.declinedAt.has(slug))
-    .catch(() => false);
+  // Whether this one is still waiting for an answer. Same record the new-work screen reads,
+  // so that screen and this one cannot disagree about one clean. A declined clean never gets
+  // here, and an accepted one shows no buttons: changing her mind about work she agreed to is
+  // a conversation, and the thread for it is at the foot of this screen.
+  const unanswered = state.waiting.has(slug);
 
   // The two values `type` can hold, each with its own sentence. Anything else renders no
   // sentence at all rather than a guessed one.

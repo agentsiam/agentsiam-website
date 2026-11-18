@@ -12,15 +12,26 @@ import { acceptKey, get, set } from "./store";
  * **Either answer, and the record keeps both.** Paul, 18/11/2026: the cleaner has to be able to
  * reject the new schedule as well. So a clean she has answered is a clean she has answered, and
  * which way she answered is a fact Paul reads off his own screen rather than something she has
- * to put in a message. A declined clean leaves her waiting list and stays on her schedule
- * wearing the declined pill: nothing in this app can take a clean off a published document, and
- * a schedule quietly holding fewer jobs than the LINE Note in her other hand is the second
- * schedule this app exists not to be.
+ * to put in a message.
+ *
+ * **A clean she turned down leaves her screens entirely**, which is Paul's instruction of the
+ * same evening and reverses what shipped a few hours earlier. It shipped staying, marked, on the
+ * argument that nothing here can take a clean off a published document and a schedule holding
+ * fewer jobs than the LINE Note in her other hand is a second schedule. He watched Aun turn
+ * three down and still see all three, and said plainly that a clean she has rejected is not her
+ * schedule. `hidingDeclined` below is that rule, and it is applied to every screen of hers at
+ * once rather than screen by screen.
+ *
+ * **The record is what keeps it gone**, so it is never pruned while the clean is still published:
+ * the document still carries that clean on every run until somebody changes the run, and this
+ * record is the only thing that knows she said no. A clean whose line then changes is a different
+ * clean and comes back as a question, which is the same rule as for one she accepted.
  *
  * **Neither answer decides who does the work.** The rule is the skill's and this app still holds
  * no scheduling rule, so a decline is her saying no and never the job moving to somebody else.
- * Reassigning it is Paul's, in the skill, and until the skill reads this record a decline he has
- * not read changes nothing at all. That is in README's known gaps.
+ * It is now invisible to her and visible only to Paul, on `/admin/cleaning`, which is where it
+ * waits until he reassigns it in the skill and re-runs. That makes his screen the only place a
+ * declined clean exists, and it is why it is at the top of it rather than inside a person's page.
  *
  * **Identity is the visit slug and deliberately not `visitIdentity`.** That one falls back to
  * the date when a job carries no booking id, which was safe while a person had at most one clean
@@ -83,6 +94,22 @@ async function read(person: string): Promise<AcceptRecord> {
     // this to fail: she is asked again rather than a clean quietly counting as answered.
     return { taken: [], declined: [] };
   }
+}
+
+/**
+ * Her visits as her own screens may show them: everything except what she turned down.
+ *
+ * **One filter, applied once per screen**, rather than a condition on every row, a count, a
+ * calendar cell and a day heading. A declined clean has to be gone from the list, the next-visit
+ * card, the month grid's counts, the day behind a tapped date and the job screen behind a kept
+ * link, and the way to get that wrong is to remember five places.
+ *
+ * It is never applied to what is written back. `answerVisit` prunes the record against the
+ * visits it is handed, so handing it a filtered list would drop the very entry that is doing the
+ * hiding and the clean would reappear as a question. The route passes the whole document.
+ */
+export function hidingDeclined(visits: Visit[], state: AcceptState): Visit[] {
+  return visits.filter((visit) => !state.declinedAt.has(visitSlug(visit)));
 }
 
 /** What she still has to answer, and how she answered the rest. */

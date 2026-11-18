@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { scheduleFor } from "@/lib/cleaning/assign";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
-import { findVisit, parseDocument } from "@/lib/cleaning/document";
+import { findVisit } from "@/lib/cleaning/document";
 import { currentHolder, pinGiven } from "@/lib/cleaning/guard";
 import { ourPhotoPaths } from "@/lib/cleaning/photos";
-import { incr, readNote } from "@/lib/cleaning/store";
+import { incr } from "@/lib/cleaning/store";
 
 export const runtime = "nodejs";
 
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const document = parseDocument(await readNote(holder.person));
+    const document = await scheduleFor(holder.person);
     const visit = document ? findVisit(document.visits, slug) : null;
     // Not "forbidden": from here it is indistinguishable from a job that has dropped off a
     // republished schedule, and the screen behaves the same way for both.

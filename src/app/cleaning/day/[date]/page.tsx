@@ -2,12 +2,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ChevronLeft, ChevronRight, HouseMark, JobType, Occupied } from "@/components/cleaning/glyphs";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
-import { acceptState } from "@/lib/cleaning/accept";
+import { acceptState, hidingDeclined } from "@/lib/cleaning/accept";
+import { scheduleFor } from "@/lib/cleaning/assign";
 import { englishDay, visitLine } from "@/lib/cleaning/english";
 import {
   dayLabelOn,
   isIsoDate,
-  parseDocument,
   propertyOf,
   todayInBangkok,
   visitSlug,
@@ -17,7 +17,6 @@ import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_NEW, CLEANING_SCHEDULE, cleaningJobPath } from "@/lib/cleaning/routes";
-import { readNote } from "@/lib/cleaning/store";
 import { teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
@@ -58,24 +57,33 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
 
   let document = null;
   try {
-    document = parseDocument(await readNote(holder.person));
+    document = await scheduleFor(holder.person);
   } catch {
     document = null;
   }
 
-  const visits = document ? visitsOn(document.visits, date) : [];
+  // Read before the day is drawn, because it decides both whether this screen renders at all
+  // and which of the day's cleans are still hers.
+  const state = document
+    ? await acceptState(holder.person, document.visits).catch(() => ({
+        waiting: new Set<string>(),
+        takenAt: new Map<string, string>(),
+        declinedAt: new Map<string, string>(),
+      }))
+    : null;
+  const visits =
+    document && state ? visitsOn(hidingDeclined(document.visits, state), date) : [];
   // A day with no work on it has nothing to say, and the one message this app has for an
   // empty screen is "ask Paul", which would be the wrong thing to say about a day off. The
-  // grid does not link such a day; this is for a URL that was kept or typed.
-  if (!document || visits.length === 0) redirect(CLEANING_SCHEDULE);
+  // grid does not link such a day; this is for a URL that was kept or typed, and for a day
+  // whose only clean she turned down.
+  if (!document || !state || visits.length === 0) redirect(CLEANING_SCHEDULE);
 
   // New work holds her on its own screen before any of this, the same cut-off and the same
   // reason as the schedule screen: the calendar is where she tapped to get here, and letting
   // this screen through would be a way around the one screen Paul asked to be unavoidable.
-  const { waiting } = await acceptState(holder.person, document.visits).catch(() => ({
-    waiting: new Set<string>(),
-  }));
-  if (document.visits.some((one) => one.date >= todayInBangkok() && waiting.has(visitSlug(one)))) {
+  const today = todayInBangkok();
+  if (document.visits.some((one) => one.date >= today && state.waiting.has(visitSlug(one)))) {
     redirect(CLEANING_NEW);
   }
 

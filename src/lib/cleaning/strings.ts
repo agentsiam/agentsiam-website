@@ -249,12 +249,12 @@ export const TEAM_STRINGS_TH = {
    * her schedule opens, because a screen that holds her there without saying why reads as a
    * broken app.
    *
-   * A declined clean stays on her schedule wearing the declined pill rather than disappearing
-   * off it. Nothing in this app can take a clean off a published document, and a schedule that
-   * silently held fewer jobs than the one she can read in LINE would be the second schedule
-   * this app exists not to be.
+   * **There is no word for a clean she turned down, because she never sees one again.** A
+   * declined pill shipped for a few hours and Paul took it out the same evening: a clean she
+   * has rejected is not her schedule. It is gone from every screen of hers and it waits on
+   * `/admin/cleaning` instead, in English, on his screen.
    *
-   * These nine are drafts of mine and have not been read by a Thai speaker, unlike the
+   * These eight are drafts of mine and have not been read by a Thai speaker, unlike the
    * twenty-two above them.
    */
   acceptHeading: "งานใหม่ที่ต้องยืนยัน",
@@ -264,7 +264,6 @@ export const TEAM_STRINGS_TH = {
   acceptFailed: "ยืนยันไม่สำเร็จ ลองใหม่อีกครั้ง",
   rejectButton: "ไม่รับงาน",
   rejectFailed: "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง",
-  declined: "ไม่รับงานนี้",
 } as const;
 
 /**
@@ -323,7 +322,6 @@ export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
   acceptFailed: "Not confirmed. Try again",
   rejectButton: "Decline",
   rejectFailed: "Not sent. Try again",
-  declined: "Declined",
 };
 
 /**

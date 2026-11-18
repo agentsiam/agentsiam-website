@@ -109,30 +109,6 @@ function Waiting({ lang, onInk = false }: { lang: TeamLang; onInk?: boolean }) {
 }
 
 /**
- * That she said she cannot do this one.
- *
- * It stays on her schedule because nothing in this app can take a clean off a published
- * document, and a schedule holding fewer jobs than the LINE Note in her other hand is the
- * second schedule this app exists not to be. So the row stays and says what she answered.
- *
- * Red, unlike the two gold marks above it, and it is the one place in these screens where red
- * is right: this is the only mark that says something will not happen unless somebody acts.
- */
-function Declined({ lang, onInk = false }: { lang: TeamLang; onInk?: boolean }) {
-  const said = written(teamStrings(lang).declined);
-  if (!said) return null;
-  return (
-    <p
-      className={`mt-1.5 inline-block rounded-full px-2.5 py-0.5 text-[13px] font-semibold ${
-        onInk ? "bg-wash-red text-deep-red" : "bg-wash-red text-deep-red ring-1 ring-deep-red/30"
-      }`}
-    >
-      {said}
-    </p>
-  );
-}
-
-/**
  * That this line is new or has moved since she last looked.
  *
  * A pill while the sentence exists, and a dot while it does not. Without the fallback,
@@ -181,7 +157,6 @@ export function NextVisitCard({
   jobHref,
   lang,
   isWaiting,
-  isDeclined,
 }: {
   visit: Visit;
   isChanged: boolean;
@@ -190,7 +165,6 @@ export function NextVisitCard({
   jobHref: string;
   lang: TeamLang;
   isWaiting: boolean;
-  isDeclined: boolean;
 }) {
   return (
     <section className="mt-5 overflow-hidden rounded-panel bg-ink">
@@ -211,8 +185,6 @@ export function NextVisitCard({
           />
           {isWaiting ? (
             <Waiting lang={lang} onInk />
-          ) : isDeclined ? (
-            <Declined lang={lang} onInk />
           ) : isChanged ? (
             <Changed lang={lang} onInk />
           ) : null}
@@ -232,7 +204,6 @@ function Day({
   nextDate,
   changed,
   waiting,
-  declined,
   role,
   lang,
   marks,
@@ -244,7 +215,6 @@ function Day({
   nextDate: string | null;
   changed: Set<string>;
   waiting: Set<string>;
-  declined: Set<string>;
   role: string;
   lang: TeamLang;
   marks: HouseMarks;
@@ -304,8 +274,6 @@ function Day({
                   />
                   {waiting.has(visitSlug(visit)) ? (
                     <Waiting lang={lang} />
-                  ) : declined.has(visitSlug(visit)) ? (
-                    <Declined lang={lang} />
                   ) : changed.has(visitIdentity(visit)) ? (
                     <Changed lang={lang} />
                   ) : null}
@@ -341,7 +309,6 @@ export function DayList({
   today,
   changed,
   waiting,
-  declined,
   role,
   lang,
   marks,
@@ -353,7 +320,6 @@ export function DayList({
   today: string;
   changed: Set<string>;
   waiting: Set<string>;
-  declined: Set<string>;
   role: string;
   lang: TeamLang;
   marks: HouseMarks;
@@ -366,7 +332,7 @@ export function DayList({
   const ahead = sections.filter((day) => day.date >= today);
   const pastJobs = past.reduce((count, day) => count + day.visits.length, 0);
 
-  const shared = { nextDate, changed, waiting, declined, role, lang, marks, houseOf, jobHref };
+  const shared = { nextDate, changed, waiting, role, lang, marks, houseOf, jobHref };
 
   return (
     <div className="mt-7">

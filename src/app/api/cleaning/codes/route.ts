@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { accessFor, findVisit, parseDocument, todayInBangkok } from "@/lib/cleaning/document";
+import { scheduleFor } from "@/lib/cleaning/assign";
+import { accessFor, findVisit, todayInBangkok } from "@/lib/cleaning/document";
 import { currentHolder, pinGiven } from "@/lib/cleaning/guard";
 import { CLEANING_KEEP_HEADER } from "@/lib/cleaning/routes";
 import { codesKeepUntil, readPinCookie, CLEANING_PIN_COOKIE } from "@/lib/cleaning/session";
-import { readNote } from "@/lib/cleaning/store";
 import { cookies } from "next/headers";
 
 export const runtime = "nodejs";
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
 
   let block = null;
   try {
-    const document = parseDocument(await readNote(holder.person));
+    const document = await scheduleFor(holder.person);
     const visit = document ? findVisit(document.visits, slug) : null;
     // Not hers, or not today. One answer for both: from here they are the same thing, which
     // is that there is no code for this phone to have right now.
