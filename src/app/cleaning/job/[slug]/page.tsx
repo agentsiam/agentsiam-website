@@ -9,10 +9,12 @@ import {
   Phone,
   Pin,
 } from "@/components/cleaning/glyphs";
+import { AcceptButton } from "@/components/cleaning/accept-card";
 import { HouseCodes } from "@/components/cleaning/house-codes";
 import { Comments } from "@/components/cleaning/comments";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { findVisit, parseDocument, propertyOf, todayInBangkok } from "@/lib/cleaning/document";
+import { acceptState } from "@/lib/cleaning/accept";
 import { listComments } from "@/lib/cleaning/comments";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { teamLang } from "@/lib/cleaning/lang";
@@ -90,6 +92,11 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   // worker saves and a phone with no signal still shows what was said. Writing needs the
   // network; reading what is already there does not.
   const comments = await listComments(slug).catch(() => []);
+  // Whether this one is still waiting for her. Same record as her first screen reads, so the
+  // card there and the button here cannot disagree about one clean.
+  const isWaiting = await acceptState(holder.person, document.visits)
+    .then((state) => state.waiting.has(slug))
+    .catch(() => false);
 
   // The two values `type` can hold, each with its own sentence. Anything else renders no
   // sentence at all rather than a guessed one.
@@ -133,6 +140,11 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
             {visit.type === "midstay" ? <Occupied size={18} /> : null}
           </p>
         ) : null}
+        {/* Inside the card rather than under it, so the thing she is agreeing to and the
+            button that agrees to it are one object. She reaches this screen by tapping the
+            clean in the card on her first screen, and taking it on here has to be possible
+            or that tap is a dead end. */}
+        {isWaiting ? <AcceptButton slug={slug} lang={lang} onInk /> : null}
       </section>
 
       {detail ? (

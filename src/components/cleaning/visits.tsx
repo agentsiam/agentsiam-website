@@ -80,6 +80,32 @@ function VisitMeta({
 }
 
 /**
+ * That this clean is waiting for her to take it on.
+ *
+ * It stands where the changed marker would, and takes precedence over it, because a clean
+ * she has not accepted is already being pointed at: saying it changed as well is the same
+ * sentence twice. The changed marker is for a clean she has accepted and which then moved in
+ * some way that did not reset the acceptance, and for everything on a schedule published
+ * before this flow existed.
+ *
+ * Gold on gold like the changed marker rather than red: she has done nothing wrong, and a
+ * red badge on half her week reads as a problem with her.
+ */
+function Waiting({ lang, onInk = false }: { lang: TeamLang; onInk?: boolean }) {
+  const said = written(teamStrings(lang).acceptWaiting);
+  if (!said) return null;
+  return (
+    <p
+      className={`mt-1.5 inline-block rounded-full px-2.5 py-0.5 text-[13px] font-semibold ${
+        onInk ? "bg-gold-on-ink text-ink" : "bg-wash-gold text-deep-gold ring-1 ring-sand"
+      }`}
+    >
+      {said}
+    </p>
+  );
+}
+
+/**
  * That this line is new or has moved since she last looked.
  *
  * A pill while the sentence exists, and a dot while it does not. Without the fallback,
@@ -127,6 +153,7 @@ export function NextVisitCard({
   mark,
   jobHref,
   lang,
+  isWaiting,
 }: {
   visit: Visit;
   isChanged: boolean;
@@ -134,6 +161,7 @@ export function NextVisitCard({
   mark: number | null;
   jobHref: string;
   lang: TeamLang;
+  isWaiting: boolean;
 }) {
   return (
     <section className="mt-5 overflow-hidden rounded-panel bg-ink">
@@ -152,7 +180,11 @@ export function NextVisitCard({
             occupied={visit.type === "midstay"}
             onInk
           />
-          {isChanged ? <Changed lang={lang} onInk /> : null}
+          {isWaiting ? (
+            <Waiting lang={lang} onInk />
+          ) : isChanged ? (
+            <Changed lang={lang} onInk />
+          ) : null}
         </div>
         <span aria-hidden="true" className="mt-1 shrink-0 text-gold-on-ink opacity-60">
           <ChevronRight />
@@ -168,6 +200,7 @@ function Day({
   day,
   nextDate,
   changed,
+  waiting,
   role,
   lang,
   marks,
@@ -178,6 +211,7 @@ function Day({
   day: DaySection;
   nextDate: string | null;
   changed: Set<string>;
+  waiting: Set<string>;
   role: string;
   lang: TeamLang;
   marks: HouseMarks;
@@ -235,7 +269,11 @@ function Day({
                     mark={markOf(marks, visit.property)}
                     occupied={visit.type === "midstay"}
                   />
-                  {changed.has(visitIdentity(visit)) ? <Changed lang={lang} /> : null}
+                  {waiting.has(visitSlug(visit)) ? (
+                    <Waiting lang={lang} />
+                  ) : changed.has(visitIdentity(visit)) ? (
+                    <Changed lang={lang} />
+                  ) : null}
                 </div>
                 <span aria-hidden="true" className="mt-2 shrink-0 text-muted">
                   <ChevronRight />
@@ -267,6 +305,7 @@ export function DayList({
   nextDate,
   today,
   changed,
+  waiting,
   role,
   lang,
   marks,
@@ -277,6 +316,7 @@ export function DayList({
   nextDate: string | null;
   today: string;
   changed: Set<string>;
+  waiting: Set<string>;
   role: string;
   lang: TeamLang;
   marks: HouseMarks;
@@ -289,7 +329,7 @@ export function DayList({
   const ahead = sections.filter((day) => day.date >= today);
   const pastJobs = past.reduce((count, day) => count + day.visits.length, 0);
 
-  const shared = { nextDate, changed, role, lang, marks, houseOf, jobHref };
+  const shared = { nextDate, changed, waiting, role, lang, marks, houseOf, jobHref };
 
   return (
     <div className="mt-7">

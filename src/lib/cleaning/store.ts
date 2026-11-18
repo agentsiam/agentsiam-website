@@ -75,6 +75,15 @@ export const noteKey = (person: string) => `cleaning:note:${person}`;
  * app; the skill never writes it. */
 export const seenKey = (person: string) => `cleaning:seen:${person}`;
 
+/**
+ * Which cleans she has said yes to, and the line each one read when she did.
+ *
+ * Reserved for this app like `seenKey`, and the skill never writes it. The two are not the
+ * same answer: seen is what she was shown, this is what she took on. A clean she scrolled
+ * past is seen and not accepted.
+ */
+export const acceptKey = (person: string) => `cleaning:accept:${person}`;
+
 /** One enrolled phone. Deleting this is what revokes that phone, which is how Paul kills a
  * device without touching the lock. */
 export const deviceKey = (device: string) => `cleaning:device:${device}`;
