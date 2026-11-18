@@ -3,11 +3,11 @@ import { redirect } from "next/navigation";
 import { ChevronLeft, ChevronRight, HouseMark, JobType, Occupied } from "@/components/cleaning/glyphs";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { acceptState, hidingDeclined } from "@/lib/cleaning/accept";
+import { scheduleFor } from "@/lib/cleaning/assign";
 import { englishDay, visitLine } from "@/lib/cleaning/english";
 import {
   dayLabelOn,
   isIsoDate,
-  parseDocument,
   propertyOf,
   todayInBangkok,
   visitSlug,
@@ -17,7 +17,6 @@ import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_NEW, CLEANING_SCHEDULE, cleaningJobPath } from "@/lib/cleaning/routes";
-import { readNote } from "@/lib/cleaning/store";
 import { teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
@@ -58,7 +57,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
 
   let document = null;
   try {
-    document = parseDocument(await readNote(holder.person));
+    document = await scheduleFor(holder.person);
   } catch {
     document = null;
   }

@@ -3,13 +3,13 @@ import { AcceptChoice } from "@/components/cleaning/accept-choice";
 import { HouseMark, Occupied } from "@/components/cleaning/glyphs";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { acceptState } from "@/lib/cleaning/accept";
-import { parseDocument, propertyOf, todayInBangkok, visitSlug } from "@/lib/cleaning/document";
+import { scheduleFor } from "@/lib/cleaning/assign";
+import { propertyOf, todayInBangkok, visitSlug } from "@/lib/cleaning/document";
 import { visitLine } from "@/lib/cleaning/english";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { teamLang } from "@/lib/cleaning/lang";
 import { CLEANING_SCHEDULE } from "@/lib/cleaning/routes";
-import { readNote } from "@/lib/cleaning/store";
 import { teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
@@ -58,7 +58,7 @@ export default async function NewWorkPage() {
 
   let document = null;
   try {
-    document = parseDocument(await readNote(holder.person));
+    document = await scheduleFor(holder.person);
   } catch {
     document = null;
   }

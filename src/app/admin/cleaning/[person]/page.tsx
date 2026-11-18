@@ -2,20 +2,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JobComment } from "@/components/admin/job-comment";
 import { acceptState } from "@/lib/cleaning/accept";
+import { scheduleFor } from "@/lib/cleaning/assign";
 import { PhotoTiles } from "@/components/cleaning/photo-tiles";
 import { requireSession } from "@/lib/admin/guard";
 import { photoStillKept } from "@/lib/cleaning/comment-shape";
 import { listComments } from "@/lib/cleaning/comments";
 import {
   builtAtDigits,
-  parseDocument,
   propertyOf,
   todayInBangkok,
   visitSlug,
 } from "@/lib/cleaning/document";
 import { ADMIN_CLEANING, adminCleaningPersonPath } from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
-import { readNote, storeProblem } from "@/lib/cleaning/store";
+import { storeProblem } from "@/lib/cleaning/store";
 
 /**
  * One person's cleans, and the conversation about each.
@@ -46,7 +46,10 @@ export default async function AdminCleaningPersonPage({
   if (!PERSON_KEY.test(person)) notFound();
 
   const problem = storeProblem();
-  const document = problem ? null : parseDocument(await readNote(person).catch(() => null));
+  // Her schedule as she sees it, moves included, so a clean somebody gave her is a clean he
+  // can write to her about. The screen above this one reads the published documents instead,
+  // because that is the one place that has to show what the skill said.
+  const document = problem ? null : await scheduleFor(person).catch(() => null);
 
   const today = todayInBangkok();
   const visits = document ? [...document.visits].reverse() : [];

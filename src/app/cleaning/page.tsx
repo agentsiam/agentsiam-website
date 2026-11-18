@@ -8,12 +8,12 @@ import { PinForm } from "@/components/cleaning/pin-form";
 import { SeenRecorder } from "@/components/cleaning/seen-recorder";
 import { DayList, NextVisitCard } from "@/components/cleaning/visits";
 import { acceptState, hidingDeclined } from "@/lib/cleaning/accept";
+import { scheduleFor } from "@/lib/cleaning/assign";
 import { pinSetAt } from "@/lib/cleaning/devices";
 import {
   builtAtDigits,
   daySections,
   nextVisitIndex,
-  parseDocument,
   propertyOf,
   monthDigits,
   monthWeeks,
@@ -26,7 +26,6 @@ import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_NEW, cleaningJobPath } from "@/lib/cleaning/routes";
 import { sinceLastSeen, visitIdentity, visitsDigest } from "@/lib/cleaning/seen";
-import { readNote } from "@/lib/cleaning/store";
 import { builtAtLine, teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
@@ -60,7 +59,7 @@ export default async function SchedulePage() {
 
   let document = null;
   try {
-    document = parseDocument(await readNote(holder.person));
+    document = await scheduleFor(holder.person);
   } catch {
     // The store is unreachable, or what is under her key is not readable. She cannot act on
     // either, so she gets the one message she can act on.

@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { parseDocument } from "@/lib/cleaning/document";
+import { scheduleFor } from "@/lib/cleaning/assign";
 import { currentHolder } from "@/lib/cleaning/guard";
 import { recordSeen, visitsDigest } from "@/lib/cleaning/seen";
-import { readNote } from "@/lib/cleaning/store";
 
 export const runtime = "nodejs";
 
@@ -34,7 +33,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const document = parseDocument(await readNote(holder.person));
+    const document = await scheduleFor(holder.person);
     if (!document) return NextResponse.json({ ok: false }, { status: 404 });
     if ((await visitsDigest(document.visits)) !== stamp) {
       return NextResponse.json({ ok: false, stale: true });
