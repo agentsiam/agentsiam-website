@@ -14,6 +14,32 @@
 
 export type CommentAuthor = "team" | "agentsiam";
 
+/**
+ * How long a photo lives, and the one rule about photos that is not about storage.
+ *
+ * Paul, 18/11/2026: photos are deleted after one month, automatically. Vercel Blob has no
+ * expiry of its own, so a scheduled job does it, and this number is what that job reads.
+ * It is also what a thread reads before showing an image at all, so a photo stops being
+ * shown the day it is a month old rather than the next time the sweep happens to run.
+ *
+ * The comment itself outlives its photo, deliberately: "I could not find the spare sheets"
+ * is worth keeping after the picture of the bed has gone.
+ */
+export const PHOTO_KEPT_DAYS = 30;
+
+/**
+ * The most a photo may weigh when it reaches the server.
+ *
+ * The phone shrinks it first, to the longest edge in MAX_PHOTO_EDGE, which puts an ordinary
+ * camera photo somewhere around 200KB. This is the backstop for a phone whose shrink failed
+ * and for anything that did not come from the app at all.
+ */
+export const MAX_PHOTO_BYTES = 6 * 1024 * 1024;
+
+/** The longest edge a photo is shrunk to before it is sent. Proof that a room is clean and
+ * proof that a transfer went through are both legible well under this. */
+export const MAX_PHOTO_EDGE = 1600;
+
 export type Comment = {
   /** Sortable, and the second half of its own key in the store. */
   id: string;
@@ -24,6 +50,17 @@ export type Comment = {
    * thread still reads correctly after a roster key changes hands. */
   name: string;
   body: string;
+  /**
+   * A photo, as the URL Vercel Blob gave it back, or null.
+   *
+   * Proof of work from her end and proof of payment from ours. The URL is unguessable and
+   * public to anyone holding it, which is how image hosting works and is worth knowing
+   * about a payment slip; it is only ever written into a thread that sits behind her PIN.
+   *
+   * A comment may carry a photo and no words, words and no photo, or both, but never
+   * neither.
+   */
+  image: string | null;
 };
 
 /** Long enough for "the cot is under the stairs, I could not find the spare sheets", short
@@ -42,6 +79,15 @@ export const MAX_COMMENTS = 60;
  * controls. This is what stands between it and a crafted key.
  */
 export const VISIT_SLUG = /^[A-Za-z0-9_-]{1,80}$/;
+
+/** Whether a photo taken `at` is still within the month it is kept for. The thread asks
+ * this before rendering, so an image stops showing on time rather than whenever the sweep
+ * next runs. */
+export function photoStillKept(at: string, now: number = Date.now()): boolean {
+  const taken = Date.parse(at);
+  if (Number.isNaN(taken)) return false;
+  return now - taken < PHOTO_KEPT_DAYS * 24 * 60 * 60 * 1000;
+}
 
 /** Trimmed, with runs of blank lines collapsed and the length capped. Returns "" for
  * anything that is not worth storing, which every caller refuses. */

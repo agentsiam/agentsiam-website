@@ -1,25 +1,27 @@
 import { Message, RemarksBlock, RenderedBlock } from "@/components/cleaning/blocks";
-import { CodesButton } from "@/components/cleaning/codes-button";
-import { MonthGrid } from "@/components/cleaning/month-grid";
+import { HouseCodes } from "@/components/cleaning/house-codes";
+import { MonthGrid, type MonthView } from "@/components/cleaning/month-grid";
+import { ScheduleView } from "@/components/cleaning/schedule-view";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { PinForm } from "@/components/cleaning/pin-form";
 import { SeenRecorder } from "@/components/cleaning/seen-recorder";
 import { DayList, NextVisitCard } from "@/components/cleaning/visits";
 import { pinSetAt } from "@/lib/cleaning/devices";
 import {
-  accessFor,
   builtAtDigits,
-  calendarWeeks,
   daySections,
   nextVisitIndex,
   parseDocument,
   propertyOf,
+  monthDigits,
+  monthWeeks,
+  monthsAhead,
   todayInBangkok,
   visitSlug,
 } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
-import { cleaningCodesPath, cleaningJobPath } from "@/lib/cleaning/routes";
+import { cleaningJobPath } from "@/lib/cleaning/routes";
 import { sinceLastSeen, visitIdentity, visitsDigest } from "@/lib/cleaning/seen";
 import { readNote } from "@/lib/cleaning/store";
 import { TEAM_STRINGS, builtAtLine } from "@/lib/cleaning/strings";
@@ -87,10 +89,23 @@ export default async function SchedulePage() {
   const { changed } = await sinceLastSeen(holder.person, document.visits);
   const digest = await visitsDigest(document.visits);
   const when = document.built_at ? builtAtDigits(document.built_at) : null;
-  const nextAccess = next ? accessFor(document, next.property) : null;
+  // Only on the day, which is Paul's rule for every door code in this app. The card names
+  // the house she is going to whatever day it is; the codes appear under it only when that
+  // day is today, and they are fetched rather than rendered, so no saved copy of this page
+  // holds one. src/components/cleaning/house-codes.tsx carries the reasoning.
+  const codesToday = next && next.date === today ? visitSlug(next) : null;
   // Which shape stands for which house, worked out once and handed to every part of the
   // screen, so the grid and the rows cannot disagree about it.
   const marks = houseMarks(document);
+
+  // Every month the arrows can reach, with its grid, worked out here: the calendar is a
+  // client component so that paging is state, and none of the date arithmetic crosses that
+  // boundary with it.
+  const months: MonthView[] = monthsAhead(document.visits, today).map((month) => ({
+    key: month,
+    digits: monthDigits(month),
+    weeks: monthWeeks(document.visits, month, today),
+  }));
 
   return (
     <main lang={document.lang}>
@@ -113,30 +128,32 @@ export default async function SchedulePage() {
           isChanged={changed.has(visitIdentity(next))}
           house={propertyOf(document, next)}
           mark={markOf(marks, next.property)}
-          codesHeading={nextAccess ? nextAccess.heading : null}
-          codesHref={cleaningCodesPath(next.property)}
           jobHref={cleaningJobPath(visitSlug(next))}
         />
       ) : null}
 
-      <MonthGrid weeks={calendarWeeks(document.visits, today)} marks={marks} />
+      {codesToday ? <HouseCodes slug={codesToday} /> : null}
 
-      <DayList
-        sections={daySections(document.visits)}
-        nextDate={next ? next.date : null}
-        today={today}
-        changed={changed}
-        role={document.role}
-        marks={marks}
-        houseOf={(visit) => propertyOf(document, visit)}
-        jobHref={(visit) => cleaningJobPath(visitSlug(visit))}
+      <ScheduleView
+        list={
+          <DayList
+            sections={daySections(document.visits)}
+            nextDate={next ? next.date : null}
+            today={today}
+            changed={changed}
+            role={document.role}
+            marks={marks}
+            houseOf={(visit) => propertyOf(document, visit)}
+            jobHref={(visit) => cleaningJobPath(visitSlug(visit))}
+          />
+        }
+        calendar={<MonthGrid months={months} marks={marks} />}
       />
 
       {document.contact ? <RenderedBlock block={document.contact} /> : null}
       {document.remarks ? <RemarksBlock block={document.remarks} /> : null}
 
       <SeenRecorder stamp={digest} />
-      <CodesButton label={document.access[0]?.heading ?? null} />
     </main>
   );
 }

@@ -67,8 +67,10 @@ function parse(raw: string | null, id: string): Comment | null {
     const by: CommentAuthor = value.by === "agentsiam" ? "agentsiam" : "team";
     const name = typeof value.name === "string" ? value.name : "";
     const body = typeof value.body === "string" ? value.body : "";
-    if (!at || !body) return null;
-    return { id, at, by, name, body };
+    const image = typeof value.image === "string" && value.image ? value.image : null;
+    // Words or a photo, never neither: a comment with nothing in it is a storage accident.
+    if (!at || (!body && !image)) return null;
+    return { id, at, by, name, body, image };
   } catch {
     return null;
   }
@@ -105,11 +107,14 @@ export type AddResult = "ok" | "full" | "empty" | "bad-slug";
  */
 export async function addComment(
   slug: string,
-  comment: { by: CommentAuthor; name: string; body: string },
+  comment: { by: CommentAuthor; name: string; body: string; image?: string | null },
 ): Promise<AddResult> {
   if (!VISIT_SLUG.test(slug)) return "bad-slug";
   const body = cleanBody(comment.body);
-  if (!body) return "empty";
+  const image = comment.image ?? null;
+  // A photo on its own is a comment: finishing a room and showing it is the case this was
+  // asked for. Nothing at all is not.
+  if (!body && !image) return "empty";
 
   const existing = await keysUnder(threadPrefix(slug));
   if (existing.length >= MAX_COMMENTS) return "full";
@@ -123,6 +128,7 @@ export async function addComment(
     by: comment.by,
     name: comment.name,
     body,
+    image,
   };
   await set(`${threadPrefix(slug)}${id}`, JSON.stringify(stored), COMMENT_TTL_SECONDS);
   return "ok";

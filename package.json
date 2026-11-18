@@ -23,6 +23,7 @@
     "@stripe/react-stripe-js": "^6.8.1",
     "@stripe/stripe-js": "^9.13.0",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/blob": "^2.9.0",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "next": "16.2.12",

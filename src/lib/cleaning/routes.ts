@@ -21,11 +21,8 @@ export const CLEANING_ROOT = "/cleaning";
  */
 export const CLEANING_SCHEDULE = CLEANING_ROOT;
 
-/** Her codes. Opened by the same PIN as the schedule, and never asked for a second time. */
-export const CLEANING_CODES = `${CLEANING_ROOT}/codes`;
-
 /**
- * One job: the house, the line, the address and the way to its codes.
+ * One job: the house, the line, the address, the codes on the day, and the thread.
  *
  * New with more than one property, and the screen the comparable products all have and we
  * did not. With one house every question but "when" was answered by there being only one
@@ -55,18 +52,6 @@ export function cleaningDayPath(date: string): string {
   return `${CLEANING_DAY}/${date}`;
 }
 
-/**
- * The codes screen, optionally opening on one house.
- *
- * A query string rather than a path on purpose. The service worker matches a saved page
- * ignoring the search, so every one of these shares a single saved copy, and that copy
- * holds **every** house's codes whichever link made it. So a phone with no signal always
- * has all of them and the parameter only decides which is at the top.
- */
-export function cleaningCodesPath(property?: string | null): string {
-  return property ? `${CLEANING_CODES}?house=${encodeURIComponent(property)}` : CLEANING_CODES;
-}
-
 /** What a phone with no working device cookie is shown: ask Paul for a new link, and
  * nothing else. There is no sign-in form here and no recovery flow, by design. */
 export const CLEANING_NO_ACCESS = `${CLEANING_ROOT}/no-access`;
@@ -78,12 +63,30 @@ export function cleaningEnrolPath(token: string): string {
   return `${CLEANING_ENROL}/${token}`;
 }
 
-/** The four API routes the app posts to. The last one is the only place anybody on the
- * team sends words rather than a fact about their own phone. */
+/** The API routes the app talks to. The comment one is the only place anybody on the team
+ * sends words rather than a fact about their own phone, and the codes one is the only path
+ * under /api/ that the service worker is allowed to keep. */
 export const CLEANING_API_ENROL = "/api/cleaning/enrol";
 export const CLEANING_API_PIN = "/api/cleaning/pin";
 export const CLEANING_API_SEEN = "/api/cleaning/seen";
+
+/**
+ * One job's door codes, as data.
+ *
+ * There is no codes page any more. Paul, 17/11/2026: the code shows inside the schedule
+ * without opening a new page, and only for her assigned cleaning day at that house. It is
+ * fetched rather than rendered because the page it appears on is one the service worker
+ * saves without a deadline, and a door code in that copy would still be there next week.
+ * This answer carries its own deadline instead, and the worker keeps this one path and no
+ * other under /api/.
+ */
+export const CLEANING_API_CODES = "/api/cleaning/codes";
 export const CLEANING_API_COMMENT = "/api/cleaning/comment";
+
+/** Where a photograph goes before the comment that carries it. Two requests rather than
+ * one, so a comment that fails does not take the upload with it, and so neither route has
+ * to parse multipart. */
+export const CLEANING_API_PHOTO = "/api/cleaning/photo";
 
 /** Paul's one screen, inside the admin he already signs in to. It holds device
  * bookkeeping and never a door code or a schedule. */
@@ -96,6 +99,11 @@ export function adminCleaningPersonPath(person: string): string {
   return `${ADMIN_CLEANING}/${person}`;
 }
 export const ADMIN_API_CLEANING = "/api/admin/cleaning";
+
+/** Where Paul's photograph of a payment goes, before the comment that carries it. Her
+ * photographs go to CLEANING_API_PHOTO; the store and the month are the same, and what is
+ * checked before the upload is not. */
+export const ADMIN_API_CLEANING_PHOTO = "/api/admin/cleaning/photo";
 
 /**
  * The service worker and the manifest, both static files in public/.

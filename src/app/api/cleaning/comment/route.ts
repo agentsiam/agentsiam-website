@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { findVisit, parseDocument } from "@/lib/cleaning/document";
 import { currentHolder, pinGiven } from "@/lib/cleaning/guard";
+import { isOurPhoto } from "@/lib/cleaning/photos";
 import { incr, readNote } from "@/lib/cleaning/store";
 
 export const runtime = "nodejs";
@@ -36,14 +37,21 @@ export async function POST(request: Request) {
 
   let slug = "";
   let body = "";
+  let image: string | null = null;
   try {
-    const sent = (await request.json()) as { slug?: unknown; body?: unknown };
+    const sent = (await request.json()) as { slug?: unknown; body?: unknown; image?: unknown };
     slug = typeof sent.slug === "string" ? sent.slug : "";
     body = cleanBody(sent.body);
+    // The photo was stored by /api/cleaning/photo a moment ago and its URL came back
+    // through the client, so it is checked against the store's own host and this app's own
+    // prefix. Anything else is dropped rather than refused: a URL pointing somewhere else
+    // would load a stranger's image inside a screen that is otherwise entirely ours.
+    image = isOurPhoto(sent.image) ? sent.image : null;
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
-  if (!VISIT_SLUG.test(slug) || !body) {
+  // Words or a photo. A comment with neither is nothing.
+  if (!VISIT_SLUG.test(slug) || (!body && !image)) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
@@ -57,7 +65,7 @@ export async function POST(request: Request) {
     const used = await incr(`cleaning:commentrate:${holder.person}`, RATE_WINDOW_SECONDS);
     if (used > PER_MINUTE) return NextResponse.json({ ok: false }, { status: 429 });
 
-    const result = await addComment(slug, { by: "team", name: document.name, body });
+    const result = await addComment(slug, { by: "team", name: document.name, body, image });
     if (result !== "ok") return NextResponse.json({ ok: false, result }, { status: 409 });
   } catch {
     return NextResponse.json({ ok: false }, { status: 503 });

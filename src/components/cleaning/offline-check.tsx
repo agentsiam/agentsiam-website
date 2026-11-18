@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
-  CLEANING_CODES,
+  CLEANING_API_CODES,
   CLEANING_KEEP_HEADER,
   CLEANING_ROOT,
   CLEANING_SCHEDULE,
@@ -129,7 +129,9 @@ export function OfflineCheck({ person }: { person: string }) {
             const schedule = await cache.match(CLEANING_SCHEDULE, { ignoreSearch: true });
             say("schedule saved", schedule ? "yes" : "NO", !schedule);
 
-            const codes = await cache.match(CLEANING_CODES, { ignoreSearch: true });
+            // Ignoring the search here on purpose, which the worker never does: this is
+            // asking whether ANY job's codes are saved, not which one.
+            const codes = await cache.match(CLEANING_API_CODES, { ignoreSearch: true });
             say("codes saved", codes ? "yes" : "NO", !codes);
             if (codes) {
               const until = Number(codes.headers.get(CLEANING_KEEP_HEADER));

@@ -84,15 +84,48 @@ export const CLEANING_PIN_MAX_AGE = 60 * 60 * 24 * 30;
 export const CLEANING_CODES_KEEP_MAX_AGE = 60 * 60 * 24 * 7;
 
 /**
+ * The end of today where the houses are, in epoch milliseconds.
+ *
+ * Bangkok is a fixed seven hours ahead with no daylight saving, so the offset can be
+ * written down. The date itself is asked for rather than computed, because a phone set to
+ * another timezone must not get a different answer about which day it is at the house.
+ */
+export function endOfBangkokDay(now: Date = new Date()): number {
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Bangkok",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+  return Date.parse(`${today}T23:59:59.999+07:00`);
+}
+
+/**
  * When a door code page fetched right now may be kept until, in epoch milliseconds.
  *
  * A deadline rather than a flag or a duration, because the arithmetic is done on a phone
- * that may have been offline for a week and the only honest thing to hand it is the moment
+ * that may have been offline for days and the only honest thing to hand it is the moment
  * its copy stops being allowed. Set by src/proxy.ts as a response header, and checked by
  * public/cleaning-sw.js against that phone's own clock.
+ *
+ * **It is the end of today, and that is Paul's rule of 17/11/2026 rather than a cache
+ * policy.** A house's codes may be seen on a day she is at that house, so a copy that
+ * outlives the day would be a copy of something she is no longer allowed to see. The seven
+ * day ceiling and her remaining PIN session are both still in the minimum, and neither of
+ * them binds any more; they stay because a deadline built from one number is a deadline
+ * that breaks silently when that number changes.
+ *
+ * **What it costs is real and it is operational.** The copy she reads at a gate with no
+ * signal now has to have been fetched that same day. A cleaner who opens the app for the
+ * first time standing in front of a lock with no bars gets nothing, where yesterday she
+ * would have got a week-old code. That is the trade the rule asks for.
  */
 export function codesKeepUntil(pinExpires: number): number {
-  return Math.min(pinExpires, Date.now() + CLEANING_CODES_KEEP_MAX_AGE * 1000);
+  return Math.min(
+    pinExpires,
+    endOfBangkokDay(),
+    Date.now() + CLEANING_CODES_KEEP_MAX_AGE * 1000,
+  );
 }
 
 const SECRET = process.env.CLEANING_COOKIE_SECRET ?? "";

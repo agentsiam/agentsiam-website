@@ -106,18 +106,6 @@ export const TEAM_STRINGS = {
    * that copy is the builtAt line above it. */
   offline: "ไม่มีสัญญาณ นี่คือข้อมูลที่บันทึกไว้",
 
-  /**
-   * The heading on the codes screen, and the line under it.
-   *
-   * Until a screen says what it is, it is a panel of digits arriving with no subject. The
-   * house names on the panels say whose codes those are; neither of them says what the
-   * screen is for, or why one house is above the other, and the ordering is the one thing on
-   * it that is not self-evident: the house she is going to next is first, and every house
-   * she works at is on the screen whichever link opened it.
-   */
-  codesTitle: "รหัสเข้าบ้าน",
-  codesHelp: "บ้านที่จะไปต่อไปอยู่บนสุด ทุกบ้านที่ทำงานอยู่ในหน้านี้",
-
   /** Above the address on a job, which is a line of text with a pin beside it and nothing
    * saying that tapping it opens a map. */
   jobAddressHeading: "ที่อยู่",

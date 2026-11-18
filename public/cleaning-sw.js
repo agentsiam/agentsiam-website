@@ -27,12 +27,12 @@
  *   never  every /api/ path and the enrolment link. The API answers are state, not pages.
  *          The enrolment link is single-use and a cached copy of its answer would be a lie.
  *          Neither is ever touched, whatever either one answers.
- *   codes  /cleaning/codes: served always, and kept only when that response carries a
- *          deadline from the app, until that deadline and no longer. A codes page that
- *          arrives without one did not come through the proxy with a live PIN session
- *          behind it, so nothing is written down. On an offline read a copy past its
- *          deadline is deleted and the read fails, rather than reading out a code that is
- *          a month old.
+ *   codes  /api/cleaning/codes, the one path under /api/ that is kept at all: served
+ *          always, and kept only when that answer carries a deadline from the app, until
+ *          that deadline and no longer. One that arrives without a deadline was not
+ *          answered to a live PIN session, so nothing is written down. On an offline read a
+ *          copy past its deadline is deleted and the read fails, rather than reading out a
+ *          code from yesterday. Matched exactly: the query string is which job.
  *   page   /cleaning and anything under it: network first, and the saved copy when the
  *          network does not answer. Network first rather than cache first because a
  *          schedule that changed this morning matters more than a few hundred milliseconds.
@@ -52,7 +52,20 @@
 const CACHE = "cleaning-v1";
 const ROOT = "/cleaning";
 const NO_ACCESS = "/cleaning/no-access";
-const CODES = "/cleaning/codes";
+
+/**
+ * The one path under /api/ this worker is allowed to keep.
+ *
+ * It used to be a page, /cleaning/codes, and the codes used to be rendered into it. Since
+ * 17/11/2026 they are data on the schedule itself, fetched rather than rendered, because the
+ * page they appear on is one this worker saves **without** a deadline so she can read her
+ * dates at a house with no signal. A door code in that copy would still be there next week.
+ * So the page holds no code, this answer does, and this answer carries its own deadline.
+ *
+ * Kept exactly, query string included, never ignoreSearch: the slug in it names the job, and
+ * two houses in one day would otherwise share one saved copy and hand her the wrong number.
+ */
+const CODES = "/api/cleaning/codes";
 
 /**
  * The header the app sets on the PIN gate, which is the one page under /cleaning that is
@@ -104,6 +117,7 @@ self.addEventListener("activate", (event) => {
 });
 
 function neverCached(url) {
+  if (url.pathname === CODES) return false;
   return url.pathname.startsWith("/api/") || url.pathname.startsWith(`${ROOT}/enrol`);
 }
 
@@ -163,6 +177,30 @@ async function page(request) {
   }
 }
 
+/**
+ * The door codes: served from the network, and from the saved copy only while the day lasts.
+ *
+ * The same rule the codes page carried, moved to the answer that replaced it. Matched
+ * exactly rather than ignoring the query string, because the query string is which job.
+ */
+async function codes(request) {
+  const cache = await caches.open(CACHE);
+  try {
+    const response = await fetch(request);
+    if (mayKeep(new URL(request.url), response)) await cache.put(request, response.clone());
+    return response;
+  } catch (error) {
+    const saved = await cache.match(request);
+    if (!saved) throw error;
+    const until = keptUntil(saved);
+    if (until && until <= Date.now()) {
+      await cache.delete(request);
+      throw error;
+    }
+    return saved;
+  }
+}
+
 async function asset(request) {
   const cache = await caches.open(CACHE);
   const saved = await cache.match(request);
@@ -182,6 +220,10 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate") {
     event.respondWith(page(request));
+    return;
+  }
+  if (url.pathname === CODES) {
+    event.respondWith(codes(request));
     return;
   }
   if (isAsset(url)) {
