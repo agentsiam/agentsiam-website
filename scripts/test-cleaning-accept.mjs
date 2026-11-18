@@ -16,7 +16,14 @@
  * afternoon. The accept record is keyed on the visit slug instead, and that is what the two
  * same-day checks below prove.
  *
- * It writes to a temporary file store, not to a mock, so `acceptState` and `acceptVisit` run
+ * **Both answers are a write to the same record**, which is the other half of what is easy to
+ * get wrong. Paul, 18/11/2026: she has to be able to reject the new schedule as well. A clean
+ * she declined must leave her waiting list, stay off her accepted list, and come back to
+ * waiting if it then moves or gains a cot, because that is a different clean from the one she
+ * said no to. And one clean carries one answer: declining and then accepting leaves her having
+ * accepted, not both.
+ *
+ * It writes to a temporary file store, not to a mock, so `acceptState` and `answerVisit` run
  * exactly as they do in production and the record is read back the way the app reads it.
  *
  * **What it does not prove.** Anything about the screens: that the card appears, that the
@@ -72,7 +79,7 @@ try {
 }
 
 const require = createRequire(join(out, "test.cjs"));
-const { acceptState, acceptVisit } = require(join(out, "accept.js"));
+const { acceptState, answerVisit } = require(join(out, "accept.js"));
 
 let failures = 0;
 let ran = 0;
@@ -104,7 +111,7 @@ check("all three are waiting", state.waiting.size, 3);
 check("and none has a time against it", state.takenAt.size, 0);
 
 console.log("\none tap, one clean");
-check("the morning is taken", await acceptVisit("da", all, MORNING), true);
+check("the morning is taken", await answerVisit("da", all, MORNING, "yes"), true);
 state = await acceptState("da", all);
 check("the morning is no longer waiting", state.waiting.has(MORNING), false);
 check("it carries when she took it", typeof state.takenAt.get(MORNING), "string");
@@ -128,12 +135,31 @@ check("the day it moved to is waiting", state.waiting.has("2026-11-20-1200-27564
 check("and nothing else was taken with it", state.waiting.size, 3);
 
 console.log("\nwhat a crafted post cannot do");
-check("accept a slug that is not on her schedule", await acceptVisit("da", all, LATER + "x"), false);
-check("accept an empty slug", await acceptVisit("da", all, ""), false);
+check("answer a slug that is not on her schedule", await answerVisit("da", all, LATER + "x", "yes"), false);
+check("answer an empty slug", await answerVisit("da", all, "", "no"), false);
+
+console.log("\nthe other answer");
+check("the later clean is declined", await answerVisit("da", all, LATER, "no"), true);
+state = await acceptState("da", all);
+check("it is no longer waiting for an answer", state.waiting.has(LATER), false);
+check("it does not count as accepted", state.takenAt.has(LATER), false);
+check("and it carries when she declined it", typeof state.declinedAt.get(LATER), "string");
+
+console.log("\na declined clean that moves is asked again");
+const movedLater = visit("2026-11-27", "12.00", "275645", "ศ 27 พย - 12.00 (ดา)");
+state = await acceptState("da", [morning, afternoon, movedLater]);
+check("the day it moved to is waiting", state.waiting.has("2026-11-27-1200-275645"), true);
+check("and nothing is declined any more", state.declinedAt.size, 0);
+
+console.log("\none clean, one answer");
+check("she changes her mind", await answerVisit("da", all, LATER, "yes"), true);
+state = await acceptState("da", all);
+check("it is accepted", state.takenAt.has(LATER), true);
+check("and no longer declined", state.declinedAt.has(LATER), false);
 
 console.log("\nthe record does not grow for ever");
-await acceptVisit("da", all, AFTERNOON);
-await acceptVisit("da", [later], LATER);
+await answerVisit("da", all, AFTERNOON, "yes");
+await answerVisit("da", [later], LATER, "yes");
 state = await acceptState("da", all);
 check(
   "a clean that left the schedule is dropped on the next write",

@@ -1,4 +1,4 @@
-import { AcceptCard, type WaitingVisit } from "@/components/cleaning/accept-card";
+import { redirect } from "next/navigation";
 import { Message, RemarksBlock, RenderedBlock } from "@/components/cleaning/blocks";
 import { HouseCodes } from "@/components/cleaning/house-codes";
 import { MonthGrid, type MonthView } from "@/components/cleaning/month-grid";
@@ -24,10 +24,10 @@ import {
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
-import { cleaningJobPath } from "@/lib/cleaning/routes";
+import { CLEANING_NEW, cleaningJobPath } from "@/lib/cleaning/routes";
 import { sinceLastSeen, visitIdentity, visitsDigest } from "@/lib/cleaning/seen";
 import { readNote } from "@/lib/cleaning/store";
-import { builtAtLine, teamStrings } from "@/lib/cleaning/strings";
+import { builtAtLine, teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
  * Her days, behind her PIN.
@@ -94,11 +94,21 @@ export default async function SchedulePage() {
   const nextIndex = nextVisitIndex(document.visits, today);
   const next = nextIndex >= 0 ? document.visits[nextIndex] : null;
   const { changed } = await sinceLastSeen(holder.person, document.visits);
-  // What she has not taken on yet. Read before anything is drawn, because it decides both the
-  // card at the top and the marks down the list, and the two must not disagree.
-  const { waiting } = await acceptState(holder.person, document.visits).catch(() => ({
+  // How she has answered her cleans. Read before anything is drawn, because it decides both
+  // whether this screen renders at all and the marks down the list.
+  const { waiting, declinedAt } = await acceptState(holder.person, document.visits).catch(() => ({
     waiting: new Set<string>(),
+    declinedAt: new Map<string, string>(),
   }));
+  const declined = new Set(declinedAt.keys());
+  // **Anything new holds her on its own screen first.** Paul, 18/11/2026: the accept screen
+  // has to be a different screen from the calendar and the list, so that she answers all of
+  // the new work before she goes into her schedule. Only cleans from today onwards count: a
+  // clean last Tuesday that was never answered would otherwise shut her out for good, and
+  // src/app/cleaning/new/page.tsx applies the same cut-off so the two cannot disagree.
+  if (document.visits.some((visit) => visit.date >= today && waiting.has(visitSlug(visit)))) {
+    redirect(CLEANING_NEW);
+  }
   const digest = await visitsDigest(document.visits);
   const when = document.built_at ? builtAtDigits(document.built_at) : null;
   // Only on the day, which is Paul's rule for every door code in this app. The card names
@@ -110,18 +120,6 @@ export default async function SchedulePage() {
   // screen, so the grid and the rows cannot disagree about it.
   const marks = houseMarks(document);
 
-  // The waiting cleans in the order they happen, flattened here so the card is handed text
-  // and never a document. Past cleans are left out: a clean that has already happened is not
-  // something to agree to, and a row she cannot act on is a row she has to scroll past.
-  const toAccept: WaitingVisit[] = document.visits
-    .filter((visit) => visit.date >= today && waiting.has(visitSlug(visit)))
-    .map((visit) => ({
-      slug: visitSlug(visit),
-      line: visit.line,
-      house: propertyOf(document, visit)?.name ?? null,
-      mark: markOf(marks, visit.property),
-    }));
-
   // Every month the arrows can reach, with its grid, worked out here: the calendar is a
   // client component so that paging is state, and none of the date arithmetic crosses that
   // boundary with it.
@@ -132,9 +130,22 @@ export default async function SchedulePage() {
   }));
 
   return (
-    <main lang={document.lang}>
+    // The document's language while the phone is set to Thai, because the document is then
+    // most of the screen; the app's when it is set to English, because the lines, the day
+    // headings and the prompts are then the app's and only the skill's prose underneath is
+    // still Thai. The same expression is on the job and day screens.
+    <main lang={lang === "en" ? lang : document.lang}>
       <header>
-        <h1 className="text-[19px] font-semibold leading-7 text-text">{document.title}</h1>
+        {/* The app's own title and deliberately not the document's. Paul, 18/11/2026: the
+            first screen should not say Lotus House, because it can be any house. The
+            published title is the queue title off one property's record, which stopped being
+            the whole truth the day a second property arrived. The house is on every row that
+            needs it. */}
+        {written(t.scheduleTitle) ? (
+          <h1 className="text-[19px] font-semibold leading-7 text-text">
+            {written(t.scheduleTitle)}
+          </h1>
+        ) : null}
         {when && builtAtLine(lang, when) ? (
           <p
             className="mt-1 text-[13px] text-muted"
@@ -146,8 +157,6 @@ export default async function SchedulePage() {
       </header>
       <OfflineNotice lang={lang} />
 
-      <AcceptCard waiting={toAccept} lang={lang} />
-
       {next ? (
         <NextVisitCard
           visit={next}
@@ -157,6 +166,7 @@ export default async function SchedulePage() {
           jobHref={cleaningJobPath(visitSlug(next))}
           lang={lang}
           isWaiting={waiting.has(visitSlug(next))}
+          isDeclined={declined.has(visitSlug(next))}
         />
       ) : null}
 
@@ -170,6 +180,7 @@ export default async function SchedulePage() {
             today={today}
             changed={changed}
             waiting={waiting}
+            declined={declined}
             role={document.role}
             lang={lang}
             marks={marks}
@@ -180,8 +191,8 @@ export default async function SchedulePage() {
         calendar={<MonthGrid months={months} marks={marks} lang={lang} />}
       />
 
-      {document.contact ? <RenderedBlock block={document.contact} /> : null}
-      {document.remarks ? <RemarksBlock block={document.remarks} /> : null}
+      {document.contact ? <RenderedBlock block={document.contact} lang={lang} /> : null}
+      {document.remarks ? <RemarksBlock block={document.remarks} lang={lang} /> : null}
 
       <SeenRecorder stamp={digest} />
     </main>

@@ -52,12 +52,17 @@ export default async function AdminCleaningPersonPage({
   const visits = document ? [...document.visits].reverse() : [];
   // Her side of the agreement, which is the half of this screen that was missing: it has
   // always said what was scheduled and never whether she had answered.
-  const { waiting, takenAt } = document
+  const { waiting, takenAt, declinedAt } = document
     ? await acceptState(person, document.visits).catch(() => ({
         waiting: new Set<string>(),
         takenAt: new Map<string, string>(),
+        declinedAt: new Map<string, string>(),
       }))
-    : { waiting: new Set<string>(), takenAt: new Map<string, string>() };
+    : {
+        waiting: new Set<string>(),
+        takenAt: new Map<string, string>(),
+        declinedAt: new Map<string, string>(),
+      };
   const threads = await Promise.all(
     visits.map(async (visit) => ({
       visit,
@@ -113,18 +118,31 @@ export default async function AdminCleaningPersonPage({
                 {visit.type ? ` · ${visit.type}` : ""}
                 {comments.length > 0 ? ` · ${comments.length} message${comments.length === 1 ? "" : "s"}` : ""}
               </p>
-              {/* Accepted and when, or still waiting, and nothing at all for a clean that
-                  has already happened: an unanswered prompt on a past date is a fact about
-                  last week and not something to chase. */}
+              {/* How she answered, and when, and nothing at all for a clean that has already
+                  happened: an unanswered prompt on a past date is a fact about last week and
+                  not something to chase.
+
+                  **A decline is the one line on this screen that is waiting on you.** She has
+                  answered, so nothing is pending on her phone, and the app cannot move a
+                  clean to somebody else: the rule that decides who cleans what is the
+                  cleaning-schedule skill's, so a declined clean stays hers until you change
+                  the run. It is in red for that reason and not because she did anything
+                  wrong. */}
               {visit.date >= today ? (
                 <p
                   className={`mt-1 text-xs font-semibold ${
-                    waiting.has(slug) ? "text-deep-red" : "text-muted"
+                    declinedAt.has(slug)
+                      ? "text-deep-red"
+                      : waiting.has(slug)
+                        ? "text-deep-gold"
+                        : "text-muted"
                   }`}
                 >
-                  {waiting.has(slug)
-                    ? "Not accepted yet"
-                    : `Accepted ${(takenAt.get(slug) ?? "").slice(0, 16).replace("T", " ")}`}
+                  {declinedAt.has(slug)
+                    ? `Declined ${(declinedAt.get(slug) ?? "").slice(0, 16).replace("T", " ")}`
+                    : waiting.has(slug)
+                      ? "Not answered yet"
+                      : `Accepted ${(takenAt.get(slug) ?? "").slice(0, 16).replace("T", " ")}`}
                 </p>
               ) : null}
 

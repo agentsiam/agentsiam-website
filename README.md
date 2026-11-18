@@ -574,6 +574,14 @@ easiest thing in that system to get wrong and the hardest to spot, and an app th
 own job lines is a second schedule arriving as a formatting library. What this app decides is
 order, weight and position.
 
+**It does compose English**, and only English, in `src/lib/cleaning/english.ts`. Paul,
+18/11/2026: work out the English text as well, because some of it is showing in Thai. A
+document is published in one language and that language is Thai, so a phone set to English was
+reading English prompts over a Thai schedule. What that file composes it composes out of the
+structure the skill publishes beside the finished text, the ISO date, the hour and the house,
+and it parses no published string, so a change in the skill's wording cannot break a screen.
+The Thai path is untouched: a phone set to Thai gets the document's own text exactly as before.
+
 **Thai or English, on a switch at the top of every screen, and the Thai carries no English.**
 Paul, 18/11/2026. The control is on the enrolment link, on the PIN gate and on every screen
 behind it, because the person who needs it is the one who cannot read the screen she is looking
@@ -586,12 +594,15 @@ buttons and the seven weekday columns on the calendar. `npm run test:cleaning-st
 any Thai string carries a Latin letter or any English one carries a Thai character, so that half
 of the instruction is a test and not a promise.
 
-**What the switch cannot reach is the schedule itself**, for the reason the paragraph above
-gives: the title, every job line, the day headings, the address, the contact block, the door
-codes and the change lines arrive as finished text, published per person in the language that
-person reads, which is Thai for all three today. English switches the frame and the Thai
-schedule stays inside it. A cleaner who reads only English would need her document published in
-English, which is a change in the skill and not in this repository. Three things are Latin in
+**What English reaches, and what it does not.** The job lines and the day headings are
+composed, so they read `Wed 18 Nov, 10.00` and `Wednesday 18 November` on an English phone and
+the document's own Thai on a Thai one. The heading over the contact block, the codes and the
+change lines is the app's in English, because a panel's heading says what the panel is and that
+is furniture rather than content. **The prose inside them is not**, and stays in the language it
+was published in: the names and roles in the contact block, the words beside each door code, the
+change lines, and anything true of one clean. Those are the skill's sentences, and the honest
+fix is a document published per language, which is a change in the skill and not in this
+repository. It is in the known gaps. Three things are Latin in
 both languages and are nobody's to translate: the house names, which are the names on the doors
 and in LINE, the brand, and Ting's name. The word English on the switch is the fourth and is
 deliberate: a language is named in its own language, or the person who needs that option cannot
@@ -600,8 +611,11 @@ screen rather than the team's; it says so on itself and nothing links to it.
 
 | Screen | Needs | Is |
 |---|---|---|
-| `/cleaning` | the device cookie, then her PIN | Her schedule: the title, her visits in date order with the next one filled in ink, a marker on anything new or moved since she last looked, the contact block and the change lines |
-| `/cleaning/codes` | the same PIN, never asked for twice | Her gate and door codes, large. Kept by the service worker alone, on a deadline, and by no other cache |
+| `/cleaning` | the device cookie, then her PIN | Her schedule: her visits in date order with the next one filled in ink, a marker on anything new or moved since she last looked, the contact block and the change lines. It sends her to `/cleaning/new` while anything ahead of her is unanswered |
+| `/cleaning/new` | the same two | The new work, in blue, one clean per panel with accept and decline on each. The one screen she cannot walk past, and it stops existing the moment nothing is waiting |
+| `/cleaning/day/<date>` | the same two | One day and what it asks of her, in time order, reached by tapping a date on the month grid |
+| `/cleaning/job/<slug>` | the same two | One job: the line, the house, the address, the people on it, the codes on the day, and the thread about it |
+| `/api/cleaning/codes` | the same PIN, never asked for twice | Her gate and door codes as data, fetched into the schedule and the job screen rather than rendered into them. Kept by the service worker alone, on a deadline, and by no other cache |
 | `/cleaning/enrol/<token>` | the link itself | The one URL that answers without a cookie. A GET greets her; the POST behind the button spends the token |
 | `/cleaning/no-access` | nothing | The one thing a phone with no working access is ever told: ask Paul for a new link in LINE |
 | `/admin/cleaning` | the admin session | Paul's screen: three people, their enrolled phones, a revoke each, a PIN each, a fresh link each |
@@ -630,19 +644,36 @@ change lines at the foot of her schedule, which say what changed since the sched
 **posted**, and on a week she did not open the app both are true. They are kept visually apart
 for that reason.
 
-**She takes a clean on, and the marker is not enough on its own.** Paul, 18/11/2026: a new clean,
-and a clean that has moved, should reach her as something to accept. The marker told her
-something had changed and could not tell him she had read it, and a cleaner who has not read a
-move is a house nobody turns up to. So `cleaning:accept:<person>` holds the cleans she has agreed
-to and the line each one read when she agreed, the card at the top of her first screen carries
-whatever is waiting, with one button per clean rather than one over a list, and `/admin/cleaning/<person>`
-says accepted and when, or not accepted yet, against every clean still ahead of her.
+**She answers a clean, yes or no, and the marker is not enough on its own.** Paul, 18/11/2026: a
+new clean, and a clean that has moved, should reach her as something to accept, and she has to be
+able to reject it as well. The marker told her something had changed and could not tell him she
+had read it, and a cleaner who has not read a move is a house nobody turns up to. So
+`cleaning:accept:<person>` holds the cleans she has agreed to and the cleans she has turned down,
+each with the line it read when she answered, and `/admin/cleaning/<person>` says accepted and
+when, declined and when, or not answered yet, against every clean still ahead of her.
 
-**Accepting is an acknowledgement and never a gate**, which is the part of his design I argued
-with and he took. The clean is hers from the moment it is published, it is in her schedule the
-whole time marked as waiting, and nothing in this app decides who does what: that is the skill's,
-and the rule is still Monday to Friday Da, the weekend Aun, Ting on every laundry. A schedule
-that showed only the cleans she had answered would be a schedule she could not trust.
+**The new work is a screen of its own, and it is the one screen she cannot walk past.** Paul,
+18/11/2026: the accept screen has to be a different screen from the calendar and the list, so
+that she answers all of the new work before she goes into her schedule. It was a card at the top
+of the schedule for one day, and a card can be scrolled past. So `/cleaning`, the day screen and
+the month grid all send her to `/cleaning/new` while anything from today onwards is unanswered,
+and that screen sends her straight back the moment nothing is. **Only cleans from today onwards
+hold her**: a clean last Tuesday that was never answered would otherwise shut her out of her own
+schedule for good. One pair of buttons per clean and never one pair over a list, because she is
+agreeing to turn up at a particular house on a particular day. It is the brand blue rather than
+the ink the rest of the app is built on, at Paul's instruction in the same message, and the blue
+is also what says this is not a schedule before she has read a word.
+
+**Answering is an acknowledgement and never a reassignment**, which is the part of his design I
+argued with and he took. The clean is hers from the moment it is published, it is in her
+schedule the whole time whichever way she answers, and nothing in this app decides who does
+what: that is the skill's, and the rule is still Monday to Friday Da, the weekend Aun, Ting on
+every laundry. A declined clean therefore stays on her schedule wearing the declined pill, in
+red, which is the one mark in these screens that says something will not happen unless somebody
+acts. **Acting on it is Paul's**, in the skill, and until the skill reads this record a decline
+he has not read changes nothing at all; the known gap on reassigning says what that would take.
+A schedule that showed only the cleans she had agreed to would be a schedule she could not
+trust.
 
 The record is keyed on the **visit slug**, the date, the time and the property, and deliberately
 not on the `visitIdentity` the changed marker uses. That one falls back to the date when a job
@@ -650,7 +681,9 @@ carries no booking id, which was safe while a person had at most one clean a day
 being safe in November when a second house arrived: accepting the morning at one house would have
 accepted the afternoon at the other. The line is stored beside the slug, so a cot added to a
 clean asks her again, and a clean that moves is a new slug and asks her again for the same
-reason. `npm run test:cleaning-accept` drives all of that against a throwaway file store.
+reason, a clean she declined included: that is a different clean from the one she said no to.
+One clean carries one answer, so declining and then accepting leaves her having accepted and
+not both. `npm run test:cleaning-accept` drives all of that against a throwaway file store.
 
 **Installable and offline.** `public/cleaning/manifest.webmanifest`, icons generated by
 `npm run cleaning:icons` and committed, and `public/cleaning-sw.js`, which keeps the last
@@ -660,7 +693,11 @@ it is served from. It deletes its cache the first time a navigation comes back r
 the "ask Paul" page, which is how a revoked phone loses its saved copy once it next has
 signal. It refuses to save the PIN gate, which `/cleaning` answers with to a phone that has
 not given it, because one load of the gate would otherwise overwrite the saved schedule with
-a form whose submit cannot reach the network.
+a form whose submit cannot reach the network. **It saves no answer that arrived having been
+redirected**, which is the same failure from the other direction: since `/cleaning` redirects to
+the new-work screen while anything is unanswered, a redirected response written under the
+schedule's own URL would be both the wrong page and one a browser refuses to accept for a
+navigation at all, so the schedule would stop opening offline altogether.
 
 **The door codes are kept too, and that is a reversal.** Until 17/11/2026 they were the one
 thing the app refused to write down anywhere. Paul's decision: the one moment this app exists
@@ -685,7 +722,7 @@ are not the same thing today: the known gap on this page's `Cache-Control` says 
 actually observed.
 
 `npm run test:cleaning-sw` drives that file outside a browser and covers all of it,
-twenty-six cases with a non-zero exit on any failure; run it after touching the worker, that
+twenty-eight cases with a non-zero exit on any failure; run it after touching the worker, that
 header or that window. Six of the cases are the door codes, which is where the risk now is.
 What it cannot cover is a browser, which is the known gap below.
 
@@ -861,6 +898,21 @@ flow, end to end, with nothing live anywhere near it.
   no per-visit field to render. The reason exists nowhere at all and is a habit as much as a
   field: four values and an optional line, chosen when a clean is moved. Until both land, a moved
   clean and a new one look the same on the card.
+- **The schedule itself is published in one language (18/11/2026).** The switch and
+  `src/lib/cleaning/english.ts` between them put the app's words, the job lines, the day
+  headings and the headings over the blocks into English. What stays Thai on an English phone is
+  every sentence the skill wrote: the names and roles inside the contact block, the words beside
+  each door code, the change lines at the foot, and anything true of one clean. None of it can be
+  composed from structure and none of it may be parsed out of a finished line, so the fix is the
+  skill publishing a document per language rather than per person, which is a change in
+  `/Users/paulb/code/agentsiam/agentsiam-consulting` and not here. Nobody on the team reads
+  English today, so this is Paul's own screen in practice.
+- **A decline is a fact nothing acts on (18/11/2026).** She can turn a clean down, her schedule
+  marks it, and `/admin/cleaning/<person>` prints it in red with the time. Nothing moves the
+  work: the next run of the skill rebuilds the schedule from the file and republishes the same
+  clean to the same person, so a decline Paul has not read changes nothing at all. It is the
+  same dependency as the gap below and the same fix, the skill reading the store at build time.
+  Until then, a declined clean is a message on a screen Paul has to open.
 - **Reassigning a clean is still a file edit and a re-run (18/11/2026).** The admin screen says
   who has accepted what and gives Paul no way to change who a clean belongs to. The skill owns
   that decision and rebuilds from `<beds24_property_id>-cleaning.md` on every run, so a button here
@@ -877,8 +929,11 @@ flow, end to end, with nothing live anywhere near it.
   naming the date and the time. The sheet that carries every slot, what it has to say and what
   it must not, now records what was read and what moved:
   `/Users/paulb/code/agentsiam/agentsiam-consulting/as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt`.
-  **What is still unread is the English table**, which is mine and was moved only where a
-  correction moved the meaning; nobody on the team reads it, so it is the lesser half. **And a
+  **What is still unread is the nine strings added the same evening** for accepting and
+  declining, the title at the top of her first screen among them: they are drafts of mine, they
+  are on the sheet, and they want the next native read. **And the English table**, which is mine
+  and was moved only where a correction moved the meaning; nobody on the team reads it, so it is
+  the lesser half. **And a
   slot nobody has written still ships as silence rather than as English**: an unwritten string
   renders as nothing and takes its element with it, at Paul's instruction of 17/11/2026, so
   nothing in the running app says a sentence is missing. `npm run test:cleaning-strings` is
@@ -894,7 +949,7 @@ flow, end to end, with nothing live anywhere near it.
   production is on.
 - **The cleaning app's service worker has never run in a real browser (17/11/2026).** Its
   logic is covered: `npm run test:cleaning-sw` drives `public/cleaning-sw.js` outside a browser
-  with its globals stubbed and its clock movable, twenty-six cases, non-zero exit on any
+  with its globals stubbed and its clock movable, twenty-eight cases, non-zero exit on any
   failure, and it proves the branching that matters. The API and the enrolment link pass
   through untouched whatever they answer, a schedule saved from a good load is served when
   fetch throws, a cold cache fails rather than inventing a page, a navigation coming back

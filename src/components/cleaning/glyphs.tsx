@@ -100,6 +100,50 @@ export function Pin({ size = 19 }: { size?: number }) {
   );
 }
 
+/**
+ * Yes, and no, on the pair of buttons that answer a new clean.
+ *
+ * The two most literal shapes there are, which is the spec above: a tick means the thing is
+ * agreed and a cross means it is not. Both sit beside a word, so neither carries the meaning
+ * on its own, and the pair exists because two buttons the same size with different words are
+ * two buttons a thumb can mix up at a gate in daylight.
+ */
+export function Tick({ size = 19 }: { size?: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 13l4.5 4.5L19 7" />
+    </svg>
+  );
+}
+
+export function Cross({ size = 19 }: { size?: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  );
+}
+
 /** There is more behind this row. */
 export function ChevronRight({ size = 19 }: { size?: number }) {
   return (

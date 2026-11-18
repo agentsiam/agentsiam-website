@@ -90,6 +90,19 @@ export type TeamStringKey = keyof typeof TEAM_STRINGS_TH;
 
 export const TEAM_STRINGS_TH = {
   /**
+   * The heading at the top of her first screen, and the back link on every screen under it.
+   *
+   * **It is the app's own and deliberately not the document's title.** Paul, 18/11/2026: the
+   * first screen should not say Lotus House, because it can be any house. The published title
+   * is the queue title off one property's record, which was the whole truth while there was
+   * one property and became wrong the day a second arrived: a screen headed with one house's
+   * name over a list holding two is a screen that tells her where she is going before she has
+   * read a line. So the document's title is no longer printed anywhere, and this says whose
+   * schedule it is instead of which house it is for. The house is on every row that needs it.
+   */
+  scheduleTitle: "ตารางงานของฉัน",
+
+  /**
    * The line under the title saying how old this schedule is.
    *
    * `{when}` is substituted with a date and time in digits, Bangkok time, so that no Thai
@@ -228,13 +241,30 @@ export const TEAM_STRINGS_TH = {
    * reach us, which offline is the ordinary case rather than the exception.
    *
    * One verb throughout, ยืนยัน, rather than a button that says take and a pill that says
-   * confirm. These four are drafts of mine and have not been read by a Thai speaker, unlike
-   * the twenty-two above them.
+   * confirm.
+   *
+   * **Answering means either answer.** Paul, 18/11/2026: the cleaner has to be able to reject
+   * the new schedule as well. So the pair of buttons is the unit, the screen they sit on is
+   * the one screen she cannot walk past, and the intro line says what she has to do before
+   * her schedule opens, because a screen that holds her there without saying why reads as a
+   * broken app.
+   *
+   * A declined clean stays on her schedule wearing the declined pill rather than disappearing
+   * off it. Nothing in this app can take a clean off a published document, and a schedule that
+   * silently held fewer jobs than the one she can read in LINE would be the second schedule
+   * this app exists not to be.
+   *
+   * These nine are drafts of mine and have not been read by a Thai speaker, unlike the
+   * twenty-two above them.
    */
   acceptHeading: "งานใหม่ที่ต้องยืนยัน",
+  acceptIntro: "กรุณายืนยันรับงาน หรือกดไม่รับงาน ก่อนเข้าดูตารางงาน",
   acceptButton: "ยืนยันรับงาน",
   acceptWaiting: "รอยืนยัน",
   acceptFailed: "ยืนยันไม่สำเร็จ ลองใหม่อีกครั้ง",
+  rejectButton: "ไม่รับงาน",
+  rejectFailed: "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง",
+  declined: "ไม่รับงานนี้",
 } as const;
 
 /**
@@ -242,13 +272,17 @@ export const TEAM_STRINGS_TH = {
  *
  * Why each one says what it says is written above its Thai twin and is not repeated here.
  * What is worth saying once more is what this table cannot reach. **The schedule itself is
- * not translated.** The title, every job line, the day headings, the address, the contact
- * block, the door codes and the change lines are finished text, published per person by the
- * `cleaning-schedule` skill in that person's own language, which is Thai for all three
- * today. So English switches the app's own words, the headings, the prompts, the markers and
- * the buttons, and the lines under them stay in the language they were published in. A
- * cleaner who reads only English would need her document published in English, which is a
- * change in the skill and not in this repository.
+ * published in one language.** Every job line, the day headings, the contact block, the door
+ * codes and the change lines are finished text, rendered per person by the `cleaning-schedule`
+ * skill in that person's own language, which is Thai for all three today.
+ *
+ * Where the document is a job's only source, src/lib/cleaning/english.ts composes the English
+ * for it out of structure the document carries beside the finished text: the ISO date, the
+ * hour, the house and the kind of clean. Paul, 18/11/2026: work out the English text as well,
+ * because some of it is showing in Thai. That file says what it composes and what it still
+ * cannot, which is every line of prose the skill wrote: the lines inside the contact block,
+ * the change lines, and the words beside each door code. Those need the document published in
+ * English, which is a change in the skill and not in this repository.
  *
  * The house names are the other thing a switch cannot touch, in either direction: they are
  * the names on the doors and in LINE, so they read the same in both languages and are Latin
@@ -259,6 +293,7 @@ export const TEAM_STRINGS_TH = {
  * quietly ships inside the other, which is the bug R8 describes on the public site.
  */
 export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
+  scheduleTitle: "My schedule",
   builtAt: "Last updated {when}",
   changedSinceSeen: "Job details changed",
   pinPrompt: "Enter the PIN Paul sent you on LINE",
@@ -282,9 +317,13 @@ export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
   commentSend: "Send",
   commentFailed: "Not sent. Try again",
   acceptHeading: "New jobs to confirm",
+  acceptIntro: "Accept or decline each one before your schedule opens",
   acceptButton: "Accept this job",
   acceptWaiting: "Not confirmed",
   acceptFailed: "Not confirmed. Try again",
+  rejectButton: "Decline",
+  rejectFailed: "Not sent. Try again",
+  declined: "Declined",
 };
 
 /**

@@ -23,12 +23,19 @@
  * Latin word on a Thai screen and is deliberate.
  *
  * **What it does not prove.** That the Thai is good Thai, or that the English says what the
- * Thai says. Every sentence in both tables is a draft of mine; the Thai has never been read
- * by a native speaker and the correction sheet for it is in the document store, named in
+ * Thai says. Twenty-two of the Thai sentences were read and corrected by a Thai speaker on
+ * 18/11/2026; the nine added for the accept and decline flow are drafts of mine, and the
+ * correction sheet for all of them is in the document store, named in
  * src/lib/cleaning/strings.ts.
  *
- * It compiles the one module it imports, which has no imports of its own, into a temporary
- * directory under node_modules. Nothing in the repository is written.
+ * **It also drives the English this app composes**, which is the part no table can hold: the
+ * job lines and the day headings, which the published document carries in Thai and only in
+ * Thai. src/lib/cleaning/english.ts composes those from structure, and what is checked here is
+ * that it composes the date it was given, in English, with no Thai in it, and that a Thai
+ * phone still gets the document's own text untouched.
+ *
+ * It compiles the two modules it imports into a temporary directory under node_modules.
+ * Nothing in the repository is written.
  */
 
 import { execFileSync } from "node:child_process";
@@ -49,6 +56,7 @@ try {
     [
       "tsc",
       "src/lib/cleaning/strings.ts",
+      "src/lib/cleaning/english.ts",
       "--outDir",
       out,
       "--module",
@@ -83,6 +91,9 @@ const {
   weekdaysWritten,
   written,
 } = require(join(out, "strings.js"));
+const { blockHeading, dayHeading, englishDay, englishLine, visitLine } = require(
+  join(out, "english.js"),
+);
 
 let failures = 0;
 let ran = 0;
@@ -178,6 +189,45 @@ check("the English line takes the digits", builtAtLine("en", "18/11/2026 14:56")
 check("and neither leaves the token behind", builtAtLine("en", "x").includes("{when}"), false);
 
 rmSync(out, { recursive: true, force: true });
+
+console.log("\nthe English this app has to compose, because the document is in one language");
+const job = {
+  date: "2026-11-18",
+  time: "10.00",
+  line: "พุธ 18 พย - 10.00 (ดา)",
+  dayLabel: "พุธ 18 พย",
+};
+check("a day, written out", englishDay("2026-11-18"), "Wednesday 18 November");
+check("a job line, with the hour the document carries", englishLine(job), "Wed 18 Nov, 10.00");
+check("a job with no hour is still a date", englishLine({ ...job, time: "" }), "Wed 18 Nov");
+check("a date that will not parse composes nothing", englishDay("the fourteenth"), "");
+check("no Thai in a composed line", thai.test(englishLine(job)), false);
+check("a Thai phone gets the document's own line", visitLine(job, "th"), job.line);
+check("an English phone gets the composed one", visitLine(job, "en"), "Wed 18 Nov, 10.00");
+check(
+  "a day heading follows the phone, Thai",
+  dayHeading({ date: job.date, label: job.dayLabel, visits: [] }, "th"),
+  job.dayLabel,
+);
+check(
+  "and English",
+  dayHeading({ date: job.date, label: job.dayLabel, visits: [] }, "en"),
+  "Wednesday 18 November",
+);
+check(
+  "a day with no label on a Thai phone has no heading",
+  dayHeading({ date: job.date, label: null, visits: [] }, "th"),
+  "",
+);
+check("a block heading is the document's in Thai", blockHeading("codes", "รหัสเข้าบ้าน:", "th"), "รหัสเข้าบ้าน:");
+check("and the app's in English", blockHeading("codes", "รหัสเข้าบ้าน:", "en"), "House codes");
+check(
+  "no Thai in any English block heading",
+  ["contact", "codes", "changes"]
+    .filter((kind) => thai.test(blockHeading(kind, "x", "en")))
+    .join(",") || "none",
+  "none",
+);
 
 console.log(`\n${ran - failures}/${ran} passed`);
 if (failures > 0) process.exit(1);

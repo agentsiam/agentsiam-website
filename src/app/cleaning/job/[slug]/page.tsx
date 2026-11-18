@@ -9,12 +9,13 @@ import {
   Phone,
   Pin,
 } from "@/components/cleaning/glyphs";
-import { AcceptButton } from "@/components/cleaning/accept-card";
+import { AcceptChoice } from "@/components/cleaning/accept-choice";
 import { HouseCodes } from "@/components/cleaning/house-codes";
 import { Comments } from "@/components/cleaning/comments";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
 import { findVisit, parseDocument, propertyOf, todayInBangkok } from "@/lib/cleaning/document";
 import { acceptState } from "@/lib/cleaning/accept";
+import { visitLine } from "@/lib/cleaning/english";
 import { listComments } from "@/lib/cleaning/comments";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
 import { teamLang } from "@/lib/cleaning/lang";
@@ -92,10 +93,15 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   // worker saves and a phone with no signal still shows what was said. Writing needs the
   // network; reading what is already there does not.
   const comments = await listComments(slug).catch(() => []);
-  // Whether this one is still waiting for her. Same record as her first screen reads, so the
-  // card there and the button here cannot disagree about one clean.
-  const isWaiting = await acceptState(holder.person, document.visits)
-    .then((state) => state.waiting.has(slug))
+  // Whether this one is still hers to answer. Same record the new-work screen reads, so that
+  // screen and this one cannot disagree about one clean.
+  //
+  // The pair of buttons shows for a clean she has declined as well as one she has not
+  // answered, which is how she changes her mind without going through Paul: she declined a
+  // Tuesday, the guest moved, and she can take it after all. An accepted clean shows nothing,
+  // because withdrawing from work she agreed to is a conversation and the thread is below.
+  const unanswered = await acceptState(holder.person, document.visits)
+    .then((state) => state.waiting.has(slug) || state.declinedAt.has(slug))
     .catch(() => false);
 
   // The two values `type` can hold, each with its own sentence. Anything else renders no
@@ -108,13 +114,18 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         : "";
 
   return (
-    <main lang={document.lang}>
+    // The document's language while the phone is set to Thai, because the document is then
+    // most of the screen; the app's when it is set to English, because the line, the headings
+    // and the prompts are then the app's and only the skill's prose underneath is still Thai.
+    <main lang={lang === "en" ? lang : document.lang}>
       <Link
         href={CLEANING_SCHEDULE}
         className="mt-1 flex items-center gap-2 py-2 text-[15px] font-semibold text-muted"
       >
         <ChevronLeft />
-        <span className="min-w-0 truncate">{document.title}</span>
+        {/* The app's own title, never the document's: the published one names one property,
+            and this app serves two. */}
+        <span className="min-w-0 truncate">{written(t.scheduleTitle)}</span>
       </Link>
       <OfflineNotice lang={lang} />
 
@@ -125,7 +136,9 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         >
           <JobType role={document.role} />
         </span>
-        <p className="mt-4 text-[22px] font-semibold leading-9 text-bg">{visit.line}</p>
+        <p className="mt-4 text-[22px] font-semibold leading-9 text-bg">
+          {visitLine(visit, lang)}
+        </p>
         {house || visit.type === "midstay" ? (
           <p className="mt-2 flex flex-wrap items-center gap-2 text-[17px] font-semibold text-gold-on-ink">
             {house ? (
@@ -144,7 +157,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
             button that agrees to it are one object. She reaches this screen by tapping the
             clean in the card on her first screen, and taking it on here has to be possible
             or that tap is a dead end. */}
-        {isWaiting ? <AcceptButton slug={slug} lang={lang} onInk /> : null}
+        {unanswered ? <AcceptChoice slug={slug} lang={lang} /> : null}
       </section>
 
       {detail ? (
@@ -279,7 +292,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
           document published before the skill carried per-visit people still has this, and it
           is then the only thing on screen that answers who she is working with. */}
       {visit.with.length === 0 && document.contact ? (
-        <RenderedBlock block={document.contact} tone="panel" />
+        <RenderedBlock block={document.contact} lang={lang} tone="panel" />
       ) : null}
 
       <section className="mt-6">
