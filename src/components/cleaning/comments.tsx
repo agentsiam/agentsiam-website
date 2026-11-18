@@ -3,17 +3,15 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Camera } from "@/components/cleaning/glyphs";
+import { PhotoTiles } from "@/components/cleaning/photo-tiles";
 import {
   MAX_COMMENT_LENGTH,
+  MAX_PHOTOS_PER_COMMENT,
   photoStillKept,
   type Comment,
 } from "@/lib/cleaning/comment-shape";
 import { builtAtDigits } from "@/lib/cleaning/document";
-import {
-  CLEANING_API_COMMENT,
-  CLEANING_API_PHOTO,
-  cleaningPhotoSrc,
-} from "@/lib/cleaning/routes";
+import { CLEANING_API_COMMENT, CLEANING_API_PHOTO } from "@/lib/cleaning/routes";
 import { shrinkPhoto } from "@/lib/cleaning/shrink";
 import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
 
@@ -48,63 +46,91 @@ export function Comments({ slug, comments }: { slug: string; comments: Comment[]
   const router = useRouter();
   const picker = useRef<HTMLInputElement>(null);
   const [body, setBody] = useState("");
-  const [photo, setPhoto] = useState<{ file: Blob; preview: string } | null>(null);
+  const [photos, setPhotos] = useState<{ file: Blob; preview: string }[]>([]);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
 
+  /**
+   * Several at once, since Paul asked for it on 18/11/2026: a finished house is a bedroom,
+   * a bathroom and a kitchen, and sending it was a comment each.
+   *
+   * Each is shrunk as it is picked rather than when the send happens, so the waiting is
+   * spread across choosing them and the send is as quick as it was with one. Past the cap
+   * the extras are dropped silently: she picked them in her phone's own sheet, and a
+   * sentence explaining the limit is a sentence nobody has written in Thai.
+   */
   async function choose(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
+    const picked = Array.from(event.target.files ?? []);
     event.target.value = "";
-    if (!file) return;
-    const shrunk = await shrinkPhoto(file);
-    // Revoked when it is replaced or sent, so a long thread does not hold on to blobs the
+    if (picked.length === 0) return;
+    const room = MAX_PHOTOS_PER_COMMENT - photos.length;
+    if (room <= 0) return;
+    const shrunk = await Promise.all(picked.slice(0, room).map((file) => shrinkPhoto(file)));
+    // Revoked when they are removed or sent, so a long thread does not hold on to blobs the
     // browser cannot free.
-    setPhoto((before) => {
-      if (before) URL.revokeObjectURL(before.preview);
-      return { file: shrunk, preview: URL.createObjectURL(shrunk) };
+    setPhotos((before) => [
+      ...before,
+      ...shrunk.map((file) => ({ file, preview: URL.createObjectURL(file) })),
+    ]);
+  }
+
+  function drop(at: number) {
+    setPhotos((before) => {
+      const gone = before[at];
+      if (gone) URL.revokeObjectURL(gone.preview);
+      return before.filter((_, index) => index !== at);
     });
   }
 
-  function drop() {
-    setPhoto((before) => {
-      if (before) URL.revokeObjectURL(before.preview);
-      return null;
+  function dropAll() {
+    setPhotos((before) => {
+      for (const one of before) URL.revokeObjectURL(one.preview);
+      return [];
     });
   }
 
   async function send(event: React.FormEvent) {
     event.preventDefault();
     const text = body.trim();
-    if ((!text && !photo) || busy) return;
+    if ((!text && photos.length === 0) || busy) return;
     setBusy(true);
     setFailed(false);
     try {
-      // The photo first, because the comment carries its URL. A photo that fails to store
-      // takes the whole send with it rather than quietly posting the words alone: she is
-      // sending proof, and a comment that says "done" without the picture is not that.
-      let image: string | null = null;
-      if (photo) {
+      // The photographs first, because the comment carries their pathnames. One that fails
+      // to store takes the whole send with it rather than quietly posting the rest: she is
+      // sending proof, and a comment missing the room she meant to show is not that.
+      //
+      // One at a time on purpose. This runs on a phone on mobile data in somebody's house,
+      // where six uploads at once is six that all slow down and any of which can time out.
+      const images: string[] = [];
+      for (const one of photos) {
         const upload = await fetch(CLEANING_API_PHOTO, {
           method: "POST",
-          headers: { "Content-Type": photo.file.type || "image/jpeg" },
-          body: photo.file,
+          headers: { "Content-Type": one.file.type || "image/jpeg" },
+          body: one.file,
         });
         if (!upload.ok) {
           setFailed(true);
           setBusy(false);
           return;
         }
-        image = ((await upload.json()) as { path?: string }).path ?? null;
+        const path = ((await upload.json()) as { path?: string }).path ?? null;
+        if (!path) {
+          setFailed(true);
+          setBusy(false);
+          return;
+        }
+        images.push(path);
       }
 
       const response = await fetch(CLEANING_API_COMMENT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, body: text, image }),
+        body: JSON.stringify({ slug, body: text, images }),
       });
       if (response.ok) {
         setBody("");
-        drop();
+        dropAll();
         router.refresh();
       } else {
         setFailed(true);
@@ -155,18 +181,8 @@ export function Comments({ slug, comments }: { slug: string; comments: Comment[]
                   </p>
                 ) : null}
                 {/* Only while the month it is kept for lasts. After that the sweep has
-                    taken it, or is about to, and a broken image is worse than none.
-                    A plain img rather than next/image: these are photographs of unknown
-                    shape from a phone, and the optimizer would crop or cost for nothing. */}
-                {comment.image && photoStillKept(comment.at) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={cleaningPhotoSrc(comment.image)}
-                    alt=""
-                    loading="lazy"
-                    className="mt-2 max-h-[320px] w-full rounded-box object-contain"
-                  />
-                ) : null}
+                    taken them, or is about to, and a broken image is worse than none. */}
+                {photoStillKept(comment.at) ? <PhotoTiles paths={comment.images} /> : null}
               </li>
             );
           })}
@@ -182,23 +198,29 @@ export function Comments({ slug, comments }: { slug: string; comments: Comment[]
           placeholder={placeholder || undefined}
           className="w-full rounded-box border border-border bg-bg px-4 py-3 text-[16px] leading-7 text-text placeholder:text-muted"
         />
-        {photo ? (
-          <div className="mt-2 flex items-start gap-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={photo.preview}
-              alt=""
-              className="h-24 w-24 rounded-box object-cover"
-            />
-            <button
-              type="button"
-              onClick={drop}
-              aria-label={TEAM_STRINGS.commentSend}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-surface text-[20px] leading-none text-muted"
-            >
-              &#215;
-            </button>
-          </div>
+        {photos.length > 0 ? (
+          // The same three-wide grid the thread shows, so what she is about to send looks
+          // like what she will see once it is sent. The cross sits on the tile rather than
+          // beside it, because beside it there is no room for six.
+          <ul className="mt-2 grid grid-cols-3 gap-1.5">
+            {photos.map((one, at) => (
+              <li key={one.preview} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={one.preview}
+                  alt=""
+                  className="aspect-square w-full rounded-box border border-border object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => drop(at)}
+                  className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-ink/80 text-[18px] leading-none text-gold-on-ink"
+                >
+                  &#215;
+                </button>
+              </li>
+            ))}
+          </ul>
         ) : null}
 
         <div className="mt-2 flex items-center gap-2">
@@ -210,6 +232,7 @@ export function Comments({ slug, comments }: { slug: string; comments: Comment[]
             ref={picker}
             type="file"
             accept="image/*"
+            multiple
             onChange={choose}
             className="hidden"
           />
@@ -224,7 +247,7 @@ export function Comments({ slug, comments }: { slug: string; comments: Comment[]
           <button
             type="submit"
             aria-label={TEAM_STRINGS.commentSend}
-            disabled={busy || (body.trim().length === 0 && !photo)}
+            disabled={busy || (body.trim().length === 0 && photos.length === 0)}
             className="h-[54px] flex-1 rounded-full bg-ink px-4 text-[17px] font-semibold text-gold-on-ink transition-opacity duration-150 disabled:opacity-30"
           >
             {sendLabel}

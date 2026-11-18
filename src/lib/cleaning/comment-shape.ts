@@ -54,6 +54,16 @@ export const MAX_PHOTO_BYTES = 6 * 1024 * 1024;
  * proof that a transfer went through are both legible well under this. */
 export const MAX_PHOTO_EDGE = 1600;
 
+/**
+ * How many photographs one comment may carry.
+ *
+ * Paul, 18/11/2026: several at once, shown as small tiles. Six is a finished house, a
+ * bedroom, a bathroom, a kitchen and the bins, with room to spare, and it is a number a
+ * three-wide grid fills exactly twice. It is also the cap the picker enforces and the cap
+ * the routes refuse past, because a limit written in one place is a limit.
+ */
+export const MAX_PHOTOS_PER_COMMENT = 6;
+
 export type Comment = {
   /** Sortable, and the second half of its own key in the store. */
   id: string;
@@ -65,18 +75,23 @@ export type Comment = {
   name: string;
   body: string;
   /**
-   * A photo, as its pathname inside the private store, or null.
+   * The photographs, as their pathnames inside the private store. Empty if there are none.
    *
-   * Proof of work from her end and proof of payment from ours. **Not a URL**, which is the
+   * Proof of work from her end and proof of payment from ours. **Not URLs**, which is the
    * whole of Paul's decision of 18/11/2026: the store is private, it answers nothing to a
    * link, and the bytes only come back through /api/cleaning/photo, which checks the same
    * gates as every other screen in this app before it streams one. So a comment that leaked
-   * carries a name for a file nobody outside the app can fetch.
+   * carries names for files nobody outside the app can fetch.
    *
-   * A comment may carry a photo and no words, words and no photo, or both, but never
-   * neither.
+   * **Several, since the same day**, at Paul's instruction: a finished house is more than
+   * one room, and sending it room by room was a comment each. Stored as a list from the
+   * start, and comments written before that carried a single `image`, which is why reading
+   * one goes through `photoList` rather than through a cast.
+   *
+   * A comment may carry photographs and no words, words and no photographs, or both, but
+   * never neither.
    */
-  image: string | null;
+  images: string[];
 };
 
 /** Long enough for "the cot is under the stairs, I could not find the spare sheets", short
@@ -95,6 +110,24 @@ export const MAX_COMMENTS = 60;
  * controls. This is what stands between it and a crafted key.
  */
 export const VISIT_SLUG = /^[A-Za-z0-9_-]{1,80}$/;
+
+/**
+ * The photographs on a stored comment, in order, however that comment was written.
+ *
+ * A comment stored before 18/11/2026 carries `image`, a single pathname or null; one
+ * stored since carries `images`, a list. Both are read here, so the two photographs Paul
+ * sent on the afternoon the feature changed still render rather than quietly vanishing,
+ * and nothing anywhere else has to know there were two shapes.
+ *
+ * Anything that is not a non-empty string is dropped, and the list is capped, because this
+ * reads what a store hands back and a screen will put each one in an image tag.
+ */
+export function photoList(images: unknown, legacy?: unknown): string[] {
+  const list = Array.isArray(images) ? images : [];
+  const kept = list.filter((one): one is string => typeof one === "string" && one.length > 0);
+  if (kept.length === 0 && typeof legacy === "string" && legacy.length > 0) return [legacy];
+  return kept.slice(0, MAX_PHOTOS_PER_COMMENT);
+}
 
 /** Whether a photo taken `at` is still within the month it is kept for. The thread asks
  * this before rendering, so an image stops showing on time rather than whenever the sweep

@@ -3,7 +3,7 @@ import { currentSession } from "@/lib/admin/guard";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { PIN_SHAPE, createEnrolToken, revokeDevice, setPin } from "@/lib/cleaning/devices";
 import { findVisit, parseDocument } from "@/lib/cleaning/document";
-import { isOurPhotoPath } from "@/lib/cleaning/photos";
+import { ourPhotoPaths } from "@/lib/cleaning/photos";
 import { cleaningEnrolPath } from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
 import { readNote, storeProblem } from "@/lib/cleaning/store";
@@ -39,6 +39,7 @@ export async function POST(request: Request) {
     pin?: unknown;
     slug?: unknown;
     body?: unknown;
+    images?: unknown;
     image?: unknown;
   };
   try {
@@ -70,9 +71,9 @@ export async function POST(request: Request) {
     if (body.action === "comment") {
       const slug = typeof body.slug === "string" ? body.slug : "";
       const text = cleanBody(body.body);
-      // Checked against the store's own host, the same way her route checks hers.
-      const image = isOurPhotoPath(body.image) ? body.image : null;
-      if (!VISIT_SLUG.test(slug) || (!text && !image)) {
+      // Checked against the shape this app writes, the same way her route checks hers.
+      const images = ourPhotoPaths(body.images, body.image);
+      if (!VISIT_SLUG.test(slug) || (!text && images.length === 0)) {
         return NextResponse.json(
           { error: "A comment needs a job, and words or a photo." },
           { status: 400 },
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
         by: "agentsiam",
         name: "AgentSiam",
         body: text,
-        image,
+        images,
       });
       if (result !== "ok") {
         return NextResponse.json({ error: `The comment was not stored: ${result}.` }, { status: 409 });

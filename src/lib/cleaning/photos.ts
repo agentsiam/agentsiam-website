@@ -1,6 +1,7 @@
 import { del, get, list, put } from "@vercel/blob";
 import {
   MAX_PHOTO_BYTES,
+  MAX_PHOTOS_PER_COMMENT,
   PHOTO_KEPT_DAYS,
   PHOTO_PREFIX,
   photoStillKept,
@@ -59,6 +60,22 @@ export function photosConfigured(): boolean {
  */
 export function isOurPhotoPath(path: unknown): path is string {
   return typeof path === "string" && PHOTO_PATH.test(path);
+}
+
+/**
+ * The photo pathnames on one comment, as the two write routes should keep them.
+ *
+ * Several since 18/11/2026, so what arrives is a list of strings that have been to a
+ * client and back. Each is checked against the shape this app writes and anything else is
+ * dropped rather than refused, so a comment whose second photograph was tampered with
+ * still lands with its first and its words. The single `image` a phone running the
+ * previous bundle sends is read too, for as long as such a phone exists.
+ */
+export function ourPhotoPaths(images: unknown, legacy?: unknown): string[] {
+  const list = Array.isArray(images) ? images : [];
+  const kept = list.filter((one) => isOurPhotoPath(one));
+  if (kept.length === 0 && isOurPhotoPath(legacy)) return [legacy];
+  return kept.slice(0, MAX_PHOTOS_PER_COMMENT);
 }
 
 export type StoreResult =

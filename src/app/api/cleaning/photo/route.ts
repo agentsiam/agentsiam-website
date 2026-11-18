@@ -5,9 +5,10 @@ import { incr } from "@/lib/cleaning/store";
 
 export const runtime = "nodejs";
 
-/** Twenty an hour, per person. A finished house is a handful of photographs; a phone
- * somebody else is holding does not get to fill a store. */
-const PER_HOUR = 20;
+/** Sixty an hour, per person. A comment carries up to six photographs since 18/11/2026,
+ * and three houses in a morning at six each is eighteen, so twenty was a cap she could hit
+ * by doing her job. A phone somebody else is holding still does not get to fill a store. */
+const PER_HOUR = 60;
 const WINDOW_SECONDS = 60 * 60;
 
 /**

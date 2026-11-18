@@ -1,7 +1,9 @@
 import {
   MAX_COMMENTS,
+  MAX_PHOTOS_PER_COMMENT,
   VISIT_SLUG,
   cleanBody,
+  photoList,
   type Comment,
   type CommentAuthor,
 } from "./comment-shape";
@@ -67,10 +69,12 @@ function parse(raw: string | null, id: string): Comment | null {
     const by: CommentAuthor = value.by === "agentsiam" ? "agentsiam" : "team";
     const name = typeof value.name === "string" ? value.name : "";
     const body = typeof value.body === "string" ? value.body : "";
-    const image = typeof value.image === "string" && value.image ? value.image : null;
-    // Words or a photo, never neither: a comment with nothing in it is a storage accident.
-    if (!at || (!body && !image)) return null;
-    return { id, at, by, name, body, image };
+    // Both shapes: a list since 18/11/2026, a single `image` before it.
+    const images = photoList(value.images, value.image);
+    // Words or a photograph, never neither: a comment with nothing in it is a storage
+    // accident.
+    if (!at || (!body && images.length === 0)) return null;
+    return { id, at, by, name, body, images };
   } catch {
     return null;
   }
@@ -107,14 +111,14 @@ export type AddResult = "ok" | "full" | "empty" | "bad-slug";
  */
 export async function addComment(
   slug: string,
-  comment: { by: CommentAuthor; name: string; body: string; image?: string | null },
+  comment: { by: CommentAuthor; name: string; body: string; images?: string[] },
 ): Promise<AddResult> {
   if (!VISIT_SLUG.test(slug)) return "bad-slug";
   const body = cleanBody(comment.body);
-  const image = comment.image ?? null;
-  // A photo on its own is a comment: finishing a room and showing it is the case this was
-  // asked for. Nothing at all is not.
-  if (!body && !image) return "empty";
+  const images = (comment.images ?? []).slice(0, MAX_PHOTOS_PER_COMMENT);
+  // Photographs on their own are a comment: finishing a house and showing it is the case
+  // this was asked for. Nothing at all is not.
+  if (!body && images.length === 0) return "empty";
 
   const existing = await keysUnder(threadPrefix(slug));
   if (existing.length >= MAX_COMMENTS) return "full";
@@ -128,7 +132,7 @@ export async function addComment(
     by: comment.by,
     name: comment.name,
     body,
-    image,
+    images,
   };
   await set(`${threadPrefix(slug)}${id}`, JSON.stringify(stored), COMMENT_TTL_SECONDS);
   return "ok";
