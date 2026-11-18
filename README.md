@@ -574,6 +574,30 @@ easiest thing in that system to get wrong and the hardest to spot, and an app th
 own job lines is a second schedule arriving as a formatting library. What this app decides is
 order, weight and position.
 
+**Thai or English, on a switch at the top of every screen, and the Thai carries no English.**
+Paul, 18/11/2026. The control is on the enrolment link, on the PIN gate and on every screen
+behind it, because the person who needs it is the one who cannot read the screen she is looking
+at. What it sets is an unsigned cookie on that phone and not a path: a locale in the URL, which
+is how the public site does its three languages, would mean a second address for the same
+schedule and a second saved copy of it in the service worker, so a phone with no signal would
+open whichever of them it last happened to save. What it switches is the app's own words, which
+are the two tables in `src/lib/cleaning/strings.ts`: the prompts, the headings, the markers, the
+buttons and the seven weekday columns on the calendar. `npm run test:cleaning-strings` fails if
+any Thai string carries a Latin letter or any English one carries a Thai character, so that half
+of the instruction is a test and not a promise.
+
+**What the switch cannot reach is the schedule itself**, for the reason the paragraph above
+gives: the title, every job line, the day headings, the address, the contact block, the door
+codes and the change lines arrive as finished text, published per person in the language that
+person reads, which is Thai for all three today. English switches the frame and the Thai
+schedule stays inside it. A cleaner who reads only English would need her document published in
+English, which is a change in the skill and not in this repository. Three things are Latin in
+both languages and are nobody's to translate: the house names, which are the names on the doors
+and in LINE, the brand, and Ting's name. The word English on the switch is the fourth and is
+deliberate: a language is named in its own language, or the person who needs that option cannot
+find it. `/cleaning/check`, the service worker diagnostic, is English in both and is Paul's
+screen rather than the team's; it says so on itself and nothing links to it.
+
 | Screen | Needs | Is |
 |---|---|---|
 | `/cleaning` | the device cookie, then her PIN | Her schedule: the title, her visits in date order with the next one filled in ink, a marker on anything new or moved since she last looked, the contact block and the change lines |
@@ -807,19 +831,22 @@ flow, end to end, with nothing live anywhere near it.
   rendered in development and would have gone missing only in production, on the one screen
   that tells a cleaner whether what she is holding is current. Nothing in this repository
   changed for it; the app read `built_at` off the document already.
-- **The cleaning app's own Thai strings are unwritten, and every screen says so (17/11/2026).**
-  They are in `src/lib/cleaning/strings.ts`, which holds the count, and each renders on screen as
-  Latin text in square brackets **in the file and nowhere else**: since 17/11/2026 an unwritten
-  string renders as nothing on screen and takes its element with it, at Paul's instruction, and
-  the band that used to count them on every screen is gone. So nothing in the running app says a
-  sentence is missing, which is the cost of that instruction and the reason this entry says it:
-  `grep '\[TH' src/lib/cleaning/strings.ts` is now the only thing that finds them. Paul writes
-  them on the sheet at
-  `/Users/paulb/code/agentsiam/agentsiam-consulting/as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt`,
-  one slot per string with where it appears, what it has to say and what it must not; each filled
-  slot is a one-line edit in that file and nothing else in the app changes. The schedule screen,
-  the enrolment link and the PIN prompt all carry at least one, so the app is not for a phone until
-  they are written.
+- ~~**The cleaning app's Thai is mine and has had no native read (18/11/2026).**~~ Resolved
+  the same day. A Thai speaker read every line and eleven came back corrected; they are in
+  `src/lib/cleaning/strings.ts` exactly as they were given. Two of the corrections turned on
+  how the app works rather than on Thai and were answered from the code: the enrolment link
+  binds whichever phone opens it rather than being tied to one in advance, so it now asks her
+  to open it on the phone she will use; and the marker on a changed visit compares the whole
+  job line, a new per-clean note included, so it says the job details changed rather than
+  naming the date and the time. The sheet that carries every slot, what it has to say and what
+  it must not, now records what was read and what moved:
+  `/Users/paulb/code/agentsiam/agentsiam-consulting/as-work/2026-11-16-cleaning-app-scope/thai-strings-to-write.txt`.
+  **What is still unread is the English table**, which is mine and was moved only where a
+  correction moved the meaning; nobody on the team reads it, so it is the lesser half. **And a
+  slot nobody has written still ships as silence rather than as English**: an unwritten string
+  renders as nothing and takes its element with it, at Paul's instruction of 17/11/2026, so
+  nothing in the running app says a sentence is missing. `npm run test:cleaning-strings` is
+  what finds one, and the same run refuses a Latin letter in the Thai.
 - ~~**The app reads a multi-property document the skill does not write yet (17/11/2026).**~~
   Resolved the same day in `agentsiam-consulting`, commit `b945243`. The payload names the
   house it is for, every visit carries it along with the date as a label of its own, access is

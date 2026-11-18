@@ -20,11 +20,12 @@ import {
   visitSlug,
 } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
+import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { cleaningJobPath } from "@/lib/cleaning/routes";
 import { sinceLastSeen, visitIdentity, visitsDigest } from "@/lib/cleaning/seen";
 import { readNote } from "@/lib/cleaning/store";
-import { TEAM_STRINGS, builtAtLine } from "@/lib/cleaning/strings";
+import { builtAtLine, teamStrings } from "@/lib/cleaning/strings";
 
 /**
  * Her days, behind her PIN.
@@ -50,6 +51,10 @@ export const dynamic = "force-dynamic";
 
 export default async function SchedulePage() {
   const holder = await requireHolder();
+  // Her phone's language, which is the app's own words and not the schedule's: the
+  // document below arrives as finished text in the language it was published in.
+  const lang = await teamLang();
+  const t = teamStrings(lang);
 
   let document = null;
   try {
@@ -63,7 +68,7 @@ export default async function SchedulePage() {
   if (!document) {
     return (
       <main>
-        <Message text={TEAM_STRINGS.noSchedule} />
+        <Message text={t.noSchedule} />
       </main>
     );
   }
@@ -75,9 +80,9 @@ export default async function SchedulePage() {
     return (
       <main lang={document.lang}>
         {set ? (
-          <PinForm name={document.name} />
+          <PinForm name={document.name} lang={lang} />
         ) : (
-          <Message text={TEAM_STRINGS.pinMissing} />
+          <Message text={t.pinMissing} />
         )}
       </main>
     );
@@ -111,16 +116,16 @@ export default async function SchedulePage() {
     <main lang={document.lang}>
       <header>
         <h1 className="text-[19px] font-semibold leading-7 text-text">{document.title}</h1>
-        {when && builtAtLine(when) ? (
+        {when && builtAtLine(lang, when) ? (
           <p
             className="mt-1 text-[13px] text-muted"
             style={{ fontFamily: "var(--font-plex-sans), system-ui, sans-serif" }}
           >
-            {builtAtLine(when)}
+            {builtAtLine(lang, when)}
           </p>
         ) : null}
       </header>
-      <OfflineNotice />
+      <OfflineNotice lang={lang} />
 
       {next ? (
         <NextVisitCard
@@ -129,10 +134,11 @@ export default async function SchedulePage() {
           house={propertyOf(document, next)}
           mark={markOf(marks, next.property)}
           jobHref={cleaningJobPath(visitSlug(next))}
+          lang={lang}
         />
       ) : null}
 
-      {codesToday ? <HouseCodes slug={codesToday} /> : null}
+      {codesToday ? <HouseCodes slug={codesToday} lang={lang} /> : null}
 
       <ScheduleView
         list={
@@ -142,12 +148,13 @@ export default async function SchedulePage() {
             today={today}
             changed={changed}
             role={document.role}
+            lang={lang}
             marks={marks}
             houseOf={(visit) => propertyOf(document, visit)}
             jobHref={(visit) => cleaningJobPath(visitSlug(visit))}
           />
         }
-        calendar={<MonthGrid months={months} marks={marks} />}
+        calendar={<MonthGrid months={months} marks={marks} lang={lang} />}
       />
 
       {document.contact ? <RenderedBlock block={document.contact} /> : null}

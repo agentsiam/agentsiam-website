@@ -11,10 +11,11 @@ import {
   todayInBangkok,
 } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
+import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_SCHEDULE, cleaningJobPath } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
-import { TEAM_STRINGS } from "@/lib/cleaning/strings";
+import { teamStrings } from "@/lib/cleaning/strings";
 
 /**
  * One job's codes. One house, one day, and no way to ask for anything else.
@@ -48,6 +49,7 @@ export const dynamic = "force-dynamic";
 export default async function JobCodesPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const holder = await requireHolder();
+  const lang = await teamLang();
 
   // The front door is the schedule screen, which is also where a phone that has not been
   // through it is sent from anywhere else under /cleaning.
@@ -83,7 +85,7 @@ export default async function JobCodesPage({ params }: { params: Promise<{ slug:
         <ChevronLeft />
         <span className="min-w-0 truncate">{visit.line}</span>
       </Link>
-      <OfflineNotice />
+      <OfflineNotice lang={lang} />
 
       {block ? (
         <section className="mt-4 rounded-panel bg-ink p-5">
@@ -112,7 +114,7 @@ export default async function JobCodesPage({ params }: { params: Promise<{ slug:
           </ul>
         </section>
       ) : (
-        <Message text={TEAM_STRINGS.noSchedule} className="mt-6" />
+        <Message text={teamStrings(lang).noSchedule} className="mt-6" />
       )}
     </main>
   );

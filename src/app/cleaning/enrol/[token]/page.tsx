@@ -4,7 +4,8 @@ import { parseDocument } from "@/lib/cleaning/document";
 import { peekEnrolToken } from "@/lib/cleaning/devices";
 import { CLEANING_API_ENROL } from "@/lib/cleaning/routes";
 import { readNote } from "@/lib/cleaning/store";
-import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
+import { teamLang } from "@/lib/cleaning/lang";
+import { teamStrings, written } from "@/lib/cleaning/strings";
 
 /**
  * The link Paul sends her in LINE. The one URL in this app that answers without a cookie.
@@ -31,6 +32,9 @@ export default async function EnrolPage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
+  // Set on this screen as readily as anywhere else: it is the first one a new cleaner
+  // ever opens, and the switch is in the layout above it.
+  const t = teamStrings(await teamLang());
 
   let person: string | null = null;
   try {
@@ -42,7 +46,7 @@ export default async function EnrolPage({
   if (!person) {
     return (
       <main>
-        <Message text={TEAM_STRINGS.askPaul} />
+        <Message text={t.askPaul} />
       </main>
     );
   }
@@ -64,9 +68,9 @@ export default async function EnrolPage({
           {name}
         </h1>
       ) : null}
-      {written(TEAM_STRINGS.enrolHelp) ? (
+      {written(t.enrolHelp) ? (
         <p className="mt-3 text-center text-[16px] leading-7 text-body">
-          {written(TEAM_STRINGS.enrolHelp)}
+          {written(t.enrolHelp)}
         </p>
       ) : null}
 
@@ -74,13 +78,13 @@ export default async function EnrolPage({
         <input type="hidden" name="token" value={token} />
         <button
           type="submit"
-          aria-label={TEAM_STRINGS.enrolOpen}
+          aria-label={t.enrolOpen}
           className="flex w-full items-center justify-center rounded-box bg-ink px-4 py-5 text-[19px] font-semibold text-bg"
         >
           {/* The one control on this screen, so it cannot go quiet with its words: an
               arrow stands in until the sentence is written, and the spoken name stays
               whatever the string says, which is never seen. */}
-          {written(TEAM_STRINGS.enrolOpen) || <ChevronRight size={24} />}
+          {written(t.enrolOpen) || <ChevronRight size={24} />}
         </button>
       </form>
     </main>

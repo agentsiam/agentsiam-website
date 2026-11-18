@@ -13,7 +13,7 @@ import {
 import { builtAtDigits } from "@/lib/cleaning/document";
 import { CLEANING_API_COMMENT, CLEANING_API_PHOTO } from "@/lib/cleaning/routes";
 import { shrinkPhoto } from "@/lib/cleaning/shrink";
-import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
+import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
 
 /**
  * The conversation about one clean.
@@ -42,7 +42,16 @@ import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
  * and the comment carries that URL. Photographs are deleted after a month, so a thread
  * stops showing one on its thirtieth day rather than waiting for the sweep that removes it.
  */
-export function Comments({ slug, comments }: { slug: string; comments: Comment[] }) {
+export function Comments({
+  slug,
+  comments,
+  lang,
+}: {
+  slug: string;
+  comments: Comment[];
+  lang: TeamLang;
+}) {
+  const t = teamStrings(lang);
   const router = useRouter();
   const picker = useRef<HTMLInputElement>(null);
   const [body, setBody] = useState("");
@@ -141,8 +150,8 @@ export function Comments({ slug, comments }: { slug: string; comments: Comment[]
     setBusy(false);
   }
 
-  const placeholder = written(TEAM_STRINGS.commentPlaceholder);
-  const sendLabel = written(TEAM_STRINGS.commentSend);
+  const placeholder = written(t.commentPlaceholder);
+  const sendLabel = written(t.commentSend);
 
   return (
     <div className="mt-3">
@@ -239,23 +248,23 @@ export function Comments({ slug, comments }: { slug: string; comments: Comment[]
           <button
             type="button"
             onClick={() => picker.current?.click()}
-            aria-label={TEAM_STRINGS.commentPlaceholder}
+            aria-label={t.commentPlaceholder}
             className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-border text-muted"
           >
             <Camera size={22} />
           </button>
           <button
             type="submit"
-            aria-label={TEAM_STRINGS.commentSend}
+            aria-label={t.commentSend}
             disabled={busy || (body.trim().length === 0 && photos.length === 0)}
             className="h-[54px] flex-1 rounded-full bg-ink px-4 text-[17px] font-semibold text-gold-on-ink transition-opacity duration-150 disabled:opacity-30"
           >
             {sendLabel}
           </button>
         </div>
-        {failed && written(TEAM_STRINGS.commentFailed) ? (
+        {failed && written(t.commentFailed) ? (
           <p className="mt-3 rounded-box bg-wash-red px-4 py-3 text-center text-[15px] leading-6 text-deep-red">
-            {written(TEAM_STRINGS.commentFailed)}
+            {written(t.commentFailed)}
           </p>
         ) : null}
       </form>

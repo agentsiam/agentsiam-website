@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Padlock } from "@/components/cleaning/glyphs";
 import { CLEANING_API_PIN } from "@/lib/cleaning/routes";
-import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
+import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
 
 /**
  * The front door of the app.
@@ -21,7 +21,8 @@ import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
  * daylight, one-handed, with a bag in the other hand, which is also why the field asks for
  * a numeric keypad and the button is the full width of the screen.
  */
-export function PinForm({ name }: { name: string | null }) {
+export function PinForm({ name, lang }: { name: string | null; lang: TeamLang }) {
+  const t = teamStrings(lang);
   const [pin, setPin] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -46,11 +47,11 @@ export function PinForm({ name }: { name: string | null }) {
       // Unwritten, these say nothing rather than saying it in English. A wrong PIN then
       // clears the field and reports nothing at all, which is the sharpest edge of taking
       // the placeholders off the screens.
-      if (body.state === "locked") setMessage(written(TEAM_STRINGS.pinLocked));
-      else if (body.state === "unset") setMessage(written(TEAM_STRINGS.pinMissing));
-      else setMessage(written(TEAM_STRINGS.pinWrong));
+      if (body.state === "locked") setMessage(written(t.pinLocked));
+      else if (body.state === "unset") setMessage(written(t.pinMissing));
+      else setMessage(written(t.pinWrong));
     } catch {
-      setMessage(written(TEAM_STRINGS.offline));
+      setMessage(written(t.offline));
     }
     setPin("");
     setBusy(false);
@@ -72,9 +73,9 @@ export function PinForm({ name }: { name: string | null }) {
       ) : null}
 
       <form onSubmit={submit} className="mt-7">
-        {written(TEAM_STRINGS.pinPrompt) ? (
+        {written(t.pinPrompt) ? (
           <label htmlFor="pin" className="block text-center text-[17px] leading-7 text-body">
-            {written(TEAM_STRINGS.pinPrompt)}
+            {written(t.pinPrompt)}
           </label>
         ) : null}
         <input
@@ -95,7 +96,7 @@ export function PinForm({ name }: { name: string | null }) {
         />
         <button
           type="submit"
-          aria-label={TEAM_STRINGS.pinPrompt}
+          aria-label={t.pinPrompt}
           disabled={busy || pin.length < 4}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-5 text-[18px] font-semibold text-gold-on-ink transition-opacity duration-150 disabled:opacity-30"
         >

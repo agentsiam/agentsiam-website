@@ -73,6 +73,18 @@ export const CLEANING_API_PIN = "/api/cleaning/pin";
 export const CLEANING_API_SEEN = "/api/cleaning/seen";
 
 /**
+ * The switch between Thai and English, which is a form post and not a link.
+ *
+ * A post rather than a `?lang=` on the page itself, because the service worker keeps every
+ * schedule that loads and a cache is keyed on the URL: a language in the query string would
+ * mean two saved copies of one schedule, and a phone offline would open whichever of them it
+ * happened to save. Everything under /api/ is a path the worker never keeps, so the switch
+ * leaves no copy of anything, and what comes back is an ordinary redirect to the page she was
+ * already on.
+ */
+export const CLEANING_API_LANG = "/api/cleaning/lang";
+
+/**
  * One job's door codes, as data.
  *
  * There is no codes page any more. Paul, 17/11/2026: the code shows inside the schedule
