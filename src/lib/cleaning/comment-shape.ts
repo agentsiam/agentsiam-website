@@ -15,6 +15,20 @@
 export type CommentAuthor = "team" | "agentsiam";
 
 /**
+ * The one prefix every photograph this app stores sits under.
+ *
+ * It lives in this file, with the shapes and the limits, rather than beside the store,
+ * because both ends need it: the module that writes a blob, and the screens that turn a
+ * stored pathname into the URL of the route that streams it. Those screens are client
+ * components, and the module that writes a blob reaches the store, so the two cannot import
+ * from each other.
+ *
+ * It is also what makes the sweep safe: it lists this prefix and nothing else, so no other
+ * part of this project can be caught by it and nothing of ours can escape it.
+ */
+export const PHOTO_PREFIX = "cleaning/";
+
+/**
  * How long a photo lives, and the one rule about photos that is not about storage.
  *
  * Paul, 18/11/2026: photos are deleted after one month, automatically. Vercel Blob has no
@@ -51,11 +65,13 @@ export type Comment = {
   name: string;
   body: string;
   /**
-   * A photo, as the URL Vercel Blob gave it back, or null.
+   * A photo, as its pathname inside the private store, or null.
    *
-   * Proof of work from her end and proof of payment from ours. The URL is unguessable and
-   * public to anyone holding it, which is how image hosting works and is worth knowing
-   * about a payment slip; it is only ever written into a thread that sits behind her PIN.
+   * Proof of work from her end and proof of payment from ours. **Not a URL**, which is the
+   * whole of Paul's decision of 18/11/2026: the store is private, it answers nothing to a
+   * link, and the bytes only come back through /api/cleaning/photo, which checks the same
+   * gates as every other screen in this app before it streams one. So a comment that leaked
+   * carries a name for a file nobody outside the app can fetch.
    *
    * A comment may carry a photo and no words, words and no photo, or both, but never
    * neither.

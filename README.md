@@ -671,7 +671,8 @@ it has to hold every house or a phone with no signal would open the wrong gate.
 either the `KV_REST_API_*` pair for the real store or `CLEANING_LOCAL_PATH` for development,
 and `BLOB_READ_WRITE_TOKEN` for the photographs on a comment thread. Without the first the
 app fails shut: no link opens and no cookie resolves. Without the last, everything works
-except an upload, which answers 503 and says `unconfigured`.
+except a photograph: an upload answers 503 and says `unconfigured`, and so does the route
+that reads one back, because a private store cannot be read without it either.
 
 **The door codes are not on a screen of their own and there is no screen that lists them.**
 A house's codes appear inside the schedule, and on that job, on the day she is at that
@@ -683,15 +684,35 @@ only path under `/api/` the worker keeps. Three things hold it off every other d
 route's own `no-store`, the same header in `next.config.ts`, and the worker refusing to
 serve a copy past its deadline.
 
-**Photographs live in Vercel Blob and are deleted after a month.** The phone shrinks each
-one to a longest edge of 1600 before it is sent, the photo is stored first and the comment
-carries its URL, and that URL is checked against the store's own host and this app's prefix
-before it is kept. Blob has no expiry of its own, so `/api/cron/cleaning-photos` is the only
-thing enforcing the month: it runs daily, lists the one prefix this app writes to, and
-deletes by what the store says rather than by what a comment says, so a photo whose comment
-has already expired is still swept. `scripts/check-cron.mjs` refuses a build whose
-`vercel.json` has lost that entry, because a sweep that silently stops running looks exactly
-like one that is working.
+**Photographs live in a private Vercel Blob store and are deleted after a month.** Private
+is Paul's decision of 18/11/2026 and it is the reason none of this looks like ordinary image
+hosting. A public store answers its own URLs to anybody holding one, and what travels here
+is a bank transfer screenshot at one end and the inside of a guest's bedroom at the other.
+So no URL is ever handed out: the phone shrinks the photo to a longest edge of 1600, the
+upload answers with the blob's **pathname**, the comment carries that pathname, and the only
+thing that can turn it back into bytes is `/api/cleaning/photo`, which checks the same two
+gates as her schedule, or the admin session, before it streams one. There is no link to leak
+and nothing with an expiry to keep fresh.
+
+The pathname is the boundary that replaced the URL check, and it is a stricter one. A
+pathname has been to a phone and back and is handed to the store, so `isOurPhotoPath` accepts
+only the shape this app writes, the prefix, a calendar date and a name, and the read route
+puts the prefix on itself after the segments arrive, so a request cannot name a blob outside
+`cleaning/` whatever else the store holds. `npm run test:cleaning-photos` is what proves it:
+traversals, sibling prefixes, a second slash, an absolute URL, a null byte, each composed
+exactly as the route composes what it is given. It compiles the modules it tests, so it is
+the real functions under test and not a copy of the rule.
+
+**The month is enforced three times and none of the three depends on another.** `ttlDays` on
+the upload means the store deletes the blob on its own clock, which is the only mechanism
+that still works if this app stops running. `/api/cron/cleaning-photos` runs daily, lists the
+one prefix this app writes to, and deletes by what the store says rather than by what a
+comment says, so a photo whose comment has already expired is still swept;
+`scripts/check-cron.mjs` refuses a build whose `vercel.json` has lost that entry, because a
+sweep that silently stops running looks exactly like one that is working. And the read route
+refuses a blob older than the month even while the store still has it, so the rule is exact
+rather than approximate in the hours between a photo turning thirty days old and either of
+the other two noticing.
 
 ### Running it locally, without a live door code on this machine
 
@@ -731,7 +752,10 @@ flow, end to end, with nothing live anywhere near it.
 ## Known gaps
 
 - **Photographs cannot be uploaded in production, because there is no Blob store (18/11/2026).**
-  Everything photographs need is built and live, and one missing store is all that holds them.
+  Everything photographs need is built, and one missing store is all that holds them. It has
+  to be a **private** store, which is Paul's decision of the same day: the code stores with
+  `access: 'private'` and reads through `/api/cleaning/photo`, so a public store would be the
+  wrong one and the uploads would fail differently rather than work.
   `npx vercel storage status` lists `upstash-kv-chestnut-ribbon` and `agentsiam-whatsapp`, both
   Upstash for Redis, and `npx vercel env ls` carries no `BLOB_READ_WRITE_TOKEN`, so
   `photosConfigured()` is false on every environment. From a phone that looks like this: the
@@ -742,9 +766,11 @@ flow, end to end, with nothing live anywhere near it.
   that broke. Words on a comment are unaffected and are the whole of what a thread carries
   today. The fix is creating a Blob store in the Vercel dashboard and connecting it to this
   project including development: the routes read that one variable and no code changes for it.
-  What is then unproven and needs the store is the only part of the path that was never run end
-  to end, a real upload landing in the store and rendering on a thread, and the sweep deleting a
-  month-old photo while leaving today's.
+  What is then unproven and needs the store is the only part of the path that cannot be run
+  without one: an upload landing, the gated route streaming it back onto a thread, `ttlDays`
+  arriving on the blob, and the sweep deleting a month-old photo while leaving today's. The
+  checks that do not need a store are green, `npm run test:cleaning-photos`, and were watched
+  to fail against a guard broken on purpose.
 - ~~**The cleaning app cannot say how old a schedule is, in production (17/11/2026).**~~
   Resolved the same day in `agentsiam-consulting`, commit `af1a9e7`: `documents()` in
   `build_note.py` now puts `built_at` on every person's document as well as on the file, so

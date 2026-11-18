@@ -11,7 +11,11 @@ import {
   todayInBangkok,
   visitSlug,
 } from "@/lib/cleaning/document";
-import { ADMIN_CLEANING, adminCleaningPersonPath } from "@/lib/cleaning/routes";
+import {
+  ADMIN_CLEANING,
+  adminCleaningPersonPath,
+  cleaningPhotoSrc,
+} from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
 import { readNote, storeProblem } from "@/lib/cleaning/store";
 
@@ -126,7 +130,7 @@ export default async function AdminCleaningPersonPage({
                       {comment.image && photoStillKept(comment.at) ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={comment.image}
+                          src={cleaningPhotoSrc(comment.image)}
                           alt=""
                           loading="lazy"
                           className="mt-2 max-h-[280px] rounded-box object-contain"

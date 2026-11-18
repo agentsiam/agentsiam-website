@@ -61,13 +61,16 @@ export function JobComment({ person, slug }: { person: string; slug: string }) {
           headers: { "Content-Type": photo.file.type || "image/jpeg" },
           body: photo.file,
         });
-        const answer = (await upload.json().catch(() => ({}))) as { url?: string; error?: string };
-        if (!upload.ok || !answer.url) {
+        const answer = (await upload.json().catch(() => ({}))) as {
+          path?: string;
+          error?: string;
+        };
+        if (!upload.ok || !answer.path) {
           setError(answer.error ?? "The photo did not upload.");
           setBusy(false);
           return;
         }
-        image = answer.url;
+        image = answer.path;
       }
 
       const response = await fetch(ADMIN_API_CLEANING, {

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { findVisit, parseDocument } from "@/lib/cleaning/document";
 import { currentHolder, pinGiven } from "@/lib/cleaning/guard";
-import { isOurPhoto } from "@/lib/cleaning/photos";
+import { isOurPhotoPath } from "@/lib/cleaning/photos";
 import { incr, readNote } from "@/lib/cleaning/store";
 
 export const runtime = "nodejs";
@@ -42,11 +42,11 @@ export async function POST(request: Request) {
     const sent = (await request.json()) as { slug?: unknown; body?: unknown; image?: unknown };
     slug = typeof sent.slug === "string" ? sent.slug : "";
     body = cleanBody(sent.body);
-    // The photo was stored by /api/cleaning/photo a moment ago and its URL came back
-    // through the client, so it is checked against the store's own host and this app's own
-    // prefix. Anything else is dropped rather than refused: a URL pointing somewhere else
-    // would load a stranger's image inside a screen that is otherwise entirely ours.
-    image = isOurPhoto(sent.image) ? sent.image : null;
+    // The photo was stored by /api/cleaning/photo a moment ago and its pathname came back
+    // through the client, so it is checked against the shape this app writes. Anything else
+    // is dropped rather than refused: a comment with words still lands, and a name this app
+    // did not write would otherwise be handed back to the store on every render.
+    image = isOurPhotoPath(sent.image) ? sent.image : null;
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }

@@ -10,6 +10,8 @@
  * are also the shape src/proxy.ts matches on.
  */
 
+import { PHOTO_PREFIX } from "./comment-shape";
+
 export const CLEANING_ROOT = "/cleaning";
 
 /**
@@ -87,6 +89,24 @@ export const CLEANING_API_COMMENT = "/api/cleaning/comment";
  * one, so a comment that fails does not take the upload with it, and so neither route has
  * to parse multipart. */
 export const CLEANING_API_PHOTO = "/api/cleaning/photo";
+
+/**
+ * The URL that streams one stored photograph, which is the only way to see one.
+ *
+ * The store is private, so there is no link to put in an `img` and nothing with an expiry
+ * to keep fresh. A comment holds the blob's pathname and a screen asks this route for it,
+ * on this origin, with her cookies on the request, behind the same gates as her schedule.
+ *
+ * **The prefix is dropped on the way out and put back on the way in.** What travels is the
+ * date and the name, so a request cannot point at a blob outside this app's own prefix even
+ * if the store holds one. The segments are escaped because a pathname is not ours to trust
+ * once it has been to a client and back, although nothing this app writes needs escaping.
+ */
+export function cleaningPhotoSrc(path: string): string {
+  const inside = path.startsWith(PHOTO_PREFIX) ? path.slice(PHOTO_PREFIX.length) : path;
+  const parts = inside.split("/").map((part) => encodeURIComponent(part));
+  return `${CLEANING_API_PHOTO}/${parts.join("/")}`;
+}
 
 /** Paul's one screen, inside the admin he already signs in to. It holds device
  * bookkeeping and never a door code or a schedule. */

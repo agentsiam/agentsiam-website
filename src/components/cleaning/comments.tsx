@@ -9,7 +9,11 @@ import {
   type Comment,
 } from "@/lib/cleaning/comment-shape";
 import { builtAtDigits } from "@/lib/cleaning/document";
-import { CLEANING_API_COMMENT, CLEANING_API_PHOTO } from "@/lib/cleaning/routes";
+import {
+  CLEANING_API_COMMENT,
+  CLEANING_API_PHOTO,
+  cleaningPhotoSrc,
+} from "@/lib/cleaning/routes";
 import { shrinkPhoto } from "@/lib/cleaning/shrink";
 import { TEAM_STRINGS, written } from "@/lib/cleaning/strings";
 
@@ -90,7 +94,7 @@ export function Comments({ slug, comments }: { slug: string; comments: Comment[]
           setBusy(false);
           return;
         }
-        image = ((await upload.json()) as { url?: string }).url ?? null;
+        image = ((await upload.json()) as { path?: string }).path ?? null;
       }
 
       const response = await fetch(CLEANING_API_COMMENT, {
@@ -157,7 +161,7 @@ export function Comments({ slug, comments }: { slug: string; comments: Comment[]
                 {comment.image && photoStillKept(comment.at) ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={comment.image}
+                    src={cleaningPhotoSrc(comment.image)}
                     alt=""
                     loading="lazy"
                     className="mt-2 max-h-[320px] w-full rounded-box object-contain"
