@@ -128,6 +128,11 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-[17px] leading-7 text-text">{visitLine(visit, lang)}</p>
+                {/* The request under the clean and not inside its line, the same as every
+                    other screen since 19/11/2026. */}
+                {visit.note ? (
+                  <p className="mt-1.5 text-[15px] leading-6 text-deep-gold">{visit.note}</p>
+                ) : null}
                 {house || visit.type === "midstay" ? (
                   <span className="mt-2 flex flex-wrap items-center gap-2">
                     {house ? (

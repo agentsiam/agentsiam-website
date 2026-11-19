@@ -2,14 +2,30 @@ import type { DaySection, Visit } from "./document";
 import type { TeamLang } from "./strings";
 
 /**
- * The English this app has to compose, because the document it reads is written in one
- * language and that language is Thai.
+ * What a screen prints for a job line, which is no longer the job line.
  *
- * Paul, 18/11/2026: work out the English text as well, because some of it is showing in
- * Thai. What was showing in Thai is everything the published document carries as finished
- * text: every job line, every day heading, the headings over the blocks at the foot. The
- * switch in src/lib/cleaning/strings.ts changes the app's own sentences and could never
- * reach those, so a phone set to English was reading English prompts over a Thai schedule.
+ * Two instructions put this file between the published document and every screen that shows a
+ * clean. Paul, 18/11/2026: work out the English text as well, because some of it is showing in
+ * Thai. And 19/11/2026: the name of the cleaner should not be in brackets next to the date,
+ * because the clean does not belong to her yet, and a special request belongs in the note and
+ * not in the title of the clean.
+ *
+ * A published job line is all four of those things at once: `พุธ 18 พย - 10.00 (ดา) มีแขกพักอยู่
+ * เพิ่มเตียงเด็ก`, which is the day, the hour, whose it is, that somebody is in the house and what
+ * is being asked for. On a LINE Note that is right, because a Note is one block of text for a
+ * person to read. On a screen it is four things in one sentence, and three of them are already
+ * drawn beside it: the occupied figure, the house, and the request under its own heading.
+ *
+ * **So a screen prints the day and the hour and nothing else**, from two published fields, and
+ * the rest of the line is drawn where it belongs. Nothing here parses a published string, which
+ * is the rule that keeps a change in the skill's wording from breaking a screen.
+ *
+ * The English half, below, is the same idea arrived at from the other direction.
+ *
+ * What was showing in Thai is everything the published document carries as finished text: every
+ * job line, every day heading, the headings over the blocks at the foot. The switch in
+ * src/lib/cleaning/strings.ts changes the app's own sentences and could never reach those, so a
+ * phone set to English was reading English prompts over a Thai schedule.
  *
  * **This is the one file in the app that composes a date, and it composes one only in
  * English.** Every Thai date in this system belongs to the `cleaning-schedule` skill, which
@@ -29,7 +45,8 @@ import type { TeamLang } from "./strings";
  *   the lines inside the contact block   names and roles, written by the skill
  *   the change lines at the foot         sentences about what moved and why
  *   the words beside each door code      which code is the gate and which is the door
- *   anything true of one clean           the per-clean note, the skill's own words
+ *   anything true of one clean           the per-clean note, the skill's own words, which is
+ *                                        now printed under the clean rather than inside its line
  *
  * Those are prose, in one language, and the honest fix for them is the skill publishing a
  * document per language, which is a change in `/Users/paulb/code/agentsiam/agentsiam-consulting`
@@ -84,11 +101,27 @@ export function englishLine(visit: Visit): string {
   return visit.time ? `${day}, ${visit.time}` : day;
 }
 
-/** A job line in the language this phone is set to: the document's own, or the composed
- * English one. **Every screen that prints a job line goes through this**, so none of them can
- * be the screen that stayed in Thai. */
+/**
+ * The day and the hour of one clean, in Thai, out of the document's own two fields.
+ *
+ * `พุธ 18 พย` is the skill's rendering of the date and `10.00` is the hour as it published it;
+ * the dash between them is the one the skill itself puts there. No word is invented, no date is
+ * formatted and nothing is parsed, which is what keeps this on the right side of the rule that
+ * every Thai date in this system belongs to the skill.
+ *
+ * A document old enough to carry no day label keeps its published line, name and all, because
+ * the alternative is a row with no date on it.
+ */
+export function plainLine(visit: Visit): string {
+  if (!visit.dayLabel) return visit.line;
+  return visit.time ? `${visit.dayLabel} - ${visit.time}` : visit.dayLabel;
+}
+
+/** What a screen prints for one clean, in the language this phone is set to. **Every screen
+ * that shows a job line goes through this**, so none of them can be the one that stayed in
+ * Thai, and none of them can be the one still printing somebody's name in brackets. */
 export function visitLine(visit: Visit, lang: TeamLang): string {
-  return lang === "en" ? englishLine(visit) : visit.line;
+  return lang === "en" ? englishLine(visit) : plainLine(visit);
 }
 
 /** A day's heading, in the language this phone is set to, or nothing where there is none to

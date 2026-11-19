@@ -5,6 +5,7 @@ import {
   type TeamDocument,
   type Visit,
 } from "./document";
+import { plainLine } from "./english";
 import { ASSIGN_KEY, get, readNote, set } from "./store";
 
 /**
@@ -35,11 +36,10 @@ import { ASSIGN_KEY, get, readNote, set } from "./store";
  * number is the failure this whole app was built to end.
  *
  * **The line travels differently.** A job line is finished text rendered by the skill and it
- * names the person it was published to, so printing it unchanged on somebody else's screen
- * would tell her the clean is Aun's. A moved clean therefore prints the day label and the time,
- * which are two other fields of the same published visit, joined by the same dash the skill
- * uses. Nothing here words, formats or translates anything, which is the rule this file sits
- * closest to breaking.
+ * names the person it was published to, so carrying it unchanged to somebody else would tell
+ * her the clean is Aun's. A moved clean therefore carries the day label and the time, which are
+ * two other fields of the same published visit; `plainLine` in src/lib/cleaning/english.ts is
+ * what builds it, and since 19/11/2026 that is what every screen prints for every clean anyway.
  */
 
 /** One move. `line` is what the clean read when it was moved: a clean whose line has since
@@ -111,14 +111,6 @@ export async function clearMove(slug: string, today: string): Promise<void> {
   await write(moves, today);
 }
 
-/** The line a moved clean prints: the published day label and the published time, joined the
- * way the skill joins them. A document old enough to carry no day label keeps its own line,
- * wrong name and all, because the alternative is a row with no date on it. */
-export function movedLine(visit: Visit): string {
-  if (!visit.dayLabel) return visit.line;
-  return visit.time ? `${visit.dayLabel} - ${visit.time}` : visit.dayLabel;
-}
-
 /** Whether this move still stands against the clean as it is published now. */
 function holds(move: Assignment | undefined, visit: Visit): boolean {
   return Boolean(move && move.line === visit.line);
@@ -157,7 +149,11 @@ export async function scheduleFor(person: string): Promise<TeamDocument | null> 
     for (const visit of document.visits) {
       const move = moves.get(visitSlug(visit));
       if (!holds(move, visit) || move?.to !== person) continue;
-      extra.push({ ...visit, line: movedLine(visit) });
+      // The stored line goes too, not only what the screens draw. Every screen prints
+      // `plainLine` now, so this changes nothing on one; what it changes is the line the
+      // accept record writes down and the line Paul's own screens print, neither of which
+      // should carry the name of the cleaner who turned it down.
+      extra.push({ ...visit, line: plainLine(visit) });
       // The house, so her screen can say which gate and put the address on a map. Never the
       // access block beside it: those are her colleague's own door codes.
       const house = document.properties.find((one) => one.id === visit.property);
