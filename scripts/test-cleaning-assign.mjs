@@ -126,7 +126,7 @@ try {
 
 const require = createRequire(join(out, "test.cjs"));
 const { clearMove, moveVisit, readAssignments, scheduleFor } = require(join(out, "assign.js"));
-const { accessFor } = require(join(out, "document.js"));
+const { accessFor, parseDocument } = require(join(out, "document.js"));
 
 let failures = 0;
 let ran = 0;
@@ -165,6 +165,19 @@ check("the house comes with it", da.properties.some((one) => one.id === "lotus")
 check("its address too", da.properties.find((one) => one.id === "lotus").address, "42 Veing Ping Rd");
 check("the door codes do not", accessFor(da, "lotus"), null);
 check("and the other cleaner keeps hers", accessFor(await scheduleFor("aun"), "lotus") !== null, true);
+
+console.log("\nwhose code is in a block, which is a fact and not a sentence");
+const withField = parseDocument({
+  key: "pa", title: "x",
+  access: [{ heading: "h", lines: ["gate"], property: "lotus", own_code: false }],
+});
+const legacy = parseDocument({
+  key: "da", title: "x",
+  access: [{ heading: "h", lines: ["gate", "door"], property: "lotus" }],
+});
+check("a block saying so carries no code of hers", accessFor(withField, "lotus").ownCode, false);
+check("one published before the field reads as hers", accessFor(legacy, "lotus").ownCode, true);
+check("and the lines are untouched either way", accessFor(withField, "lotus").lines.length, 1);
 
 console.log("\na clean that changes is a different clean");
 publish([{ ...WEEKEND, note: "เพิ่มเตียงเด็ก", line: `${WEEKEND.line} เพิ่มเตียงเด็ก` }, APRIL], [HERS]);
