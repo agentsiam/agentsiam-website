@@ -50,6 +50,8 @@ duplicate one into the other.
 | How photography is selected, ordered and re-encoded | `README.md`, "Photography" |
 | Which font files ship, where they came from, and how to refresh them | `src/fonts/README.md` |
 | How the CRM admin is configured, what it writes and what keeps it shut | `README.md`, "The CRM admin" |
+| What the cleaning team's app is, who it serves, and every rule it holds | `README.md`, "The cleaning team's schedule app" |
+| Which cleans happen when, who gets one, and every Thai word in that app | The `cleaning-schedule` skill in `/Users/paulb/code/agentsiam/agentsiam-consulting`. This repo holds no roster, no rule and no Thai date |
 | Which DNS and mail records exist, and which must never be touched | `DNS-EMAIL-RUNBOOK.md` |
 | What runs on a schedule in production | `vercel.json` |
 | What is unbuilt or unreviewed right now | `README.md`, "Known gaps" |
