@@ -137,6 +137,32 @@ export async function acceptState(person: string, visits: Visit[]): Promise<Acce
 }
 
 /**
+ * Forget how she answered one clean, so that it reaches her again as new work.
+ *
+ * Paul, 19/11/2026: when a clean is turned down, the admin should be able to give it back to
+ * the person who turned it down, because it does not have to go to somebody else. She said no
+ * on a Tuesday and they spoke on the Wednesday, and the answer to that is not a second cleaner,
+ * it is the same cleaner being asked again.
+ *
+ * It is Paul's to do and never hers. A cleaner who could clear her own no would be a cleaner
+ * being asked the same question until she said yes.
+ */
+export async function clearAnswer(
+  person: string,
+  visits: Visit[],
+  slug: string,
+): Promise<void> {
+  const record = await read(person);
+  const live = new Set(visits.map((one) => visitSlug(one)));
+  const keep = (list: AcceptEntry[]) => list.filter(([one]) => live.has(one) && one !== slug);
+  await set(
+    acceptKey(person),
+    JSON.stringify({ taken: keep(record.taken), declined: keep(record.declined) } satisfies AcceptRecord),
+    ACCEPT_TTL,
+  );
+}
+
+/**
  * Answer one clean, either way, and prune anything that is no longer on her schedule.
  *
  * It refuses a slug that is not one of hers, so a crafted post cannot write a row about

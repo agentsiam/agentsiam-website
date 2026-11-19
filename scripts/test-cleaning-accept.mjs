@@ -85,7 +85,7 @@ try {
 }
 
 const require = createRequire(join(out, "test.cjs"));
-const { acceptState, answerVisit, hidingDeclined } = require(join(out, "accept.js"));
+const { acceptState, answerVisit, clearAnswer, hidingDeclined } = require(join(out, "accept.js"));
 
 let failures = 0;
 let ran = 0;
@@ -176,6 +176,18 @@ check("she changes her mind", await answerVisit("da", all, LATER, "yes"), true);
 state = await acceptState("da", all);
 check("it is accepted", state.takenAt.has(LATER), true);
 check("and no longer declined", state.declinedAt.has(LATER), false);
+
+console.log("\nasked again, which is the admin giving it back to her");
+await answerVisit("da", all, MORNING, "no");
+state = await acceptState("da", all);
+check("she has turned the morning down", state.declinedAt.has(MORNING), true);
+await clearAnswer("da", all, MORNING);
+state = await acceptState("da", all);
+check("her answer is forgotten", state.declinedAt.has(MORNING), false);
+check("and it is waiting for one again", state.waiting.has(MORNING), true);
+check("it is back in what she is shown", hidingDeclined(all, state).length, 3);
+check("and nothing else was touched", state.takenAt.has(LATER), true);
+await answerVisit("da", all, MORNING, "yes");
 
 console.log("\nthe record does not grow for ever");
 await answerVisit("da", all, AFTERNOON, "yes");

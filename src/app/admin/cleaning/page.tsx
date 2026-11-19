@@ -99,14 +99,18 @@ export default async function AdminCleaningPage() {
   const moves = await readAssignments().catch(() => new Map());
   /** Who could take this clean: anybody else with a schedule of her own to merge it into,
    * and whether her own document carries the codes for that house. */
+  // **The person who turned it down is in the list.** Paul, 19/11/2026: it does not have to go
+  // to somebody else, and picking her own name asks her again rather than moving anything.
   const candidatesFor = (owner: string, visit: Visit): Candidate[] =>
     people
-      .filter((one) => one !== owner && documents.get(one))
+      .filter((one) => documents.get(one))
       .map((one) => ({
         person: one,
         role: (documents.get(one) as TeamDocument).role,
         hasCodes: Boolean(accessFor(documents.get(one) as TeamDocument, visit.property)),
-      }));
+        self: one === owner,
+      }))
+      .sort((a, b) => Number(b.self) - Number(a.self));
 
   // Every clean somebody has turned down and nobody has picked up, in the order they happen.
   // Past ones are left out: a clean last week that was declined is a fact about last week and
