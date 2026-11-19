@@ -752,6 +752,13 @@ code only where her own document already has one, and the admin says so before t
 arrives as new work**, so she accepts or declines it like anything else, and she can turn it
 down too.
 
+**The admin warns off a field and not a sentence.** Each access block carries `own_code`, true
+when a code of hers is in its lines and false when the block is the property's shared gate
+alone. A cleaner on the roster before her slot on the lock exists gets the gate and nothing
+else, and from this side the two blocks are identical: one line of finished Thai or two, which
+this app may not read. **Missing means true**, because every document published before the field
+existed belongs to somebody who has her codes.
+
 **The LINE Note is unchanged** by any of it, because the skill renders that from its own run.
 Hers still lists the clean she turned down and his still names her against a clean somebody else
 now has, until the skill reads this record at build time. The app and the Note disagree on
@@ -1056,11 +1063,15 @@ flow, end to end, with nothing live anywhere near it.
   move rather than losing the clean.
 - **A moved clean can land without a door code (18/11/2026).** Codes are per person and per
   house: they live in the access block of each person's own document, so a clean moved to
-  somebody whose document carries no block for that house arrives with no code behind it. The
-  admin warns before the move and nothing else happens: the app will not copy a colleague's code
-  across, because per-person codes exist so that a lost phone costs one lock slot. Fixing it
-  properly is the skill publishing that person a block for that house, which is a file edit and
-  a re-run.
+  somebody who has none for that house arrives with no code behind it. The admin warns before
+  the move, off the `own_code` field on that block, and nothing else happens: the app will not
+  copy a colleague's code across, because per-person codes exist so that a lost phone costs one
+  lock slot. Fixing it properly is her own code reaching that house, which is a line in the
+  codes file and a re-run. **What the warning cannot tell you is whether that code is programmed
+  into that lock.** The roster holds one code per person for the whole portfolio, so a second
+  house she has never been given to reads the same as one she works at every week. The codes
+  file has a "Live in lock" column the skill does not read; reading it is what would close that,
+  and it is a change there rather than here.
 - **`/cleaning/codes/<slug>` is still mounted and nothing links to it (18/11/2026).** The codes
   moved onto the schedule and the job screen on 17/11/2026, fetched from `/api/cleaning/codes`
   with a deadline on the copy, and the page they replaced was left in the tree. It still answers

@@ -35,9 +35,22 @@ export type PropertyRef = {
   map: string | null;
 };
 
-/** A block of codes, and which house they open. `property` is null on a document published
- * before there was more than one. */
-export type AccessBlock = DocumentBlock & { property: string | null };
+/**
+ * A block of codes, and which house they open.
+ *
+ * `property` is null on a document published before there was more than one.
+ *
+ * **`ownCode` says whether a code of hers is in these lines**, as opposed to the gate alone,
+ * which is the property's and is the same number for everybody. A cleaner on the roster before
+ * her slot on the lock exists gets the gate and nothing else, and the two blocks are otherwise
+ * identical: one line of finished Thai or two, which this app may not read. So the skill
+ * publishes the fact as a field and the admin screen warns off it before a clean is handed to
+ * somebody who cannot open the door.
+ *
+ * **Missing means true**, because every document published before the field existed belongs to
+ * somebody who has her codes. The field arrived on 19/11/2026 with the first person who did not.
+ */
+export type AccessBlock = DocumentBlock & { property: string | null; ownCode: boolean };
 
 /**
  * Someone else on the same visit, and the number to reach them.
@@ -203,13 +216,13 @@ function asAccess(value: unknown): AccessBlock[] {
       .map((entry) => {
         const block = asBlock(entry);
         if (!block) return null;
-        const property = asString((entry as Record<string, unknown>).property);
-        return { ...block, property };
+        const fields = entry as Record<string, unknown>;
+        return { ...block, property: asString(fields.property), ownCode: fields.own_code !== false };
       })
       .filter((block): block is AccessBlock => block !== null);
   }
   const single = asBlock(value);
-  return single ? [{ ...single, property: null }] : [];
+  return single ? [{ ...single, property: null, ownCode: true }] : [];
 }
 
 /**

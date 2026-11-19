@@ -94,7 +94,8 @@ export default async function AdminCleaningPersonPage({
       .map(([one, theirs]) => ({
         person: one,
         role: theirs.role,
-        hasCodes: Boolean(accessFor(theirs, visit.property)),
+        // Her own code for that house, not merely a block: the gate alone is the property's.
+        hasCodes: accessFor(theirs, visit.property)?.ownCode === true,
         self: one === person,
       }))
       .sort((a, b) => Number(b.self) - Number(a.self));
