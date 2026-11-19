@@ -723,6 +723,17 @@ it afresh. A no on the Tuesday and a conversation on the Wednesday is the ordina
 ends, and the answer to it is the same cleaner being asked again. Only Paul can do it: a
 cleaner who could clear her own no would be a cleaner being asked until she said yes.
 
+**The control is on every clean still ahead of her, not only on one she turned down.** Paul,
+19/11/2026: ป้า is the backup cleaner, she has no prioritisation, and she is assigned the work
+by hand. A backup exists to be given work nobody refused, so the control cannot wait for a
+refusal: it stands under each of her cleans on `/admin/cleaning/<person>`, and the block on the
+first admin screen stays what it was, the queue of cleans that came back and need somebody.
+
+**A clean can be moved on, and who loses it does not change.** The record keeps the person it
+was **published** to, however many hands it passes through, because the schedule run keeps
+publishing that clean to her on every run and she is the one it has to be taken off. Recording
+the last holder instead would hand the clean back to the first one the next time anybody looked.
+
 **And he gives it to another cleaner from that block.** Paul, 18/11/2026: the cleaners are
 freelancers, so turning a clean down is an option they have, and the admin reschedules it for
 somebody else. `cleaning:assign` holds one row per moved clean, the app lays it over the
@@ -995,6 +1006,17 @@ flow, end to end, with nothing live anywhere near it.
   follow when it lands: every row gets its own house, and **every slug changes**, because a slug
   is the date, the hour and the house, so every clean is asked for again once and every comment
   thread opened before it stays under the old slug.
+- **A backup cleaner cannot be reached at all until the run publishes her (19/11/2026).** ป้า is
+  on the roster as the backup, with no place in the rota and her work given to her by hand. The
+  skill builds a document per roster member **who appears in a job**, so a person with no jobs
+  gets no document, and without one she cannot be enrolled, cannot be given a PIN, does not
+  appear in the admin at all and cannot receive a moved clean, because a moved clean is merged
+  into a published document. **The fix is in the skill**: publish a document for every roster
+  member, with no visits in it where there are none. It has to carry her access blocks, or the
+  first clean given to her arrives with no door code, since the app will not copy a colleague's
+  codes across. That is a change in
+  `/Users/paulb/code/agentsiam/agentsiam-consulting/.claude/skills/cleaning-schedule/`, in
+  `documents()`, which skips a roster member whose `parts` are empty.
 - **A map link is a Google search, not a share link (19/11/2026).** The job screen opens whatever
   `map` the document carries, and the property file carries a `maps.google.com/search?query=` URL
   built from the address text, which drops the pin wherever the search lands. Paul, 19/11/2026:

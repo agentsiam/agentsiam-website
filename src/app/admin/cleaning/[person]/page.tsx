@@ -1,19 +1,24 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JobComment } from "@/components/admin/job-comment";
+import { CleaningMove, type Candidate } from "@/components/admin/cleaning-move";
 import { acceptState } from "@/lib/cleaning/accept";
 import { scheduleFor } from "@/lib/cleaning/assign";
+import { knownPeople } from "@/lib/cleaning/devices";
 import { asVisit, before, pastVisits } from "@/lib/cleaning/history";
 import { PhotoTiles } from "@/components/cleaning/photo-tiles";
 import { requireSession } from "@/lib/admin/guard";
 import { photoStillKept } from "@/lib/cleaning/comment-shape";
 import { listComments } from "@/lib/cleaning/comments";
 import {
+  accessFor,
   builtAtDigits,
   propertyOf,
   sortVisits,
   todayInBangkok,
   visitSlug,
+  type TeamDocument,
+  type Visit,
 } from "@/lib/cleaning/document";
 import { ADMIN_CLEANING, adminCleaningPersonPath } from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
@@ -67,6 +72,32 @@ export default async function AdminCleaningPersonPage({
     ? [...sortVisits([...remembered.map(asVisit), ...document.visits])].reverse()
     : [];
   const houses = new Map(remembered.filter((one) => one.house).map((one) => [one.slug, one.house]));
+
+  // **Who this clean could go to instead.** Paul, 19/11/2026: ป้า is the backup cleaner, she
+  // has no prioritisation, and she is assigned the work by hand. Until now a clean could only
+  // be moved after somebody turned it down, which is the other way round: a backup exists to
+  // be given work nobody has refused. So every clean still ahead of her carries the control
+  // here, and the one on the first screen stays for the ones that came back.
+  //
+  // Everyone with a schedule of her own, because a moved clean is merged into a published
+  // document and there is nothing to merge it into otherwise. Her own name is first and asks
+  // her again rather than moving anything.
+  const schedules = new Map<string, TeamDocument>();
+  for (const one of document ? await knownPeople().catch(() => [person]) : []) {
+    const theirs = one === person ? document : await scheduleFor(one).catch(() => null);
+    if (theirs) schedules.set(one, theirs);
+  }
+  /** Worked out per clean, because whether she has the codes depends on which house it is at,
+   * and codes never travel with a moved clean. */
+  const candidatesFor = (visit: Visit): Candidate[] =>
+    [...schedules.entries()]
+      .map(([one, theirs]) => ({
+        person: one,
+        role: theirs.role,
+        hasCodes: Boolean(accessFor(theirs, visit.property)),
+        self: one === person,
+      }))
+      .sort((a, b) => Number(b.self) - Number(a.self));
   // Her side of the agreement, which is the half of this screen that was missing: it has
   // always said what was scheduled and never whether she had answered.
   const { waiting, takenAt, declinedAt } = document
@@ -163,6 +194,10 @@ export default async function AdminCleaningPersonPage({
                       ? "Not answered yet"
                       : `Accepted ${(takenAt.get(slug) ?? "").slice(0, 16).replace("T", " ")}`}
                 </p>
+              ) : null}
+
+              {visit.date >= today ? (
+                <CleaningMove slug={slug} from={person} candidates={candidatesFor(visit)} />
               ) : null}
 
               {comments.length > 0 ? (
