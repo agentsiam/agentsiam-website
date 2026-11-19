@@ -560,6 +560,29 @@ schedule on their own phones, and their own door codes behind a PIN. Installed f
 not from an app store, and readable with no signal. Nothing in it is public, indexed or in the
 sitemap.
 
+**What it is for.** It replaces a LINE message that had to be pasted, read and trusted. The
+housekeeping team are freelancers: they are offered work, they take it or they turn it down,
+and somebody has to know which before the day arrives. So the app answers four questions a
+message cannot. What is my next clean, which house is it at and what does it ask for. Has she
+agreed to it. What did I do last month, because that is what she is paid for and the payslip
+arrives in the thread on that clean. And, for Paul, who has not answered, who said no, and who
+has the job now.
+
+**It is live and in use.** The whole of what follows is built and running at
+`agentsiam.com/cleaning`, with four people published to it. What is not finished is listed under
+"Known gaps" and nowhere else: the biggest are that the schedule run publishes no houses yet, so
+no row can name one; that the LINE Note and the app now disagree on purpose where a clean was
+declined or moved; and that a cleaner's map link is a search rather than a share link. Those are
+changes in `/Users/paulb/code/agentsiam/agentsiam-consulting`, not here.
+
+**The shape of a day in it.** New work reaches her on a screen of its own that she cannot walk
+past, one clean per blue panel, accept or decline on each. What she accepts joins her schedule;
+what she declines leaves her screens and lands in a red block on `/admin/cleaning` for Paul to
+hand to somebody else, or to give back to her. Her first screen leads with today's work, the
+house, the hour, anything asked for on that clean, and the door codes on the day itself. Behind
+one tap are the cleans she has already done, which the app keeps for ninety days of its own
+accord because the published schedule starts at today.
+
 **It holds no schedule of its own, and that is the whole design.** The `cleaning-schedule`
 skill in `agentsiam-consulting` owns every rule about which clean happens when, who gets it
 and what a line says, and it publishes one finished document per person into the Upstash store
