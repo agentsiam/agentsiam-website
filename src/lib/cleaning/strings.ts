@@ -103,6 +103,17 @@ export const TEAM_STRINGS_TH = {
   scheduleTitle: "ตารางงานของฉัน",
 
   /**
+   * The heading over the card at the top, on a day she is working.
+   *
+   * Paul, 19/11/2026: when today is in the black card it should say today's work. The card
+   * carries the date in digits the size of a thumb and still could not answer the one
+   * question she opens the app to ask, which is whether the next clean is now or another day.
+   * It appears on a day she is working and on no other, so the absence of it says the card is
+   * about something further off.
+   */
+  todaysWork: "งานวันนี้",
+
+  /**
    * The line under the title saying how old this schedule is.
    *
    * `{when}` is substituted with a date and time in digits, Bangkok time, so that no Thai
@@ -254,8 +265,8 @@ export const TEAM_STRINGS_TH = {
    * has rejected is not her schedule. It is gone from every screen of hers and it waits on
    * `/admin/cleaning` instead, in English, on his screen.
    *
-   * These eight are drafts of mine and have not been read by a Thai speaker, unlike the
-   * twenty-two above them.
+   * These are drafts of mine and have not been read by a Thai speaker, unlike the twenty-two
+   * read on 18/11/2026.
    */
   acceptHeading: "งานใหม่ที่ต้องยืนยัน",
   acceptIntro: "กรุณายืนยันรับงาน หรือกดไม่รับงาน ก่อนเข้าดูตารางงาน",
@@ -264,6 +275,20 @@ export const TEAM_STRINGS_TH = {
   acceptFailed: "ยืนยันไม่สำเร็จ ลองใหม่อีกครั้ง",
   rejectButton: "ไม่รับงาน",
   rejectFailed: "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง",
+
+  /**
+   * On a clean she has taken on, where the pair of buttons would be.
+   *
+   * Paul, 19/11/2026: once a clean is accepted, a cleaner who wants to cancel it contacts
+   * AgentSiam, who reschedules it. That has been true since the flow shipped and nothing on
+   * her screen said so: an accepted clean simply had no buttons, which reads as a screen that
+   * has run out rather than as an answer she has already given.
+   *
+   * It says to contact Paul in LINE, the way every other sentence in this app does, rather
+   * than naming the company: the Thai carries no Latin, the team reaches us through one
+   * person, and a message in the thread under this very line is the other way to do it.
+   */
+  acceptedCancel: "รับงานนี้แล้ว หากต้องการยกเลิก กรุณาติดต่อพอลทางไลน์",
 } as const;
 
 /**
@@ -293,6 +318,7 @@ export const TEAM_STRINGS_TH = {
  */
 export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
   scheduleTitle: "My schedule",
+  todaysWork: "Today's work",
   builtAt: "Last updated {when}",
   changedSinceSeen: "Job details changed",
   pinPrompt: "Enter the PIN Paul sent you on LINE",
@@ -322,6 +348,7 @@ export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
   acceptFailed: "Not confirmed. Try again",
   rejectButton: "Decline",
   rejectFailed: "Not sent. Try again",
+  acceptedCancel: "You have taken this job. To cancel it, contact Paul on LINE",
 };
 
 /**

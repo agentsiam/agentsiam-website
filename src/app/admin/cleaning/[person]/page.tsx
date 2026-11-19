@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { JobComment } from "@/components/admin/job-comment";
 import { acceptState } from "@/lib/cleaning/accept";
 import { scheduleFor } from "@/lib/cleaning/assign";
+import { asVisit, before, pastVisits } from "@/lib/cleaning/history";
 import { PhotoTiles } from "@/components/cleaning/photo-tiles";
 import { requireSession } from "@/lib/admin/guard";
 import { photoStillKept } from "@/lib/cleaning/comment-shape";
@@ -10,6 +11,7 @@ import { listComments } from "@/lib/cleaning/comments";
 import {
   builtAtDigits,
   propertyOf,
+  sortVisits,
   todayInBangkok,
   visitSlug,
 } from "@/lib/cleaning/document";
@@ -52,7 +54,19 @@ export default async function AdminCleaningPersonPage({
   const document = problem ? null : await scheduleFor(person).catch(() => null);
 
   const today = todayInBangkok();
-  const visits = document ? [...document.visits].reverse() : [];
+  // **The cleans she has already done, out of her ledger.** A published document starts at
+  // today, so the clean he is paying her for has usually left it by the time he pays: without
+  // this there is no row to put the payslip on, which is the half of that flow that lives on
+  // this screen. src/lib/cleaning/history.ts says why the app keeps them. A clean the
+  // document still carries wins, because it is the published row.
+  const live = new Set((document?.visits ?? []).map((visit) => visitSlug(visit)));
+  const remembered = document
+    ? before(await pastVisits(person).catch(() => []), today).filter((one) => !live.has(one.slug))
+    : [];
+  const visits = document
+    ? [...sortVisits([...remembered.map(asVisit), ...document.visits])].reverse()
+    : [];
+  const houses = new Map(remembered.filter((one) => one.house).map((one) => [one.slug, one.house]));
   // Her side of the agreement, which is the half of this screen that was missing: it has
   // always said what was scheduled and never whether she had answered.
   const { waiting, takenAt, declinedAt } = document
@@ -106,7 +120,9 @@ export default async function AdminCleaningPersonPage({
 
       <div className="mt-4 space-y-4">
         {threads.map(({ visit, slug, comments }) => {
-          const house = document ? propertyOf(document, visit) : null;
+          const house =
+            (document ? propertyOf(document, visit) : null) ??
+            (houses.get(slug) ? { id: "", name: houses.get(slug) as string } : null);
           return (
             <section
               key={slug}

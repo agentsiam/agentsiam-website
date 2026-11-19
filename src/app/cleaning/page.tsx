@@ -17,11 +17,14 @@ import {
   propertyOf,
   monthDigits,
   monthWeeks,
-  monthsAhead,
+  monthOf,
+  monthsShown,
   todayInBangkok,
   visitSlug,
+  type Visit,
 } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
+import { asVisit, before, pastVisits } from "@/lib/cleaning/history";
 import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_NEW, cleaningJobPath } from "@/lib/cleaning/routes";
@@ -116,6 +119,19 @@ export default async function SchedulePage() {
   const { changed } = await sinceLastSeen(holder.person, visits);
   const { waiting } = state;
   const digest = await visitsDigest(visits);
+
+  // **The cleans she has already done**, which her document stopped carrying the moment the
+  // run moved past them. Paul, 19/11/2026: she has to be able to look back at last month to
+  // check she has been paid, and the payslip is a photograph in the thread on that clean.
+  // Anything the document still carries wins, because it is the published row; the ledger
+  // fills in behind it. src/lib/cleaning/history.ts says why the app may hold this at all.
+  const live = new Set(visits.map((visit) => visitSlug(visit)));
+  const past = before(await pastVisits(holder.person).catch(() => []), today).filter(
+    (one) => !live.has(one.slug),
+  );
+  const pastHouses = new Map(past.map((one) => [one.slug, one.house]));
+  const remembered = past.map(asVisit);
+  const everything = [...remembered, ...visits];
   const when = document.built_at ? builtAtDigits(document.built_at) : null;
   // Only on the day, which is Paul's rule for every door code in this app. The card names
   // the house she is going to whatever day it is; the codes appear under it only when that
@@ -125,15 +141,28 @@ export default async function SchedulePage() {
   // Which shape stands for which house, worked out once and handed to every part of the
   // screen, so the grid and the rows cannot disagree about it.
   const marks = houseMarks(document);
+  // The house on a row: the document's own where it names houses, and the name the ledger
+  // kept for a clean the document no longer carries. A ledger house has no id and so no
+  // shape, which is right: a shape is for telling two live houses apart.
+  const houseOf = (visit: Visit) => {
+    const named = propertyOf(document, visit);
+    if (named) return named;
+    const remembered = pastHouses.get(visitSlug(visit));
+    return remembered ? { id: "", name: remembered, address: null, map: null } : null;
+  };
 
   // Every month the arrows can reach, with its grid, worked out here: the calendar is a
   // client component so that paging is state, and none of the date arithmetic crosses that
   // boundary with it.
-  const months: MonthView[] = monthsAhead(visits, today).map((month) => ({
+  const shown = monthsShown(everything, today);
+  const months: MonthView[] = shown.map((month) => ({
     key: month,
     digits: monthDigits(month),
-    weeks: monthWeeks(visits, month, today),
+    weeks: monthWeeks(everything, month, today),
   }));
+  // Where this month sits in that run, so the grid opens on now and the months behind it are
+  // one tap back rather than the first thing she sees.
+  const openAt = Math.max(0, shown.indexOf(monthOf(today)));
 
   return (
     // The document's language while the phone is set to Thai, because the document is then
@@ -152,6 +181,15 @@ export default async function SchedulePage() {
             {written(t.scheduleTitle)}
           </h1>
         ) : null}
+        {/* **The house, when the document names none.** A single-property run publishes no
+            houses at all, so there is no pill on a row and nothing on this screen says which
+            house she is going to; the only place the house appears in that document is the
+            queue title the skill wrote. Paul, 19/11/2026: she has several houses and the list
+            should say which. This is that, until the run publishes the property block and
+            every row carries its own name and shape. */}
+        {document.properties.length === 0 ? (
+          <p className="mt-1 text-[15px] font-semibold leading-6 text-body">{document.title}</p>
+        ) : null}
         {when && builtAtLine(lang, when) ? (
           <p
             className="mt-1 text-[13px] text-muted"
@@ -163,11 +201,14 @@ export default async function SchedulePage() {
       </header>
       <OfflineNotice lang={lang} />
 
+      {next && next.date === today && written(t.todaysWork) ? (
+        <h2 className="mt-5 text-[15px] font-semibold text-muted">{written(t.todaysWork)}</h2>
+      ) : null}
       {next ? (
         <NextVisitCard
           visit={next}
           isChanged={changed.has(visitIdentity(next))}
-          house={propertyOf(document, next)}
+          house={houseOf(next)}
           mark={markOf(marks, next.property)}
           jobHref={cleaningJobPath(visitSlug(next))}
           lang={lang}
@@ -179,8 +220,13 @@ export default async function SchedulePage() {
 
       <ScheduleView
         list={
+          /* The clean in the card above is not in the list below it. Paul, 19/11/2026: today
+             is in the black card and in the list, and it is duplicated. A day holding a
+             second clean still shows that one under its heading. */
           <DayList
-            sections={daySections(visits)}
+            sections={daySections(
+              everything.filter((visit) => !next || visitSlug(visit) !== visitSlug(next)),
+            )}
             nextDate={next ? next.date : null}
             today={today}
             changed={changed}
@@ -188,11 +234,11 @@ export default async function SchedulePage() {
             role={document.role}
             lang={lang}
             marks={marks}
-            houseOf={(visit) => propertyOf(document, visit)}
+            houseOf={houseOf}
             jobHref={(visit) => cleaningJobPath(visitSlug(visit))}
           />
         }
-        calendar={<MonthGrid months={months} marks={marks} lang={lang} />}
+        calendar={<MonthGrid months={months} marks={marks} lang={lang} start={openAt} />}
       />
 
       {document.contact ? <RenderedBlock block={document.contact} lang={lang} /> : null}

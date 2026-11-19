@@ -271,6 +271,21 @@ export function visitSlug(visit: Visit): string {
     .join("-");
 }
 
+/**
+ * The house out of a slug this app built, or null for the one-house form.
+ *
+ * The inverse of `visitSlug`, and it exists so that a clean rebuilt from a record of ours
+ * carries the same slug it was stored under. Nothing published is parsed here: a slug is this
+ * app's own string, in a format three lines above, and the date is three segments of it
+ * because an ISO date holds two dashes.
+ */
+export function propertyFromSlug(slug: string): string | null {
+  const parts = slug.split("-");
+  if (parts.length < 5) return null;
+  const property = parts.slice(4).join("-");
+  return property === "one" ? null : property;
+}
+
 export function findVisit(visits: Visit[], slug: string): Visit | null {
   return visits.find((visit) => visitSlug(visit) === slug) ?? null;
 }
@@ -562,40 +577,48 @@ export function monthWeeks(
 }
 
 /**
- * Which months the arrows can reach: an unbroken run from this one.
+ * Which months the arrows can reach: an unbroken run with this one inside it.
  *
- * **It used to be this month and only the months she had work in**, which meant the arrow
- * was dead on a phone with nothing booked ahead and jumped from November to April on one
- * with a job in each. Paul, 19/11/2026, testing it: she could not move from the current
- * month to the next month. A calendar that cannot be paged forward is not a calendar, and
- * "nothing in December" is an answer a freelancer deciding her month needs to be able to
- * get, which is exactly the phone that used to have no arrow at all.
+ * **Forward, it used to reach only the months she had work in**, which meant the arrow was
+ * dead on a phone with nothing booked ahead and jumped from November to April on one with a
+ * job in each. Paul, 19/11/2026, testing it: she could not move from the current month to
+ * the next month. A calendar that cannot be paged forward is not a calendar, and "nothing in
+ * December" is an answer a freelancer deciding her month needs to be able to get, which is
+ * exactly the phone that used to have no arrow at all.
  *
- * So: this month, the two after it, and every month up to the furthest she has work in,
- * with no gaps, to a year at the outside. The floor is what makes the arrow always work.
- * The run to her last job is what makes a schedule published months out reachable one tap
- * at a time. The cap is so that one job in 2029 does not render thirty empty grids into a
- * page a phone has to download at a gate.
+ * **Backward, it reached nothing at all**, and that is the other half of the same day's
+ * instruction: she has to be able to look at the cleans she has already done, because that
+ * is how she checks she has been paid for them.
  *
- * Earlier months are not reachable, which is the same call the list makes by folding
- * finished days away: the app opens on now.
+ * So: three months back, this month, the two after it, and on to the furthest month she has
+ * work in, with no gaps, to a year ahead at the outside. Both floors are unconditional, so
+ * the arrow is never dead in one direction and alive in the other; the run forward is what
+ * makes a schedule published months out reachable one tap at a time; and the cap is so that
+ * one job in 2029 does not render thirty empty grids into a page a phone has to download at
+ * a gate. Three back rather than two because the ledger of cleans she has done keeps ninety
+ * days, and a calendar that stopped short of it would hide rows the list still has.
  */
 export const MONTHS_AHEAD_MIN = 3;
 export const MONTHS_AHEAD_MAX = 12;
+export const MONTHS_BACK = 3;
 
-export function monthsAhead(visits: Visit[], today: string = todayInBangkok()): string[] {
+export function monthsShown(visits: Visit[], today: string = todayInBangkok()): string[] {
   const here = monthOf(today);
   const cap = addMonths(here, MONTHS_AHEAD_MAX - 1);
+
+  // Three months back, always, whether or not she worked in them, for the same reason the
+  // three forward are always there: an empty month is an answer, and an arrow that is alive
+  // in one direction and dead in the other is a calendar she has to learn. Three because the
+  // ledger of cleans done keeps ninety days, so the two windows end at the same place.
+  const first = addMonths(here, -MONTHS_BACK);
   let last = addMonths(here, MONTHS_AHEAD_MIN - 1);
   for (const visit of visits) {
-    if (visit.date < today) continue;
-    const month = monthOf(visit.date);
-    if (month > last) last = month;
+    if (visit.date >= today && monthOf(visit.date) > last) last = monthOf(visit.date);
   }
   if (last > cap) last = cap;
 
   const months: string[] = [];
-  for (let month = here; month <= last; month = addMonths(month, 1)) months.push(month);
+  for (let month = first; month <= last; month = addMonths(month, 1)) months.push(month);
   return months;
 }
 

@@ -95,6 +95,21 @@ export const acceptKey = (person: string) => `cleaning:accept:${person}`;
  */
 export const ASSIGN_KEY = "cleaning:assign";
 
+/**
+ * The cleans she has already done, which her published document no longer carries.
+ *
+ * Reserved for this app, and the skill never writes it. A published document starts at
+ * today: the run builds from the bookings ahead, so the clean she did yesterday is not in
+ * the document the app reads this morning. Paul, 19/11/2026: she has to be able to look back
+ * at last month's cleans, because the payslip for them arrives as a photograph in the thread
+ * on that clean, and the thread is reached through the clean.
+ *
+ * It is a ledger of what was published to her and never a schedule: nothing in it is ahead
+ * of today, nothing in it decides anything, and losing it costs her the way back to a thread
+ * rather than a day's work.
+ */
+export const historyKey = (person: string) => `cleaning:history:${person}`;
+
 /** One enrolled phone. Deleting this is what revokes that phone, which is how Paul kills a
  * device without touching the lock. */
 export const deviceKey = (device: string) => `cleaning:device:${device}`;
