@@ -40,10 +40,12 @@ import { acceptKey, get, set } from "./store";
  * the date, the time and the property, which is what the job URL is built from and is unique per
  * clean.
  *
- * **The line is stored beside it**, because a slug is not the whole of what she agreed to. A cot
- * added to a clean, or a turnover that became a mid-stay, leaves the slug untouched and changes
- * what she is turning up to, so it goes back to waiting. A clean that moves changes its slug and
- * is waiting for the same reason, which is the case Paul asked about.
+ * **The shape of the clean is stored beside it**, because a slug is not the whole of what she
+ * agreed to. A cot added to a clean, or a turnover that became a mid-stay, leaves the slug
+ * untouched and changes what she is turning up to, so it goes back to waiting. A clean that
+ * moves changes its slug and is waiting for the same reason, which is the case Paul asked
+ * about. What is deliberately **not** in it is who else is on the clean: `agreedShape` below
+ * says why.
  */
 
 /** Longer than the furthest clean a published schedule has carried, and refreshed on every
@@ -51,8 +53,40 @@ import { acceptKey, get, set } from "./store";
  * accept a clean she took on months before. */
 const ACCEPT_TTL = 60 * 60 * 24 * 400;
 
-/** One entry per clean: its slug, the line it read when she answered, and when she did. */
+/** One entry per clean: its slug, the shape of the clean she answered about, and when she
+ * answered. */
 type AcceptEntry = [string, string, string];
+
+/**
+ * The clean as she agreed to it, in the one string that decides whether she is asked again.
+ *
+ * **It is deliberately not the job line.** It was the line until 19/11/2026, and the line
+ * carries who else is on the clean: `พฤหัส 19 พย - 12.00 (Ting) กับ ดา`. Paul, that day: when
+ * the cleaning moves between Da and Aun it does not move Ting, and a clean Ting has already
+ * accepted stands until she cancels it. Comparing the line meant the laundry run was put back
+ * in front of her for an answer every time the cleaner beside her changed, which is both
+ * noise and, read at a gate, a different clean.
+ *
+ * So the question "is this still the clean she said yes to" is answered by the slug, which is
+ * the date, the hour and the house, plus these two fields: what kind of clean it is, and
+ * anything asked for on it. A cot added to a clean asks her again. A colleague swapped does
+ * not. Nothing here parses a published string.
+ *
+ * The separator is a character no published line can hold, which is what lets a record
+ * written before this change be told apart from one written after it and compared the old
+ * way. Nothing has to be migrated and nobody is asked again for a change of format.
+ */
+const SHAPE = "\u0001";
+
+export function agreedShape(visit: Visit): string {
+  return `${visit.type ?? ""}${SHAPE}${visit.note ?? ""}`;
+}
+
+/** Whether what she answered about is what is published now, either way the record was
+ * written. */
+export function sameClean(stored: string, visit: Visit): boolean {
+  return stored.includes(SHAPE) ? stored === agreedShape(visit) : stored === visit.line;
+}
 
 type AcceptRecord = {
   taken: AcceptEntry[];
@@ -118,18 +152,19 @@ export async function acceptState(person: string, visits: Visit[]): Promise<Acce
   // Accepted last, so a record that somehow held one slug in both lists reads as accepted
   // rather than as whichever list was walked second. A write cannot produce that, because it
   // drops the slug from both lists before it adds one.
-  const answered = new Map<string, { line: string; at: string; yes: boolean }>();
-  for (const [slug, line, at] of record.declined) answered.set(slug, { line, at, yes: false });
-  for (const [slug, line, at] of record.taken) answered.set(slug, { line, at, yes: true });
+  const answered = new Map<string, { shape: string; at: string; yes: boolean }>();
+  for (const [slug, shape, at] of record.declined) answered.set(slug, { shape, at, yes: false });
+  for (const [slug, shape, at] of record.taken) answered.set(slug, { shape, at, yes: true });
   const waiting = new Set<string>();
   const takenAt = new Map<string, string>();
   const declinedAt = new Map<string, string>();
   for (const visit of visits) {
     const slug = visitSlug(visit);
     const already = answered.get(slug);
-    // The line is compared either way. A clean she declined and which has since moved or
-    // gained a cot is a clean she has not answered: asking again is the point of comparing.
-    if (!already || already.line !== visit.line) waiting.add(slug);
+    // The shape is compared either way. A clean she declined and which has since gained a cot
+    // is a clean she has not answered: asking again is the point of comparing. A clean that
+    // moved in time has a different slug and arrives here as a new clean.
+    if (!already || !sameClean(already.shape, visit)) waiting.add(slug);
     else if (already.yes) takenAt.set(slug, already.at);
     else declinedAt.set(slug, already.at);
   }
@@ -189,7 +224,7 @@ export async function answerVisit(
     list.filter(([one]) => live.has(one) && one !== slug);
   const taken = keep(record.taken);
   const declined = keep(record.declined);
-  (answer === "yes" ? taken : declined).push([slug, visit.line, new Date().toISOString()]);
+  (answer === "yes" ? taken : declined).push([slug, agreedShape(visit), new Date().toISOString()]);
   await set(
     acceptKey(person),
     JSON.stringify({ taken, declined } satisfies AcceptRecord),

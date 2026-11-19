@@ -10,6 +10,14 @@
  * tap without reading. Too loose and a clean that moved to another day counts as the one she
  * agreed to, which is the failure the whole flow exists to prevent.
  *
+ * **What counts as the same clean** is the other half, and it changed on 19/11/2026. It was
+ * the whole job line, which carries who else is on the clean, so the laundry run was put back
+ * in front of Ting for an answer every time the cleaner beside her changed. Paul: moving the
+ * cleaning between Da and Aun does not move Ting, and a clean Ting has accepted stands until
+ * she cancels it. It is now the slug plus the two fields that say what the work is, the kind
+ * of clean and anything asked for on it, and a record written the old way is still compared
+ * the old way, which is the second-to-last check below.
+ *
  * The case worth the most here is two houses on one day. `visitIdentity`, which the "changed
  * since you looked" marker uses, falls back to the date when a job has no booking id, so two
  * cleans on one date share an identity. Accepting the morning would have accepted the
@@ -85,7 +93,9 @@ try {
 }
 
 const require = createRequire(join(out, "test.cjs"));
-const { acceptState, answerVisit, clearAnswer, hidingDeclined } = require(join(out, "accept.js"));
+const { acceptState, answerVisit, clearAnswer, hidingDeclined, sameClean } = require(
+  join(out, "accept.js"),
+);
 
 let failures = 0;
 let ran = 0;
@@ -128,11 +138,20 @@ check("and the later clean too", state.waiting.has(LATER), true);
 check("so two of three are waiting", state.waiting.size, 2);
 
 console.log("\na clean that changes goes back to waiting");
-const reworded = { ...morning, line: "พฤ 19 พย - 12.00 (ดา) เพิ่มเตียงเด็ก" };
-state = await acceptState("da", [reworded, afternoon, later]);
-check("a new note on the line asks her again", state.waiting.has(MORNING), true);
+const withCot = { ...morning, note: "เพิ่มเตียงเด็ก" };
+state = await acceptState("da", [withCot, afternoon, later]);
+check("a cot added to the clean asks her again", state.waiting.has(MORNING), true);
+const asMidstay = { ...morning, type: "midstay" };
+state = await acceptState("da", [asMidstay, afternoon, later]);
+check("a turnover that became a mid-stay asks her again", state.waiting.has(MORNING), true);
 state = await acceptState("da", all);
-check("and the unchanged line does not", state.waiting.has(MORNING), false);
+check("and the clean as she agreed to it does not", state.waiting.has(MORNING), false);
+
+console.log("\nbut the colleague beside her is not the clean");
+const withAun = { ...morning, line: "พฤ 19 พย - 12.00 (Ting) กับ อัน", with: [{ name: "อัน" }] };
+state = await acceptState("da", [withAun, afternoon, later]);
+check("the cleaner on the job changing does not ask her again", state.waiting.has(MORNING), false);
+check("and it still counts as accepted", state.takenAt.has(MORNING), true);
 
 console.log("\na clean that moves is a different clean");
 const moved = visit("2026-11-20", "12.00", "275645", "ศ 20 พย - 12.00 (ดา)");
@@ -188,6 +207,18 @@ check("and it is waiting for one again", state.waiting.has(MORNING), true);
 check("it is back in what she is shown", hidingDeclined(all, state).length, 3);
 check("and nothing else was touched", state.takenAt.has(LATER), true);
 await answerVisit("da", all, MORNING, "yes");
+
+console.log("\na record written before all this still reads");
+check(
+  "an entry holding the old job line matches the clean it was written for",
+  sameClean(morning.line, morning),
+  true,
+);
+check(
+  "and not one whose line has moved on",
+  sameClean(morning.line, { ...morning, line: "พฤ 19 พย - 13.00 (ดา)" }),
+  false,
+);
 
 console.log("\nthe record does not grow for ever");
 await answerVisit("da", all, AFTERNOON, "yes");

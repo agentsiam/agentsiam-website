@@ -14,6 +14,7 @@ import {
   visitsOn,
 } from "@/lib/cleaning/document";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
+import { asVisit, before, pastVisits } from "@/lib/cleaning/history";
 import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_NEW, CLEANING_SCHEDULE, cleaningJobPath } from "@/lib/cleaning/routes";
@@ -71,8 +72,23 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
         declinedAt: new Map<string, string>(),
       }))
     : null;
-  const visits =
+  const today = todayInBangkok();
+  const published =
     document && state ? visitsOn(hidingDeclined(document.visits, state), date) : [];
+  // A day behind her, out of the ledger, for the same reason the job screen reads it: the
+  // calendar can reach two months back now, and a day it marks has to open. Read only for a
+  // day the document no longer carries, so a live day is never drawn twice and a day ahead
+  // of her never touches the store at all.
+  const remembered =
+    published.length > 0 || date >= today
+      ? []
+      : before(await pastVisits(holder.person).catch(() => []), today).filter(
+          (one) => one.date === date,
+        );
+  const visits = [...published, ...remembered.map(asVisit)];
+  const houses = new Map(
+    remembered.filter((one) => one.house).map((one) => [one.slug, one.house]),
+  );
   // A day with no work on it has nothing to say, and the one message this app has for an
   // empty screen is "ask Paul", which would be the wrong thing to say about a day off. The
   // grid does not link such a day; this is for a URL that was kept or typed, and for a day
@@ -82,7 +98,6 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
   // New work holds her on its own screen before any of this, the same cut-off and the same
   // reason as the schedule screen: the calendar is where she tapped to get here, and letting
   // this screen through would be a way around the one screen Paul asked to be unavoidable.
-  const today = todayInBangkok();
   if (document.visits.some((one) => one.date >= today && state.waiting.has(visitSlug(one)))) {
     redirect(CLEANING_NEW);
   }
@@ -90,7 +105,12 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
   // The skill's label on a Thai phone, and the composed English one otherwise. Null on a
   // document published before the skill rendered day labels, and then no heading at all
   // rather than a guessed one.
-  const label = lang === "en" ? englishDay(date) : dayLabelOn(document.visits, date);
+  // The skill's label on a Thai phone, from the document or, for a day it no longer carries,
+  // from the ledger, which kept the same string.
+  const label =
+    lang === "en"
+      ? englishDay(date)
+      : dayLabelOn(document.visits, date) ?? remembered[0]?.label ?? null;
   const marks = houseMarks(document);
 
   return (
@@ -112,7 +132,13 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
 
       <div className="mt-4 space-y-3">
         {visits.map((visit) => {
-          const house = propertyOf(document, visit);
+          // The document's house, or the name the ledger kept for a clean it no longer
+          // carries, so a past day reads like a live one.
+          const house =
+            propertyOf(document, visit) ??
+            (houses.get(visitSlug(visit))
+              ? { id: "", name: houses.get(visitSlug(visit)) as string, address: null, map: null }
+              : null);
           const mark = markOf(marks, visit.property);
           return (
             <Link

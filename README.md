@@ -649,6 +649,29 @@ again inside every page and every route, because the edge does not reach the sto
 revoked cookie is still correctly signed. **There is no recovery flow and that is the feature.**
 A lost phone is re-enrolled with a new link. Nothing mails or texts a way back in.
 
+**Today's work is said, and said once.** Paul, 19/11/2026: when today is in the black card it
+should say today's work, and the same clean should not be in the list underneath, where it was
+duplicated. So the card carries a heading on a day she is working and none on any other, which
+is how the absence of it says the next clean is further off, and the clean in the card is taken
+out of the list below it. A day holding a second clean still shows that one under its heading.
+
+**The cleans she has already done are kept by the app**, in `cleaning:history:<person>`, because
+the document does not keep them. Paul, 19/11/2026: she has to be able to look back over the past
+month, because AgentSiam pays her for that work and the payslip goes into the comments on the
+clean itself. A published document is built from the bookings ahead, so the clean she did on the
+Thursday is gone from it by Friday morning, and with it the way back to its thread. The ledger
+is written when she opens the app, out of the schedule she is being shown, and it is read by her
+past-jobs fold, by the day screen, by the job screen and by Paul's own screen, which otherwise
+had no row to put the payslip on. **It is a ledger and never a schedule**: nothing ahead of her
+is ever drawn from it, a clean that left her schedule before it happened is dropped from it, and
+ninety days is as far back as it goes. `src/lib/cleaning/history.ts` carries the reasoning and
+`npm run test:cleaning-history` holds it to those rules.
+
+**The calendar runs three months back and three forward at the least**, both floors
+unconditional, so the arrow is never alive in one direction and dead in the other. Three back
+because the ledger keeps ninety days and a calendar that stopped short of it would hide rows the
+list still has.
+
 **What changed since she last looked** is the one thing this app does that the LINE Note
 cannot. `cleaning:seen:<key>` holds when she last opened it and the lines she was shown;
 matching is by Beds24 booking id where the job carries one. That answer is not the same as the
@@ -722,6 +745,19 @@ down too.
 Hers still lists the clean she turned down and his still names her against a clean somebody else
 now has, until the skill reads this record at build time. The app and the Note disagree on
 purpose for the first time, which is the price of both halves of this and is in the known gaps.
+
+**What counts as the same clean is the slug plus the shape of the work**, which is the kind of
+clean and anything asked for on it, and never the job line. It was the line until 19/11/2026,
+and a line carries who else is on the clean: `พฤหัส 19 พย - 10.00 (Ting) กับ ดา`. Paul that day:
+moving the cleaning between Da and Aun does not move Ting, and a laundry run Ting has accepted
+stands until she cancels it. Comparing lines put the laundry back in front of her for an answer
+every time the cleaner beside her changed. A cot added to a clean still asks again; a colleague
+swapped does not. A record written the old way is still compared the old way, so nothing was
+migrated and nobody was asked twice for a change of format.
+
+**An accepted clean says how to get out of it**: cancelling goes through us and we reschedule,
+which was true from the first day and said nowhere, so the card simply ended. It now says so on
+a clean still ahead of her, where the pair of buttons would be.
 
 The record is keyed on the **visit slug**, the date, the time and the property, and deliberately
 not on the `visitIdentity` the changed marker uses. That one falls back to the date when a job
@@ -949,6 +985,21 @@ flow, end to end, with nothing live anywhere near it.
   no per-visit field to render. The reason exists nowhere at all and is a habit as much as a
   field: four values and an optional line, chosen when a clean is moved. Until both land, a moved
   clean and a new one look the same on the card.
+- **The run publishes no houses, so no row can name one (19/11/2026).** The app draws a house
+  on every row that has one, as a name and a shape, and production publishes documents whose
+  `properties` list is empty and whose every visit has a null property: the house exists in that
+  document only inside the queue title the skill wrote. The app falls back to printing that title
+  under the heading on her first screen and on the new-work screen, so the house is at least on
+  the screen, and that is all it can do. **The fix is one `property` block in the payload** and a
+  re-run, which is a change in `/Users/paulb/code/agentsiam/agentsiam-consulting`. Two things
+  follow when it lands: every row gets its own house, and **every slug changes**, because a slug
+  is the date, the hour and the house, so every clean is asked for again once and every comment
+  thread opened before it stays under the old slug.
+- **A map link is a Google search, not a share link (19/11/2026).** The job screen opens whatever
+  `map` the document carries, and the property file carries a `maps.google.com/search?query=` URL
+  built from the address text, which drops the pin wherever the search lands. Paul, 19/11/2026:
+  it has to be a real Google location share link. That is one value per house in the property's
+  own file in the document store, and it needs the two links from him.
 - **The schedule itself is published in one language (18/11/2026).** The switch and
   `src/lib/cleaning/english.ts` between them put the app's words, the job lines, the day
   headings and the headings over the blocks into English. What stays Thai on an English phone is

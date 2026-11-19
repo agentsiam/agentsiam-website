@@ -95,6 +95,12 @@ export default async function NewWorkPage() {
         {written(t.acceptIntro) ? (
           <p className="mt-2 text-[17px] leading-7 text-body">{written(t.acceptIntro)}</p>
         ) : null}
+        {/* The house, when the document names none, exactly as on her schedule: a
+            single-property run publishes no houses, so without this she is accepting a clean
+            without being told where it is. */}
+        {document.properties.length === 0 ? (
+          <p className="mt-2 text-[15px] font-semibold leading-6 text-muted">{document.title}</p>
+        ) : null}
       </header>
 
       <ul className="mt-5 space-y-4">

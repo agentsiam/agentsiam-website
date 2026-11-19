@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentSession } from "@/lib/admin/guard";
-import { clearAnswer } from "@/lib/cleaning/accept";
+import { agreedShape, clearAnswer } from "@/lib/cleaning/accept";
 import { clearMove, moveVisit } from "@/lib/cleaning/assign";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { PIN_SHAPE, createEnrolToken, revokeDevice, setPin } from "@/lib/cleaning/devices";
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
           { status: 409 },
         );
       }
-      await moveVisit({ slug, from: person, to, line: visit.line }, todayInBangkok());
+      await moveVisit({ slug, from: person, to, line: agreedShape(visit) }, todayInBangkok());
       return NextResponse.json({ ok: true });
     }
 

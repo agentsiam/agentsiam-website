@@ -19,6 +19,7 @@ import { scheduleFor } from "@/lib/cleaning/assign";
 import { visitLine } from "@/lib/cleaning/english";
 import { listComments } from "@/lib/cleaning/comments";
 import { pinGiven, requireHolder } from "@/lib/cleaning/guard";
+import { asVisit, pastVisits } from "@/lib/cleaning/history";
 import { teamLang } from "@/lib/cleaning/lang";
 import { houseMarks, markOf } from "@/lib/cleaning/houses";
 import { CLEANING_SCHEDULE } from "@/lib/cleaning/routes";
@@ -88,7 +89,19 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   // schedule rather than a screen about work that is no longer hers.
   if (document && state && state.declinedAt.has(slug)) redirect(CLEANING_SCHEDULE);
 
-  const visit = document && state ? findVisit(hidingDeclined(document.visits, state), slug) : null;
+  const live = document && state ? findVisit(hidingDeclined(document.visits, state), slug) : null;
+
+  // **A clean she has already done is still hers to open.** Paul, 19/11/2026: she checks last
+  // month's cleans to see whether she has been paid, and the payslip is a photograph in the
+  // thread on that clean. The run publishes from today, so by the next morning the clean is
+  // out of her document and this screen had nothing to show. The ledger keeps the little this
+  // screen needs: the day, the hour and the house. Everything else on the page is conditional
+  // on a field the ledger does not keep, so it quietly becomes the thread and its heading,
+  // which is what she came for. src/lib/cleaning/history.ts says why the app holds it.
+  const kept = live
+    ? null
+    : (await pastVisits(holder.person).catch(() => [])).find((one) => one.slug === slug) ?? null;
+  const visit = live ?? (kept ? asVisit(kept) : null);
   if (!document || !state || !visit) {
     return (
       <main>
@@ -97,7 +110,9 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
     );
   }
 
-  const house = propertyOf(document, visit);
+  const house =
+    propertyOf(document, visit) ??
+    (kept?.house ? { id: "", name: kept.house, address: null, map: null } : null);
   // The day decides, not the job: her clean may be at 12.00 and she may check before she
   // leaves home at 08.00, so the whole of the day she is on counts.
   const isToday = visit.date === todayInBangkok();
@@ -112,6 +127,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   // here, and an accepted one shows no buttons: changing her mind about work she agreed to is
   // a conversation, and the thread for it is at the foot of this screen.
   const unanswered = state.waiting.has(slug);
+  const accepted = state.takenAt.has(slug);
 
   // The two values `type` can hold, each with its own sentence. Anything else renders no
   // sentence at all rather than a guessed one.
@@ -167,6 +183,16 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
             clean in the card on her first screen, and taking it on here has to be possible
             or that tap is a dead end. */}
         {unanswered ? <AcceptChoice slug={slug} lang={lang} /> : null}
+        {/* **What an accepted clean says instead of buttons.** Paul, 19/11/2026: once she
+            has taken a clean on, cancelling it goes through us and we reschedule it. Before
+            this the card simply ended, which reads as a screen that has run out rather than
+            as an answer she has already given. Only on a clean still ahead of her: saying it
+            about last Tuesday would be telling her to cancel work she has already done. */}
+        {!unanswered && accepted && visit.date >= todayInBangkok() && written(t.acceptedCancel) ? (
+          <p className="mt-4 text-[15px] leading-6 text-gold-on-ink">
+            {written(t.acceptedCancel)}
+          </p>
+        ) : null}
       </section>
 
       {detail ? (

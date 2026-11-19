@@ -21,12 +21,14 @@ import { calendarWeekdays, weekdaysWritten, type TeamLang } from "@/lib/cleaning
  * composed here. The heading is the month as digits, in the Latin face, exactly like the
  * line that says how old the schedule is, and the seven column headings are Paul's.
  *
- * **The months it can reach are an unbroken run from this one**, worked out on the server by
- * `monthsAhead`: this month, the two after it, and on to the furthest month she has work in.
- * It used to be this month and only the months with work in them, which left the arrow dead on
- * a phone with nothing booked ahead, and that is what Paul hit on 19/11/2026. An empty December
- * is an answer. Earlier months are not reachable, the same call the list makes by folding
- * finished days away.
+ * **The months it can reach are an unbroken run with this one inside it**, worked out on the
+ * server by `monthsShown`: three months back, this month, the two after it, and on to the
+ * furthest month she has work in. It used to be this month and only the months with work in
+ * them, which left the arrow dead on a phone with nothing booked ahead, and that is what Paul
+ * hit on 19/11/2026. An empty December is an answer, and so is a November she has already
+ * worked: the two months behind are how she finds a clean to check a payslip against.
+ *
+ * It opens on this month wherever that sits in the run, which is what `start` is for.
  *
  * A client component only because paging is state. All the dates were worked out before it
  * got here, which is why it holds no calendar arithmetic of its own.
@@ -78,12 +80,15 @@ export function MonthGrid({
   months,
   marks,
   lang,
+  start = 0,
 }: {
   months: MonthView[];
   marks: HouseMarks;
   lang: TeamLang;
+  /** Where this month sits in the run, which is where the grid opens. */
+  start?: number;
 }) {
-  const [at, setAt] = useState(0);
+  const [at, setAt] = useState(start);
   if (months.length === 0) return null;
   const month = months[Math.min(at, months.length - 1)];
   const canGoBack = at > 0;
