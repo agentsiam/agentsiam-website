@@ -9,7 +9,7 @@ import { ADMIN_API_CLEANING } from "@/lib/cleaning/routes";
  * the last of those is the difference between a cleaner who can get in and one who will be
  * standing at a gate. The function is there because the laundry run is somebody's whole job
  * here, and handing her a clean is a decision rather than a typo. */
-export type Candidate = { person: string; role: string; hasCodes: boolean };
+export type Candidate = { person: string; role: string; hasCodes: boolean; self: boolean };
 
 async function send(payload: Record<string, string>): Promise<string> {
   try {
@@ -29,8 +29,13 @@ async function send(payload: Record<string, string>): Promise<string> {
  * Give a clean somebody turned down to another cleaner.
  *
  * Paul, 18/11/2026: the cleaners are freelancers, so a clean one of them turns down comes back
- * to the admin and the admin gives it to somebody else. This is that control, and it is the
+ * to the admin and the admin gives it to another cleaner. This is that control, and it is the
  * first thing in this app that changes who does a job.
+ *
+ * **Her own name is in the list**, at the top of it, and picking it moves nothing: it forgets
+ * her answer, so the clean reaches her again as new work. Paul, 19/11/2026: it does not have to
+ * go to somebody else. A no on Tuesday and a conversation on Wednesday is the ordinary way this
+ * ends, and the answer to it is the same cleaner being asked again.
  *
  * **It is an override and not the schedule.** The `cleaning-schedule` skill still decides who
  * cleans what and republishes the same clean to the same person on every run; this writes a
@@ -89,7 +94,11 @@ export function CleaningMove({
         >
           {candidates.map((one) => (
             <option key={one.person} value={one.person}>
-              {one.role ? `${one.person} (${one.role})` : one.person}
+              {one.self
+                ? `${one.person} again`
+                : one.role
+                  ? `${one.person} (${one.role})`
+                  : one.person}
             </option>
           ))}
         </select>
@@ -99,10 +108,16 @@ export function CleaningMove({
           disabled={busy}
           className="rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-bg disabled:opacity-40"
         >
-          Move it
+          {picked?.self ? "Ask her again" : "Move it"}
         </button>
       </div>
-      {picked && !picked.hasCodes ? (
+      {picked?.self ? (
+        <p className="mt-2 text-xs text-muted">
+          Nothing moves. {picked.person} is asked again, and this clean is back on her first
+          screen waiting for an answer.
+        </p>
+      ) : null}
+      {picked && !picked.self && !picked.hasCodes ? (
         <p className="mt-2 text-xs text-deep-red">
           {picked.person} has no door code for this house in her own schedule, and a code is
           never moved with a clean. She will see the job and not the number.

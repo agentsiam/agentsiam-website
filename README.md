@@ -568,13 +568,25 @@ access, no scheduling rule and no Thai date formatting, so the Note Paul pastes 
 the screen she opens cannot disagree: they are two renderings of one run.
 
 **The app never composes, formats or translates a Thai string.** The document carries the
-queue title, every job line exactly as the Note prints it, the contact block, the access block
-and the change lines, all finished. The skill owns Thai dates because the day of week is the
+queue title, every job line, the contact block, the access block and the change lines, all
+finished. The skill owns Thai dates because the day of week is the
 easiest thing in that system to get wrong and the hardest to spot, and an app that formats its
 own job lines is a second schedule arriving as a formatting library. What this app decides is
 order, weight and position.
 
-**It does compose English**, and only English, in `src/lib/cleaning/english.ts`. Paul,
+**What it does decide is which published fields a screen prints**, and since 19/11/2026 a job
+line is not one of them. Paul: the cleaner's name should not be in brackets after the date,
+because the clean does not belong to her yet, and the special request belongs in the note and
+not in the title of the clean. A published line is four things at once, `พุธ 18 พย - 10.00 (ดา)
+มีแขกพักอยู่ เพิ่มเตียงเด็ก`, which is right in a LINE Note and is four things in one sentence on a
+screen, three of them already drawn beside it. So a screen prints the day label and the hour,
+two other published fields of the same visit, and the house, the occupied figure and the
+request are drawn in their own places. `plainLine` in `src/lib/cleaning/english.ts` is the one
+function that builds it and it parses nothing. **The LINE Note is unchanged**, because the
+skill renders that: if the request should come out of the line there too, that is a change in
+the skill.
+
+**It does compose English**, and only English, in the same file. Paul,
 18/11/2026: work out the English text as well, because some of it is showing in Thai. A
 document is published in one language and that language is Thai, so a phone set to English was
 reading English prompts over a Thai schedule. What that file composes it composes out of the
@@ -613,7 +625,7 @@ screen rather than the team's; it says so on itself and nothing links to it.
 |---|---|---|
 | `/cleaning` | the device cookie, then her PIN | Her schedule: her visits in date order with the next one filled in ink, a marker on anything new or moved since she last looked, the contact block and the change lines. It sends her to `/cleaning/new` while anything ahead of her is unanswered |
 | `/cleaning/new` | the same two | The new work, in blue, one clean per panel with accept and decline on each. The one screen she cannot walk past, and it stops existing the moment nothing is waiting |
-| `/cleaning/day/<date>` | the same two | One day and what it asks of her, in time order, reached by tapping a date on the month grid |
+| `/cleaning/day/<date>` | the same two | One day and what it asks of her, in time order, reached by tapping a date on the month grid, which pages forward a month at a time from this one to the furthest she has work in, and three months at the least |
 | `/cleaning/job/<slug>` | the same two | One job: the line, the house, the address, the people on it, the codes on the day, and the thread about it |
 | `/api/cleaning/codes` | the same PIN, never asked for twice | Her gate and door codes as data, fetched into the schedule and the job screen rather than rendered into them. Kept by the service worker alone, on a deadline, and by no other cache |
 | `/cleaning/enrol/<token>` | the link itself | The one URL that answers without a cookie. A GET greets her; the POST behind the button spends the token |
@@ -680,6 +692,13 @@ counts, the day behind a tapped date and the job screen behind a kept link, thro
 still ahead of it at the top, in red, with who turned it down and when, because a clean that is
 invisible to the person it was published to and buried on an admin screen is a clean nobody
 does.
+
+**Or he gives it back to her.** Paul, 19/11/2026: it does not have to be reassigned to another
+person. Her own name is at the top of the list on that control, and picking it moves nothing:
+it forgets her answer, so the clean reaches her again as new work and she accepts or declines
+it afresh. A no on the Tuesday and a conversation on the Wednesday is the ordinary way this
+ends, and the answer to it is the same cleaner being asked again. Only Paul can do it: a
+cleaner who could clear her own no would be a cleaner being asked until she said yes.
 
 **And he gives it to another cleaner from that block.** Paul, 18/11/2026: the cleaners are
 freelancers, so turning a clean down is an option they have, and the admin reschedules it for

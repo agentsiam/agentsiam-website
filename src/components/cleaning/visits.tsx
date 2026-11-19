@@ -38,6 +38,31 @@ function Digits({ children, className }: { children: React.ReactNode; className?
 }
 
 /**
+ * What this one clean asks for, under the line rather than inside it.
+ *
+ * Paul, 19/11/2026: the detail or the special request goes into the note, not into the title
+ * of the clean. The skill publishes it twice, once on the end of the job line and once as a
+ * field of its own, and until now a screen printed the line and got both. Now it prints the
+ * day and the hour and this prints the rest, which is the same text in the same words and in
+ * a place she can see it is about this clean and not about the day.
+ *
+ * Gold, like the panel the job screen gives it, because it is the one thing on a row that
+ * changes what she packs.
+ */
+function Request({ note, onInk = false }: { note: string | null; onInk?: boolean }) {
+  if (!note) return null;
+  return (
+    <span
+      className={`mt-1.5 block text-[15px] leading-6 ${
+        onInk ? "text-gold-on-ink" : "text-deep-gold"
+      }`}
+    >
+      {note}
+    </span>
+  );
+}
+
+/**
  * Which house, and that somebody is in it.
  *
  * One line of metadata under the job line, and both halves of it are the document's: the
@@ -177,6 +202,7 @@ export function NextVisitCard({
           {/* No job-type glyph up here. In the rows below it sits in a 40px chip and reads
               cleanly; shrunk into a pill beside text it is a smudge, and the card already
               says what the job is in her own words. */}
+          <Request note={visit.note} onInk />
           <VisitMeta
             house={house}
             mark={mark}
@@ -267,6 +293,7 @@ function Day({
                   >
                     {visitLine(visit, lang)}
                   </p>
+                  <Request note={visit.note} />
                   <VisitMeta
                     house={houseOf(visit)}
                     mark={markOf(marks, visit.property)}

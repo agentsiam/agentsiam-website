@@ -562,20 +562,41 @@ export function monthWeeks(
 }
 
 /**
- * Which months the arrows can reach: this one, and every later month she has work in.
+ * Which months the arrows can reach: an unbroken run from this one.
  *
- * Never a fixed number of months forward, because the answer is in the document: a schedule
- * published three months out gets three months of arrows and one published to the end of
- * the week gets none. Earlier months are not reachable, which is the same call the list
- * makes by folding finished days away: the app opens on now.
+ * **It used to be this month and only the months she had work in**, which meant the arrow
+ * was dead on a phone with nothing booked ahead and jumped from November to April on one
+ * with a job in each. Paul, 19/11/2026, testing it: she could not move from the current
+ * month to the next month. A calendar that cannot be paged forward is not a calendar, and
+ * "nothing in December" is an answer a freelancer deciding her month needs to be able to
+ * get, which is exactly the phone that used to have no arrow at all.
+ *
+ * So: this month, the two after it, and every month up to the furthest she has work in,
+ * with no gaps, to a year at the outside. The floor is what makes the arrow always work.
+ * The run to her last job is what makes a schedule published months out reachable one tap
+ * at a time. The cap is so that one job in 2029 does not render thirty empty grids into a
+ * page a phone has to download at a gate.
+ *
+ * Earlier months are not reachable, which is the same call the list makes by folding
+ * finished days away: the app opens on now.
  */
+export const MONTHS_AHEAD_MIN = 3;
+export const MONTHS_AHEAD_MAX = 12;
+
 export function monthsAhead(visits: Visit[], today: string = todayInBangkok()): string[] {
   const here = monthOf(today);
-  const months = new Set<string>([here]);
+  const cap = addMonths(here, MONTHS_AHEAD_MAX - 1);
+  let last = addMonths(here, MONTHS_AHEAD_MIN - 1);
   for (const visit of visits) {
-    if (visit.date >= today) months.add(monthOf(visit.date));
+    if (visit.date < today) continue;
+    const month = monthOf(visit.date);
+    if (month > last) last = month;
   }
-  return [...months].sort();
+  if (last > cap) last = cap;
+
+  const months: string[] = [];
+  for (let month = here; month <= last; month = addMonths(month, 1)) months.push(month);
+  return months;
 }
 
 /**

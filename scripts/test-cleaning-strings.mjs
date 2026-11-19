@@ -91,7 +91,7 @@ const {
   weekdaysWritten,
   written,
 } = require(join(out, "strings.js"));
-const { blockHeading, dayHeading, englishDay, englishLine, visitLine } = require(
+const { blockHeading, dayHeading, englishDay, englishLine, plainLine, visitLine } = require(
   join(out, "english.js"),
 );
 
@@ -202,7 +202,14 @@ check("a job line, with the hour the document carries", englishLine(job), "Wed 1
 check("a job with no hour is still a date", englishLine({ ...job, time: "" }), "Wed 18 Nov");
 check("a date that will not parse composes nothing", englishDay("the fourteenth"), "");
 check("no Thai in a composed line", thai.test(englishLine(job)), false);
-check("a Thai phone gets the document's own line", visitLine(job, "th"), job.line);
+check("a Thai phone gets the day and the hour", visitLine(job, "th"), "พุธ 18 พย - 10.00");
+check("and never the name in brackets", visitLine(job, "th").includes("("), false);
+check("nor the request, which has its own line", plainLine({ ...job, note: "เพิ่มเตียงเด็ก" }).includes("เตียง"), false);
+check(
+  "a document with no day label keeps its published line",
+  plainLine({ ...job, dayLabel: null }),
+  job.line,
+);
 check("an English phone gets the composed one", visitLine(job, "en"), "Wed 18 Nov, 10.00");
 check(
   "a day heading follows the phone, Thai",

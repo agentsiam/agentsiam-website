@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentSession } from "@/lib/admin/guard";
+import { clearAnswer } from "@/lib/cleaning/accept";
 import { clearMove, moveVisit } from "@/lib/cleaning/assign";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { PIN_SHAPE, createEnrolToken, revokeDevice, setPin } from "@/lib/cleaning/devices";
@@ -13,8 +14,8 @@ export const runtime = "nodejs";
 
 /**
  * The six things Paul does to the cleaning app: issue a link, revoke a phone, set a PIN,
- * answer somebody about a clean, give a clean she turned down to another cleaner, and give
- * it back.
+ * answer somebody about a clean, give a clean somebody turned down to another cleaner, and
+ * give it back, which includes giving it back to the person who turned it down.
  *
  * Behind the admin session, because Paul is already signed in to one and a second sign-in
  * for the same person is a second thing to lose. **No door code passes through here.** The
@@ -76,13 +77,22 @@ export async function POST(request: Request) {
         return NextResponse.json({ ok: true });
       }
       const to = typeof body.to === "string" ? body.to : "";
-      if (!PERSON_KEY.test(to) || to === person) {
-        return NextResponse.json({ error: "Pick somebody else." }, { status: 400 });
+      if (!PERSON_KEY.test(to)) {
+        return NextResponse.json({ error: "That is not a roster key." }, { status: 400 });
       }
       const from = parseDocument(await readNote(person));
       const visit = from ? findVisit(from.visits, slug) : null;
       if (!visit) {
         return NextResponse.json({ error: "That person has no such job." }, { status: 404 });
+      }
+      // **Giving it back to the person who turned it down.** Paul, 19/11/2026: it does not have
+      // to go to somebody else. There is nothing to move, so what happens instead is that her
+      // answer is forgotten and the clean reaches her again as new work, and any move somebody
+      // else was holding it under is cleared with it.
+      if (to === person) {
+        await clearMove(slug, todayInBangkok());
+        await clearAnswer(person, from?.visits ?? [], slug);
+        return NextResponse.json({ ok: true });
       }
       // She has to have a schedule of her own to receive it: a moved clean is merged into a
       // published document, and there is nothing to merge it into otherwise.
