@@ -21,10 +21,12 @@ import { calendarWeekdays, weekdaysWritten, type TeamLang } from "@/lib/cleaning
  * composed here. The heading is the month as digits, in the Latin face, exactly like the
  * line that says how old the schedule is, and the seven column headings are Paul's.
  *
- * **The months it can reach come from the document**, worked out on the server: this month,
- * and every later month she has work in. A schedule published three months out gets three
- * months of arrows and one published to the end of the week gets none. Earlier months are
- * not reachable, the same call the list makes by folding finished days away.
+ * **The months it can reach are an unbroken run from this one**, worked out on the server by
+ * `monthsAhead`: this month, the two after it, and on to the furthest month she has work in.
+ * It used to be this month and only the months with work in them, which left the arrow dead on
+ * a phone with nothing booked ahead, and that is what Paul hit on 19/11/2026. An empty December
+ * is an answer. Earlier months are not reachable, the same call the list makes by folding
+ * finished days away.
  *
  * A client component only because paging is state. All the dates were worked out before it
  * got here, which is why it holds no calendar arithmetic of its own.
