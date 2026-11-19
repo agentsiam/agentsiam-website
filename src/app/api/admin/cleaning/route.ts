@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { currentSession } from "@/lib/admin/guard";
 import { agreedShape, clearAnswer } from "@/lib/cleaning/accept";
-import { clearMove, moveVisit } from "@/lib/cleaning/assign";
+import { clearMove, moveVisit, readAssignments, scheduleFor } from "@/lib/cleaning/assign";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
 import { PIN_SHAPE, createEnrolToken, revokeDevice, setPin } from "@/lib/cleaning/devices";
 import { findVisit, parseDocument, todayInBangkok } from "@/lib/cleaning/document";
@@ -80,8 +80,11 @@ export async function POST(request: Request) {
       if (!PERSON_KEY.test(to)) {
         return NextResponse.json({ error: "That is not a roster key." }, { status: 400 });
       }
-      const from = parseDocument(await readNote(person));
-      const visit = from ? findVisit(from.visits, slug) : null;
+      // **Her schedule as she sees it**, not her published document, because a clean can be
+      // moved on: Paul gives Da's Tuesday to Aun on the Monday and to ป้า on the Tuesday, and
+      // by then it is not in Aun's published document at all.
+      const hers = await scheduleFor(person);
+      const visit = hers ? findVisit(hers.visits, slug) : null;
       if (!visit) {
         return NextResponse.json({ error: "That person has no such job." }, { status: 404 });
       }
@@ -91,7 +94,7 @@ export async function POST(request: Request) {
       // else was holding it under is cleared with it.
       if (to === person) {
         await clearMove(slug, todayInBangkok());
-        await clearAnswer(person, from?.visits ?? [], slug);
+        await clearAnswer(person, hers?.visits ?? [], slug);
         return NextResponse.json({ ok: true });
       }
       // She has to have a schedule of her own to receive it: a moved clean is merged into a
@@ -102,7 +105,13 @@ export async function POST(request: Request) {
           { status: 409 },
         );
       }
-      await moveVisit({ slug, from: person, to, line: agreedShape(visit) }, todayInBangkok());
+      // **Who loses it stays the person it was published to**, however many times it moves.
+      // The schedule run keeps publishing that clean to her on every run, so she is the one it
+      // has to be taken off; recording the last holder instead would hand it back to the first
+      // one the next time anybody looked.
+      const standing = (await readAssignments()).get(slug);
+      const from = standing?.from ?? person;
+      await moveVisit({ slug, from, to, line: agreedShape(visit) }, todayInBangkok());
       return NextResponse.json({ ok: true });
     }
 

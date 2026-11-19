@@ -32,6 +32,12 @@ async function send(payload: Record<string, string>): Promise<string> {
  * to the admin and the admin gives it to another cleaner. This is that control, and it is the
  * first thing in this app that changes who does a job.
  *
+ * **It sits on every clean still ahead of her, not only on one she refused.** Paul, 19/11/2026:
+ * ป้า is the backup cleaner, she has no place in the rota, and she is assigned the work by hand.
+ * A backup exists to be given work nobody has turned down, so the control cannot wait for a
+ * refusal. On the first admin screen it still stands under the cleans that came back, which is
+ * the queue of ones that need somebody; on a person's own page it stands under each of hers.
+ *
  * **Her own name is in the list**, at the top of it, and picking it moves nothing: it forgets
  * her answer, so the clean reaches her again as new work. Paul, 19/11/2026: it does not have to
  * go to somebody else. A no on Tuesday and a conversation on Wednesday is the ordinary way this
