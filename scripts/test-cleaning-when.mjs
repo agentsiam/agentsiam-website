@@ -119,7 +119,7 @@ try {
 }
 
 const require = createRequire(join(out, "test.cjs"));
-const { moveVisit, scheduleFor } = require(join(out, "assign.js"));
+const { clearMove, moveVisit, scheduleFor } = require(join(out, "assign.js"));
 const { acceptState, agreedShape, answerVisit } = require(join(out, "accept.js"));
 const { cleanDayLabel, cleanTime, clearWhen, moveWhen, readWhenMoves } = require(
   join(out, "when.js"),
@@ -127,6 +127,14 @@ const { cleanDayLabel, cleanTime, clearWhen, moveWhen, readWhenMoves } = require
 const { WHEN_KEY, set } = require(join(out, "store.js"));
 const { visitSlug } = require(join(out, "document.js"));
 const { plainLine } = require(join(out, "english.js"));
+const { thaiDate, wordsAgree } = require(join(out, "thai-date.js"));
+
+/** The skill's own tables, copied from date_label in build_note.py: Monday first, January
+ * first, no leading zero on the day and no year. */
+const WORDS = {
+  days: ["จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์", "อาทิตย์"],
+  months: ["มค", "กพ", "มีค", "เมย", "พค", "มิย", "กค", "สค", "กย", "ตค", "พย", "ธค"],
+};
 
 let failures = 0;
 let ran = 0;
@@ -268,6 +276,67 @@ console.log("\na move for a clean that has been and gone is pruned");
 await moveWhen({ slug: "2026-01-01-1200-275645", date: "2026-01-02", time: "09.00", shape: "x" }, TODAY);
 check("it is not kept", (await readWhenMoves()).has("2026-01-01-1200-275645"), false);
 check("and the live one still is", (await readWhenMoves()).has(SLUG), true);
+
+console.log("\nwith the run's own words published, nobody types a date");
+function withWords(words) {
+  const one = (key, line) => ({
+    key,
+    name: key,
+    lang: "th",
+    role: key === "ting" ? "laundry" : "cleaning",
+    title: "คิว",
+    visits: [visit({ line })],
+    day_words: words,
+  });
+  return {
+    built_at: "2026-11-20T00:00:00Z",
+    people: {
+      da: one("da", "พุธ 16 ธค - 12.00 (ดา)"),
+      ting: one("ting", "พุธ 16 ธค - 12.00 (ติ๋ง)"),
+      aun: { key: "aun", name: "aun", lang: "th", role: "cleaning", title: "คิว", visits: [], day_words: words },
+    },
+  };
+}
+
+writeFileSync(path, JSON.stringify(withWords(WORDS)));
+// Both overrides cleared, so this section starts from the published clean. Putting the hour
+// back on its own would revive the assignment made earlier: that was held against the shape
+// without a moved hour in it, and restoring the hour restores the shape.
+await clearWhen(SLUG, TODAY);
+await clearMove(SLUG, TODAY);
+await move(MOVED, "09.00");
+const spoken = (await hers("da"))[0];
+check("the new day is said in Thai", spoken?.dayLabel, "พฤหัส 17 ธค");
+check("and the line is built from it", plainLine(spoken), "พฤหัส 17 ธค - 09.00");
+check("ting reads the same", (await hers("ting"))[0]?.dayLabel, "พฤหัส 17 ธค");
+
+console.log("\nwhat Paul types still wins, because he typed it on purpose");
+await move(MOVED, "09.00", "da", "วันพฤหัสหน้า");
+check("his words stand", (await hers("da"))[0]?.dayLabel, "วันพฤหัสหน้า");
+
+console.log("\nwords that disagree with the run's own labels are not used");
+// The word corrupted is Wednesday, which is the day this document's own published label
+// names, so composing that label is what catches it. Corrupting a word no label exercises
+// would prove nothing, which is the point of checking against the labels rather than a list.
+writeFileSync(
+  path,
+  JSON.stringify(
+    withWords({ ...WORDS, days: WORDS.days.map((d, i) => (i === 2 ? "ไม่ใช่" : d)) }),
+  ),
+);
+await move(MOVED, "09.00");
+check("nothing is composed", (await hers("da"))[0]?.dayLabel, null);
+check("and the hour stands alone", plainLine((await hers("da"))[0]), "09.00");
+
+console.log("\nthe composer itself, against the script's own examples");
+check("the script's docstring example", thaiDate("2026-08-05", WORDS), "พุธ 5 สค");
+check("no leading zero on the day", thaiDate("2026-12-05", WORDS), "เสาร์ 5 ธค");
+check("a Sunday, which is last in the table", thaiDate("2026-12-20", WORDS), "อาทิตย์ 20 ธค");
+check("the published label for the 16th", thaiDate("2026-12-16", WORDS), "พุธ 16 ธค");
+check("a date that will not parse", thaiDate("not-a-date", WORDS), null);
+check("agreement with a real label", wordsAgree([{ date: DATE, dayLabel: "พุธ 16 ธค" }], WORDS), true);
+check("disagreement with a wrong one", wordsAgree([{ date: DATE, dayLabel: "x" }], WORDS), false);
+check("a visit with no label says nothing either way", wordsAgree([{ date: DATE, dayLabel: null }], WORDS), true);
 
 rmSync(out, { recursive: true, force: true });
 console.log(`\n${ran - failures}/${ran} passed`);

@@ -2,8 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JobComment } from "@/components/admin/job-comment";
 import { CleaningMove, CleaningWhen, type Candidate } from "@/components/admin/cleaning-move";
+import { englishLine } from "@/lib/cleaning/english";
 import { acceptState } from "@/lib/cleaning/accept";
 import { scheduleFor } from "@/lib/cleaning/assign";
+import { dayWordsOf } from "@/lib/cleaning/thai-date";
 import { knownPeople } from "@/lib/cleaning/devices";
 import { asVisit, before, pastVisits } from "@/lib/cleaning/history";
 import { PhotoTiles } from "@/components/cleaning/photo-tiles";
@@ -57,6 +59,9 @@ export default async function AdminCleaningPersonPage({
   // can write to her about. The screen above this one reads the published documents instead,
   // because that is the one place that has to show what the skill said.
   const document = problem ? null : await scheduleFor(person).catch(() => null);
+  // Whether her document carries the skill's own weekday and month words, which is what
+  // decides if a day Paul moves a clean to can be said in Thai without him writing it.
+  const composes = Boolean(document && dayWordsOf(document));
 
   const today = todayInBangkok();
   // **The cleans she has already done, out of her ledger.** A published document starts at
@@ -162,7 +167,9 @@ export default async function AdminCleaningPersonPage({
                 visit.date < today ? "opacity-60" : ""
               }`}
             >
-              <p className="text-sm font-semibold text-text">{visit.line}</p>
+              {/* The English line: his screen is English throughout, and a clean moved to
+                  another day has no published line left that names its date. */}
+              <p className="text-sm font-semibold text-text">{englishLine(visit)}</p>
               <p className="mt-1 text-xs text-muted">
                 {visit.date}
                 {house ? ` · ${house.name}` : ""}
@@ -209,6 +216,7 @@ export default async function AdminCleaningPersonPage({
                   time={visit.time}
                   label={visit.dayLabel ?? ""}
                   moved={Boolean(visit.movedTo)}
+                  composes={composes}
                 />
               ) : null}
 

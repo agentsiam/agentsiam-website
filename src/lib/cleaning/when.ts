@@ -25,24 +25,19 @@
  * longer answers to. A stale override is worse than no button: it would stand a cleaner in
  * front of a house at an hour nobody else believes in.
  *
- * **It cannot say the new date in Thai, so Paul says it.** Every Thai date in this system
- * belongs to the skill, which renders them beside the Note it posts, because the day of the
- * week is the easiest thing here to get wrong and the hardest for Paul to spot;
- * src/lib/cleaning/english.ts holds that rule, and this file does not break it. A clean moved
- * to another hour on the same day keeps its published Thai day and prints the new hour beside
- * it, which invents nothing. A clean moved to another **day** has no honest label of its own,
- * so the move carries one Paul typed, in his words, stored exactly as he wrote it. Without one
- * the Thai day is dropped rather than carrying one that names the wrong date, and the hour
- * stands alone; the clean still sorts, lands on the right day screen and marks the right
- * square on the calendar, and an English phone reads the whole new date either way, because
- * that half is composed from the ISO date.
+ * **Saying the new date in Thai takes the skill's words.** A clean moved to another hour on
+ * the same day keeps its published Thai day and prints the new hour beside it, which invents
+ * nothing. A clean moved to another **day** has no published label of its own, so the day is
+ * composed from the seven weekday words and twelve month words the document carries, by
+ * src/lib/cleaning/thai-date.ts, which checks them against that document's own labels before
+ * it writes anything. Where a document carries no words, Paul's own typed words stand in, and
+ * where there are neither the Thai day is dropped rather than naming the wrong date and the
+ * hour stands alone. An English phone reads the whole new date in every one of those cases,
+ * because that half is composed from the ISO date.
  *
- * **Why he types it rather than this app composing it.** The weekday for a date is arithmetic
- * and the words for it are not: the month's short Thai name and the house style of the line
- * are the skill's, and a date this app assembled would read as nearly right, which is the
- * worst way for it to be wrong. The durable fix is the skill publishing a label per date in
- * the document's range rather than one per visit, which is a change in
- * /Users/paulb/code/agentsiam/agentsiam-consulting and would make the box unnecessary.
+ * **What he types wins over what is composed**, because he typed it on purpose. Paul,
+ * 20/11/2026, on being asked to type it every time: no. The weekday for a date is arithmetic
+ * and only the words were ever his.
  *
  * **The label is not in what the two of them accepted.** Correcting a typo in a date's words
  * changes nothing about the work, so it does not put the clean back in front of either of
@@ -200,17 +195,26 @@ export async function clearWhen(slug: string, today: string): Promise<void> {
  * answer about when a clean is reaches every screen, every route and the accept record
  * together. src/lib/cleaning/assign.ts calls this and is the only caller that needs to.
  */
-export function applyWhen(visits: Visit[], moves: Map<string, WhenMove>): Visit[] {
+export function applyWhen(
+  visits: Visit[],
+  moves: Map<string, WhenMove>,
+  /** How this document says a date in Thai, where it can say one. From
+   * src/lib/cleaning/thai-date.ts, which composes it out of the skill's own words. */
+  sayDay?: (iso: string) => string | null,
+): Visit[] {
   if (moves.size === 0) return visits;
   return visits.map((visit) => {
     const slug = visitSlug(visit);
     const move = moves.get(slug);
     if (!move || !sameClean(move.shape, visit)) return visit;
     const movedDay = move.date !== visit.date;
-    // The skill's Thai for the day it used to be on would name the wrong date now, so what
-    // stands in its place is Paul's own words where he wrote any, and nothing where he did
-    // not. On the same day the published label is still true and is left alone.
-    const label = move.label || (movedDay ? null : visit.dayLabel);
+    // The skill's Thai for the day it used to be on would name the wrong date now. What
+    // stands in its place, in order: Paul's own words where he typed any, because he typed
+    // them on purpose; then the new day composed from the skill's own vocabulary, where the
+    // document publishes it; then nothing. On the same day the published label is still true
+    // and is left alone.
+    const label =
+      move.label || (movedDay ? (sayDay?.(move.date) ?? null) : visit.dayLabel);
     return {
       ...visit,
       slug,

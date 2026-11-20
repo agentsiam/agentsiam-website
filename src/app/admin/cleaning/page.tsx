@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CleaningMove, CleaningUndoMove, type Candidate } from "@/components/admin/cleaning-move";
+import { englishLine } from "@/lib/cleaning/english";
 import { CleaningPerson, type DeviceRow } from "@/components/admin/cleaning-person";
 import { requireSession } from "@/lib/admin/guard";
 import { acceptState } from "@/lib/cleaning/accept";
@@ -148,7 +149,7 @@ export default async function AdminCleaningPage() {
       // A move whose clean has changed since has lapsed, and the clean is back with the
       // person it was published to. The same rule as the accept record.
       if (move && move.line === visit.line) {
-        moved.push({ from: person, to: move.to, slug, line: visit.line, date: visit.date, house, at: move.at });
+        moved.push({ from: person, to: move.to, slug, line: englishLine(visit), date: visit.date, house, at: move.at });
         continue;
       }
       const at = declinedAt.get(slug);
@@ -156,7 +157,12 @@ export default async function AdminCleaningPage() {
       turnedDown.push({
         person,
         slug,
-        line: visit.line,
+        // **His screen, so the English line.** A published line is finished Thai with her name
+        // inside it, and a clean he has moved to another day has no published line left worth
+        // printing: it reads as the hour alone, which is what sent him here. This composes the
+        // day and the hour from the ISO date, which is true of every clean whatever has
+        // happened to it.
+        line: englishLine(visit),
         date: visit.date,
         house,
         at,

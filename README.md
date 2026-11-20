@@ -812,19 +812,27 @@ lingers**: a clean that gains a cot returns to its published hour, and a booking
 hour changes publishes a different slug that this record does not answer to. A stale override
 would stand a cleaner in front of a house at an hour nobody else believes in.
 
-**A move cannot say the new date in Thai, so Paul says it.** Every Thai date here belongs to
-the skill, and this app composes none: the weekday is arithmetic but the words are house
-style, and a date this app assembled would read as nearly right, which is the worst way to be
-wrong. A new hour on the same day needs nothing, because her published Thai day is still true.
-A new day opens a box on the admin screen for that day in Thai, and what he types is stored as
-he wrote it, ends trimmed and nothing else touched, and becomes her day heading and her job
-line. **Nothing checks that his words match the date**, which is the cost of him writing them
-and is said on the screen. Left empty, the clean reads as the hour alone under no heading,
-which is honest and poor; it still sorts, lands on the right day screen and marks the right
-square on the calendar, and an English phone reads the whole new date either way. The words
-are not part of what the two of them accepted, so correcting a typo in a date does not put the
-clean back in front of anybody. `npm run test:cleaning-when` holds all of it against a
-throwaway store, 51 checks.
+**The new day is said in Thai out of the skill's own words.** A new hour on the same day needs
+nothing, because her published Thai day is still true. A new day is composed by
+`src/lib/cleaning/thai-date.ts` from the seven weekday words and twelve month words the
+document carries in `day_words`, in the script's own format, `{weekday} {day} {month}` with no
+leading zero and no year. **This is the one place in the app that writes a Thai date and it
+invents nothing**: the words are the skill's and what this adds is arithmetic, which is the
+half a script does not get wrong. Before any of them is used they are composed against every
+label the document already carries and compared; one disagreement anywhere and nothing is
+composed at all, because a date that is nearly right would read as the skill's and be the
+app's. A document from before the words existed composes nothing and says so on the admin
+screen.
+
+**Paul can still word it himself**, in a box beside the date, and what he types wins over what
+would be composed, stored as he wrote it with the ends trimmed and nothing else touched.
+Nothing checks those words against the date, which is the cost of him writing them and is said
+on the screen. With neither words nor a typed day the clean reads as the hour alone under no
+heading; it still sorts, lands on the right day screen and marks the right square on the
+calendar, and an English phone reads the whole new date in every case. The words are not part
+of what the two of them accepted, so correcting a typo in a date does not put the clean back in
+front of anybody. `npm run test:cleaning-when` holds all of it against a throwaway store, 65
+checks, including the composer against the script's own docstring example.
 
 Three things about a clean moved to another cleaner are worth knowing. **The line stops naming the first cleaner**:
 a job line is finished Thai text with her name inside it, so a moved clean prints the day label
@@ -1078,16 +1086,16 @@ flow, end to end, with nothing live anywhere near it.
   rendered in development and would have gone missing only in production, on the one screen
   that tells a cleaner whether what she is holding is current. Nothing in this repository
   changed for it; the app read `built_at` off the document already.
-- **A clean moved to another day takes its Thai date from Paul, and nothing checks it
-  (20/11/2026).** Every Thai date in this system is written by the `cleaning-schedule` skill
-  and this app composes none, which is deliberate: the weekday is the easiest thing here to
-  get wrong and the hardest for Paul to spot. So the move carries words he types, and a
-  wrong weekday in them reaches her screens unchallenged, exactly as a wrong weekday typed
-  into the LINE Note would have. Left empty, the clean reads as the hour alone under no
-  heading. A clean moved to another hour on the same day is unaffected either way, because
-  the label it was published with is still true. The fix that removes the box is one field
-  from the skill, a label per date in the document's range rather than one per visit, and it
-  is a change in `/Users/paulb/code/agentsiam/agentsiam-consulting`.
+- **No document carries `day_words` yet, so a moved day has no Thai date until one does
+  (20/11/2026).** The app composes the day from the seven weekday words and twelve month words
+  a document publishes, and checks them against that document's own labels first. Nothing
+  publishes them: `build_note.py` in `/Users/paulb/code/agentsiam/agentsiam-consulting` holds
+  the tables in `L10N["th"]`, Monday first and 1 to 12, and has to write them into each
+  document beside `day_label`, after which a schedule run fills them in. Until then a clean
+  moved to another day reads as the hour alone unless Paul types the day himself in the box on
+  the admin screen, and words he types are never checked against the date. A clean moved to
+  another hour on the same day is unaffected throughout, because the label it was published
+  with is still true.
 - **The accept flow cannot say what moved or why (18/11/2026).** A clean that has moved reaches
   her as something to accept, which is the half the app can do alone, and the card says nothing
   about where it moved from or why it moved, which Paul asked for in the same breath. Both need

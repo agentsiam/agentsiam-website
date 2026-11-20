@@ -8,6 +8,7 @@ import {
 import { sameClean } from "./accept";
 import { plainLine } from "./english";
 import { ASSIGN_KEY, get, readNote, set } from "./store";
+import { dayWordsOf } from "./thai-date";
 import { applyWhen, readWhenMoves } from "./when";
 
 /**
@@ -149,7 +150,10 @@ export async function scheduleFor(person: string): Promise<TeamDocument | null> 
   const published = parseDocument(await readNote(person));
   if (!published) return published;
   const whens = await readWhenMoves();
-  const own: TeamDocument = { ...published, visits: applyWhen(published.visits, whens) };
+  const own: TeamDocument = {
+    ...published,
+    visits: applyWhen(published.visits, whens, dayWordsOf(published) ?? undefined),
+  };
   const moves = await readAssignments();
   if (moves.size === 0) return own;
 
@@ -171,7 +175,7 @@ export async function scheduleFor(person: string): Promise<TeamDocument | null> 
   for (const donor of donors) {
     const document = parseDocument(await readNote(donor).catch(() => null));
     if (!document) continue;
-    for (const visit of applyWhen(document.visits, whens)) {
+    for (const visit of applyWhen(document.visits, whens, dayWordsOf(document) ?? undefined)) {
       const move = moves.get(visitSlug(visit));
       // The same two-sided check: this donor's own clean, and only if it is this person it
       // was given to. The donor's laundry colleague shares the slug and is not this.

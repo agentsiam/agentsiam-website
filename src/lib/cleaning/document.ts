@@ -70,6 +70,11 @@ export type VisitPerson = {
   phone: string | null;
 };
 
+/** The seven weekday words and the twelve month words a document's dates are written in,
+ * as the skill publishes them. Monday first and January first, the order the script holds
+ * them in. src/lib/cleaning/thai-date.ts is what reads them. */
+export type DayWords = { days: string[]; months: string[] };
+
 export type Visit = {
   /**
    * The slug this clean is known by, when that is no longer what its date and hour would
@@ -139,6 +144,16 @@ export type TeamDocument = {
   /** Every house she has work at, in the order the document lists them. Empty on a
    * single-property document, which is what makes every screen fall back to its old shape. */
   properties: PropertyRef[];
+  /**
+   * The seven weekday words and the twelve month words this document's dates are written in,
+   * as the skill publishes them, or null on a document from before it did.
+   *
+   * It exists so that a date the skill never rendered, which is any date Paul moves a clean
+   * to, can be said in the same words as the ones it did. src/lib/cleaning/thai-date.ts is
+   * the only reader and it checks them against this document's own labels before it uses
+   * them. Monday first and January first, which is the order the script holds them in.
+   */
+  dayWords: DayWords | null;
   contact: DocumentBlock | null;
   /**
    * Her gate and door codes, finished, one block per house.
@@ -251,6 +266,19 @@ function asAccess(value: unknown): AccessBlock[] {
  * a document with no title or no readable visit is no document at all. A half-parsed
  * schedule is worse than an empty screen, because an empty screen says to ask Paul.
  */
+/** Seven days and twelve months, all of them written, or null for anything else. A partial
+ * table is no table: a composed date missing one word would be a date with a hole in it. */
+function asDayWords(value: unknown): DayWords | null {
+  if (typeof value !== "object" || value === null) return null;
+  const v = value as Record<string, unknown>;
+  const days = Array.isArray(v.days) ? v.days : [];
+  const months = Array.isArray(v.months) ? v.months : [];
+  const written = (list: unknown[], length: number) =>
+    list.length === length && list.every((one) => typeof one === "string" && one.trim() !== "");
+  if (!written(days, 7) || !written(months, 12)) return null;
+  return { days: days as string[], months: months as string[] };
+}
+
 export function parseDocument(raw: unknown): TeamDocument | null {
   if (typeof raw !== "object" || raw === null) return null;
   const d = raw as Record<string, unknown>;
@@ -270,6 +298,7 @@ export function parseDocument(raw: unknown): TeamDocument | null {
     properties: Array.isArray(d.properties)
       ? d.properties.map(asProperty).filter((p): p is PropertyRef => p !== null)
       : [],
+    dayWords: asDayWords(d.day_words),
     contact: asBlock(d.contact),
     access: asAccess(d.access),
     remarks: asBlock(d.remarks),

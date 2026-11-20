@@ -182,13 +182,13 @@ export function CleaningUndoMove({ slug, to }: { slug: string; to: string }) {
  * published hour, which is the same disagreement the move above already carries, except that
  * this one is about when to turn up.
  *
- * **A different day needs the Thai date from Paul**, and the box for it appears the moment he
- * picks one. Every Thai date here is the skill's, rendered beside the Note it posts, and this
- * app composes none: the weekday is arithmetic but the words are house style, and a date this
- * app assembled would read as nearly right, which is the worst way to be wrong. A new hour on
- * the same day needs nothing, because her published Thai day is still true. A new day without
- * a typed date leaves her reading the hour alone under no heading, which is honest and poor,
- * so the box says what it is for and what happens if it is left empty.
+ * **A different day is said in Thai out of the skill's own words**, and the box is there for
+ * when he would rather word it himself. A new hour on the same day needs nothing, because her
+ * published Thai day is still true. A new day is composed by
+ * src/lib/cleaning/thai-date.ts from the seven weekday words and twelve month words her
+ * document carries, checked against that document's own labels first. Where her document
+ * carries none, published before the run wrote them, the box is the only way she reads a date
+ * at all, and the line under it says which of the two she is in.
  */
 export function CleaningWhen({
   slug,
@@ -197,15 +197,19 @@ export function CleaningWhen({
   time,
   label,
   moved,
+  composes,
 }: {
   slug: string;
   person: string;
   date: string;
   time: string;
   /** The day label this clean is showing now: the skill's where it has not moved day, and
-   * whatever Paul last typed where it has. */
+   * whatever was composed or typed where it has. */
   label: string;
   moved: boolean;
+  /** Whether her document carries the skill's own weekday and month words, so a day moved to
+   * can be said in Thai with nothing typed. */
+  composes: boolean;
 }) {
   const router = useRouter();
   const [day, setDay] = useState(date);
@@ -278,7 +282,7 @@ export function CleaningWhen({
         <div className="mt-2">
           <div className="flex flex-wrap items-center gap-2">
             <label className="text-xs text-muted" htmlFor={`thai-${slug}`}>
-              That day in Thai
+              {composes ? "That day in Thai, if you want your own words" : "That day in Thai"}
             </label>
             <input
               id={`thai-${slug}`}
@@ -292,7 +296,9 @@ export function CleaningWhen({
           <p className="mt-2 text-xs text-muted">
             {thai.trim()
               ? `Her screens will head that day "${thai.trim()}" and read the clean as "${thai.trim()} - ${hour}", in your words exactly. Nothing here checks that the day of the week matches ${day}.`
-              : `Another day, so her Thai screens show this clean on ${day} as the hour alone, under no heading, because every Thai date here is written by the schedule run and this app writes none. Type one above and she reads it properly. An English phone reads the whole date either way.`}
+              : composes
+                ? `Leave it empty and she reads ${day} in Thai anyway, composed from the words the schedule run published and checked against its own dates. Type something only to word it yourself.`
+                : `Another day, so her Thai screens show this clean on ${day} as the hour alone, under no heading: her schedule was published before the run carried its Thai words, so there are none to compose from. Type one above and she reads it properly. An English phone reads the whole date either way.`}
           </p>
         </div>
       ) : null}
