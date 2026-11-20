@@ -160,6 +160,9 @@ owns the procedure and the provenance; do not restate them here.
   See `GUIDE-RUNBOOK.md`, which owns the guide's procedure.
 - `npm run fonts`, which reads Google Fonts and writes nothing without `--apply`. By hand only,
   never at build time (R12). See `src/fonts/README.md`.
+- `npm run indexnow`, after a production deploy is live, never before. Submits every URL in the live
+  sitemap to IndexNow (Bing and the engines sharing it); pass URLs to submit only those. The key
+  file in `public/` is what proves ownership, so it is never renamed or removed.
 - Absolute path for any Terminal block (C8): `/Users/paulb/code/agentsiam/agentsiam-website`.
 
 ## 7. Traps
