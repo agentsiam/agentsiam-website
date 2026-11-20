@@ -118,8 +118,14 @@ export const deviceKey = (device: string) => `cleaning:device:${device}`;
  * Redis set, so the local fixture backend can hold exactly the same value. */
 export const deviceIndexKey = (person: string) => `cleaning:devices:${person}`;
 
-/** A single-use enrolment token. Spending it is deleting it. */
+/** An enrolment link. It survives being spent, because one link enrols every browser she
+ * opens it in, and it dies of its own TTL or of five wrong PINs. */
 export const enrolKey = (token: string) => `cleaning:enrol:${token}`;
+
+/** Wrong PINs offered against one enrolment link. Keyed on the link rather than on a
+ * person or a phone, because at that moment there is no phone yet and the thing being
+ * guessed at is the link. Same shared store and the same reason as `pinFailKey`. */
+export const enrolFailKey = (token: string) => `cleaning:enrolfail:${token}`;
 
 /** Her PIN, salted and hashed. Never the PIN itself. */
 export const pinKey = (person: string) => `cleaning:pin:${person}`;
@@ -267,22 +273,6 @@ export async function del(key: string): Promise<void> {
   const state = await readLocalState();
   delete state[key];
   await writeLocalState(state);
-}
-
-/**
- * Read a key and delete it in one step, which is how an enrolment token is spent.
- *
- * One step matters: a read then a delete leaves a window in which a forwarded link opens
- * twice, and that window is exactly the attack the single-use link exists to close.
- */
-export async function getdel(key: string): Promise<string | null> {
-  if (requireStore() === "redis") return redis<string | null>(["GETDEL", key]);
-  const state = await readLocalState();
-  const entry = state[key];
-  if (!entry) return null;
-  delete state[key];
-  await writeLocalState(state);
-  return entry.value;
 }
 
 /** Add one, and set the window on the first failure of a run. Returns the count. */

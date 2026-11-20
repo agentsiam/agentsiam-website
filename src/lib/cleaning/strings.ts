@@ -194,15 +194,16 @@ export const TEAM_STRINGS_TH = {
   jobPeopleHeading: "ผู้ร่วมงาน",
 
   /**
-   * Under her name on the enrolment link Paul sends in LINE, which otherwise shows a name and
-   * a button and no account of what pressing it does.
+   * Under her name on the enrolment link Paul sends in LINE, above the field for her code.
    *
-   * It asks her to open the link on the phone she will use, rather than saying the link works
-   * on this phone only. That is the correction of 18/11/2026 and it is the truer sentence:
-   * the GET answers on any phone and the POST binds whichever one presses the button, so the
-   * choice of phone is hers to make once and cannot be undone.
+   * It asks her to open the link on the phone she will use. **It said the link worked once
+   * until 20/11/2026, and that clause is gone because it stopped being true**: one link now
+   * enrols every browser that opens it with her code. What is left is the half that was
+   * always true and is still worth saying, and it is the wording that was already here
+   * rather than a new sentence. The line that would serve her better now, that she may open
+   * it again in her other browser, is Paul's to write in Thai.
    */
-  enrolHelp: "ลิงก์นี้ใช้ได้ครั้งเดียว กรุณาเปิดบนโทรศัพท์ที่จะใช้ดูตารางงาน",
+  enrolHelp: "กรุณาเปิดบนโทรศัพท์ที่จะใช้ดูตารางงาน",
 
   /** The control that opens the days already behind her. It carries a count and a chevron
    * and no word for what is behind it. */
@@ -331,7 +332,7 @@ export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
   offline: "You are offline. Showing the last saved copy",
   jobAddressHeading: "Address",
   jobPeopleHeading: "Working with",
-  enrolHelp: "This link works once. Open it on the phone you will use for your schedule",
+  enrolHelp: "Open it on the phone you will use for your schedule",
   pastJobs: "Past jobs",
   jobDetailsHeading: "About this job",
   jobTurnover: "Clean after the guest checks out, ready for the new guest",

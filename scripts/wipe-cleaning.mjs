@@ -12,8 +12,8 @@
  * knowing the cost, which is the next paragraph.
  *
  * **What it costs.** Every phone stops working the moment this runs. There is no recovery
- * flow in this app by design, so each of the three needs a fresh single-use link in LINE and
- * a new PIN before her next clean. Deleting a device record is exactly what the revoke
+ * flow in this app by design, so each of the three needs a new PIN before her next clean and
+ * a fresh link in LINE, in that order, because the link is opened with the PIN. Deleting a device record is exactly what the revoke
  * button does, three at a time and without the button.
  *
  * **The order matters and it is not obvious.** The admin screen lists people from the note

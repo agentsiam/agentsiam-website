@@ -25,8 +25,9 @@
  * Four rules:
  *
  *   never  every /api/ path and the enrolment link. The API answers are state, not pages.
- *          The enrolment link is single-use and a cached copy of its answer would be a lie.
- *          Neither is ever touched, whatever either one answers.
+ *          The enrolment link answers a form, a greeting and sometimes one line about a
+ *          wrong code, so a saved copy of it would be last time's answer to this time's
+ *          attempt. Neither is ever touched, whatever either one answers.
  *   codes  /api/cleaning/codes, the one path under /api/ that is kept at all: served
  *          always, and kept only when that answer carries a deadline from the app, until
  *          that deadline and no longer. One that arrives without a deadline was not

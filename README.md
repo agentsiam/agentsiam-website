@@ -651,18 +651,44 @@ screen rather than the team's; it says so on itself and nothing links to it.
 | `/cleaning/day/<date>` | the same two | One day and what it asks of her, in time order, reached by tapping a date on the month grid, which pages forward a month at a time from this one to the furthest she has work in, and three months at the least |
 | `/cleaning/job/<slug>` | the same two | One job: the line, the house, the address, the people on it, the codes on the day, and the thread about it |
 | `/api/cleaning/codes` | the same PIN, never asked for twice | Her gate and door codes as data, fetched into the schedule and the job screen rather than rendered into them. Kept by the service worker alone, on a deadline, and by no other cache |
-| `/cleaning/enrol/<token>` | the link itself | The one URL that answers without a cookie. A GET greets her; the POST behind the button spends the token |
-| `/cleaning/no-access` | nothing | The one thing a phone with no working access is ever told: ask Paul for a new link in LINE |
-| `/admin/cleaning` | the admin session | Paul's screen: every clean somebody turned down with a control to give it to another cleaner, every clean he has moved with a way to give it back, then three people, their enrolled phones, a revoke each, a PIN each, a fresh link each |
+| `/cleaning/enrol/<token>` | the link, plus her PIN | The one URL that answers without a cookie. A GET greets her and asks for her code; the POST behind the button enrols that browser. One link enrols as many browsers as she opens it in |
+| `/cleaning/no-access` | nothing | The one thing a phone with no working access is ever told: ask Paul for a new link in LINE. Where a wrong code is the trouble she is sent back to the link instead, which says so in her own language |
+| `/admin/cleaning` | the admin session | Paul's screen: every clean somebody turned down with a control to give it to another cleaner, every clean he has moved with a way to give it back, then three people, their enrolled phones, a name and a revoke on each one, a PIN each, a fresh link each |
 
 **The sign-in, which is the largest piece.** Three people who will not manage passwords, so
-there is no password and no account. Paul sends a single-use link in LINE; the first open binds
-that phone to her and mints a signed `as_clean` cookie that lasts a year. Her schedule needs
-that cookie alone, because she opens it at a gate with her hands full and the schedule is not
-the secret. Her codes need the cookie and a four-to-eight digit PIN Paul sets and tells her,
-held as a PBKDF2 hash, with the failure counter in the shared store rather than in
-`src/lib/rate-limit.ts`: that one is a bucket per warm instance by its own admission, which is
-fine in front of a contact form and useless in front of a door code.
+there is no password and no account. Paul sends a link in LINE and she opens it with the
+four-to-eight digit PIN he set and told her; that binds the browser she opened it in and mints a
+signed `as_clean` cookie that lasts a year. Her schedule then needs that cookie alone, because
+she opens it at a gate with her hands full and the schedule is not the secret. Her codes need
+the cookie and the PIN, held as a PBKDF2 hash, with the failure counter in the shared store
+rather than in `src/lib/rate-limit.ts`: that one is a bucket per warm instance by its own
+admission, which is fine in front of a contact form and useless in front of a door code.
+
+**What a link binds is one browser, not one phone.** LINE's in-app browser and the phone's own
+browser keep separate cookies, so a cleaner who taps the link in LINE is enrolled in LINE and
+nowhere else, and opening `/cleaning` in Chrome afterwards shows her the PIN gate with no
+cookie behind it. The same handset in both is two enrolments, each revoked on its own, and
+`/admin/cleaning` takes a typed name per enrolment because the agent strings differ by a
+version number. **Only her own browser can hold the offline copy**: an in-app browser
+registers no service worker, which `/cleaning/check` reports as "service worker NOT SUPPORTED",
+so the codes she reads at a gate with no signal exist in her own browser and not in LINE's.
+
+**The link is not the secret, her PIN is.** That is the change of 20/11/2026 and it is what
+makes the paragraph above survivable. A single-use link had to die on its first open, because
+possession of it was the whole proof, so it enrolled whichever browser she happened to tap it in
+and the other one was a second link away; the link that had worked looked spent. One link now
+enrols every browser that opens it with the right code, for thirty days, and **five wrong codes
+delete the link** rather than locking it, counted against the link in the shared store because
+at that moment there is no phone to count against. The cost is stated rather than hidden: a
+stranger holding a forwarded link can burn it by guessing, which costs Paul one press of a
+button, and a link plus an overheard code is an enrolment, which is why every one of them is
+listed on his screen with a revoke. Two things follow. `/admin/cleaning` **refuses to mint a
+link until her PIN is set**, since a link minted first can only tell her no code exists. And the
+enrol route hands out the PIN cookie with the device cookie, so the gate she would have met on
+the next screen is not asked a second time: it moved one screen earlier rather than being added
+to. `npm run test:cleaning-devices` holds all of it: one link enrols two browsers, a wrong code
+enrols nothing, five wrong codes kill the link while an unset PIN does not, a name survives the
+stamp a visit puts on the record, and revoking one browser leaves the other and its name alone.
 
 **Revocation is deleting the device record**, which stops that cookie resolving on the next
 request and reprograms no lock. That is what the brief asks for: per-person door codes exist so

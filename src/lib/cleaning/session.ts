@@ -2,10 +2,12 @@
  * Which phone is holding the app, and whether its PIN has been given recently.
  *
  * Three people, no accounts, no passwords and no recovery flow. Paul sends one of them a
- * single-use link in LINE; the first open of that link binds this phone to her and mints a
- * long-lived signed cookie. From then on her schedule needs the cookie alone, because she
- * opens it at a door with her hands full and the schedule is not the secret. Her door codes
- * need the cookie and a short PIN Paul told her, because they are.
+ * link in LINE and she opens it with the short PIN he told her; that binds the browser she
+ * opened it in and mints a long-lived signed cookie. From then on her schedule needs the
+ * cookie alone, because she opens it at a door with her hands full and the schedule is not
+ * the secret. Her door codes need the cookie and the PIN again, because they are. The same
+ * link opens her other browsers too, which is why the PIN stands in front of it: see
+ * src/lib/cleaning/devices.ts.
  *
  * Deliberately not an extension of src/lib/admin/session.ts, whose shape this follows. That
  * one signs in Paul and Nils with passphrases from the environment and stands in front of a
@@ -280,8 +282,9 @@ export async function readPinCookie(
   return { person, device, expires: session.expires };
 }
 
-/** 32 random bytes, which is what an enrolment link's whole security is. Long enough that
- * guessing one is not a strategy, and it is single-use and short-lived besides. */
+/** 32 random bytes. Long enough that guessing one is not a strategy, and it has a thirty
+ * day life and her PIN in front of it besides. It is no longer the whole security of an
+ * enrolment, which is the point of the PIN being there. */
 export function mintEnrolToken(): string {
   return encodeBase64Url(crypto.getRandomValues(new Uint8Array(32)));
 }

@@ -3,7 +3,14 @@ import { currentSession } from "@/lib/admin/guard";
 import { agreedShape, clearAnswer } from "@/lib/cleaning/accept";
 import { clearMove, moveVisit, readAssignments, scheduleFor } from "@/lib/cleaning/assign";
 import { addComment, cleanBody, VISIT_SLUG } from "@/lib/cleaning/comments";
-import { PIN_SHAPE, createEnrolToken, revokeDevice, setPin } from "@/lib/cleaning/devices";
+import {
+  PIN_SHAPE,
+  createEnrolToken,
+  pinSetAt,
+  revokeDevice,
+  setDeviceLabel,
+  setPin,
+} from "@/lib/cleaning/devices";
 import { findVisit, parseDocument, todayInBangkok } from "@/lib/cleaning/document";
 import { ourPhotoPaths } from "@/lib/cleaning/photos";
 import { cleaningEnrolPath } from "@/lib/cleaning/routes";
@@ -13,9 +20,10 @@ import { readNote, storeProblem } from "@/lib/cleaning/store";
 export const runtime = "nodejs";
 
 /**
- * The six things Paul does to the cleaning app: issue a link, revoke a phone, set a PIN,
- * answer somebody about a clean, give a clean somebody turned down to another cleaner, and
- * give it back, which includes giving it back to the person who turned it down.
+ * The seven things Paul does to the cleaning app: issue a link, revoke a phone, name a
+ * phone, set a PIN, answer somebody about a clean, give a clean somebody turned down to
+ * another cleaner, and give it back, which includes giving it back to the person who turned
+ * it down.
  *
  * Behind the admin session, because Paul is already signed in to one and a second sign-in
  * for the same person is a second thing to lose. **No door code passes through here.** The
@@ -39,6 +47,7 @@ export async function POST(request: Request) {
     action?: unknown;
     person?: unknown;
     device?: unknown;
+    label?: unknown;
     pin?: unknown;
     slug?: unknown;
     to?: unknown;
@@ -59,6 +68,15 @@ export async function POST(request: Request) {
 
   try {
     if (body.action === "link") {
+      // **Her PIN comes first, because the link is opened with it.** A link minted before
+      // she has a code is a link nobody can use: the enrol screen would meet her with "no
+      // code has been set for you yet" and nothing she could do about it.
+      if (!(await pinSetAt(person))) {
+        return NextResponse.json(
+          { error: `${person} has no PIN yet, and the link is opened with it. Set one first.` },
+          { status: 409 },
+        );
+      }
       const token = await createEnrolToken(person);
       return NextResponse.json({ url: enrolUrl(request, token) });
     }
@@ -124,6 +142,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true });
     }
 
+    // **Naming a phone.** One person holds one record per browser, so two of them can be
+    // one handset in LINE and in its own browser, and the agent strings barely differ. The
+    // name is his, never hers: it is read on this screen and appears nowhere in the app.
+    // An empty one removes it.
+    if (body.action === "label") {
+      const device = typeof body.device === "string" ? body.device : "";
+      const label = typeof body.label === "string" ? body.label : "";
+      if (!(await setDeviceLabel(person, device, label))) {
+        return NextResponse.json({ error: "No such device for that person." }, { status: 404 });
+      }
+      return NextResponse.json({ ok: true });
+    }
+
     if (body.action === "comment") {
       const slug = typeof body.slug === "string" ? body.slug : "";
       const text = cleanBody(body.body);
@@ -178,6 +209,9 @@ export async function POST(request: Request) {
  * Built from the host this request arrived on, which is whatever Paul has open: the live
  * domain from the live admin screen, localhost from a dev server. The app answers on one
  * host at one prefix, so there is no second shape for this link to take.
+ *
+ * It is not single-use, and it is not the secret either: she opens it with her PIN, in every
+ * browser she wants the app in, and it stops working after thirty days.
  */
 function enrolUrl(request: Request, token: string): string {
   return new URL(cleaningEnrolPath(token), request.url).toString();

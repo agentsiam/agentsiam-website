@@ -18,8 +18,8 @@ import { knownPeople, listDevices, pinSetAt } from "@/lib/cleaning/devices";
 import { readNote, storeDescription, storeProblem } from "@/lib/cleaning/store";
 
 /**
- * Paul's one screen for the cleaning app: three people, their enrolled phones, a delete
- * each, a PIN each and a fresh enrolment link.
+ * Paul's one screen for the cleaning app: three people, their enrolled phones with a name
+ * and a delete on each, a PIN each and a fresh enrolment link.
  *
  * Revoking a phone deletes its device record, which stops that cookie resolving on the next
  * request. **No door is reprogrammed**, which is what the brief asks for: per-person door
@@ -264,9 +264,12 @@ function Heading() {
         Cleaning team phones
       </h1>
       <p className="mt-2 max-w-[60ch] text-sm text-muted">
-        One row per person, from {storeDescription()}. An enrolment link works once, on the
-        first phone that opens it. Revoking a phone stops it opening the app and touches no
-        lock. There is no recovery flow: a lost phone is re-enrolled with a new link.
+        One row per person, from {storeDescription()}. An enrolment link is opened with her
+        PIN, so set that first, and it then enrols every browser she opens it in for thirty
+        days. A phone that opens the app in LINE and in its own browser is two rows, because
+        the two keep separate cookies and only her own browser can hold the offline codes.
+        Name them, or nothing on the row says which is which. Revoking one stops it opening
+        the app and touches no lock.
       </p>
     </>
   );
