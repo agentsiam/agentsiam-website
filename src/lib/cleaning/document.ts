@@ -71,6 +71,25 @@ export type VisitPerson = {
 };
 
 export type Visit = {
+  /**
+   * The slug this clean is known by, when that is no longer what its date and hour would
+   * build. Set by the overlay in src/lib/cleaning/when.ts and never by a document.
+   *
+   * A slug is the published identity of a clean: the accept record, the comment thread, the
+   * ledger and the job's own URL are all keyed on it, and the cleaner and the laundry run on
+   * one job share it. So a clean Paul moves to another hour keeps the slug it was published
+   * under, and `date` and `time` below say where the work actually is. Without this the move
+   * would detach the thread and the answers from the job it moved.
+   */
+  slug?: string;
+  /**
+   * Where Paul moved this clean to, `YYYY-MM-DD HH.MM`, when he has moved it.
+   *
+   * Set by the same overlay and absent on everything else, which is what keeps it out of the
+   * accepted shape for every clean nobody has moved. src/lib/cleaning/accept.ts says why that
+   * matters: a shape that changed for all of them would ask all of them again.
+   */
+  movedTo?: string;
   /** ISO date. What this app sorts and compares on, and the only date arithmetic it does. */
   date: string;
   /** The time as the Note prints it, already inside `line`. Kept because it is structure. */
@@ -279,6 +298,10 @@ export function accessFor(document: TeamDocument, property: string | null): Acce
  * the wrong one of those would send her to the wrong gate.
  */
 export function visitSlug(visit: Visit): string {
+  // A clean moved to another hour carries the slug it was published under, because that slug
+  // is what its thread, its answers and its ledger row are keyed on. Everything else builds
+  // one from the three fields, exactly as it always did.
+  if (visit.slug) return visit.slug;
   return [visit.date, visit.time.replace(/\D/g, ""), visit.property ?? "one"]
     .filter(Boolean)
     .join("-");

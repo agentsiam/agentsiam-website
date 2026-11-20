@@ -166,3 +166,117 @@ export function CleaningUndoMove({ slug, to }: { slug: string; to: string }) {
     </>
   );
 }
+
+/**
+ * Move one clean to another date or hour.
+ *
+ * Paul, 20/11/2026: he needs to be able to move a clean, moving it asks him again who it goes
+ * to, and if the hour moved the laundry run accepts it again while a change of cleaner alone
+ * leaves her answer standing. The first and last of those are this control; the middle one
+ * falls out of it, because the shape an assignment was made against carries the hour, so
+ * moving the hour ends the assignment and the clean is waiting to be given out again.
+ *
+ * **It is an override and not the schedule**, the same as the control above it. The skill
+ * republishes the booking's own hour on every run and this record wins over it until it is
+ * put back or until the clean itself changes. The LINE Note from that run still prints the
+ * published hour, which is the same disagreement the move above already carries, except that
+ * this one is about when to turn up.
+ *
+ * **A different day costs her the Thai date and the screen says so.** Every Thai date here is
+ * the skill's, rendered beside the Note it posts, and this app composes none: the day of the
+ * week is the easiest thing to get wrong and the hardest for Paul to spot. So a new hour on
+ * the same day keeps her published Thai day and reads normally, and a new day drops it rather
+ * than printing the wrong one. She still gets the clean on the right day of her calendar and
+ * on the right day screen, and an English phone reads the whole new date.
+ */
+export function CleaningWhen({
+  slug,
+  person,
+  date,
+  time,
+  moved,
+}: {
+  slug: string;
+  person: string;
+  date: string;
+  time: string;
+  moved: boolean;
+}) {
+  const router = useRouter();
+  const [day, setDay] = useState(date);
+  const [hour, setHour] = useState(time);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  // The published date is the first ten characters of the slug, because a slug is the date,
+  // the hour and the house, and a moved clean keeps the slug it was published under.
+  const published = slug.slice(0, 10);
+
+  async function act(payload: Record<string, string>) {
+    if (busy) return;
+    setBusy(true);
+    setMessage("");
+    const error = await send({ person, slug, ...payload });
+    setMessage(error);
+    setBusy(false);
+    if (!error) router.refresh();
+  }
+
+  return (
+    <div className="mt-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <label className="text-xs text-muted" htmlFor={`day-${slug}`}>
+          Move it to
+        </label>
+        <input
+          id={`day-${slug}`}
+          type="date"
+          value={day}
+          onChange={(event) => setDay(event.target.value)}
+          className="rounded-box border border-hairline bg-bg px-2 py-1 text-sm text-text"
+        />
+        <input
+          aria-label="The hour, as the schedule writes it"
+          value={hour}
+          placeholder="15.00"
+          inputMode="numeric"
+          maxLength={5}
+          onChange={(event) => setHour(event.target.value)}
+          className="w-20 rounded-box border border-hairline bg-bg px-2 py-1 text-sm text-text"
+        />
+        <button
+          type="button"
+          onClick={() => act({ action: "when", date: day, time: hour })}
+          disabled={busy || (day === date && hour === time)}
+          className="rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-bg disabled:opacity-40"
+        >
+          Move it
+        </button>
+        {moved ? (
+          <button
+            type="button"
+            onClick={() => act({ action: "unwhen" })}
+            disabled={busy}
+            className="rounded-full border border-ink px-3 py-1.5 text-xs font-semibold text-text disabled:opacity-40"
+          >
+            Put it back
+          </button>
+        ) : null}
+      </div>
+      {day !== published ? (
+        <p className="mt-2 text-xs text-muted">
+          Another day, so her Thai screens show this clean on {day} with the hour and without
+          the Thai date, because every Thai date here is written by the schedule run and this
+          app writes none. It still lands on the right day of her calendar. An English phone
+          reads the whole date.
+        </p>
+      ) : null}
+      {moved ? (
+        <p className="mt-2 text-xs text-muted">
+          Moved from {published}. The schedule run still publishes it then, and the LINE Note
+          from that run still prints that hour.
+        </p>
+      ) : null}
+      {message ? <p className="mt-2 text-xs text-deep-red">{message}</p> : null}
+    </div>
+  );
+}

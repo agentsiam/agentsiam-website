@@ -110,6 +110,17 @@ export const ASSIGN_KEY = "cleaning:assign";
  */
 export const historyKey = (person: string) => `cleaning:history:${person}`;
 
+/**
+ * Every clean Paul has moved to another date or hour, as one record.
+ *
+ * The same shape and the same reasoning as `ASSIGN_KEY` beside it: an override laid over the
+ * published document on every render, never a schedule of this app's own. The two are
+ * separate keys because they are separate facts. Who does a clean is about one person, and a
+ * move of it reaches only her; when a clean happens is about the job, so it reaches the
+ * cleaner and the laundry run together.
+ */
+export const WHEN_KEY = "cleaning:when";
+
 /** One enrolled phone. Deleting this is what revokes that phone, which is how Paul kills a
  * device without touching the lock. */
 export const deviceKey = (device: string) => `cleaning:device:${device}`;

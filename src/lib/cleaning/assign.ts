@@ -8,6 +8,7 @@ import {
 import { sameClean } from "./accept";
 import { plainLine } from "./english";
 import { ASSIGN_KEY, get, readNote, set } from "./store";
+import { applyWhen, readWhenMoves } from "./when";
 
 /**
  * A clean moved from the person it was published to, to somebody else.
@@ -135,13 +136,22 @@ function holds(move: Assignment | undefined, visit: Visit): boolean {
  * The one exception is Paul's own first screen, which reads the published documents directly:
  * it is the screen that shows him what the skill said before he moved anything.
  *
- * It reads one extra key, and one more document per person who has given her work. With
- * nothing moved it is one extra read and the published document, unchanged.
+ * It reads two extra keys, and one more document per person who has given her work. With
+ * nothing moved it is two extra reads and the published document, unchanged.
+ *
+ * **A move of the hour is applied first, to every document this touches**, because it changes
+ * what a clean is rather than whose it is: src/lib/cleaning/when.ts. One consequence is worth
+ * knowing and is what Paul asked for. The shape an assignment was made against carries the
+ * hour a clean was moved to, so moving the hour ends any standing assignment and the clean
+ * goes back to the person the skill published it to, waiting to be given out again.
  */
 export async function scheduleFor(person: string): Promise<TeamDocument | null> {
-  const own = parseDocument(await readNote(person));
+  const published = parseDocument(await readNote(person));
+  if (!published) return published;
+  const whens = await readWhenMoves();
+  const own: TeamDocument = { ...published, visits: applyWhen(published.visits, whens) };
   const moves = await readAssignments();
-  if (moves.size === 0 || !own) return own;
+  if (moves.size === 0) return own;
 
   const mine = own.visits.filter((visit) => {
     const move = moves.get(visitSlug(visit));
@@ -161,7 +171,7 @@ export async function scheduleFor(person: string): Promise<TeamDocument | null> 
   for (const donor of donors) {
     const document = parseDocument(await readNote(donor).catch(() => null));
     if (!document) continue;
-    for (const visit of document.visits) {
+    for (const visit of applyWhen(document.visits, whens)) {
       const move = moves.get(visitSlug(visit));
       // The same two-sided check: this donor's own clean, and only if it is this person it
       // was given to. The donor's laundry colleague shares the slug and is not this.

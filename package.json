@@ -21,6 +21,7 @@
   "test:cleaning-accept": "node scripts/test-cleaning-accept.mjs",
   "test:cleaning-assign": "node scripts/test-cleaning-assign.mjs",
     "test:cleaning-devices": "node scripts/test-cleaning-devices.mjs",
+    "test:cleaning-when": "node scripts/test-cleaning-when.mjs",
   "test:cleaning-history": "node scripts/test-cleaning-history.mjs",
   "test:cleaning-sw": "node scripts/test-cleaning-sw.mjs",
     "test:cleaning-photos": "node scripts/test-cleaning-photos.mjs",

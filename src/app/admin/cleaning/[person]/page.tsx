@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JobComment } from "@/components/admin/job-comment";
-import { CleaningMove, type Candidate } from "@/components/admin/cleaning-move";
+import { CleaningMove, CleaningWhen, type Candidate } from "@/components/admin/cleaning-move";
 import { acceptState } from "@/lib/cleaning/accept";
 import { scheduleFor } from "@/lib/cleaning/assign";
 import { knownPeople } from "@/lib/cleaning/devices";
@@ -199,6 +199,16 @@ export default async function AdminCleaningPersonPage({
 
               {visit.date >= today ? (
                 <CleaningMove slug={slug} from={person} candidates={candidatesFor(visit)} />
+              ) : null}
+
+              {visit.date >= today ? (
+                <CleaningWhen
+                  slug={slug}
+                  person={person}
+                  date={visit.date}
+                  time={visit.time}
+                  moved={Boolean(visit.movedTo)}
+                />
               ) : null}
 
               {comments.length > 0 ? (

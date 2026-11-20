@@ -792,7 +792,36 @@ five screens and the four routes that write about a visit, or a route would refu
 acceptance of a clean she can see. The move survives the next run of the skill, and the ten
 after it.
 
-Three things about a moved clean are worth knowing. **The line stops naming the first cleaner**:
+**And he moves a clean to another date or hour.** Paul, 20/11/2026. `cleaning:when` is the
+second override and `src/lib/cleaning/when.ts` owns it, laid over the document by the same
+`scheduleFor` before anything else reads it. The two are separate records because they are
+separate facts: who does a clean reaches one person, when it happens reaches everybody on the
+job, so a moved hour moves the laundry run with the cleaning.
+
+Four rules, and three of them fall out of one decision. **A moved clean keeps the slug it was
+published under**, because a slug is the date, the hour and the house, and it is the identity
+that the thread, the answers, the ledger row and the job's own URL all hang off; `date` and
+`time` on the visit say where the work actually is. The hour was therefore never in the
+accepted shape, so **the hour it moved to is what goes into that shape**, and only when there
+is one. That is Paul's rule that a moved hour is accepted again by both of them, and his rule
+that a change of cleaner alone leaves the laundry run's answer standing, which was already
+true. It is also his rule that moving a clean asks him again who it goes to: an assignment is
+held against that same shape, so moving the hour ends it and the clean goes back to whoever
+the skill published it to, waiting to be given out. And **the move lapses rather than
+lingers**: a clean that gains a cot returns to its published hour, and a booking whose own
+hour changes publishes a different slug that this record does not answer to. A stale override
+would stand a cleaner in front of a house at an hour nobody else believes in.
+
+**What a move cannot do is say the new date in Thai**, and the admin screen says so at the
+moment it matters. Every Thai date here belongs to the skill. A new hour on the same day keeps
+her published Thai day and prints the new hour beside it, inventing nothing. A new day drops
+the Thai day rather than carrying one that names the wrong date, and prints the hour alone;
+the clean still sorts, lands on the right day screen and marks the right square on the
+calendar, and an English phone reads the whole new date because that half is composed from the
+ISO date. It is in "Known gaps". `npm run test:cleaning-when` holds all four rules against a
+throwaway store, 34 checks.
+
+Three things about a clean moved to another cleaner are worth knowing. **The line stops naming the first cleaner**:
 a job line is finished Thai text with her name inside it, so a moved clean prints the day label
 and the time instead, which are two other published fields of the same visit. **The house
 travels and the door codes do not**: an access block carries that person's own code for that
@@ -1044,6 +1073,15 @@ flow, end to end, with nothing live anywhere near it.
   rendered in development and would have gone missing only in production, on the one screen
   that tells a cleaner whether what she is holding is current. Nothing in this repository
   changed for it; the app read `built_at` off the document already.
+- **A clean moved to another day loses its Thai date (20/11/2026).** Every Thai date in this
+  system is written by the `cleaning-schedule` skill and this app composes none, which is
+  deliberate: the day of the week is the easiest thing here to get wrong and the hardest for
+  Paul to spot. A clean moved to another hour on the same day is unaffected, because the day
+  label it was published with is still true. A clean moved to another day has no label it can
+  honestly print, so her Thai screens show it with the hour and no Thai date, on the right day
+  of the calendar and the right day screen. An English phone is unaffected. The fix is one
+  field from the skill, a label per date in the document's range rather than one per visit,
+  and it is a change in `/Users/paulb/code/agentsiam/agentsiam-consulting`.
 - **The accept flow cannot say what moved or why (18/11/2026).** A clean that has moved reaches
   her as something to accept, which is the half the app can do alone, and the card says nothing
   about where it moved from or why it moved, which Paul asked for in the same breath. Both need

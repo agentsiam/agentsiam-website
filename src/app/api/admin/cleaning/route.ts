@@ -12,6 +12,7 @@ import {
   setPin,
 } from "@/lib/cleaning/devices";
 import { findVisit, parseDocument, todayInBangkok } from "@/lib/cleaning/document";
+import { MOVED_DATE, cleanTime, clearWhen, moveWhen } from "@/lib/cleaning/when";
 import { ourPhotoPaths } from "@/lib/cleaning/photos";
 import { cleaningEnrolPath } from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
@@ -20,10 +21,10 @@ import { readNote, storeProblem } from "@/lib/cleaning/store";
 export const runtime = "nodejs";
 
 /**
- * The seven things Paul does to the cleaning app: issue a link, revoke a phone, name a
+ * The eight things Paul does to the cleaning app: issue a link, revoke a phone, name a
  * phone, set a PIN, answer somebody about a clean, give a clean somebody turned down to
- * another cleaner, and give it back, which includes giving it back to the person who turned
- * it down.
+ * another cleaner, give it back, which includes giving it back to the person who turned it
+ * down, and move a clean to another date or hour.
  *
  * Behind the admin session, because Paul is already signed in to one and a second sign-in
  * for the same person is a second thing to lose. **No door code passes through here.** The
@@ -49,6 +50,8 @@ export async function POST(request: Request) {
     device?: unknown;
     label?: unknown;
     pin?: unknown;
+    date?: unknown;
+    time?: unknown;
     slug?: unknown;
     to?: unknown;
     body?: unknown;
@@ -130,6 +133,54 @@ export async function POST(request: Request) {
       const standing = (await readAssignments()).get(slug);
       const from = standing?.from ?? person;
       await moveVisit({ slug, from, to, line: agreedShape(visit) }, todayInBangkok());
+      return NextResponse.json({ ok: true });
+    }
+
+    // **Moving a clean to another date or hour.** Paul, 20/11/2026: he needs to move it, and
+    // moving it asks him again who it goes to. The second half is not written here: the shape
+    // an assignment was made against carries the hour a clean was moved to, so this write
+    // ends any standing assignment and the clean goes back to whoever it was published to,
+    // waiting to be given out again. Both people on the job are asked again for the same
+    // reason, which is what he asked for.
+    //
+    // **The shape stored with the move is the published one**, with any hour it has already
+    // been moved to taken off. The overlay compares against the document, so a shape carrying
+    // the last move would never match and a second move would silently do nothing.
+    if (body.action === "when" || body.action === "unwhen") {
+      const slug = typeof body.slug === "string" ? body.slug : "";
+      if (!VISIT_SLUG.test(slug)) {
+        return NextResponse.json({ error: "That is not a job." }, { status: 400 });
+      }
+      const today = todayInBangkok();
+      if (body.action === "unwhen") {
+        await clearWhen(slug, today);
+        return NextResponse.json({ ok: true });
+      }
+      const date = typeof body.date === "string" ? body.date : "";
+      const time = cleanTime(body.time);
+      if (!MOVED_DATE.test(date) || !time) {
+        return NextResponse.json(
+          { error: "A move needs a date and an hour written like 15.00." },
+          { status: 400 },
+        );
+      }
+      if (date < today) {
+        return NextResponse.json(
+          { error: "That date has gone, so nobody would ever see the clean." },
+          { status: 409 },
+        );
+      }
+      // Her schedule as she sees it, the same way the assign action reads it, so a clean she
+      // was given by somebody else can be moved as readily as one of her own.
+      const hers = await scheduleFor(person);
+      const visit = hers ? findVisit(hers.visits, slug) : null;
+      if (!visit) {
+        return NextResponse.json({ error: "That person has no such job." }, { status: 404 });
+      }
+      await moveWhen(
+        { slug, date, time, shape: agreedShape({ ...visit, movedTo: undefined }) },
+        today,
+      );
       return NextResponse.json({ ok: true });
     }
 

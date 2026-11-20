@@ -79,7 +79,14 @@ type AcceptEntry = [string, string, string];
 const SHAPE = "\u0001";
 
 export function agreedShape(visit: Visit): string {
-  return `${visit.type ?? ""}${SHAPE}${visit.note ?? ""}`;
+  const published = `${visit.type ?? ""}${SHAPE}${visit.note ?? ""}`;
+  // **A clean Paul has moved to another hour is a different clean to answer.** Paul,
+  // 20/11/2026: if the time moves, the laundry run has to accept it again; if only the
+  // cleaner changes, it does not. The hour is not in the shape above, because it was in the
+  // slug, and a moved clean keeps its published slug. So the hour it moved to goes here, and
+  // only when there is one: every clean nobody has moved keeps the shape it already had, so
+  // nobody is asked again for a change of format.
+  return visit.movedTo ? `${published}${SHAPE}${visit.movedTo}` : published;
 }
 
 /** Whether what she answered about is what is published now, either way the record was
