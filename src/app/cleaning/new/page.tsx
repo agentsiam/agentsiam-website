@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { AcceptChoice } from "@/components/cleaning/accept-choice";
-import { HouseMark, Occupied } from "@/components/cleaning/glyphs";
 import { OfflineNotice } from "@/components/cleaning/offline-notice";
+import { VisitMeta } from "@/components/cleaning/visits";
 import { acceptState } from "@/lib/cleaning/accept";
 import { scheduleFor } from "@/lib/cleaning/assign";
 import { propertyOf, todayInBangkok, visitSlug } from "@/lib/cleaning/document";
@@ -108,30 +108,21 @@ export default async function NewWorkPage() {
           const house = propertyOf(document, visit);
           const mark = markOf(marks, visit.property);
           return (
-            <li key={visitSlug(visit)} className="rounded-panel bg-primary p-5">
-              <p className="text-[21px] font-semibold leading-8 text-bg">
+            // White on white with a hairline, like every other card she reads, rather than a
+            // panel of the structural blue: the guardrails keep that blue for links and the
+            // hover of a button, and a screen of solid blue cards read as an alert.
+            <li key={visitSlug(visit)} className="rounded-panel border border-border bg-bg p-5">
+              <p className="text-[21px] font-semibold leading-8 text-text">
                 {visitLine(visit, lang)}
               </p>
-              {house || visit.type === "midstay" ? (
-                <span className="mt-2.5 flex flex-wrap items-center gap-2">
-                  {house ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-bg/50 px-2.5 py-0.5 text-[14px] font-semibold text-bg">
-                      {mark === null ? null : <HouseMark index={mark} size={12} />}
-                      {house.name}
-                    </span>
-                  ) : null}
-                  {visit.type === "midstay" ? (
-                    <span className="text-bg">
-                      <Occupied size={18} />
-                    </span>
-                  ) : null}
-                </span>
-              ) : null}
+              {/* The same house line as her schedule's rows, so a house looks the same on
+                  the screen where she accepts it and the one where she works from it. */}
+              <VisitMeta house={house} mark={mark} occupied={visit.type === "midstay"} />
               {/* Anything true of this one clean, in the language it was published in, because
                   it is the skill's sentence and not ours. It is on this screen rather than one
                   tap away for one reason: a cot is part of what she is agreeing to. */}
               {visit.note ? (
-                <p lang={document.lang} className="mt-2.5 text-[16px] leading-7 text-bg">
+                <p lang={document.lang} className="mt-2.5 text-[16px] leading-7 text-body">
                   {visit.note}
                 </p>
               ) : null}

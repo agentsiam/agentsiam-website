@@ -1,4 +1,5 @@
 import { Message } from "@/components/cleaning/blocks";
+import { field, primaryButton } from "@/components/cleaning/buttons";
 import { ChevronRight } from "@/components/cleaning/glyphs";
 import { parseDocument } from "@/lib/cleaning/document";
 import { peekEnrolToken } from "@/lib/cleaning/devices";
@@ -121,13 +122,13 @@ export default async function EnrolPage({
           minLength={4}
           maxLength={8}
           required
-          className="mt-4 w-full rounded-box border-2 border-ink bg-bg px-4 py-5 text-center text-[32px] tracking-[0.45em] text-text"
+          className={`${field} mt-4 px-4 py-5 text-center text-[32px] tracking-[0.45em]`}
           style={{ fontFamily: "var(--font-plex-sans), system-ui, sans-serif" }}
         />
         <button
           type="submit"
           aria-label={t.enrolOpen}
-          className="mt-5 flex w-full items-center justify-center rounded-box bg-ink px-4 py-5 text-[19px] font-semibold text-bg"
+          className={`${primaryButton} mt-5 h-[64px] w-full px-4 text-[19px]`}
         >
           {/* The one control on this screen, so it cannot go quiet with its words: an
               arrow stands in until the sentence is written, and the spoken name stays

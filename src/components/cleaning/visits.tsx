@@ -74,7 +74,7 @@ function Request({ note, onInk = false }: { note: string | null; onInk?: boolean
  * always beside the name here: the calendar shows the mark alone, and this is where she
  * learns which is which. src/lib/cleaning/houses.ts says how a house gets one.
  */
-function VisitMeta({
+export function VisitMeta({
   house,
   mark,
   occupied,

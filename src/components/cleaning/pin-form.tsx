@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { field, primaryButton } from "@/components/cleaning/buttons";
 import { Padlock } from "@/components/cleaning/glyphs";
 import { CLEANING_API_PIN } from "@/lib/cleaning/routes";
 import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
@@ -90,7 +91,7 @@ export function PinForm({ name, lang }: { name: string | null; lang: TeamLang })
           maxLength={8}
           value={pin}
           onChange={(event) => setPin(event.target.value.replace(/\D/g, ""))}
-          className="mt-4 w-full rounded-box border-2 border-ink bg-bg px-4 py-5 text-center text-[32px] tracking-[0.45em] text-text"
+          className={`${field} mt-4 px-4 py-5 text-center text-[32px] tracking-[0.45em]`}
           style={{ fontFamily: "var(--font-plex-sans), system-ui, sans-serif" }}
           required
         />
@@ -98,7 +99,7 @@ export function PinForm({ name, lang }: { name: string | null; lang: TeamLang })
           type="submit"
           aria-label={t.pinPrompt}
           disabled={busy || pin.length < 4}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-5 text-[18px] font-semibold text-gold-on-ink transition-opacity duration-150 disabled:opacity-30"
+          className={`${primaryButton} mt-5 h-[64px] w-full px-4 text-[18px]`}
         >
           <Padlock size={20} />
         </button>

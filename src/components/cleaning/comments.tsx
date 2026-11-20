@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { field, iconButton, primaryButton } from "@/components/cleaning/buttons";
 import { Camera } from "@/components/cleaning/glyphs";
 import { PhotoTiles } from "@/components/cleaning/photo-tiles";
 import {
@@ -205,7 +206,7 @@ export function Comments({
           maxLength={MAX_COMMENT_LENGTH}
           rows={3}
           placeholder={placeholder || undefined}
-          className="w-full rounded-box border border-border bg-bg px-4 py-3 text-[16px] leading-7 text-text placeholder:text-muted"
+          className={`${field} px-4 py-3 text-[16px] leading-7`}
         />
         {photos.length > 0 ? (
           // The same three-wide grid the thread shows, so what she is about to send looks
@@ -249,7 +250,7 @@ export function Comments({
             type="button"
             onClick={() => picker.current?.click()}
             aria-label={t.commentPlaceholder}
-            className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-border text-muted"
+            className={`${iconButton} h-[54px] w-[54px]`}
           >
             <Camera size={22} />
           </button>
@@ -257,7 +258,7 @@ export function Comments({
             type="submit"
             aria-label={t.commentSend}
             disabled={busy || (body.trim().length === 0 && photos.length === 0)}
-            className="h-[54px] flex-1 rounded-full bg-ink px-4 text-[17px] font-semibold text-gold-on-ink transition-opacity duration-150 disabled:opacity-30"
+            className={`${primaryButton} h-[54px] flex-1 px-4 text-[17px]`}
           >
             {sendLabel}
           </button>

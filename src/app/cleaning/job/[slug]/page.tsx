@@ -182,7 +182,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
             button that agrees to it are one object. She reaches this screen by tapping the
             clean in the card on her first screen, and taking it on here has to be possible
             or that tap is a dead end. */}
-        {unanswered ? <AcceptChoice slug={slug} lang={lang} /> : null}
+        {unanswered ? <AcceptChoice slug={slug} lang={lang} onInk /> : null}
         {/* **What an accepted clean says instead of buttons.** Paul, 19/11/2026: once she
             has taken a clean on, cancelling it goes through us and we reschedule it. Before
             this the card simply ended, which reads as a screen that has run out rather than

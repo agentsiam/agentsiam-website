@@ -2,6 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import {
+  primaryButton,
+  primaryOnInk,
+  secondaryButton,
+  secondaryOnInk,
+} from "@/components/cleaning/buttons";
 import { Cross, Tick } from "@/components/cleaning/glyphs";
 import { CLEANING_API_ACCEPT } from "@/lib/cleaning/routes";
 import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
@@ -24,14 +30,23 @@ import { teamStrings, written, type TeamLang } from "@/lib/cleaning/strings";
  * read. A decline is her answer, not a reassignment: who does the work is the skill's and
  * Paul's, and README's known gaps carry what the skill cannot yet do about one.
  *
- * Both grounds this sits on are dark, the blue panels on the new-work screen and the ink card
- * on a job, so the pair is drawn once: a white pill for yes, an outlined one for no, a tick
- * and a cross so a thumb has something besides a word to aim at.
+ * It sits on two grounds: a white card on the new-work screen, and the ink card on a job, which
+ * passes `onInk`. On either, yes is the solid pill and no the outlined one beside it, from
+ * src/components/cleaning/buttons.ts, with a tick and a cross so a thumb has something besides
+ * a word to aim at.
  *
  * A failed tap says so and changes nothing. Offline that is the ordinary case: the clean is on
  * her schedule either way, so what she loses is the answer and never the work.
  */
-export function AcceptChoice({ slug, lang }: { slug: string; lang: TeamLang }) {
+export function AcceptChoice({
+  slug,
+  lang,
+  onInk = false,
+}: {
+  slug: string;
+  lang: TeamLang;
+  onInk?: boolean;
+}) {
   const router = useRouter();
   const t = teamStrings(lang);
   const [busy, setBusy] = useState(false);
@@ -71,7 +86,7 @@ export function AcceptChoice({ slug, lang }: { slug: string; lang: TeamLang }) {
           onClick={() => answer("yes")}
           disabled={busy}
           aria-label={t.acceptButton}
-          className="flex flex-[3] items-center justify-center gap-2 rounded-full bg-bg px-4 py-3.5 text-[16px] font-semibold text-primary disabled:opacity-40"
+          className={`${onInk ? primaryOnInk : primaryButton} h-[52px] flex-[3] px-4 text-[16px]`}
         >
           <Tick size={18} />
           {yes}
@@ -81,13 +96,15 @@ export function AcceptChoice({ slug, lang }: { slug: string; lang: TeamLang }) {
           onClick={() => answer("no")}
           disabled={busy}
           aria-label={t.rejectButton}
-          className="flex flex-[2] items-center justify-center gap-2 rounded-full border border-bg/50 px-4 py-3.5 text-[16px] font-semibold text-bg disabled:opacity-40"
+          className={`${onInk ? secondaryOnInk : secondaryButton} h-[52px] flex-[2] px-4 text-[16px]`}
         >
           <Cross size={18} />
           {no}
         </button>
       </div>
-      {failed && trouble ? <p className="mt-2 text-[15px] text-wash-red">{trouble}</p> : null}
+      {failed && trouble ? (
+        <p className={`mt-2 text-[15px] ${onInk ? "text-wash-red" : "text-deep-red"}`}>{trouble}</p>
+      ) : null}
     </>
   );
 }
