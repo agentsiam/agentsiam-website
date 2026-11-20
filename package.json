@@ -16,6 +16,7 @@
     "typecheck": "tsc --noEmit",
     "check:csv": "node scripts/check-csv-roundtrip.mjs",
     "guide:import": "node scripts/import-guide-sheet.mjs",
+    "indexnow": "node scripts/indexnow.mjs",
     "cleaning:icons": "node scripts/build-cleaning-icons.mjs",
     "cleaning:wipe": "node scripts/wipe-cleaning.mjs",
   "test:cleaning-accept": "node scripts/test-cleaning-accept.mjs",
