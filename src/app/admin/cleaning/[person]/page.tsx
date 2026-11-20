@@ -207,6 +207,7 @@ export default async function AdminCleaningPersonPage({
                   person={person}
                   date={visit.date}
                   time={visit.time}
+                  label={visit.dayLabel ?? ""}
                   moved={Boolean(visit.movedTo)}
                 />
               ) : null}

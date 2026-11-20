@@ -12,7 +12,13 @@ import {
   setPin,
 } from "@/lib/cleaning/devices";
 import { findVisit, parseDocument, todayInBangkok } from "@/lib/cleaning/document";
-import { MOVED_DATE, cleanTime, clearWhen, moveWhen } from "@/lib/cleaning/when";
+import {
+  MOVED_DATE,
+  cleanDayLabel,
+  cleanTime,
+  clearWhen,
+  moveWhen,
+} from "@/lib/cleaning/when";
 import { ourPhotoPaths } from "@/lib/cleaning/photos";
 import { cleaningEnrolPath } from "@/lib/cleaning/routes";
 import { PERSON_KEY } from "@/lib/cleaning/session";
@@ -178,7 +184,15 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "That person has no such job." }, { status: 404 });
       }
       await moveWhen(
-        { slug, date, time, shape: agreedShape({ ...visit, movedTo: undefined }) },
+        {
+          slug,
+          date,
+          time,
+          shape: agreedShape({ ...visit, movedTo: undefined }),
+          // His words for the new day, kept as he wrote them. Only ever read when the clean
+          // moved to another day, because on the same day the published label is still true.
+          label: cleanDayLabel(body.label),
+        },
         today,
       );
       return NextResponse.json({ ok: true });

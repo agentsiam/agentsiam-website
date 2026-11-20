@@ -121,7 +121,10 @@ try {
 const require = createRequire(join(out, "test.cjs"));
 const { moveVisit, scheduleFor } = require(join(out, "assign.js"));
 const { acceptState, agreedShape, answerVisit } = require(join(out, "accept.js"));
-const { cleanTime, clearWhen, moveWhen, readWhenMoves } = require(join(out, "when.js"));
+const { cleanDayLabel, cleanTime, clearWhen, moveWhen, readWhenMoves } = require(
+  join(out, "when.js"),
+);
+const { WHEN_KEY, set } = require(join(out, "store.js"));
 const { visitSlug } = require(join(out, "document.js"));
 const { plainLine } = require(join(out, "english.js"));
 
@@ -150,12 +153,12 @@ async function waitingFor(person) {
  * Move the clean, the way the admin route does: from the screen of whoever holds it now, and
  * the shape stored is the published one rather than the one carrying the last move.
  */
-async function move(date, time, person = "da") {
+async function move(date, time, person = "da", label = "") {
   const mine = await hers(person);
   const one = mine.find((v) => visitSlug(v) === SLUG);
   if (!one) throw new Error(`${person} has no ${SLUG} to move`);
   await moveWhen(
-    { slug: SLUG, date, time, shape: agreedShape({ ...one, movedTo: undefined }) },
+    { slug: SLUG, date, time, shape: agreedShape({ ...one, movedTo: undefined }), label },
     TODAY,
   );
 }
@@ -203,6 +206,39 @@ check("it lands on the new day", moved?.date, MOVED);
 check("the slug is still the published one", visitSlug(moved), SLUG);
 check("the Thai day is gone", moved?.dayLabel, null);
 check("and the line is the hour alone", plainLine(moved), "09.00");
+
+console.log("\nthe day Paul types is the day she reads, in his words exactly");
+await move(MOVED, "09.00", "da", "  อังคาร 15 ธค  ");
+const said = (await hers("da"))[0];
+check("his words head the day", said?.dayLabel, "อังคาร 15 ธค");
+check("and the line is built from them", plainLine(said), "อังคาร 15 ธค - 09.00");
+check("ting reads the same day", (await hers("ting"))[0]?.dayLabel, "อังคาร 15 ธค");
+check("the day is still the real one", said?.date, MOVED);
+
+console.log("\ncorrecting the words does not put the clean back in front of anybody");
+const beforeWords = await waitingFor("ting");
+await move(MOVED, "09.00", "da", "อังคาร 15 ธันวาคม");
+check("ting was waiting", beforeWords, 1);
+check("and is waiting no differently", await waitingFor("ting"), 1);
+await answerVisit("ting", await hers("ting"), SLUG, "yes");
+check("once she answers she is done", await waitingFor("ting"), 0);
+await move(MOVED, "09.00", "da", "อังคาร 15 ธค");
+check("and rewording it again leaves her answer alone", await waitingFor("ting"), 0);
+
+console.log("\nwhat he types is kept, not tidied");
+check("ends trimmed", cleanDayLabel("  อังคาร 15 ธค "), "อังคาร 15 ธค");
+check("his own spacing left alone", cleanDayLabel("อังคาร  15  ธค"), "อังคาร  15  ธค");
+check("a line break is a space", cleanDayLabel("อังคาร\n15 ธค"), "อังคาร 15 ธค");
+check("capped", cleanDayLabel("ก".repeat(60)).length, 40);
+check("not a string is nothing", cleanDayLabel(null), "");
+
+console.log("\na row written before the box existed still reads");
+await set(WHEN_KEY, JSON.stringify({ moved: [[SLUG, MOVED, "11.00", "turnover\u0001", "2026-11-20T00:00:00Z"]] }));
+const old = (await readWhenMoves()).get(SLUG);
+check("it is kept", Boolean(old), true);
+check("with no words on it", old?.label, "");
+check("and the clean still moves", (await hers("da"))[0]?.time, "11.00");
+check("reading the hour alone", plainLine((await hers("da"))[0]), "11.00");
 
 console.log("\na second move works, which it would not if the shape carried the first");
 await move(MOVED, "10.00");

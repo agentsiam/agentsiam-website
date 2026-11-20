@@ -182,24 +182,29 @@ export function CleaningUndoMove({ slug, to }: { slug: string; to: string }) {
  * published hour, which is the same disagreement the move above already carries, except that
  * this one is about when to turn up.
  *
- * **A different day costs her the Thai date and the screen says so.** Every Thai date here is
- * the skill's, rendered beside the Note it posts, and this app composes none: the day of the
- * week is the easiest thing to get wrong and the hardest for Paul to spot. So a new hour on
- * the same day keeps her published Thai day and reads normally, and a new day drops it rather
- * than printing the wrong one. She still gets the clean on the right day of her calendar and
- * on the right day screen, and an English phone reads the whole new date.
+ * **A different day needs the Thai date from Paul**, and the box for it appears the moment he
+ * picks one. Every Thai date here is the skill's, rendered beside the Note it posts, and this
+ * app composes none: the weekday is arithmetic but the words are house style, and a date this
+ * app assembled would read as nearly right, which is the worst way to be wrong. A new hour on
+ * the same day needs nothing, because her published Thai day is still true. A new day without
+ * a typed date leaves her reading the hour alone under no heading, which is honest and poor,
+ * so the box says what it is for and what happens if it is left empty.
  */
 export function CleaningWhen({
   slug,
   person,
   date,
   time,
+  label,
   moved,
 }: {
   slug: string;
   person: string;
   date: string;
   time: string;
+  /** The day label this clean is showing now: the skill's where it has not moved day, and
+   * whatever Paul last typed where it has. */
+  label: string;
   moved: boolean;
 }) {
   const router = useRouter();
@@ -210,6 +215,11 @@ export function CleaningWhen({
   // The published date is the first ten characters of the slug, because a slug is the date,
   // the hour and the house, and a moved clean keeps the slug it was published under.
   const published = slug.slice(0, 10);
+  // Prefilled only where the words on the clean are already his. Where it still sits on its
+  // published day they are the skill's words for that day, and offering them for another day
+  // would invite leaving the wrong date in place.
+  const saved = date === published ? "" : label;
+  const [thai, setThai] = useState(saved);
 
   async function act(payload: Record<string, string>) {
     if (busy) return;
@@ -245,8 +255,10 @@ export function CleaningWhen({
         />
         <button
           type="button"
-          onClick={() => act({ action: "when", date: day, time: hour })}
-          disabled={busy || (day === date && hour === time)}
+          onClick={() => act({ action: "when", date: day, time: hour, label: thai })}
+          // The words count as a change of their own, or a clean already on the right day at
+          // the right hour could never be given the Thai date it is missing.
+          disabled={busy || (day === date && hour === time && thai.trim() === saved.trim())}
           className="rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-bg disabled:opacity-40"
         >
           Move it
@@ -263,12 +275,26 @@ export function CleaningWhen({
         ) : null}
       </div>
       {day !== published ? (
-        <p className="mt-2 text-xs text-muted">
-          Another day, so her Thai screens show this clean on {day} with the hour and without
-          the Thai date, because every Thai date here is written by the schedule run and this
-          app writes none. It still lands on the right day of her calendar. An English phone
-          reads the whole date.
-        </p>
+        <div className="mt-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="text-xs text-muted" htmlFor={`thai-${slug}`}>
+              That day in Thai
+            </label>
+            <input
+              id={`thai-${slug}`}
+              value={thai}
+              maxLength={40}
+              placeholder="อังคาร 15 ธค"
+              onChange={(event) => setThai(event.target.value)}
+              className="w-44 rounded-box border border-hairline bg-bg px-2 py-1 text-sm text-text"
+            />
+          </div>
+          <p className="mt-2 text-xs text-muted">
+            {thai.trim()
+              ? `Her screens will head that day "${thai.trim()}" and read the clean as "${thai.trim()} - ${hour}", in your words exactly. Nothing here checks that the day of the week matches ${day}.`
+              : `Another day, so her Thai screens show this clean on ${day} as the hour alone, under no heading, because every Thai date here is written by the schedule run and this app writes none. Type one above and she reads it properly. An English phone reads the whole date either way.`}
+          </p>
+        </div>
       ) : null}
       {moved ? (
         <p className="mt-2 text-xs text-muted">

@@ -25,17 +25,28 @@
  * longer answers to. A stale override is worse than no button: it would stand a cleaner in
  * front of a house at an hour nobody else believes in.
  *
- * **What it cannot do is say the new date in Thai.** Every Thai date in this system belongs
- * to the skill, which renders them beside the Note it posts, because the day of the week is
- * the easiest thing here to get wrong and the hardest for Paul to spot;
- * src/lib/cleaning/english.ts holds that rule. So a clean moved to another hour on the same
- * day keeps its published Thai day and prints the new hour beside it, which invents nothing.
- * A clean moved to another **day** drops the Thai day rather than carrying one that now names
- * the wrong date, and prints the hour alone. It still sorts, lands on the right day screen and
- * marks the right square on the calendar, and an English phone reads the whole new date,
- * because that half is composed from the ISO date and not from prose. The fix is the skill
- * publishing a label per date in the document's range, which is a change in
- * /Users/paulb/code/agentsiam/agentsiam-consulting and not here.
+ * **It cannot say the new date in Thai, so Paul says it.** Every Thai date in this system
+ * belongs to the skill, which renders them beside the Note it posts, because the day of the
+ * week is the easiest thing here to get wrong and the hardest for Paul to spot;
+ * src/lib/cleaning/english.ts holds that rule, and this file does not break it. A clean moved
+ * to another hour on the same day keeps its published Thai day and prints the new hour beside
+ * it, which invents nothing. A clean moved to another **day** has no honest label of its own,
+ * so the move carries one Paul typed, in his words, stored exactly as he wrote it. Without one
+ * the Thai day is dropped rather than carrying one that names the wrong date, and the hour
+ * stands alone; the clean still sorts, lands on the right day screen and marks the right
+ * square on the calendar, and an English phone reads the whole new date either way, because
+ * that half is composed from the ISO date.
+ *
+ * **Why he types it rather than this app composing it.** The weekday for a date is arithmetic
+ * and the words for it are not: the month's short Thai name and the house style of the line
+ * are the skill's, and a date this app assembled would read as nearly right, which is the
+ * worst way for it to be wrong. The durable fix is the skill publishing a label per date in
+ * the document's range rather than one per visit, which is a change in
+ * /Users/paulb/code/agentsiam/agentsiam-consulting and would make the box unnecessary.
+ *
+ * **The label is not in what the two of them accepted.** Correcting a typo in a date's words
+ * changes nothing about the work, so it does not put the clean back in front of either of
+ * them; `movedTo` carries the date and the hour, which are the facts, and nothing else.
  */
 
 import { sameClean } from "./accept";
@@ -52,9 +63,22 @@ export type WhenMove = {
   time: string;
   shape: string;
   at: string;
+  /**
+   * The new day in Thai, as Paul typed it, or empty where he typed nothing.
+   *
+   * His words and not this app's, kept exactly as written apart from the ends being trimmed.
+   * It stands in for the day label the skill publishes, and it is only ever read when the
+   * clean has moved to another day, because on the same day the published label is still true.
+   */
+  label: string;
 };
 
-type Stored = [slug: string, date: string, time: string, shape: string, at: string];
+/** Five parts until 20/11/2026 and six after it. A row written before the label existed is
+ * read as a row with no label rather than being dropped, which matters: dropping it would put
+ * a clean already moved back at an hour nobody is expecting. */
+type Stored =
+  | [slug: string, date: string, time: string, shape: string, at: string]
+  | [slug: string, date: string, time: string, shape: string, at: string, label: string];
 
 /** As long as the assignment record's and refreshed on every write, for the same reason: a
  * schedule runs months ahead and an override that expired under a clean still in front of
@@ -87,9 +111,26 @@ function entries(value: unknown): Stored[] {
   if (!Array.isArray(value)) return [];
   return value.filter(
     (one): one is Stored =>
-      Array.isArray(one) && one.length === 5 && one.every((part) => typeof part === "string"),
+      Array.isArray(one) &&
+      (one.length === 5 || one.length === 6) &&
+      one.every((part) => typeof part === "string"),
   );
 }
+
+/**
+ * The Thai day as Paul typed it, trimmed at the ends and capped, or "".
+ *
+ * **Nothing inside it is touched.** Spacing in Thai is a convention this app has no standing
+ * to correct, so runs of spaces he typed are his, and the only changes are the ends and
+ * anything that would break a line. The cap is a line's worth: a date, not a sentence.
+ */
+export function cleanDayLabel(raw: unknown): string {
+  if (typeof raw !== "string") return "";
+  return raw.replace(/[\r\n\t]+/g, " ").trim().slice(0, MAX_DAY_LABEL);
+}
+
+/** A day in words is short. `อังคาร 15 ธค` is twelve characters. */
+export const MAX_DAY_LABEL = 40;
 
 /** Every move of an hour that stands, by the slug of the clean it moves. */
 export async function readWhenMoves(): Promise<Map<string, WhenMove>> {
@@ -97,7 +138,10 @@ export async function readWhenMoves(): Promise<Map<string, WhenMove>> {
     const raw = await get(WHEN_KEY);
     const stored = raw ? entries((JSON.parse(raw) as { moved?: unknown }).moved) : [];
     return new Map(
-      stored.map(([slug, date, time, shape, at]) => [slug, { slug, date, time, shape, at }]),
+      stored.map(([slug, date, time, shape, at, label]) => [
+        slug,
+        { slug, date, time, shape, at, label: label ?? "" },
+      ]),
     );
   } catch {
     // Unreadable or unreachable. Nothing is moved, which is the safe way for this to fail:
@@ -122,7 +166,9 @@ function lastDay(move: WhenMove): string {
 async function write(moves: Map<string, WhenMove>, today: string): Promise<void> {
   const kept = [...moves.values()]
     .filter((move) => lastDay(move) >= today)
-    .map((move) => [move.slug, move.date, move.time, move.shape, move.at] as Stored);
+    .map(
+      (move) => [move.slug, move.date, move.time, move.shape, move.at, move.label] as Stored,
+    );
   await set(WHEN_KEY, JSON.stringify({ moved: kept }), WHEN_TTL);
 }
 
@@ -130,7 +176,13 @@ async function write(moves: Map<string, WhenMove>, today: string): Promise<void>
  * wins and a clean is never at two hours. */
 export async function moveWhen(move: Omit<WhenMove, "at">, today: string): Promise<void> {
   const moves = await readWhenMoves();
-  moves.set(move.slug, { ...move, at: new Date().toISOString() });
+  // Cleaned here as well as at the screen that typed it, so no caller can leave a line break
+  // in a day's words and no row can hold one.
+  moves.set(move.slug, {
+    ...move,
+    label: cleanDayLabel(move.label),
+    at: new Date().toISOString(),
+  });
   await write(moves, today);
 }
 
@@ -155,18 +207,22 @@ export function applyWhen(visits: Visit[], moves: Map<string, WhenMove>): Visit[
     const move = moves.get(slug);
     if (!move || !sameClean(move.shape, visit)) return visit;
     const movedDay = move.date !== visit.date;
+    // The skill's Thai for the day it used to be on would name the wrong date now, so what
+    // stands in its place is Paul's own words where he wrote any, and nothing where he did
+    // not. On the same day the published label is still true and is left alone.
+    const label = move.label || (movedDay ? null : visit.dayLabel);
     return {
       ...visit,
       slug,
       movedTo: `${move.date} ${move.time}`,
       date: move.date,
       time: move.time,
-      // The skill's Thai for the day it used to be on would name the wrong date now.
-      dayLabel: movedDay ? null : visit.dayLabel,
-      // With no day label, `plainLine` falls back to the published line, and that line opens
-      // with the published date in Thai. The hour on its own is the only part of it that is
-      // still true, and it is the part she is reading the line for.
-      line: movedDay ? move.time : visit.line,
+      dayLabel: label,
+      // `plainLine` builds the line from the label and the hour, and falls back to the
+      // published line when there is no label. That published line opens with the date it
+      // used to be on, so for a clean that moved day the hour on its own is the only part of
+      // it still true, and it is the part she is reading the line for.
+      line: label ? `${label} - ${move.time}` : movedDay ? move.time : visit.line,
     };
   });
 }

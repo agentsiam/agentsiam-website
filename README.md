@@ -812,14 +812,19 @@ lingers**: a clean that gains a cot returns to its published hour, and a booking
 hour changes publishes a different slug that this record does not answer to. A stale override
 would stand a cleaner in front of a house at an hour nobody else believes in.
 
-**What a move cannot do is say the new date in Thai**, and the admin screen says so at the
-moment it matters. Every Thai date here belongs to the skill. A new hour on the same day keeps
-her published Thai day and prints the new hour beside it, inventing nothing. A new day drops
-the Thai day rather than carrying one that names the wrong date, and prints the hour alone;
-the clean still sorts, lands on the right day screen and marks the right square on the
-calendar, and an English phone reads the whole new date because that half is composed from the
-ISO date. It is in "Known gaps". `npm run test:cleaning-when` holds all four rules against a
-throwaway store, 34 checks.
+**A move cannot say the new date in Thai, so Paul says it.** Every Thai date here belongs to
+the skill, and this app composes none: the weekday is arithmetic but the words are house
+style, and a date this app assembled would read as nearly right, which is the worst way to be
+wrong. A new hour on the same day needs nothing, because her published Thai day is still true.
+A new day opens a box on the admin screen for that day in Thai, and what he types is stored as
+he wrote it, ends trimmed and nothing else touched, and becomes her day heading and her job
+line. **Nothing checks that his words match the date**, which is the cost of him writing them
+and is said on the screen. Left empty, the clean reads as the hour alone under no heading,
+which is honest and poor; it still sorts, lands on the right day screen and marks the right
+square on the calendar, and an English phone reads the whole new date either way. The words
+are not part of what the two of them accepted, so correcting a typo in a date does not put the
+clean back in front of anybody. `npm run test:cleaning-when` holds all of it against a
+throwaway store, 51 checks.
 
 Three things about a clean moved to another cleaner are worth knowing. **The line stops naming the first cleaner**:
 a job line is finished Thai text with her name inside it, so a moved clean prints the day label
@@ -1073,15 +1078,16 @@ flow, end to end, with nothing live anywhere near it.
   rendered in development and would have gone missing only in production, on the one screen
   that tells a cleaner whether what she is holding is current. Nothing in this repository
   changed for it; the app read `built_at` off the document already.
-- **A clean moved to another day loses its Thai date (20/11/2026).** Every Thai date in this
-  system is written by the `cleaning-schedule` skill and this app composes none, which is
-  deliberate: the day of the week is the easiest thing here to get wrong and the hardest for
-  Paul to spot. A clean moved to another hour on the same day is unaffected, because the day
-  label it was published with is still true. A clean moved to another day has no label it can
-  honestly print, so her Thai screens show it with the hour and no Thai date, on the right day
-  of the calendar and the right day screen. An English phone is unaffected. The fix is one
-  field from the skill, a label per date in the document's range rather than one per visit,
-  and it is a change in `/Users/paulb/code/agentsiam/agentsiam-consulting`.
+- **A clean moved to another day takes its Thai date from Paul, and nothing checks it
+  (20/11/2026).** Every Thai date in this system is written by the `cleaning-schedule` skill
+  and this app composes none, which is deliberate: the weekday is the easiest thing here to
+  get wrong and the hardest for Paul to spot. So the move carries words he types, and a
+  wrong weekday in them reaches her screens unchallenged, exactly as a wrong weekday typed
+  into the LINE Note would have. Left empty, the clean reads as the hour alone under no
+  heading. A clean moved to another hour on the same day is unaffected either way, because
+  the label it was published with is still true. The fix that removes the box is one field
+  from the skill, a label per date in the document's range rather than one per visit, and it
+  is a change in `/Users/paulb/code/agentsiam/agentsiam-consulting`.
 - **The accept flow cannot say what moved or why (18/11/2026).** A clean that has moved reaches
   her as something to accept, which is the half the app can do alone, and the card says nothing
   about where it moved from or why it moved, which Paul asked for in the same breath. Both need
