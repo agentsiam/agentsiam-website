@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { LineFollowPanel } from "./line-cta";
 import type { Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
+import { AREAS } from "@/lib/areas";
 import { CONTACT_EMAIL } from "@/lib/site";
 import {
   BEDROOM_MINIMUMS,
@@ -211,6 +212,55 @@ export function StayRequestForm({
   const [children, setChildren] = useState(0);
   const [pets, setPets] = useState<Pets | "">("");
   const sentRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const prefilled = useRef(false);
+
+  /* What the renter already told the search arrives with them. /properties carries `from`,
+   * `to` and `guests` onto each property link, and its "Tell us what you need" links add
+   * `area` and `beds`, so the request form at the foot of an enquiry-only home does not ask
+   * again for dates they typed a page ago. Read from the address bar after mount rather
+   * than from the server's searchParams, so the pages that host this form stay static. Only
+   * an empty or default field is filled, and every value is checked against what the field
+   * accepts: a hand-edited URL fills nothing rather than something wrong. */
+  useEffect(() => {
+    const form = formRef.current;
+    // Once per mount, so a re-render never overwrites what the renter has since typed.
+    if (!form || prefilled.current) return;
+    prefilled.current = true;
+    const query = new URLSearchParams(window.location.search);
+    const isoDate = /^\d{4}-\d{2}-\d{2}$/;
+    const from = query.get("from") ?? "";
+    const to = query.get("to") ?? "";
+    const named = (name: string) =>
+      form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null;
+
+    if (isoDate.test(from) && isoDate.test(to) && to > from) {
+      const checkIn = named("checkIn");
+      const checkOut = named("checkOut");
+      if (checkIn && checkOut && !checkIn.value && !checkOut.value) {
+        checkIn.value = from;
+        checkOut.value = to;
+      }
+    }
+
+    const guests = Number(query.get("guests"));
+    const adults = named("adults");
+    if (adults && Number.isInteger(guests) && guests >= 1 && guests <= MAX_ADULTS) {
+      adults.value = String(guests);
+    }
+
+    const beds = Number(query.get("beds"));
+    const bedrooms = named("bedrooms");
+    if (bedrooms && Number.isInteger(beds) && beds >= 1) {
+      bedrooms.value = beds >= 5 ? "5+" : String(beds);
+    }
+
+    // The first area only: the form asks for one, the search allows several.
+    const areaSlug = (query.get("area") ?? "").split(",")[0];
+    const areaName = AREAS.find((item) => item.slug === areaSlug)?.name;
+    const area = named("area");
+    if (area && !area.value && areaName && areas.includes(areaName)) area.value = areaName;
+  }, [areas]);
 
   useEffect(() => {
     if (status === "sent") sentRef.current?.focus();
@@ -336,7 +386,7 @@ export function StayRequestForm({
   const handle = HANDLE_INPUT[contactKind];
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-panel border border-hairline p-6 sm:p-7">
+    <form ref={formRef} onSubmit={handleSubmit} className="rounded-panel border border-hairline p-6 sm:p-7">
       {propertyName ? (
         <p className="mb-6 text-[14.5px] leading-relaxed text-body">
           {labels.aboutProperty.replace("{property}", propertyName)}

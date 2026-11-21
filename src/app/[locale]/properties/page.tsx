@@ -63,6 +63,21 @@ export default async function PropertiesPage({
   const state = parseSearch(query);
   const city = cityBySlug(state.city) ?? DEFAULT_CITY;
 
+  // The dates and party size travel onto each property, where an enquiry-only home's request
+  // form fills itself from them. The general request also takes the first area and the
+  // bedroom minimum, the two filters it has a field for.
+  const stayQuery = searchToQuery({ from: state.from, to: state.to, guests: state.guests });
+  const requestHref =
+    href("/house-for-rent-chiang-mai") +
+    searchToQuery({
+      from: state.from,
+      to: state.to,
+      guests: state.guests,
+      areas: state.areas.slice(0, 1),
+      bedrooms: state.bedrooms,
+    }) +
+    "#request";
+
   // A city we do not serve yet gets a page that says so, never an empty result list. The
   // handoff is explicit: naming a city you cannot fulfil is a deliberate signal of intent,
   // and it only works if the page then earns it.
@@ -90,7 +105,7 @@ export default async function PropertiesPage({
               {t.browseChiangMai}
             </Link>
             <Link
-              href={href("/house-for-rent-chiang-mai#request")}
+              href={requestHref}
               className="rounded-full border-[1.5px] border-ink px-6 py-3.5 text-[15px] font-semibold hover:bg-ink hover:text-white"
             >
               {t.tellUsWhatYouNeed}
@@ -204,7 +219,7 @@ export default async function PropertiesPage({
                 // The h1 here is the result count, and the tiles follow it directly. Every
                 // other call site sits under an h2 and keeps the default h3.
                 headingLevel={2}
-                href={href(`/${property.slug}`)}
+                href={href(`/${property.slug}`) + stayQuery}
               />
             ))}
           </div>
@@ -226,7 +241,7 @@ export default async function PropertiesPage({
                 {t.clearFilters}
               </Link>
               <Link
-                href={href("/house-for-rent-chiang-mai#request")}
+                href={requestHref}
                 className="rounded-full border-[1.5px] border-ink px-6 py-3.5 text-[15px] font-semibold hover:bg-ink hover:text-white"
               >
                 {t.tellUsWhatYouNeed}
@@ -294,7 +309,7 @@ export default async function PropertiesPage({
                 to the reader, and it pointed at the owner form headed "Tell us about your
                 property" -- which then had to carry a note sending guests back out again.
                 Same destination the header's Contact already uses for a renter. */}
-            <Link href={href("/house-for-rent-chiang-mai#request")} className="pill-primary">
+            <Link href={requestHref} className="pill-primary">
               {t.tellUsWhatYouNeed}
             </Link>
             <Link href={href("/how-it-works")} className="pill-outline">
