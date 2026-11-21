@@ -1483,8 +1483,11 @@ flow, end to end, with nothing live anywhere near it.
   authorised on 25/08/2026: stroke only, `currentColor`, 24x24, always in a chip, chip
   `aria-hidden`, literal rather than metaphorical. `design-guardrails.md` in the consulting
   repo still says the design system carries no icons and is stale on this point.
-- **No phone number or LINE ID published.** The footer carries name, address and email
-  only; all three have to match the Google Business Profile character for character.
+- ~~**No phone number or LINE ID published.**~~ Out of date, found 21/11/2026. The LINE
+  Official Account is linked from the footer since 15/11/2026 (`b2879f5`, `LineFooterLink`),
+  and the business line `CONTACT_TELEPHONE` is in the `LocalBusiness` node since 01/11/2026
+  (`80f051e`). Still true: no phone number is printed on any page, and name, address and email
+  have to match the Google Business Profile character for character.
 - ~~The company address in the footer is the Bangkok registered office.~~ Resolved
   06/09/2026 on Paul's instruction: the registered office is and always was Chiang Mai, and
   the Bangkok block was simply wrong. `POSTAL_ADDRESS` now reads 42 Soi 1, Wiang Ping Road,
@@ -1499,7 +1502,8 @@ flow, end to end, with nothing live anywhere near it.
   records compete. And the registered office is the Lotus House building, so the property's
   street address is now published on every page rather than released at booking
   confirmation. That is a deliberate trade, written up in `src/lib/site.ts`.
-- **The `LocalBusiness` node has no `telephone`, `geo`, `openingHours` or `sameAs`.** Each is
+- **The `LocalBusiness` node has no `geo`, `openingHours` or `sameAs`.** (`telephone` is set,
+  see the entry above.) Each is
   a one-line addition on the day it has a verified value. `geo` and `openingHours` are the two
   a LocalBusiness rich result most wants. ~~`logo` is also absent.~~ Set 12/09/2026:
   `public/agentsiam-logo.jpg`, wired into `organizationSchema()`, copied from the consulting
