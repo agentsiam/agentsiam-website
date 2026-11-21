@@ -212,6 +212,7 @@ export function StayRequestForm({
   labels,
   areas,
   defaultArea = "",
+  defaultBedrooms = 2,
   page,
   locale,
   property = "",
@@ -223,6 +224,10 @@ export function StayRequestForm({
    * English because the CRM files are. */
   areas: string[];
   defaultArea?: string;
+  /** The home's own bedroom count when the form sits on its page. Starting every form at
+   * two meant a renter asking about a four-bedroom villa sent "2 bedrooms or more" unless
+   * they changed it. */
+  defaultBedrooms?: number;
   /** The bare route the form sits on, so the record says which page produced the lead. */
   page: string;
   /** The locale of the page they are reading, posted so the consent record can be stored in
@@ -536,7 +541,11 @@ export function StayRequestForm({
         </label>
         <label className="grid min-w-0 gap-1.5 text-sm">
           <span className={label}>{labels.bedroomsMin}</span>
-          <select name="bedrooms" defaultValue="2" className={field}>
+          <select
+            name="bedrooms"
+            defaultValue={defaultBedrooms >= 5 ? "5+" : String(Math.max(1, defaultBedrooms))}
+            className={field}
+          >
             {BEDROOM_MINIMUMS.map((n) => (
               <option key={n} value={n}>
                 {n}

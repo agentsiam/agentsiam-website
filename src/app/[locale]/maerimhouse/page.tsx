@@ -216,6 +216,7 @@ export default async function MaeRimHousePage({ params }: PageProps<"/[locale]">
           labels={stayRequestLabels(t)}
           areas={AREAS.map((item) => item.name)}
           defaultArea={area?.name ?? ""}
+          defaultBedrooms={property.bedrooms}
           page="/maerimhouse"
           locale={locale as Locale}
           property="maerimhouse"

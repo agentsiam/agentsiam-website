@@ -275,6 +275,7 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
           labels={stayRequestLabels(t)}
           areas={AREAS.map((item) => item.name)}
           defaultArea={area?.name ?? ""}
+          defaultBedrooms={property.bedrooms}
           page="/cosmoshouse"
           locale={locale as Locale}
           property="cosmoshouse"

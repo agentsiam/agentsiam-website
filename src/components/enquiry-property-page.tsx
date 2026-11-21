@@ -265,6 +265,7 @@ export function EnquiryPropertyPage({
           labels={stayRequestLabels(t)}
           areas={AREAS.map((item) => item.name)}
           defaultArea={area?.name ?? ""}
+          defaultBedrooms={property.bedrooms}
           page={`/${property.slug}`}
           locale={locale}
           property={property.slug}
