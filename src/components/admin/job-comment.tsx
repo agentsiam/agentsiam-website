@@ -28,6 +28,9 @@ export function JobComment({ person, slug }: { person: string; slug: string }) {
   const [photos, setPhotos] = useState<{ file: Blob; preview: string }[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  // Private unless ticked. Paul, 21/11/2026: a payslip sent to one person must not reach her
+  // colleague on the same job, so the safe answer is the one that needs no action.
+  const [everyone, setEveryone] = useState(false);
 
   async function choose(event: React.ChangeEvent<HTMLInputElement>) {
     const picked = Array.from(event.target.files ?? []);
@@ -91,11 +94,12 @@ export function JobComment({ person, slug }: { person: string; slug: string }) {
       const response = await fetch(ADMIN_API_CLEANING, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "comment", person, slug, body: text, images }),
+        body: JSON.stringify({ action: "comment", person, slug, body: text, images, everyone }),
       });
       const answer = (await response.json().catch(() => ({}))) as { error?: string };
       if (response.ok) {
         setBody("");
+        setEveryone(false);
         dropAll();
         router.refresh();
       } else {
@@ -140,6 +144,14 @@ export function JobComment({ person, slug }: { person: string; slug: string }) {
         </ul>
       ) : null}
 
+      <label className="mt-2 flex items-center gap-2 text-sm text-muted">
+        <input
+          type="checkbox"
+          checked={everyone}
+          onChange={(event) => setEveryone(event.target.checked)}
+        />
+        {everyone ? "Everyone on this job sees it" : `Only ${person} sees it. Tick to send it to everyone on this job`}
+      </label>
       <div className="mt-2 flex items-center gap-3">
         <input
           ref={picker}

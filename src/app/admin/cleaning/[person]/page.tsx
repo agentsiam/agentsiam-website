@@ -121,7 +121,7 @@ export default async function AdminCleaningPersonPage({
     visits.map(async (visit) => ({
       visit,
       slug: visitSlug(visit),
-      comments: await listComments(visitSlug(visit)).catch(() => []),
+      comments: await listComments(visitSlug(visit), person).catch(() => []),
     })),
   );
 
@@ -232,6 +232,11 @@ export default async function AdminCleaningPersonPage({
                       <p className="text-xs font-semibold text-muted">
                         {comment.name}
                         {builtAtDigits(comment.at) ? ` · ${builtAtDigits(comment.at)}` : ""}
+                        {comment.by === "agentsiam"
+                          ? comment.to
+                            ? ` · only ${comment.to}`
+                            : " · everyone on this job"
+                          : ""}
                       </p>
                       {comment.body ? (
                         <p className="mt-1 whitespace-pre-wrap text-text">{comment.body}</p>

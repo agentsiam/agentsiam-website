@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { currentSession } from "@/lib/admin/guard";
 import { PHOTO_PREFIX } from "@/lib/cleaning/comment-shape";
 import { currentHolder, pinGiven } from "@/lib/cleaning/guard";
+import { privatePhotoOwner } from "@/lib/cleaning/comments";
 import { readPhoto } from "@/lib/cleaning/photos";
 
 export const runtime = "nodejs";
@@ -40,12 +41,29 @@ export async function GET(
 ) {
   const holder = await currentHolder();
   const asTeam = holder ? await pinGiven(holder) : false;
-  if (!asTeam && !(await currentSession())) {
+  const admin = Boolean(await currentSession());
+  if (!asTeam && !admin) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
   const { path } = await params;
-  const photo = await readPhoto(`${PHOTO_PREFIX}${(path ?? []).join("/")}`);
+  const pathname = `${PHOTO_PREFIX}${(path ?? []).join("/")}`;
+  // **A photo on a private comment opens for its person and for Paul, and for nobody else.**
+  // Paul, 21/11/2026, so a payslip sent to one cleaner is not readable by her colleague on the
+  // same job. Not found rather than forbidden, so trying a path tells a colleague nothing, and
+  // a store that cannot be read refuses rather than guessing.
+  if (!admin) {
+    let owner: string | null;
+    try {
+      owner = await privatePhotoOwner(pathname);
+    } catch {
+      return NextResponse.json({ ok: false }, { status: 503 });
+    }
+    if (owner && owner !== holder?.person) {
+      return NextResponse.json({ ok: false }, { status: 404 });
+    }
+  }
+  const photo = await readPhoto(pathname);
   if (!photo.ok) {
     // 404 for a photo that is gone or was never ours, 503 for a store nobody has set up.
     // The screen shows no image either way; the difference is only legible in a log.

@@ -109,7 +109,21 @@ export type Comment = {
    * never neither.
    */
   images: string[];
+  /**
+   * Who may read it: one person's key, or null for everyone on the job. Paul, 21/11/2026: a
+   * payslip sent to Da was readable by Ting, because a job's thread is shared by the cleaner
+   * and the laundry run on it. So what AgentSiam sends from a person's page goes to that
+   * person alone unless he ticks it to everyone, and what the team writes stays shared, which
+   * is how the two of them still talk about the same afternoon. Absent on everything written
+   * before, which reads as everyone, as it always did.
+   */
+  to: string | null;
 };
+
+/** Whether this person may read this comment. */
+export function visibleTo(comment: Pick<Comment, "to">, person: string): boolean {
+  return comment.to === null || comment.to === person;
+}
 
 /** Long enough for "the cot is under the stairs, I could not find the spare sheets", short
  * enough that nothing here is a document. */

@@ -20,6 +20,7 @@
     "cleaning:wipe": "node scripts/wipe-cleaning.mjs",
   "test:cleaning-accept": "node scripts/test-cleaning-accept.mjs",
   "test:cleaning-assign": "node scripts/test-cleaning-assign.mjs",
+    "test:cleaning-comments": "node scripts/test-cleaning-comments.mjs",
     "test:cleaning-devices": "node scripts/test-cleaning-devices.mjs",
     "test:cleaning-when": "node scripts/test-cleaning-when.mjs",
   "test:cleaning-history": "node scripts/test-cleaning-history.mjs",

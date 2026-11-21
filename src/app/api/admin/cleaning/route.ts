@@ -63,6 +63,8 @@ export async function POST(request: Request) {
     body?: unknown;
     images?: unknown;
     image?: unknown;
+    /** A comment to everyone on the job rather than to this person alone. Only `true` counts. */
+    everyone?: unknown;
   };
   try {
     body = (await request.json()) as typeof body;
@@ -242,6 +244,8 @@ export async function POST(request: Request) {
         name: "AgentSiam",
         body: text,
         images,
+        // To her alone unless he ticked it to everyone on the job. Paul, 21/11/2026.
+        to: body.everyone === true ? null : person,
       });
       if (result !== "ok") {
         return NextResponse.json({ error: `The comment was not stored: ${result}.` }, { status: 409 });

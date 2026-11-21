@@ -4,6 +4,7 @@ import {
   VISIT_SLUG,
   cleanBody,
   photoList,
+  visibleTo,
   type Comment,
   type CommentAuthor,
 } from "./comment-shape";
@@ -25,7 +26,10 @@ import { get, keysUnder, set } from "./store";
  *   - **A thread is per job, not per person.** Both people on a clean, the cleaner and the
  *     laundry round, see the same thread, because they are talking about the same house on
  *     the same afternoon. The key is the visit's own slug, which both of their documents
- *     carry identically.
+ *     carry identically. **Except what AgentSiam sends to one of them**, which since
+ *     21/11/2026 carries `to` and is read by that person alone, because a payslip sent to
+ *     the cleaner was readable by the laundry run beside her. The team's own messages carry
+ *     no `to` and stay everyone's.
  *   - **A slug has to be in the asking person's own published document.** Checked by the
  *     two routes that write, not here: a document holds that person's jobs and nobody
  *     else's, so it is the one list that cannot be argued with. Without it, a slug is a
@@ -52,6 +56,9 @@ export type { Comment, CommentAuthor };
 export { MAX_COMMENT_LENGTH, MAX_COMMENTS, VISIT_SLUG, cleanBody } from "./comment-shape";
 
 export const COMMENT_PREFIX = "cleaning:comment:";
+/** One key per photo on a private comment, naming the one person who may open it. The photo
+ * route has a pathname and nothing else, so this is how it knows. A shared photo has none. */
+export const PRIVATE_PHOTO_PREFIX = "cleaning:photo-private:";
 
 /** Four months. A conversation about a clean outlives the schedule it sat on, and this is
  * not a filing cabinet. */
@@ -71,10 +78,12 @@ function parse(raw: string | null, id: string): Comment | null {
     const body = typeof value.body === "string" ? value.body : "";
     // Both shapes: a list since 18/11/2026, a single `image` before it.
     const images = photoList(value.images, value.image);
+    // Absent on everything written before 21/11/2026, which reads as everyone on the job.
+    const to = typeof value.to === "string" && value.to.length > 0 ? value.to : null;
     // Words or a photograph, never neither: a comment with nothing in it is a storage
     // accident.
     if (!at || (!body && images.length === 0)) return null;
-    return { id, at, by, name, body, images };
+    return { id, at, by, name, body, images, to };
   } catch {
     return null;
   }
@@ -87,15 +96,18 @@ function parse(raw: string | null, id: string): Comment | null {
  * conversation. A comment that cannot be read back is dropped rather than rendered as a
  * gap: half a thread is better than a screen that says something was said and will not say
  * what.
+ *
+ * **Read as one person, always.** There is no unfiltered read: her phone asks as her, and
+ * Paul's page about her asks as her too, so his screen shows exactly what hers does.
  */
-export async function listComments(slug: string): Promise<Comment[]> {
+export async function listComments(slug: string, reader: string): Promise<Comment[]> {
   if (!VISIT_SLUG.test(slug)) return [];
   const prefix = threadPrefix(slug);
   const keys = (await keysUnder(prefix)).sort();
   const comments: Comment[] = [];
   for (const key of keys) {
     const comment = parse(await get(key), key.slice(prefix.length));
-    if (comment) comments.push(comment);
+    if (comment && visibleTo(comment, reader)) comments.push(comment);
   }
   return comments;
 }
@@ -111,7 +123,14 @@ export type AddResult = "ok" | "full" | "empty" | "bad-slug";
  */
 export async function addComment(
   slug: string,
-  comment: { by: CommentAuthor; name: string; body: string; images?: string[] },
+  comment: {
+    by: CommentAuthor;
+    name: string;
+    body: string;
+    images?: string[];
+    /** One person's key for a private comment; absent or null for everyone on the job. */
+    to?: string | null;
+  },
 ): Promise<AddResult> {
   if (!VISIT_SLUG.test(slug)) return "bad-slug";
   const body = cleanBody(comment.body);
@@ -127,13 +146,27 @@ export async function addComment(
   // The millisecond, so the key sorts, and six random characters so two people writing in
   // the same millisecond cannot write over each other.
   const id = `${at.getTime()}-${Math.random().toString(36).slice(2, 8)}`;
+  const to = comment.to ?? null;
   const stored: Omit<Comment, "id"> = {
     at: at.toISOString(),
     by: comment.by,
     name: comment.name,
     body,
     images,
+    to,
   };
+  // The photos' owner first, so there is no moment when a private photo is on a comment and
+  // the route that serves it does not yet know whose it is.
+  if (to) {
+    for (const path of images) {
+      await set(`${PRIVATE_PHOTO_PREFIX}${path}`, to, COMMENT_TTL_SECONDS);
+    }
+  }
   await set(`${threadPrefix(slug)}${id}`, JSON.stringify(stored), COMMENT_TTL_SECONDS);
   return "ok";
+}
+
+/** The one person who may open a photo on a private comment, or null for a shared one. */
+export async function privatePhotoOwner(path: string): Promise<string | null> {
+  return (await get(`${PRIVATE_PHOTO_PREFIX}${path}`)) || null;
 }

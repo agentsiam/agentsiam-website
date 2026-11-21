@@ -121,7 +121,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   // The thread is read here rather than in the client, so it is on the page the service
   // worker saves and a phone with no signal still shows what was said. Writing needs the
   // network; reading what is already there does not.
-  const comments = await listComments(slug).catch(() => []);
+  const comments = await listComments(slug, holder.person).catch(() => []);
   // Whether this one is still waiting for an answer. Same record the new-work screen reads,
   // so that screen and this one cannot disagree about one clean. A declined clean never gets
   // here, and an accepted one shows no buttons: changing her mind about work she agreed to is
