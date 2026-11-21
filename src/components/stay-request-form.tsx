@@ -180,6 +180,34 @@ const HANDLE_INPUT: Record<ContactKind, { type: string; autoComplete: string }> 
   LINE: { type: "text", autoComplete: "off" },
 };
 
+/** A date as the date input writes it, in the reader's own day. */
+function isoDay(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function dayAfter(iso: string): string {
+  const [year, month, day] = iso.split("-").map(Number);
+  return isoDay(new Date(year, month - 1, day + 1));
+}
+
+/**
+ * Arrive no earlier than today, leave at least a day after arriving. The endpoint already
+ * refuses a leave date on or before the arrival, but the form could only answer that refusal
+ * with "Sending failed, please email us", which reads as the site being broken. Constraints
+ * on the inputs let the browser stop it at the field, in its own words and language, before
+ * anything is sent. Set from the client, because "today" is the reader's and not the
+ * server's.
+ */
+function syncDateLimits(form: HTMLFormElement) {
+  const checkIn = form.elements.namedItem("checkIn") as HTMLInputElement | null;
+  const checkOut = form.elements.namedItem("checkOut") as HTMLInputElement | null;
+  if (!checkIn || !checkOut) return;
+  const today = isoDay(new Date());
+  checkIn.min = today;
+  checkOut.min = dayAfter(checkIn.value || today);
+}
+
 export function StayRequestForm({
   labels,
   areas,
@@ -260,6 +288,8 @@ export function StayRequestForm({
     const areaName = AREAS.find((item) => item.slug === areaSlug)?.name;
     const area = named("area");
     if (area && !area.value && areaName && areas.includes(areaName)) area.value = areaName;
+
+    syncDateLimits(form);
   }, [areas]);
 
   useEffect(() => {
@@ -453,7 +483,15 @@ export function StayRequestForm({
       <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
         <label className="grid min-w-0 gap-1.5 text-sm">
           <span className={label}>{labels.checkIn}</span>
-          <input required type="date" name="checkIn" className={field} />
+          <input
+            required
+            type="date"
+            name="checkIn"
+            className={field}
+            onChange={(event) => {
+              if (event.currentTarget.form) syncDateLimits(event.currentTarget.form);
+            }}
+          />
         </label>
         <label className="grid min-w-0 gap-1.5 text-sm">
           <span className={label}>{labels.checkOut}</span>
