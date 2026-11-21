@@ -110,6 +110,9 @@ export function ContactForm({
     ["Hang Dong", t.areaHangDong],
     ["Mae Rim", t.areaMaeRim],
     ["San Sai", t.areaSanSai],
+    ["Chang Khian", t.areaChangKhian],
+    ["Chang Phueak", t.areaChangPhueak],
+    ["Pa Daet", t.areaPaDaet],
     // An owner sent here from /management/<city> gets that city as a chip, chosen for them.
     // Without it a Phuket or Bangkok owner saw eight Chiang Mai neighbourhoods, had to pick
     // "Elsewhere", and the enquiry arrived not saying which city. The name is the English
