@@ -97,6 +97,9 @@ export default async function AreaPage({
   const guidePlaces = guidePlacesInArea(area.slug);
   const shown = guidePlaces.slice(0, GUIDE_PREVIEW);
   const kmText = km < 10 ? km.toFixed(1) : String(Math.round(km));
+  // A renter who asks from a neighbourhood's own page is asking about that neighbourhood,
+  // and the request form fills its area field from `area` (see stay-request-form.tsx).
+  const requestPath = "/house-for-rent-chiang-mai" + searchToQuery({ areas: [area.slug] });
 
   // The questions guests ask about a neighbourhood, answered with lines this page already
   // shows: the first "what it is like" paragraph, the distance, and the "who it suits" list
@@ -348,7 +351,7 @@ export default async function AreaPage({
               {t.seeEverything}
             </Link>
             <Link
-              href={href("/house-for-rent-chiang-mai#request")}
+              href={href(requestPath) + "#request"}
               className="rounded-full border-[1.5px] border-ink px-6 py-3.5 text-[15px] font-semibold hover:bg-ink hover:text-white"
             >
               {t.tellUsWhatYouNeed}
@@ -368,7 +371,7 @@ export default async function AreaPage({
           {t.areaCloseBody}
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href={href("/house-for-rent-chiang-mai#request")} className="pill-primary">
+          <Link href={href(requestPath) + "#request"} className="pill-primary">
             {t.tellUsWhatYouNeed}
           </Link>
           <Link href={href("/lotushouse/local-guide")} className="pill-outline">
@@ -383,7 +386,7 @@ export default async function AreaPage({
             {t.areaFaqTitle.replace("{area}", name)}
           </h2>
           <Faq items={faq} />
-          <Link href={href("/house-for-rent-chiang-mai")} className="pill-outline mt-5 inline-block">
+          <Link href={href(requestPath)} className="pill-outline mt-5 inline-block">
             {t.areaFaqMonthLink}
           </Link>
         </section>
