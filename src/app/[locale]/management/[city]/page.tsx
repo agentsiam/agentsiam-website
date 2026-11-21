@@ -109,7 +109,7 @@ export default async function ManagementCityPage({
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-5.5">
               <Link
-                href={href("/contact")}
+                href={href("/contact") + `?city=${city.slug}`}
                 className="pill-primary"
               >
                 {t.talkToUs}
@@ -225,7 +225,7 @@ export default async function ManagementCityPage({
           {t.mgmt2CtaBody}
         </p>
         <Link
-          href={href("/contact")}
+          href={href("/contact") + `?city=${city.slug}`}
           className="pill-primary mt-6"
         >
           {t.talkToUs}

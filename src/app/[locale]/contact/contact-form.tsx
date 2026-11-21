@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { LineFollowPanel } from "@/components/line-cta";
 import type { Dictionary } from "@/i18n";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
 import { attributionForForm } from "@/lib/attribution";
+import { managementCityBySlug } from "@/lib/management-cities";
 import { CONTACT_EMAIL } from "@/lib/site";
 
 /**
@@ -52,6 +53,11 @@ function Chip({
   );
 }
 
+/** The query string does not change under a mounted form, so there is nothing to watch. */
+function noSubscription() {
+  return () => {};
+}
+
 export function ContactForm({
   t,
   locale,
@@ -70,7 +76,17 @@ export function ContactForm({
   const sentRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [propertyType, setPropertyType] = useState("");
-  const [area, setArea] = useState("");
+  const [chosenArea, setArea] = useState("");
+  // Read from the address bar on the client, so /contact stays a static page; the server
+  // snapshot is empty, so the first render matches the HTML and the chip appears after.
+  const citySlug = useSyncExternalStore(
+    noSubscription,
+    () => new URLSearchParams(window.location.search).get("city") ?? "",
+    () => "",
+  );
+  const pageCity = managementCityBySlug(citySlug)?.name ?? "";
+  // The page's city stands until the owner picks another chip.
+  const area = chosenArea || pageCity;
   // The three ICP answers. Occupancy and nightly rate are deliberately not asked: they are
   // read off the listing (next 60 days) at the reply step, Nils 06/11/2026.
   const [listed, setListed] = useState("");
@@ -94,6 +110,11 @@ export function ContactForm({
     ["Hang Dong", t.areaHangDong],
     ["Mae Rim", t.areaMaeRim],
     ["San Sai", t.areaSanSai],
+    // An owner sent here from /management/<city> gets that city as a chip, chosen for them.
+    // Without it a Phuket or Bangkok owner saw eight Chiang Mai neighbourhoods, had to pick
+    // "Elsewhere", and the enquiry arrived not saying which city. The name is the English
+    // one on every locale, as it already is in the heading of the page they came from.
+    ...(pageCity ? ([[pageCity, pageCity]] as [string, string][]) : []),
     ["Elsewhere", t.c2AreaElsewhere],
   ];
   const yesNo: [string, string][] = [
