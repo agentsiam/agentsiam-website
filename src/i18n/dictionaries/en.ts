@@ -1551,7 +1551,7 @@ export const en = {
   srNotes: "Anything else we should know",
   srNotesHint: "A quiet street, close to a school, a bathtub, anything that matters to you.",
   // The consent record. The recipient is named in the words of the form, because nothing may be delivered to an owner without it, and the exact string shown is stored on the inquiry record in the language it was shown in. Unticked is a real answer and is recorded as one.
-  srConsentOwner: "Yes, you may pass what I am looking for to a property owner or their manager so they can answer it.",
+  srConsentOwner: "Yes, you may pass what I am looking for to a property owner or their co-host so they can answer it.",
   srConsentOwnerHint: "Your name and the way to reach you stay with us. They reach an owner only once that owner has accepted our introduction terms. Leave this unticked and we will only offer you homes we run ourselves.",
   srAboutProperty: "You are asking about {property}. Tell us your dates and we will come back with availability and a price.",
   srSentBody: "A person reads it and answers on the channel you gave us. If it is urgent, write to",

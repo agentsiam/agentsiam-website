@@ -131,7 +131,7 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             from. We use it for one purpose: to find you a home that fits and to answer you.
             The children&rsquo;s ages are used only to judge whether a home is suitable and
             safe for them, and are never linked to a child&rsquo;s name. If you tick the
-            box that allows it, we may show a property owner or their manager what you are
+            box that allows it, we may show a property owner or their co-host what you are
             looking for; your name and the way to reach you are passed to an owner only
             after that owner has accepted our introduction terms. The lawful basis is your
             consent, and the steps taken at your request before entering a contract.
@@ -319,7 +319,7 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
               enquiry and request, hosted by GitHub
             </li>
             <li>
-              a property owner or their manager, for a request to stay where you have ticked
+              a property owner or their co-host, for a request to stay where you have ticked
               the box that allows it, and only as described under What we collect above
             </li>
             <li>

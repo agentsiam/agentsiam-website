@@ -86,7 +86,7 @@ export function requirementsCell(inquiry: Inquiry): string {
   if (inquiry.smoking) clauses.push(`Smoking: ${inquiry.smoking}`);
   clauses.push(`Answer in ${languageName(inquiry.reply_language)}`);
   clauses.push(
-    `Consent to pass this to a property owner or their manager: ${inquiry.consent_to_pass_to_owner}`,
+    `Consent to pass this to a property owner or their co-host: ${inquiry.consent_to_pass_to_owner}`,
   );
   clauses.push(`Routed as: ${inquiry.routing}`);
   if (inquiry.property_name) clauses.push(`Asked about ${inquiry.property_name}`);
