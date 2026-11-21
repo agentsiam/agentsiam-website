@@ -1321,6 +1321,11 @@ flow, end to end, with nothing live anywhere near it.
   children and that we do not knowingly collect their personal information. Nothing was changed
   there, because the paragraph and the recipient list the owner delivery needs are one edit to a
   page that has to be legally exact, and that is Paul's call rather than a side effect of a form.
+  **Drafted 21/11/2026 on Paul's instruction, not signed off and not read by counsel:** a
+  "Requests for a place to stay" paragraph naming every field, the children's ages with their
+  purpose, and the owner introduction as the consent box words it; and two recipients under
+  "Who else sees it", the GitHub repository that holds the enquiry records and an owner where
+  the box is ticked. The GitHub line is true of the contact form too, which never named it.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.

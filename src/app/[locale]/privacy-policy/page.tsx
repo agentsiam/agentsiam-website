@@ -112,6 +112,30 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             carry out the work you asked about. The lawful basis is your consent, and the
             steps taken at your request before entering a contract.
           </p>
+          {/* The renter request form, added 21/11/2026. It collects far more than the
+              contact form paragraph above names, and it links here from its consent line.
+              The children's ages are stated with their purpose because the Children
+              section below says the site does not knowingly collect children's data: these
+              come from the adult making the request, about the people travelling with them.
+              Draft: not signed off and not read by counsel. */}
+          <p>
+            <strong>Requests for a place to stay.</strong>{" "}
+            When you send the request form
+            for a monthly or longer stay we receive your name, the one way to reach you
+            that you choose (an email address, a phone or WhatsApp number, or a LINE ID),
+            the language you want to be answered in, your dates and how fixed they are, the
+            area, the number of bedrooms and the budget you are looking for, the number of
+            adults and children and, if you give them, the children&rsquo;s ages, what the
+            home must have, who is travelling, whether you will have a vehicle, any pets,
+            whether anyone smokes, how you found us, your message, and the page you sent it
+            from. We use it for one purpose: to find you a home that fits and to answer you.
+            The children&rsquo;s ages are used only to judge whether a home is suitable and
+            safe for them, and are never linked to a child&rsquo;s name. If you tick the
+            box that allows it, we may show a property owner or their manager what you are
+            looking for; your name and the way to reach you are passed to an owner only
+            after that owner has accepted our introduction terms. The lawful basis is your
+            consent, and the steps taken at your request before entering a contract.
+          </p>
           {/* The two editorial hubs, /journal and /host-newsletter, added 15/11/2026 with
               the sign-up itself. Three things in here are unusual enough to be worth
               stating rather than leaving a reader to assume the ordinary case: the address
@@ -289,6 +313,14 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             <li>
               the reservation system that holds our bookings, when you enquire about or book
               a stay
+            </li>
+            <li>
+              the private, access-controlled repository where we keep our record of each
+              enquiry and request, hosted by GitHub
+            </li>
+            <li>
+              a property owner or their manager, for a request to stay where you have ticked
+              the box that allows it, and only as described under What we collect above
             </li>
             <li>
               Upstash, which stores the WhatsApp conversations described above
