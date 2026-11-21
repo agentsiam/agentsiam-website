@@ -53,6 +53,15 @@ function Chip({
   );
 }
 
+type Situation = "not-listed" | "self-run" | "managed";
+
+/** English values, as every chip here posts, so the record reads the same in any language. */
+const SITUATION_ANSWERS: Record<Situation, { listed: "Yes" | "No"; agency: "" | "Yes" | "No" }> = {
+  "not-listed": { listed: "No", agency: "" },
+  "self-run": { listed: "Yes", agency: "No" },
+  managed: { listed: "Yes", agency: "Yes" },
+};
+
 /** The query string does not change under a mounted form, so there is nothing to watch. */
 function noSubscription() {
   return () => {};
@@ -93,8 +102,13 @@ export function ContactForm({
   const area = chosenArea || pageCity;
   // The three ICP answers. Occupancy and nightly rate are deliberately not asked: they are
   // read off the listing (next 60 days) at the reply step, Nils 06/11/2026.
-  const [listed, setListed] = useState("");
-  const [agency, setAgency] = useState("");
+  // One question in the words the owner page already uses, "Where are you starting from?",
+  // in place of two yes-or-no questions (Paul, 21/11/2026). Each answer is posted as the two
+  // values the endpoint has always read, `listed` and `agency`, because the ICP tag in
+  // /api/contact is built from that pair: not listed is ICP5, self-run is ICP3 or ICP1, with a
+  // manager is ICP4 or ICP2.
+  const [situation, setSituation] = useState<Situation | "">("");
+  const { listed, agency } = situation ? SITUATION_ANSWERS[situation] : { listed: "", agency: "" };
   const [bedrooms, setBedrooms] = useState("");
 
   // English values, translated labels. The value is what reaches the mailbox, so an
@@ -123,9 +137,10 @@ export function ContactForm({
     ...(pageCity ? ([[pageCity, pageCityLabel]] as [string, string][]) : []),
     ["Elsewhere", t.c2AreaElsewhere],
   ];
-  const yesNo: [string, string][] = [
-    ["Yes", t.c2Yes],
-    ["No", t.c2No],
+  const situations: [Situation, string][] = [
+    ["not-listed", t.c2Route1When],
+    ["self-run", t.c2Route2When],
+    ["managed", t.c2Route3When],
   ];
   const bedroomCounts = ["1", "2", "3", "4", "5+"];
 
@@ -283,27 +298,22 @@ export function ContactForm({
 
       <fieldset className="mt-5.5">
         <legend className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-          {t.c2FormListedQ}
+          {t.c2RouteTitle}
         </legend>
         <div className="mt-2.5 flex flex-wrap gap-2">
-          {yesNo.map(([value, label]) => (
-            <Chip key={value} label={label} selected={listed === value} onSelect={() => setListed(value)} />
+          {situations.map(([value, label]) => (
+            <Chip
+              key={value}
+              label={label}
+              selected={situation === value}
+              onSelect={() => setSituation(value)}
+            />
           ))}
         </div>
       </fieldset>
 
       {listed === "Yes" ? (
         <>
-          <fieldset className="mt-5.5">
-            <legend className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-              {t.c2FormAgencyQ}
-            </legend>
-            <div className="mt-2.5 flex flex-wrap gap-2">
-              {yesNo.map(([value, label]) => (
-                <Chip key={value} label={label} selected={agency === value} onSelect={() => setAgency(value)} />
-              ))}
-            </div>
-          </fieldset>
           <label className="mt-5.5 grid gap-1.5 text-sm">
             <span className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
               {t.c2FormLinkLabel}{" "}

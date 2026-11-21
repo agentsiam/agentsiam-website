@@ -1354,10 +1354,6 @@ export const en = {
   c2CloseBody: "A few details about the property, and we come back to you with what we would do. It costs nothing to ask.",
 
   // -- owner form as ICP filter (review build, English only) ---------------
-  c2FormListedQ: "Is the property listed on Airbnb or another platform now?",
-  c2Yes: "Yes",
-  c2No: "No",
-  c2FormAgencyQ: "Is it managed by an agency today?",
   c2FormLinkLabel: "Link to the listing",
   c2FormBedrooms: "Bedrooms",
   c2AreaElsewhere: "Elsewhere",
@@ -1367,7 +1363,7 @@ export const en = {
   c2FormNeedContact: "Please give an email, or a phone number or LINE ID, so we can reply.",
 
   // -- owner form required choices -----------------------------------------
-  c2FormNeedDetails: "Please choose whether it is listed, the property type, where it is and the number of bedrooms.",
+  c2FormNeedDetails: "Please choose where you are starting from, the property type, where it is and the number of bedrooms.",
 
   // -- owner form: Wat Ket -------------------------------------------------
 

@@ -1183,10 +1183,6 @@ export const zh: Dictionary = {
   c2CloseBody: "留下房产的几项信息，我们会回复您我们打算怎么做。咨询不收费。",
 
   // -- owner form as ICP filter (review build, English only) ---------------
-  c2FormListedQ: "房产目前是否已在Airbnb或其他平台上架？",
-  c2Yes: "是",
-  c2No: "否",
-  c2FormAgencyQ: "目前是否由管理公司打理？",
   c2FormLinkLabel: "房源链接",
   c2FormBedrooms: "卧室数量",
   c2AreaElsewhere: "其他地区",
@@ -1196,7 +1192,7 @@ export const zh: Dictionary = {
   c2FormNeedContact: "请留下电子邮件，或电话号码或LINE ID，方便我们回复。",
 
   // -- owner form required choices -----------------------------------------
-  c2FormNeedDetails: "请选择是否已上架、房产类型、所在地区和卧室数量。",
+  c2FormNeedDetails: "请选择您目前所处的阶段、房产类型、所在地区和卧室数量。",
 
   // -- owner form: Wat Ket -------------------------------------------------
 
