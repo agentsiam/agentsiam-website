@@ -125,7 +125,8 @@ try {
 }
 
 const require = createRequire(join(out, "test.cjs"));
-const { clearMove, moveVisit, readAssignments, scheduleFor } = require(join(out, "assign.js"));
+const { clearMove, moveHolds, moveVisit, readAssignments, scheduleFor } = require(join(out, "assign.js"));
+const { agreedShape } = require(join(out, "accept.js"));
 const { accessFor, parseDocument } = require(join(out, "document.js"));
 
 let failures = 0;
@@ -193,6 +194,17 @@ await clearMove(SLUG, TODAY);
 check("nothing is moved", (await readAssignments()).size, 0);
 check("she has both of hers again", (await scheduleFor("aun")).visits.length, 2);
 check("and the other cleaner has only her own", (await scheduleFor("da")).visits.length, 1);
+
+console.log("\nPaul's overview asks whether a move stands the way the schedules do");
+// It compared the stored line with the published one, and the admin route stores the agreed
+// shape, so every move made from that screen since 19/11/2026 was missed there.
+const standing = (await scheduleFor("aun")).visits.find((one) => one.date === "2026-12-20");
+const recorded = (line) => ({ slug: SLUG, from: "aun", to: "da", line, at: "" });
+check("the agreed shape is not the line, which is what the overview missed", agreedShape(standing) === standing.line, false);
+check("a move as the admin screen records it stands", moveHolds(recorded(agreedShape(standing)), standing), true);
+check("so does one recorded before that, by its line", moveHolds(recorded(standing.line), standing), true);
+check("a clean that gained a cot is a different clean", moveHolds(recorded(agreedShape(standing)), { ...standing, note: "เพิ่มเตียงเด็ก" }), false);
+check("and no move is no move", moveHolds(undefined, standing), false);
 
 console.log("\nthe record does not grow for ever");
 await moveVisit({ slug: "2026-01-01-1200-lotus", from: "aun", to: "da", line: "x" }, TODAY);

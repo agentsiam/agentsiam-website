@@ -123,8 +123,12 @@ export async function clearMove(slug: string, today: string): Promise<void> {
 /** Whether this move still stands against the clean as it is published now, by the same test
  * the accept record uses: the hour, the house, the kind of clean and what is asked for, and
  * never who else is on it. A clean that gained a cot is a different clean and goes back to
- * the person the skill published it to; a clean whose colleague changed is not. */
-function holds(move: Assignment | undefined, visit: Visit): boolean {
+ * the person the skill published it to; a clean whose colleague changed is not.
+ *
+ * Exported because Paul's overview has to ask the same question and once asked it its own way:
+ * it compared the stored line with the published one, so every move the admin screen records,
+ * which stores the agreed shape, was missed and the clean stayed listed as turned down. */
+export function moveHolds(move: Assignment | undefined, visit: Visit): boolean {
   return Boolean(move && sameClean(move.line, visit));
 }
 
@@ -164,7 +168,7 @@ export async function scheduleFor(person: string): Promise<TeamDocument | null> 
     // clean from Da to Aun would take Ting's laundry off her screen as well. Paul,
     // 19/11/2026: reassigning the cleaning does not reassign Ting.
     if (!move || move.from !== person) return true;
-    return !holds(move, visit) || move.to === person;
+    return !moveHolds(move, visit) || move.to === person;
   });
 
   const donors = new Set(
@@ -180,7 +184,7 @@ export async function scheduleFor(person: string): Promise<TeamDocument | null> 
       // The same two-sided check: this donor's own clean, and only if it is this person it
       // was given to. The donor's laundry colleague shares the slug and is not this.
       if (!move || move.from !== donor || move.to !== person) continue;
-      if (!holds(move, visit)) continue;
+      if (!moveHolds(move, visit)) continue;
       // The stored line goes too, not only what the screens draw. Every screen prints
       // `plainLine` now, so this changes nothing on one; what it changes is the line the
       // accept record writes down and the line Paul's own screens print, neither of which
