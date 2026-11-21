@@ -10,7 +10,6 @@ import {
 } from "react";
 import Image from "next/image";
 import { IconChip } from "@/components/icon";
-import { chooseOwnerSituation, type OwnerSituationKey } from "@/lib/owner-situation";
 import type { Photo } from "@/lib/photos";
 
 /**
@@ -49,8 +48,6 @@ const TRACKS: Record<number, string> = {
 
 type Route = {
   icon: ComponentProps<typeof IconChip>["name"];
-  /** Passed to the owner form below, which fills its two matching questions from it. */
-  situation?: OwnerSituationKey;
   when: string;
   take: string;
   why: string;
@@ -87,16 +84,9 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
     return () => observer.disconnect();
   }, [measure]);
 
-  // A tab the reader chose, by click or by key, and only then: see owner-situation.ts.
-  function choose(index: number) {
-    setActive(index);
-    const situation = routes[index]?.situation;
-    if (situation) chooseOwnerSituation(situation);
-  }
-
   function move(to: number) {
     const next = (to + routes.length) % routes.length;
-    choose(next);
+    setActive(next);
     tabs.current[next]?.focus();
   }
 
@@ -161,7 +151,7 @@ export function RouteTabs({ routes, panelLabel }: { routes: Route[]; panelLabel:
             aria-selected={index === active}
             aria-controls={`route-panel-${index}`}
             tabIndex={index === active ? 0 : -1}
-            onClick={() => choose(index)}
+            onClick={() => setActive(index)}
             onKeyDown={(event) => onKeyDown(event, index)}
             className={`relative z-10 min-w-0 rounded-full p-3 text-center text-[16px] leading-[1.12] font-medium tracking-[-0.037em] transition-colors duration-200 outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary sm:bg-transparent ${
               index === active ? "bg-ink text-white sm:text-white" : "text-ink hover:text-primary"

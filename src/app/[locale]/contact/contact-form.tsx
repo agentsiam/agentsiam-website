@@ -8,7 +8,6 @@ import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
 import { attributionForForm } from "@/lib/attribution";
 import { managementCityBySlug } from "@/lib/management-cities";
-import { ownerSituation, subscribeOwnerSituation } from "@/lib/owner-situation";
 import { CONTACT_EMAIL, EMAIL_PATTERN } from "@/lib/site";
 
 /**
@@ -94,13 +93,8 @@ export function ContactForm({
   const area = chosenArea || pageCity;
   // The three ICP answers. Occupancy and nightly rate are deliberately not asked: they are
   // read off the listing (next 60 days) at the reply step, Nils 06/11/2026.
-  const [chosenListed, setListed] = useState("");
-  const [chosenAgency, setAgency] = useState("");
-  // The situation tab picked higher up /how-it-works, if any. The server snapshot is null,
-  // so the first render matches the HTML. A chip the owner picks here always wins.
-  const situation = useSyncExternalStore(subscribeOwnerSituation, ownerSituation, () => null);
-  const listed = chosenListed || situation?.listed || "";
-  const agency = chosenAgency || (listed === "Yes" ? situation?.agency : "") || "";
+  const [listed, setListed] = useState("");
+  const [agency, setAgency] = useState("");
   const [bedrooms, setBedrooms] = useState("");
 
   // English values, translated labels. The value is what reaches the mailbox, so an

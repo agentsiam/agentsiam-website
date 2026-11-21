@@ -123,9 +123,9 @@ export default async function HowItWorksPage({
 
   // Same owner-narrative frames as before (decision 70), matched to the situation each shows.
   const routes = [
-    { icon: "search", situation: "not-listed" as const, when: t.c2Route1When, take: t.c2Route1Take, why: t.c2Route1Why, photo: pickPhoto("routes", "route-3") },
-    { icon: "house", situation: "self-run" as const, when: t.c2Route2When, take: t.c2Route2Take, why: t.c2Route2Why, photo: pickPhoto("routes", "route-2") },
-    { icon: "transfer", situation: "managed" as const, when: t.c2Route3When, take: t.c2Route3Take, why: t.c2Route3Why, photo: pickPhoto("routes", "route-4") },
+    { icon: "search", when: t.c2Route1When, take: t.c2Route1Take, why: t.c2Route1Why, photo: pickPhoto("routes", "route-3") },
+    { icon: "house", when: t.c2Route2When, take: t.c2Route2Take, why: t.c2Route2Why, photo: pickPhoto("routes", "route-2") },
+    { icon: "transfer", when: t.c2Route3When, take: t.c2Route3Take, why: t.c2Route3Why, photo: pickPhoto("routes", "route-4") },
   ];
 
   const included = [t.c2Inc1, t.c2Inc2, t.c2Inc3, t.c2Inc4, t.c2Inc5, t.c2Inc6, t.c2Inc7, t.c2Inc8];
