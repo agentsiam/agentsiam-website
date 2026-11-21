@@ -8,7 +8,7 @@ import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
 import { attributionForForm } from "@/lib/attribution";
 import { managementCityBySlug } from "@/lib/management-cities";
-import { CONTACT_EMAIL } from "@/lib/site";
+import { CONTACT_EMAIL, EMAIL_PATTERN } from "@/lib/site";
 
 /**
  * Owner intake, in the shape the handoff designed: name, a way to reach you, property type
@@ -248,6 +248,7 @@ export function ContactForm({
           <input
             type="email"
             name="email"
+            pattern={EMAIL_PATTERN}
             autoComplete="email"
             className={field}
             placeholder={t.labelEmail}

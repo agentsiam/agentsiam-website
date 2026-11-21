@@ -6,7 +6,7 @@ import { LineFollowPanel } from "./line-cta";
 import type { Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
 import { AREAS } from "@/lib/areas";
-import { CONTACT_EMAIL } from "@/lib/site";
+import { CONTACT_EMAIL, EMAIL_PATTERN } from "@/lib/site";
 import {
   BEDROOM_MINIMUMS,
   BUDGET_UNITS,
@@ -173,8 +173,8 @@ function Optional({ word }: { word: string }) {
 /** The input type and autocomplete that belong to the channel they picked. The example
  * comes from the labels, because an empty box beside a chooser says nothing about what
  * shape the answer takes. */
-const HANDLE_INPUT: Record<ContactKind, { type: string; autoComplete: string }> = {
-  email: { type: "email", autoComplete: "email" },
+const HANDLE_INPUT: Record<ContactKind, { type: string; autoComplete: string; pattern?: string }> = {
+  email: { type: "email", autoComplete: "email", pattern: EMAIL_PATTERN },
   phone: { type: "tel", autoComplete: "tel" },
   WhatsApp: { type: "tel", autoComplete: "tel" },
   LINE: { type: "text", autoComplete: "off" },
@@ -454,6 +454,7 @@ export function StayRequestForm({
             name="contactHandle"
             type={handle.type}
             autoComplete={handle.autoComplete}
+            pattern={handle.pattern}
             aria-label={labels.contactKinds[contactKind]}
             placeholder={labels.contactExamples[contactKind]}
             maxLength={160}

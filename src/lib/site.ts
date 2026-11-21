@@ -29,6 +29,13 @@ export const SITE_DESCRIPTION =
 // contact form notifications, so it is written down once.
 export const CONTACT_EMAIL = "hi@agentsiam.com";
 
+// What the two form endpoints accept as an email address, as an HTML `pattern`. The
+// browser's own type="email" check lets "name@domain" through, the endpoints refuse it
+// without a dot, and the forms could only answer that refusal with "Sending failed". The
+// same rule on the input stops it at the field. /api/contact and /api/stay-request hold
+// the same expression as a RegExp.
+export const EMAIL_PATTERN = "[^\\s@]+@[^\\s@]+\\.[^\\s@]+";
+
 // The business line, as listed on the Google Business Profile, in international form for
 // schema.org. Declared in the LocalBusiness node so it matches that profile.
 export const CONTACT_TELEPHONE = "+66 98 482 5832";
