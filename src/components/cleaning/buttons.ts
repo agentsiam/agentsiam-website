@@ -57,6 +57,17 @@ export const iconButton =
   "enabled:active:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 " +
   "focus-visible:outline-primary";
 
+/**
+ * A switch between two or three views or languages: a light track, and the chosen segment
+ * raised on it in white with a hairline, the way a phone's own settings draw one. The chosen
+ * segment used to be filled in ink, which made a full-width black slab of a control whose only
+ * job is to say which of two views is showing.
+ */
+export const segmentTrack = "inline-flex items-center gap-1 rounded-full bg-surface-2 p-1";
+export const segmentOn = "rounded-full bg-bg text-text ring-1 ring-border";
+export const segmentOff =
+  "rounded-full text-muted transition-colors duration-150 ease-out hover:text-text";
+
 /** A text field or a text area. */
 export const field =
   "w-full rounded-lg border border-border bg-surface text-text placeholder:text-muted " +

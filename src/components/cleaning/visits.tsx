@@ -365,7 +365,7 @@ export function DayList({
     <div className="mt-7">
       {past.length > 0 ? (
         <details className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-center gap-2 rounded-box bg-surface py-2.5 text-muted [&::-webkit-details-marker]:hidden">
+          <summary className="flex cursor-pointer list-none items-center justify-center gap-2 rounded-full bg-surface py-2.5 text-muted transition-colors duration-150 ease-out hover:text-text [&::-webkit-details-marker]:hidden">
             {written(teamStrings(lang).pastJobs) ? (
               <span className="text-[14px] font-semibold">
                 {written(teamStrings(lang).pastJobs)}

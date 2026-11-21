@@ -1,3 +1,4 @@
+import { segmentOff, segmentOn, segmentTrack } from "@/components/cleaning/buttons";
 import { CLEANING_API_LANG } from "@/lib/cleaning/routes";
 import { TEAM_LANGS, TEAM_LANG_NAMES, type TeamLang } from "@/lib/cleaning/strings";
 
@@ -23,7 +24,7 @@ import { TEAM_LANGS, TEAM_LANG_NAMES, type TeamLang } from "@/lib/cleaning/strin
 export function LangSwitch({ lang }: { lang: TeamLang }) {
   return (
     <form method="POST" action={CLEANING_API_LANG} className="flex justify-end">
-      <div className="inline-flex items-center gap-0.5 rounded-full border border-hairline p-0.5">
+      <div className={segmentTrack}>
         {TEAM_LANGS.map((one) => {
           const on = one === lang;
           return (
@@ -34,9 +35,7 @@ export function LangSwitch({ lang }: { lang: TeamLang }) {
               value={one}
               lang={one}
               aria-current={on ? "true" : undefined}
-              className={`rounded-full px-3 py-1 text-[13px] font-semibold ${
-                on ? "bg-ink text-bg" : "text-muted"
-              }`}
+              className={`px-3 py-1 text-[13px] font-semibold ${on ? segmentOn : segmentOff}`}
             >
               {TEAM_LANG_NAMES[one]}
             </button>

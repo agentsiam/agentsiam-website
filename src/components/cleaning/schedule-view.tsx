@@ -1,5 +1,6 @@
 "use client";
 
+import { segmentOff, segmentOn, segmentTrack } from "@/components/cleaning/buttons";
 import { useState, useSyncExternalStore } from "react";
 import { CalendarView, ListView } from "@/components/cleaning/glyphs";
 
@@ -69,15 +70,15 @@ export function ScheduleView({
     }
   }
 
-  const tab = "flex h-10 flex-1 items-center justify-center rounded-lg transition-colors duration-150";
-  const on = "bg-ink text-gold-on-ink";
-  const off = "text-muted";
+  const tab = "flex h-10 flex-1 items-center justify-center";
+  const on = segmentOn;
+  const off = segmentOff;
 
   return (
     <div className="mt-5">
       <div
         role="tablist"
-        className="flex gap-1 rounded-box bg-surface p-1"
+        className={`${segmentTrack} flex w-full`}
       >
         <button
           type="button"

@@ -67,8 +67,10 @@ export function HouseCodes({ slug, lang }: { slug: string; lang: TeamLang }) {
   if (!block) return null;
 
   return (
-    <section className="mt-4 rounded-panel bg-sand p-5">
-      <h2 className="text-[14px] font-semibold tracking-wide text-ink opacity-70">
+    // The gold of the codes, kept, as a wash with a gold edge rather than a solid block: the
+    // digits are what she reads at the gate, and they carry the weight on their own.
+    <section className="mt-4 rounded-panel border border-sand bg-wash-gold p-5">
+      <h2 className="text-[14px] font-semibold tracking-wide text-deep-gold">
         {blockHeading("codes", block.heading, lang)}
       </h2>
       {/* The lines read as one piece of text, label and number together, exactly as her LINE
