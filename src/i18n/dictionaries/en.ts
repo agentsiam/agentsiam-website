@@ -1675,6 +1675,12 @@ export const en = {
   lineSentCta: "Add us on LINE",
   // The QR is not decoration: on a desktop browser the add-friend link shows a profile page rather than opening the app, so the code is the only thing that works from a laptop.
   lineQrAlt: "QR code that adds AgentSiam on LINE",
+
+  // -- Incomplete email address, request and owner forms (21/11/2026, Thai and Chinese unreviewed) ----
+  // Renter request form. Shown by the browser on the email field when the address has no dot after the @.
+  srEmailIncomplete: "That email address looks incomplete. Check the part after the @, for example name@gmail.com.",
+  // Owner form on /contact. Same case as srEmailIncomplete, kept apart so the owner register can differ.
+  c2EmailIncomplete: "That email address looks incomplete. Check the part after the @, for example name@gmail.com.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

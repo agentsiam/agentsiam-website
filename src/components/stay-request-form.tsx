@@ -80,6 +80,7 @@ export type StayRequestLabels = {
   contactKinds: Record<ContactKind, string>;
   contactExamples: Record<ContactKind, string>;
   contactMissing: string;
+  emailIncomplete: string;
   replyLanguage: string;
   answerInline: string;
   languages: Record<Locale, string>;
@@ -460,6 +461,15 @@ export function StayRequestForm({
             type={handle.type}
             autoComplete={handle.autoComplete}
             pattern={handle.pattern}
+            // The browser's own words for a pattern miss are "match the requested format",
+            // which names nothing. Only the email option carries a pattern.
+            onInvalid={(event) => {
+              const input = event.currentTarget;
+              if (input.validity.patternMismatch || input.validity.typeMismatch) {
+                input.setCustomValidity(labels.emailIncomplete);
+              }
+            }}
+            onInput={(event) => event.currentTarget.setCustomValidity("")}
             aria-label={labels.contactKinds[contactKind]}
             placeholder={labels.contactExamples[contactKind]}
             maxLength={160}

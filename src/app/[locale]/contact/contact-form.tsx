@@ -252,6 +252,13 @@ export function ContactForm({
             type="email"
             name="email"
             pattern={EMAIL_PATTERN}
+            onInvalid={(event) => {
+              const input = event.currentTarget;
+              if (input.validity.patternMismatch || input.validity.typeMismatch) {
+                input.setCustomValidity(t.c2EmailIncomplete);
+              }
+            }}
+            onInput={(event) => event.currentTarget.setCustomValidity("")}
             autoComplete="email"
             className={field}
             placeholder={t.labelEmail}

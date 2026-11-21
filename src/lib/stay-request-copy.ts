@@ -32,6 +32,7 @@ export function stayRequestLabels(t: Dictionary): StayRequestLabels {
       LINE: t.srHandleLine,
     },
     contactMissing: t.srContactMissing,
+    emailIncomplete: t.srEmailIncomplete,
     replyLanguage: t.srReplyLanguage,
     answerInline: t.srAnswerInline,
     languages: { en: t.srLangEn, th: t.srLangTh, zh: t.srLangZh },

@@ -1444,4 +1444,8 @@ export const zh: Dictionary = {
   lineSentBody: "添加我们为好友，就能在 LINE 上继续沟通，我们在这里回复最快。扫描二维码，或在手机上点击按钮。",
   lineSentCta: "在 LINE 上添加我们",
   lineQrAlt: "添加 AgentSiam 的 LINE 二维码",
+
+  // -- Incomplete email address, request and owner forms (21/11/2026, Thai and Chinese unreviewed) ----
+  srEmailIncomplete: "这个电子邮箱地址似乎不完整，请检查 @ 后面的部分，例如 name@gmail.com。",
+  c2EmailIncomplete: "这个电子邮箱地址似乎不完整，请检查 @ 后面的部分，例如 name@gmail.com。",
 };

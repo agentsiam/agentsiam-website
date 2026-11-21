@@ -1444,4 +1444,8 @@ export const th: Dictionary = {
   lineSentBody: "เพิ่มเราเป็นเพื่อนใน LINE แล้วคุยต่อได้ทันที ทางนี้เราตอบเร็วที่สุด สแกนคิวอาร์โค้ด หรือกดปุ่มถ้าใช้มือถือ",
   lineSentCta: "เพิ่มเพื่อนใน LINE",
   lineQrAlt: "คิวอาร์โค้ดสำหรับเพิ่ม AgentSiam เป็นเพื่อนใน LINE",
+
+  // -- Incomplete email address, request and owner forms (21/11/2026, Thai and Chinese unreviewed) ----
+  srEmailIncomplete: "อีเมลนี้ดูยังไม่ครบ กรุณาตรวจสอบส่วนหลัง @ เช่น name@gmail.com",
+  c2EmailIncomplete: "อีเมลนี้ดูยังไม่ครบ กรุณาตรวจสอบส่วนหลัง @ เช่น name@gmail.com",
 };
