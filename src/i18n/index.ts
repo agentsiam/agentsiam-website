@@ -25,3 +25,18 @@ export function getDictionary(locale: Locale): Dictionary {
 
 export type { Dictionary };
 export * from "./config";
+
+/**
+ * Puts a city name into a sentence at `{city}`.
+ *
+ * Thai, per the native review of 21/11/2026: a full name such as เชียงใหม่ or ภูเก็ต runs
+ * straight into a continuing phrase (ในภูเก็ตอยู่ใช่ไหม), while กรุงเทพฯ keeps a space after
+ * the ฯ (ในกรุงเทพฯ อยู่ใช่ไหม). So a Thai template carries no space where the phrase
+ * continues and a space where a new clause starts, and this adds the one space a name ending
+ * in ฯ needs before more Thai text. English and Chinese templates are unaffected: nothing
+ * Thai follows the placeholder in them.
+ */
+export function fillCity(template: string, name: string): string {
+  const beforeThai = name.endsWith("ฯ") ? `${name} ` : name;
+  return template.replace(/\{city\}(?=[฀-๿])/g, beforeThai).replaceAll("{city}", name);
+}

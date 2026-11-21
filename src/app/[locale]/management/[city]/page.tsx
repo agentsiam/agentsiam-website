@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getDictionary } from "@/i18n";
+import { fillCity, getDictionary } from "@/i18n";
 import { isLocale, localePath, LOCALES, type Locale } from "@/i18n/config";
 import {
   MANAGEMENT_CITIES,
@@ -54,8 +54,8 @@ export async function generateMetadata({
   if (!city) notFound();
 
   return pageMeta({
-    title: t.metaMgmtTitle.replace("{city}", t[city.nameKey]),
-    description: t.metaMgmtDesc.replace("{city}", t[city.nameKey]),
+    title: fillCity(t.metaMgmtTitle, t[city.nameKey]),
+    description: fillCity(t.metaMgmtDesc, t[city.nameKey]),
     path: `/management/${city.slug}`,
     locale,
   });
@@ -102,10 +102,10 @@ export default async function ManagementCityPage({
               {t.mgmtEyebrow}
             </span>
             <h1 className="mt-4.5 font-headline text-[clamp(28px,5vw,42px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
-              {t.mgmtHeroTitle.replace("{city}", t[city.nameKey])}
+              {fillCity(t.mgmtHeroTitle, t[city.nameKey])}
             </h1>
             <p className="mt-4 max-w-[540px] text-base leading-relaxed text-white/85">
-              {t.mgmt2HeroSub.replace("{city}", t[city.nameKey])}
+              {fillCity(t.mgmt2HeroSub, t[city.nameKey])}
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-5.5">
               <Link
@@ -202,13 +202,13 @@ export default async function ManagementCityPage({
       <section className="mx-auto max-w-(--container-prose) px-5 pt-16 pb-4">
         <div className="rounded-panel bg-wash-gold px-6 py-7 sm:px-8">
           <h2 className="font-display text-[20px] font-bold tracking-[-0.02em]">
-            {t.mgmtScopeTitle.replace("{city}", t[city.nameKey])}
+            {fillCity(t.mgmtScopeTitle, t[city.nameKey])}
           </h2>
           <p className="mt-2.5 text-[15px] leading-relaxed text-body">
-            {t.mgmt2Scope1.replaceAll("{city}", t[city.nameKey])}
+            {fillCity(t.mgmt2Scope1, t[city.nameKey])}
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-body">
-            {t.mgmt2Scope2.replaceAll("{city}", t[city.nameKey])}
+            {fillCity(t.mgmt2Scope2, t[city.nameKey])}
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-body">
             {t.mgmt2Scope3}
@@ -219,7 +219,7 @@ export default async function ManagementCityPage({
       {/* shape: closing-cta -- Close. */}
       <section className="mx-auto max-w-(--container-prose) px-5 pt-10">
         <h2 className="font-display text-[22px] font-bold tracking-[-0.02em]">
-          {t.mgmtCtaTitle.replace("{city}", t[city.nameKey])}
+          {fillCity(t.mgmtCtaTitle, t[city.nameKey])}
         </h2>
         <p className="mt-2 max-w-[620px] text-[15px] leading-relaxed text-muted">
           {t.mgmt2CtaBody}
