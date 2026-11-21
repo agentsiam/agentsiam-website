@@ -1448,4 +1448,9 @@ export const zh: Dictionary = {
   // -- Incomplete email address, request and owner forms (21/11/2026, Thai and Chinese unreviewed) ----
   srEmailIncomplete: "这个电子邮箱地址似乎不完整，请检查 @ 后面的部分，例如 name@gmail.com。",
   c2EmailIncomplete: "这个电子邮箱地址似乎不完整，请检查 @ 后面的部分，例如 name@gmail.com。",
+
+  // -- City names (21/11/2026, Thai and Chinese unreviewed) ----------------
+  cityNameChiangMai: "清迈",
+  cityNameBangkok: "曼谷",
+  cityNamePhuket: "普吉",
 };

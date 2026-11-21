@@ -87,10 +87,10 @@ export default async function PropertiesPage({
         <div className="mx-auto max-w-[560px] rounded-panel bg-wash-gold px-8 py-11 text-center">
           <p className="eyebrow">{t.launchingSoon}</p>
           <h1 className="mt-3 font-headline text-[clamp(26px,4vw,34px)] font-extrabold leading-tight tracking-[-0.03em]">
-            {t.cityComingTitle.replace("{city}", city.name)}
+            {t.cityComingTitle.replace("{city}", t[city.nameKey])}
           </h1>
           <p className="mx-auto mt-3.5 max-w-[420px] text-[15px] leading-relaxed text-body">
-            {t.cityComingBody.replace("{city}", city.name)}
+            {t.cityComingBody.replace("{city}", t[city.nameKey])}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {/* Carries the search across. Someone who typed dates, a guest count and three
@@ -181,7 +181,7 @@ export default async function PropertiesPage({
           {results.length === 1
             ? t.oneProperty
             : t.nProperties.replace("{n}", String(results.length))}
-          <span className="text-muted"> · {city.name}</span>
+          <span className="text-muted"> · {t[city.nameKey]}</span>
         </h1>
         <p className="mt-2 max-w-[52ch] text-[15px] leading-relaxed text-body">{t.psSubhead}</p>
 

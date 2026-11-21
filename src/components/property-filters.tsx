@@ -304,7 +304,8 @@ export function PropertyFilters({
   // The search, as a sentence, for the phone bar. Three facts in the order a guest holds
   // them: where, when, how many. Dates read as an invitation until they are set, because
   // they are the one field that changes what a property page can tell them afterwards.
-  const cityName = CITIES.find((city) => city.slug === state.city)?.name ?? state.city;
+  const cityMatch = CITIES.find((city) => city.slug === state.city);
+  const cityName = cityMatch ? t[cityMatch.nameKey] : state.city;
   const dateLabel =
     state.from && state.to
       ? t.psDateRange
@@ -388,7 +389,7 @@ export function PropertyFilters({
             >
               {CITIES.map((city) => (
                 <option key={city.slug} value={city.slug}>
-                  {city.name}
+                  {t[city.nameKey]}
                   {city.live ? "" : ` — ${t.launchingSoon}`}
                 </option>
               ))}
@@ -551,7 +552,7 @@ export function PropertyFilters({
                   >
                     {CITIES.map((city) => (
                       <option key={city.slug} value={city.slug}>
-                        {city.name}
+                        {t[city.nameKey]}
                         {city.live ? "" : ` — ${t.launchingSoon}`}
                       </option>
                     ))}

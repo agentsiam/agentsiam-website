@@ -15,6 +15,9 @@
  * intent -- but only if the resulting page says so plainly rather than returning nothing.
  */
 
+/** The dictionary keys that hold a city's name. */
+export type CityNameKey = "cityNameChiangMai" | "cityNameBangkok" | "cityNamePhuket";
+
 export type Area = {
   slug: string;
   name: string;
@@ -158,14 +161,17 @@ export function distanceKm(
 
 export type City = {
   slug: string;
+  /** English. What reaches a URL, a record or structured data. */
   name: string;
+  /** What a reader sees, in their language. */
+  nameKey: CityNameKey;
   live: boolean;
 };
 
 export const CITIES: City[] = [
-  { slug: "chiang-mai", name: "Chiang Mai", live: true },
-  { slug: "bangkok", name: "Bangkok", live: false },
-  { slug: "phuket", name: "Phuket", live: false },
+  { slug: "chiang-mai", name: "Chiang Mai", nameKey: "cityNameChiangMai", live: true },
+  { slug: "bangkok", name: "Bangkok", nameKey: "cityNameBangkok", live: false },
+  { slug: "phuket", name: "Phuket", nameKey: "cityNamePhuket", live: false },
 ];
 
 export function cityBySlug(slug: string): City | undefined {

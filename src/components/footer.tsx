@@ -78,7 +78,7 @@ export function Footer({ locale }: { locale: Locale }) {
         { href: href("/how-it-works"), label: t.homeCity },
         ...MANAGEMENT_CITIES.map((city) => ({
           href: href(`/management/${city.slug}`),
-          label: city.name,
+          label: t[city.nameKey],
         })),
       ],
     },

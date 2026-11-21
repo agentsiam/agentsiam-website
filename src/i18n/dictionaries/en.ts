@@ -1681,6 +1681,12 @@ export const en = {
   srEmailIncomplete: "That email address looks incomplete. Check the part after the @, for example name@gmail.com.",
   // Owner form on /contact. Same case as srEmailIncomplete, kept apart so the owner register can differ.
   c2EmailIncomplete: "That email address looks incomplete. Check the part after the @, for example name@gmail.com.",
+
+  // -- City names (21/11/2026, Thai and Chinese unreviewed) ----------------
+  // City names, read through nameKey in src/lib/areas.ts and src/lib/management-cities.ts. The English value is also the record value.
+  cityNameChiangMai: "Chiang Mai",
+  cityNameBangkok: "Bangkok",
+  cityNamePhuket: "Phuket",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

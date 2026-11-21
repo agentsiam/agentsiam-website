@@ -13,14 +13,19 @@
  * rather than filling it with copy.
  */
 
+import type { CityNameKey } from "@/lib/areas";
+
 export type ManagementCity = {
   slug: string;
+  /** English. What reaches a URL, a record or structured data. */
   name: string;
+  /** What a reader sees, in their language. */
+  nameKey: CityNameKey;
 };
 
 export const MANAGEMENT_CITIES: ManagementCity[] = [
-  { slug: "phuket", name: "Phuket" },
-  { slug: "bangkok", name: "Bangkok" },
+  { slug: "phuket", name: "Phuket", nameKey: "cityNamePhuket" },
+  { slug: "bangkok", name: "Bangkok", nameKey: "cityNameBangkok" },
 ];
 
 export function managementCityBySlug(slug: string): ManagementCity | undefined {

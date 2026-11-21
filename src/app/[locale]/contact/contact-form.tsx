@@ -84,7 +84,11 @@ export function ContactForm({
     () => new URLSearchParams(window.location.search).get("city") ?? "",
     () => "",
   );
-  const pageCity = managementCityBySlug(citySlug)?.name ?? "";
+  const pageCityMatch = managementCityBySlug(citySlug);
+  // The value stays English, as every chip value does, so the record reads the same in
+  // any language; the label is the reader's.
+  const pageCity = pageCityMatch?.name ?? "";
+  const pageCityLabel = pageCityMatch ? t[pageCityMatch.nameKey] : "";
   // The page's city stands until the owner picks another chip.
   const area = chosenArea || pageCity;
   // The three ICP answers. Occupancy and nightly rate are deliberately not asked: they are
@@ -115,9 +119,8 @@ export function ContactForm({
     ["Pa Daet", t.areaPaDaet],
     // An owner sent here from /management/<city> gets that city as a chip, chosen for them.
     // Without it a Phuket or Bangkok owner saw eight Chiang Mai neighbourhoods, had to pick
-    // "Elsewhere", and the enquiry arrived not saying which city. The name is the English
-    // one on every locale, as it already is in the heading of the page they came from.
-    ...(pageCity ? ([[pageCity, pageCity]] as [string, string][]) : []),
+    // "Elsewhere", and the enquiry arrived not saying which city.
+    ...(pageCity ? ([[pageCity, pageCityLabel]] as [string, string][]) : []),
     ["Elsewhere", t.c2AreaElsewhere],
   ];
   const yesNo: [string, string][] = [
