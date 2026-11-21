@@ -4,7 +4,7 @@ import { englishLine } from "@/lib/cleaning/english";
 import { CleaningPerson, type DeviceRow } from "@/components/admin/cleaning-person";
 import { requireSession } from "@/lib/admin/guard";
 import { acceptState } from "@/lib/cleaning/accept";
-import { moveHolds, readAssignments } from "@/lib/cleaning/assign";
+import { movedAway, readAssignments } from "@/lib/cleaning/assign";
 import {
   accessFor,
   parseDocument,
@@ -147,9 +147,11 @@ export default async function AdminCleaningPage() {
       const house = propertyOf(document, visit)?.name ?? null;
       const move = moves.get(slug);
       // A move whose clean has changed since has lapsed, and the clean is back with the
-      // person it was published to. Asked through moveHolds, the one test the schedules use,
-      // so this screen and her phone cannot disagree about who has the clean.
-      if (move && moveHolds(move, visit)) {
+      // person it was published to. And only the person it was taken from has lost it: her
+      // laundry colleague on the same job shares the slug and still has her own run. Asked
+      // through movedAway, the same test the schedules use, so this screen and her phone
+      // cannot disagree about who has the clean.
+      if (move && movedAway(move, person, visit)) {
         moved.push({ from: person, to: move.to, slug, line: englishLine(visit), date: visit.date, house, at: move.at });
         continue;
       }

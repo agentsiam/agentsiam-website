@@ -125,7 +125,7 @@ try {
 }
 
 const require = createRequire(join(out, "test.cjs"));
-const { clearMove, moveHolds, moveVisit, readAssignments, scheduleFor } = require(join(out, "assign.js"));
+const { clearMove, moveHolds, movedAway, moveVisit, readAssignments, scheduleFor } = require(join(out, "assign.js"));
 const { agreedShape } = require(join(out, "accept.js"));
 const { accessFor, parseDocument } = require(join(out, "document.js"));
 
@@ -205,6 +205,9 @@ check("a move as the admin screen records it stands", moveHolds(recorded(agreedS
 check("so does one recorded before that, by its line", moveHolds(recorded(standing.line), standing), true);
 check("a clean that gained a cot is a different clean", moveHolds(recorded(agreedShape(standing)), { ...standing, note: "เพิ่มเตียงเด็ก" }), false);
 check("and no move is no move", moveHolds(undefined, standing), false);
+check("the cleaner it was taken from has had it moved away", movedAway(recorded(agreedShape(standing)), "aun", standing), true);
+check("her laundry colleague on the same slug has not", movedAway(recorded(agreedShape(standing)), "ting", standing), false);
+check("nor has the cleaner it was given to", movedAway(recorded(agreedShape(standing)), "da", standing), false);
 
 console.log("\nthe record does not grow for ever");
 await moveVisit({ slug: "2026-01-01-1200-lotus", from: "aun", to: "da", line: "x" }, TODAY);

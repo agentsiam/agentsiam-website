@@ -132,6 +132,14 @@ export function moveHolds(move: Assignment | undefined, visit: Visit): boolean {
   return Boolean(move && sameClean(move.line, visit));
 }
 
+/** Whether this person's clean has been given to somebody else: the move stands, and it was
+ * taken from her. A slug is the date, the hour and the house, so the clean and the laundry run
+ * on one job share it, and the laundry colleague of a moved clean has not been moved. Paul's
+ * overview asks this; the schedules below ask the same two halves inline. */
+export function movedAway(move: Assignment | undefined, person: string, visit: Visit): boolean {
+  return Boolean(move && move.from === person && moveHolds(move, visit));
+}
+
 /**
  * One person's schedule as her screens must show it, with every move applied.
  *
