@@ -419,13 +419,53 @@ export function BookingPanel({ t, locale, privacyHref }: Props) {
       }
       applyAvailability(payload);
       setAnnouncement(t.bkCalendarReady);
+      adoptSearchedStay(payload);
+    }
+
+    /* The stay the renter searched for on /properties, which links here with `from`, `to`
+     * and `guests`. Adopted once, on the first calendar, and only when the calendar can
+     * honour it: every night free and no longer than books online. Otherwise the calendar
+     * opens on the arrival month with nothing chosen, so they see the nights that are taken
+     * rather than a selection quietly different from the one they asked for. A return from
+     * a payment (`?paid=1`) is the other effect's, and wins. */
+    function adoptSearchedStay(payload: Availability) {
+      const query = new URLSearchParams(window.location.search);
+      if (query.get("paid") === "1") return;
+      const isoDate = /^\d{4}-\d{2}-\d{2}$/;
+      const from = query.get("from") ?? "";
+      const to = query.get("to") ?? "";
+
+      const guests = Number(query.get("guests"));
+      if (Number.isInteger(guests) && guests >= 1 && guests <= LOTUS_HOUSE.maxGuests) {
+        setAdults(guests);
+        setChildren(0);
+      }
+
+      if (!isoDate.test(from) || !isoDate.test(to) || to <= from) return;
+      const free = new Map(payload.nights.map((night) => [night.date, night.available]));
+      if (!free.has(from)) return;
+      setMonth(from.slice(0, 8) + "01");
+
+      const span = nightsBetween(from, to);
+      if (span > LOTUS_HOUSE.maxStay) return;
+      for (let night = from; night < to; night = addDays(night, 1)) {
+        if (!free.get(night)) return;
+      }
+      setArrival(from);
+      setDeparture(to);
+      setAnnouncement(
+        (span === 1 ? t.bkPickedRangeOne : t.bkPickedRange)
+          .replace("{from}", longDate.format(parseDate(from)))
+          .replace("{to}", longDate.format(parseDate(to)))
+          .replace("{n}", String(span)),
+      );
     }
 
     load();
     return () => {
       cancelled = true;
     };
-  }, [applyAvailability, t.bkCalendarReady]);
+  }, [applyAvailability, longDate, t.bkCalendarReady, t.bkPickedRange, t.bkPickedRangeOne]);
 
   // -- coming back from a redirect payment ---------------------------------------
   // PromptPay and full-page 3DS both leave the site. Stripe returns the guest to
