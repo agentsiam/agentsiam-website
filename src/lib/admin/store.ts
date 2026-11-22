@@ -542,6 +542,22 @@ export async function writeInquiry(inquiry: Inquiry): Promise<void> {
   );
 }
 
+/** Null when the lead was entered by hand and so has no inquiry record. */
+export async function readInquiry(leadId: string): Promise<Inquiry | null> {
+  const stored = await readStored(inquiryFile(leadId));
+  if (!stored) return null;
+  return JSON.parse(stored.text) as Inquiry;
+}
+
+/** The price book, read whole, so the owner message can take the introduction fee from the
+ * one place it is written. Null when it is not there, which the screen reports. */
+export const PRICE_BOOK_FILE = "as-context/00-company/price-book.md";
+
+export async function readPriceBook(): Promise<string | null> {
+  const stored = await readStored(PRICE_BOOK_FILE);
+  return stored ? stored.text : null;
+}
+
 /**
  * The inquiry records of renter leads received on or after `since` (ISO date), for the
  * repeat check. The lead file picks which records to read, so a request costs one read
