@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Dictionary } from "@/i18n";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
-import { propertyArea, propertyCoverPhoto, type Property } from "@/lib/property";
+import { propertyArea, propertyCoverPhoto, unitKey, type Property } from "@/lib/property";
 import { distanceToCentre } from "@/lib/search";
 
 /**
@@ -85,7 +85,7 @@ export function PropertyTile({
       href={href}
       // The hook the results map binds hover and click behaviour to. The list stays
       // server-rendered HTML; see src/components/results-map.tsx for why.
-      data-map-key={property.slug}
+      data-map-key={unitKey(property)}
       className={`group grid content-start gap-5 rounded-panel border border-hairline p-4 transition-shadow hover:border-ink ${
         wide ? "sm:grid-cols-[minmax(0,320px)_1fr] sm:items-center" : ""
       }`}

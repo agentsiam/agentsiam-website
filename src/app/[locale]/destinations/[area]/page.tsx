@@ -18,7 +18,7 @@ import {
 } from "@/lib/area-content";
 import { pickPhoto } from "@/lib/photos";
 import { categoryIcon, categoryLabel } from "@/lib/guide-vocabulary";
-import { propertiesInArea } from "@/lib/property";
+import { propertiesInArea, unitKey } from "@/lib/property";
 import { searchToQuery } from "@/lib/search";
 import { pageMeta, routeOgImage } from "@/lib/site";
 import { breadcrumbSchema, faqSchema, type Crumb } from "@/lib/structured-data";
@@ -329,7 +329,7 @@ export default async function AreaPage({
           <div className="mt-5 grid gap-6 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
             {properties.map((property) => (
               <PropertyTile
-                key={property.slug}
+                key={unitKey(property)}
                 property={property}
                 t={t}
                 href={href(`/${property.slug}`)}

@@ -16,7 +16,23 @@ import { PHOTOS, type Photo } from "@/lib/photos.generated";
 import type { Dictionary } from "@/i18n";
 
 export type Property = {
+  /**
+   * The URL path segment, `/lotushouse`. A URL and a label, never a key: anything that
+   * looks a house up, stores a reference to one or names it to another system goes through
+   * `unitKey()`. Decision 110 in the consulting decisions log; the rule is the ID mapping in
+   * as-context/03-systems/beds24-conventions.md.
+   *
+   * Never a bare number, so it cannot be mistaken for a Beds24 ID, and never the consulting
+   * folder's slug: those carry street numbers (`36ChangKhlan`), and this module ships to the
+   * browser, so a folder slug here would publish where the house is (decision 88).
+   */
   slug: string;
+  /**
+   * The folder under src/photos/ this house's photographs sit in. A storage location named
+   * once, deliberately not derived from `slug` or from the key, so a URL change or a house
+   * going live in Beds24 moves no photographs.
+   */
+  photoSet: string;
   /**
    * Filename fragment of the photo a tile leads with, where the manifest's first photo is
    * wrong for a lead role. Unset means the manifest's first photo, as before.
@@ -127,6 +143,7 @@ export type Property = {
 
 export const LOTUS_HOUSE = {
   slug: "lotushouse",
+  photoSet: "lotushouse",
   // The living room, as the homepage hero. The manifest's first frame is the rooftop tub with a
   // guest and a beer, ruled out of lead roles by the 18/08/2026 photo QA; Paul, 06/11/2026.
   coverPhoto: "20240411_052358",
@@ -188,6 +205,7 @@ export const LOTUS_HOUSE = {
  */
 export const COSMOS_HOUSE: Property = {
   slug: "cosmoshouse",
+  photoSet: "cosmoshouse",
   title: "Cosmos House",
   taglineKey: "cosmosTagline",
   areaSlug: "chang-khlan",
@@ -234,6 +252,7 @@ export const COSMOS_HOUSE: Property = {
  */
 export const MAE_RIM_HOUSE: Property = {
   slug: "maerimhouse",
+  photoSet: "maerimhouse",
   title: "Mae Rim House",
   taglineKey: "maeRimTagline",
   areaSlug: "mae-rim",
@@ -306,6 +325,7 @@ export const MAE_RIM_HOUSE: Property = {
  */
 export const COURTYARD_VILLA: Property = {
   slug: "courtyardvilla",
+  photoSet: "courtyardvilla",
   title: "Courtyard Villa",
   taglineKey: "courtyardTagline",
   areaSlug: "chang-khian",
@@ -356,6 +376,7 @@ export const COURTYARD_VILLA: Property = {
 
 export const JASMINE_VILLA: Property = {
   slug: "jasminevilla",
+  photoSet: "jasminevilla",
   title: "Jasmine Villa",
   taglineKey: "jasmineTagline",
   areaSlug: "chang-khian",
@@ -404,6 +425,7 @@ export const JASMINE_VILLA: Property = {
 
 export const SILVER_OAK_VILLA: Property = {
   slug: "silveroakvilla",
+  photoSet: "silveroakvilla",
   title: "Silver Oak Villa",
   taglineKey: "silverOakTagline",
   areaSlug: "chang-khian",
@@ -452,6 +474,7 @@ export const SILVER_OAK_VILLA: Property = {
 
 export const MID_CENTURY_VILLA: Property = {
   slug: "midcenturyvilla",
+  photoSet: "midcenturyvilla",
   title: "Mid-Century Villa",
   taglineKey: "midCenturyTagline",
   areaSlug: "chang-phueak",
@@ -501,6 +524,7 @@ export const MID_CENTURY_VILLA: Property = {
 
 export const ATRIUM_VILLA: Property = {
   slug: "atriumvilla",
+  photoSet: "atriumvilla",
   title: "Atrium Villa",
   taglineKey: "atriumTagline",
   areaSlug: "pa-daet",
@@ -550,6 +574,7 @@ export const ATRIUM_VILLA: Property = {
 
 export const GARDEN_VILLA: Property = {
   slug: "gardenvilla",
+  photoSet: "gardenvilla",
   title: "Garden Villa",
   taglineKey: "gardenTagline",
   areaSlug: "pa-daet",
@@ -640,6 +665,41 @@ export const PROPERTIES: Property[] = [
 export const FEATURED_PROPERTY: Property = LOTUS_HOUSE;
 
 /**
+ * The key a house is known by everywhere: in lookups, in stored records, in anything sent to
+ * another system. Decision 110.
+ *
+ * Its Beds24 property ID, as a string, once Beds24 has created the property. Until then its
+ * `slug`, which is public and names no street: a house listed here and not yet in Beds24 is a
+ * normal and lasting state, and it has no other name that may reach a browser. The day Beds24
+ * creates it, the key becomes the ID in one commit (its line in `GUIDE_START` in
+ * src/lib/guide-start.ts, and anything stored against the slug) while the URL stays where it is.
+ *
+ * A slug is never all digits (checked below), so the two kinds cannot collide.
+ */
+export function unitKey(property: Pick<Property, "slug" | "beds24">): string {
+  return property.beds24 ? String(property.beds24.propertyId) : property.slug;
+}
+
+/** The house a key names, or undefined. */
+export function propertyByKey(key: string): Property | undefined {
+  return PROPERTIES.find((property) => unitKey(property) === key);
+}
+
+// Fail the build, not a page, if two houses could answer to one key or a slug could pass for
+// a Beds24 ID.
+{
+  const seen = new Set<string>();
+  for (const property of PROPERTIES) {
+    if (/^\d+$/.test(property.slug)) {
+      throw new Error(`Property slug "${property.slug}" is all digits and would read as a Beds24 ID.`);
+    }
+    const key = unitKey(property);
+    if (seen.has(key)) throw new Error(`Two properties share the key "${key}".`);
+    seen.add(key);
+  }
+}
+
+/**
  * The area a property sits in.
  *
  * Returns the Area object rather than a name so callers get the vibe line, the
@@ -657,7 +717,7 @@ export const FEATURED_PROPERTY: Property = LOTUS_HOUSE;
  * past the tile must not be shown a different house.
  */
 export function propertyCoverPhoto(property: Property): Photo | undefined {
-  const set = PHOTOS[property.slug] ?? [];
+  const set = PHOTOS[property.photoSet] ?? [];
   return (
     (property.coverPhoto &&
       set.find((photo) => photo.file.includes(property.coverPhoto as string))) ||

@@ -9,7 +9,7 @@ import { IconChip } from "@/components/icon";
 import { FEATURE_ICONS } from "@/lib/orientation";
 import { PHOTOS } from "@/lib/photos.generated";
 import { AREAS } from "@/lib/areas";
-import { MAE_RIM_HOUSE, propertyFacts } from "@/lib/property";
+import { MAE_RIM_HOUSE, propertyFacts, unitKey } from "@/lib/property";
 import { CONTACT_EMAIL, pageMeta, routeOgImage, SITE_NAME } from "@/lib/site";
 import { stayRequestLabels } from "@/lib/stay-request-copy";
 import { alt as ogAlt } from "./opengraph-image";
@@ -48,7 +48,7 @@ export default async function MaeRimHousePage({ params }: PageProps<"/[locale]">
   const href = (path: string) => localePath(locale as Locale, path);
   const property = MAE_RIM_HOUSE;
   const area = AREAS.find((item) => item.slug === property.areaSlug);
-  const photos = PHOTOS[property.slug] ?? [];
+  const photos = PHOTOS[property.photoSet] ?? [];
   const facts = propertyFacts(t, property);
   const typeLabel = String(t[`type_${property.type}` as keyof Dictionary] ?? property.type);
 
@@ -219,7 +219,7 @@ export default async function MaeRimHousePage({ params }: PageProps<"/[locale]">
           defaultBedrooms={property.bedrooms}
           page="/maerimhouse"
           locale={locale as Locale}
-          property="maerimhouse"
+          property={unitKey(property)}
           propertyName={property.title}
           privacyHref={href("/privacy-policy")}
         />

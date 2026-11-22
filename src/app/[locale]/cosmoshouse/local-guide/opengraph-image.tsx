@@ -52,7 +52,7 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
   const { locale } = await params;
   if (!isLocale(locale)) return new Response("Not found", { status: 404 });
 
-  const photo = await heroDataUri(COSMOS_HOUSE.slug, CARD_PHOTO_PREFERENCE);
+  const photo = await heroDataUri(COSMOS_HOUSE.photoSet, CARD_PHOTO_PREFERENCE);
   const area = AREAS.find((item) => item.slug === COSMOS_HOUSE.areaSlug);
   const subline = [
     `${GUIDE_PLACES.length} places nearby, picked by the hosts`,

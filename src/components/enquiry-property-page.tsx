@@ -11,7 +11,7 @@ import { areaVibe } from "@/i18n/area-vibe";
 import { AREAS } from "@/lib/areas";
 import { FEATURE_ICONS } from "@/lib/orientation";
 import { PHOTOS } from "@/lib/photos.generated";
-import { propertyFacts, type Property } from "@/lib/property";
+import { propertyFacts, unitKey, type Property } from "@/lib/property";
 import { CONTACT_EMAIL, SITE_NAME } from "@/lib/site";
 import { stayRequestLabels } from "@/lib/stay-request-copy";
 import type { Dictionary } from "@/i18n";
@@ -44,7 +44,7 @@ export function EnquiryPropertyPage({
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale, path);
   const area = AREAS.find((item) => item.slug === property.areaSlug);
-  const photos = PHOTOS[property.slug] ?? [];
+  const photos = PHOTOS[property.photoSet] ?? [];
   const facts = propertyFacts(t, property);
   const typeLabel = String(t[`type_${property.type}` as keyof Dictionary] ?? property.type);
 
@@ -268,7 +268,7 @@ export function EnquiryPropertyPage({
           defaultBedrooms={property.bedrooms}
           page={`/${property.slug}`}
           locale={locale}
-          property={property.slug}
+          property={unitKey(property)}
           propertyName={property.title}
           privacyHref={href("/privacy-policy")}
         />

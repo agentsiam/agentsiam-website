@@ -12,7 +12,7 @@ import { categoryIcon, categoryLabel } from "@/lib/guide-vocabulary";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
-import { FEATURED_PROPERTY, PROPERTIES } from "@/lib/property";
+import { FEATURED_PROPERTY, LOTUS_HOUSE, PROPERTIES, unitKey } from "@/lib/property";
 import { PropertyTile } from "@/components/property-tile";
 import { areaVibe } from "@/i18n/area-vibe";
 import { AREAS } from "@/lib/areas";
@@ -208,8 +208,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   // The street around Lotus House: the host's own picks, nearest first, one per category, with
   // the routed walking time from the guide's start point, never the house (src/lib/guide-start.ts).
   // Every value comes from the generated guide, so the block cannot say anything the guide does not.
-  const guideDist = GUIDE_DISTANCES.lotushouse ?? {};
-  const lotusStart = guideStart("lotushouse");
+  const guideDist = GUIDE_DISTANCES[unitKey(LOTUS_HOUSE)] ?? {};
+  const lotusStart = guideStart(unitKey(LOTUS_HOUSE));
   const seenCats = new Set<string>();
   const guidePicks = GUIDE_PLACES.filter((p) => p.highlight && p.name !== lotusStart?.name && guideDist[p.name]?.walk != null)
     .sort((a, b) => (guideDist[a.name].walk ?? 0) - (guideDist[b.name].walk ?? 0))
@@ -405,7 +405,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         <div className="mt-5.5 grid gap-6 min-[640px]:grid-cols-2 min-[900px]:grid-cols-3">
           {PROPERTIES.map((item) => (
             <PropertyTile
-              key={item.slug}
+              key={unitKey(item)}
               property={item}
               t={t}
               href={href(`/${item.slug}`)}

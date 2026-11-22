@@ -18,6 +18,7 @@ import {
   propertyArea,
   propertyFacts,
   propertyHouseRules,
+  unitKey,
 } from "@/lib/property";
 import { CONTACT_EMAIL, pageMeta, routeOgImage, SITE_NAME } from "@/lib/site";
 import {
@@ -70,7 +71,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
   const href = (path: string) => localePath(locale as Locale, path);
   const property = LOTUS_HOUSE;
   const area = propertyArea(property);
-  const photos = PHOTOS[property.slug] ?? [];
+  const photos = PHOTOS[property.photoSet] ?? [];
 
   // Amenities. Rendered from property.features, which existed and reached nothing but the
   // JSON-LD until 06/09/2026: the heading string t.whatThisHas was written for this block
@@ -92,10 +93,10 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
   // Orientation. Every minute below is a routed figure out of GUIDE_DISTANCES, keyed by
   // this property, so the block states measured facts rather than a mood. An anchor whose
   // row has gone from the sheet drops out instead of rendering an empty line.
-  const distances = GUIDE_DISTANCES[property.slug] ?? {};
+  const distances = GUIDE_DISTANCES[unitKey(property)] ?? {};
   // Measured from the guide's start point, never the house (src/lib/guide-start.ts), so the
   // start point itself is not listed as a destination.
-  const start = guideStart(property.slug);
+  const start = guideStart(unitKey(property));
   const anchors = ORIENTATION_ANCHORS.filter((anchor) => anchor.place !== start?.name).map((anchor) => ({
     ...anchor,
     text: t[anchor.label as keyof Dictionary] as string,

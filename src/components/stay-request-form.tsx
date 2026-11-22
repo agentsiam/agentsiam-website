@@ -234,8 +234,9 @@ export function StayRequestForm({
   /** The locale of the page they are reading, posted so the consent record can be stored in
    * the words they actually saw. */
   locale: Locale;
-  /** A property's route slug when the form sits on its page. Decides the routing case, so a
-   * renter asking about one house is never treated as an open requirement. */
+  /** The house's `unitKey()` (src/lib/property.ts) when the form sits on its page. Decides
+   * the routing case, so a renter asking about one house is never treated as an open
+   * requirement. */
   property?: string;
   propertyName?: string;
   privacyHref: string;

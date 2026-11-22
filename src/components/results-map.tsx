@@ -24,8 +24,8 @@ import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
  */
 
 export type Pin = {
-  /** Matches the card's data-map-key. A property slug, or a place name in the guide. */
-  slug: string;
+  /** Matches the card's data-map-key. A property's `unitKey()`, or a place name in the guide. */
+  key: string;
   title: string;
   lat: number;
   lng: number;
@@ -246,15 +246,15 @@ export function ResultsMap({
   const pushed = useRef(false);
 
   /**
-   * The pin whose card is showing, by slug.
+   * The pin whose card is showing, by key.
    *
-   * Derived through `fullscreen` rather than cleared when the map closes, so a stale slug
+   * Derived through `fullscreen` rather than cleared when the map closes, so a stale key
    * can never put a card on a page that has no map open. Opening and closing both reset it
    * anyway, which covers the one path that does not go through a re-render: the back
-   * gesture, which leaves the slug behind and is then cleared by the next open.
+   * gesture, which leaves the key behind and is then cleared by the next open.
    */
   const [selected, setSelected] = useState<string | null>(null);
-  const selectedPin = fullscreen ? (pins.find((pin) => pin.slug === selected) ?? null) : null;
+  const selectedPin = fullscreen ? (pins.find((pin) => pin.key === selected) ?? null) : null;
   const money = new Intl.NumberFormat(INTL_LOCALE[locale], { maximumFractionDigits: 0 });
 
   const openMap = useCallback(() => {
@@ -439,11 +439,11 @@ export function ResultsMap({
               other.getElement()?.classList.remove("as-pin-active");
             }
             marker.getElement()?.classList.add("as-pin-active");
-            setSelected(pin.slug);
+            setSelected(pin.key);
             return;
           }
           const tile = document.querySelector<HTMLElement>(
-            `[data-map-key="${pin.slug}"]`,
+            `[data-map-key="${pin.key}"]`,
           );
           tile?.scrollIntoView({
             behavior: prefersReducedMotion() ? "auto" : "smooth",
@@ -453,7 +453,7 @@ export function ResultsMap({
           window.setTimeout(() => tile?.classList.remove("ring-2", "ring-ink"), 1600);
         });
 
-        markers.set(pin.slug, marker);
+        markers.set(pin.key, marker);
       }
 
       if (home) {
@@ -488,8 +488,8 @@ export function ResultsMap({
       const listeners: (() => void)[] = [];
 
       for (const tile of tiles) {
-        const slug = tile.dataset.mapKey ?? "";
-        const marker = markers.get(slug);
+        const key = tile.dataset.mapKey ?? "";
+        const marker = markers.get(key);
         if (!marker) continue;
 
         if (panOnCardClick) {

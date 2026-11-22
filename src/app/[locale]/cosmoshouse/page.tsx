@@ -11,7 +11,7 @@ import { guideStart, guideStartLabel } from "@/lib/guide-start";
 import { FEATURE_ICONS, ORIENTATION_ANCHORS } from "@/lib/orientation";
 import { PHOTOS } from "@/lib/photos.generated";
 import { AREAS } from "@/lib/areas";
-import { COSMOS_HOUSE, type Property } from "@/lib/property";
+import { COSMOS_HOUSE, unitKey, type Property } from "@/lib/property";
 import { CONTACT_EMAIL, pageMeta, routeOgImage, SITE_NAME } from "@/lib/site";
 import { stayRequestLabels } from "@/lib/stay-request-copy";
 import { alt as ogAlt } from "./opengraph-image";
@@ -50,7 +50,7 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
   const href = (path: string) => localePath(locale as Locale, path);
   const property = COSMOS_HOUSE;
   const area = AREAS.find((item) => item.slug === property.areaSlug);
-  const photos = PHOTOS[property.slug] ?? [];
+  const photos = PHOTOS[property.photoSet] ?? [];
 
   const facts = property.facts.map((fact: Property["facts"][number]) => ({
     label: t[fact.labelKey],
@@ -73,10 +73,10 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
     );
 
   // Routed from the profile's pin by scripts/build-guide.mjs, as for Lotus House.
-  const distances = GUIDE_DISTANCES[property.slug] ?? {};
+  const distances = GUIDE_DISTANCES[unitKey(property)] ?? {};
   // Measured from the guide's start point, never the house (src/lib/guide-start.ts), so the
   // start point itself is not listed as a destination.
-  const start = guideStart(property.slug);
+  const start = guideStart(unitKey(property));
   const anchors = ORIENTATION_ANCHORS.filter((anchor) => anchor.place !== start?.name).map((anchor) => ({
     ...anchor,
     text: t[anchor.label as keyof Dictionary] as string,
@@ -278,7 +278,7 @@ export default async function CosmosHousePage({ params }: PageProps<"/[locale]">
           defaultBedrooms={property.bedrooms}
           page="/cosmoshouse"
           locale={locale as Locale}
-          property="cosmoshouse"
+          property={unitKey(property)}
           propertyName={property.title}
           privacyHref={href("/privacy-policy")}
         />

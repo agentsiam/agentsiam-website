@@ -19,6 +19,6 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
   const { locale } = await params;
   if (!isLocale(locale)) return new Response("Not found", { status: 404 });
   const t = getDictionary("en");
-  const photo = await heroDataUri(FEATURED_PROPERTY.slug, ["20240411_052358"]);
+  const photo = await heroDataUri(FEATURED_PROPERTY.photoSet, ["20240411_052358"]);
   return photoCard({ photo, eyebrow: t.hfrEyebrow, title: t.hfrH1 });
 }

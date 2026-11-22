@@ -2195,9 +2195,9 @@ export const GUIDE_PLACES: GuidePlace[] = [
   },
 ];
 
-/** Keyed by property slug, then by place name. Measured from the property's start point, never the house. */
+/** Keyed by the property's unitKey() (src/lib/property.ts), then by place name. Measured from the property's start point, never the house. */
 export const GUIDE_DISTANCES: Record<string, Record<string, GuideDistance>> = {
-  "lotushouse": {
+  "275645": {
     "7 Eleven": { walk: 1, drive: 1, metres: 0 },
     "Pharmacy ขวัญดาวเภสัช": { walk: 1, drive: 1, metres: 73 },
     "Pharmacy ร้านยาเวียงพิงค์เภสัช สาขาตลาดต้นพยอม2": { walk: 1, drive: 1, metres: 60 },

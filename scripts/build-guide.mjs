@@ -318,7 +318,7 @@ const AREAS = [...areasSrc.matchAll(/slug:\s*"([a-z-]+)",[\s\S]*?lat:\s*([\d.]+)
 const startSrc = readFileSync(join(ROOT, "src", "lib", "guide-start.ts"), "utf8");
 const startBlock = startSrc.match(/GUIDE_START[^=]*=\s*\{([\s\S]*?)\};/);
 const PROPERTIES = startBlock
-  ? [...startBlock[1].matchAll(/^\s*"?([a-z-]+)"?:\s*"([^"]+)",?\s*$/gm)].map((m) => ({ slug: m[1], start: m[2] }))
+  ? [...startBlock[1].matchAll(/^\s*"?([A-Za-z0-9_-]+)"?:\s*"([^"]+)",?\s*$/gm)].map((m) => ({ key: m[1], start: m[2] }))
   : [];
 
 if (!AREAS.length) throw new Error("Could not read AREAS out of src/lib/areas.ts");
@@ -534,7 +534,7 @@ console.log(`neighbourhoods: ${places.filter((p) => p.area).length} assigned, ${
 // routing from each start point, cached. Two properties sharing a start share its routes.
 const startOf = (prop) => {
   const place = places.find((p) => p.name === prop.start);
-  if (!place) throw new Error(`Start point "${prop.start}" for ${prop.slug} is not a guide place. Fix src/lib/guide-start.ts.`);
+  if (!place) throw new Error(`Start point "${prop.start}" for ${prop.key} is not a guide place. Fix src/lib/guide-start.ts.`);
   return place;
 };
 const routeKey = (prop, p) => `start:${prop.start}|${p.google}`;
@@ -666,10 +666,10 @@ ${places
   .join("\n")}
 ];
 
-/** Keyed by property slug, then by place name. Measured from the property's start point, never the house. */
+/** Keyed by the property's unitKey() (src/lib/property.ts), then by place name. Measured from the property's start point, never the house. */
 export const GUIDE_DISTANCES: Record<string, Record<string, GuideDistance>> = {
 ${PROPERTIES.map(
-  (prop) => `  ${q(prop.slug)}: {
+  (prop) => `  ${q(prop.key)}: {
 ${places
   .map((p) => {
     const d = cache.routes[routeKey(prop, p)] || { walk: null, drive: null, metres: Math.round(metres(startOf(prop), p)) };

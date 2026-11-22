@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import { trackEvent, type AnalyticsEvent } from "@/lib/analytics";
-import { LOTUS_HOUSE } from "@/lib/property";
+import { LOTUS_HOUSE, unitKey } from "@/lib/property";
 import { CONTACT_EMAIL } from "@/lib/site";
 import { PAYMENTS_ENABLED, PaymentForm, retrievePaymentStatus } from "@/components/payment-form";
 import { CancellationTerms } from "@/components/cancellation-terms";
@@ -115,7 +115,11 @@ const HORIZON_DAYS = 365;
  * sessionStorage rather than localStorage: it is scoped to the tab that left, which is
  * exactly the trip we are trying to survive, and it does not outlive the visit.
  */
-const PAYMENT_STORE_KEY = "agentsiam:lotushouse:payment";
+const PAYMENT_STORE_KEY = `agentsiam:${unitKey(LOTUS_HOUSE)}:payment`;
+/** The same record under the slug, as written by the panel before decision 110. Read once
+ * so a guest who left for PromptPay across that deploy still comes back to their payment;
+ * removable once no tab can still hold it, which is the end of the visit. */
+const LEGACY_PAYMENT_STORE_KEY = "agentsiam:lotushouse:payment";
 
 type StoredPayment = {
   clientSecret: string;
@@ -148,7 +152,9 @@ async function fetchAvailability(): Promise<Availability | null> {
 
 function readStoredPayment(): StoredPayment | null {
   try {
-    const raw = window.sessionStorage.getItem(PAYMENT_STORE_KEY);
+    const raw =
+      window.sessionStorage.getItem(PAYMENT_STORE_KEY) ??
+      window.sessionStorage.getItem(LEGACY_PAYMENT_STORE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as StoredPayment;
     return typeof parsed?.clientSecret === "string" ? parsed : null;
@@ -170,6 +176,7 @@ function writeStoredPayment(value: StoredPayment): void {
 function clearStoredPayment(): void {
   try {
     window.sessionStorage.removeItem(PAYMENT_STORE_KEY);
+    window.sessionStorage.removeItem(LEGACY_PAYMENT_STORE_KEY);
   } catch {
     // ignore
   }

@@ -14,6 +14,7 @@ import { PrintButton } from "@/components/print-button";
 import { CRISP_WEBSITE_ID, SITE_NAME, WHATSAPP_NUMBER } from "@/lib/site";
 import { breadcrumbSchema, type Crumb } from "@/lib/structured-data";
 import { guideStart, guideStartLabel } from "@/lib/guide-start";
+import { unitKey, type Property } from "@/lib/property";
 
 /**
  * The guest local guide.
@@ -50,7 +51,7 @@ const MAX_DISTANCE_M = 12_000;
 const PAGE_SIZE = 24;
 
 /** The house the guide is for. No coordinate: the guide is measured from its start point. */
-export type GuideProperty = { slug: string; title: string };
+export type GuideProperty = Pick<Property, "slug" | "photoSet" | "title" | "beds24">;
 
 export function LocalGuide({
   locale,
@@ -77,8 +78,9 @@ export function LocalGuide({
   const nearby = one(query.near) === "1";
   const picks = one(query.picks) === "1";
 
-  const distances = GUIDE_DISTANCES[property.slug] ?? {};
-  const start = guideStart(property.slug);
+  const key = unitKey(property);
+  const distances = GUIDE_DISTANCES[key] ?? {};
+  const start = guideStart(key);
   const startLabel = start ? guideStartLabel(start.name) : "";
   const isStart = (name: string) => name === start?.name;
 
@@ -165,7 +167,7 @@ export function LocalGuide({
   const hasOutside = GUIDE_PLACES.some((p) => p.area === null);
 
   const pins: Pin[] = places.map((place) => ({
-    slug: place.name,
+    key: place.name,
     title: place.name,
     lat: place.lat,
     lng: place.lng,
@@ -180,7 +182,7 @@ export function LocalGuide({
   // neither a guest nor a bot can work back to the door. A property with no start point
   // gets no pin and no directions rather than a fallback to the house.
   const home = start ? { lat: start.lat, lng: start.lng, label: t.guideStartPin.replace("{place}", startLabel) } : null;
-  const propertyPhoto = (PHOTOS[property.slug] ?? [])[0];
+  const propertyPhoto = (PHOTOS[property.photoSet] ?? [])[0];
   const walkableNow = places.filter((place) => {
     const walk = distances[place.name]?.walk;
     return walk != null && walk <= NEARBY_MINUTES;

@@ -29,7 +29,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]">) {
   const t = getDictionary(locale);
   const href = (path: string) => localePath(locale as Locale, path);
 
-  const asidePhoto = pickPhoto(FEATURED_PROPERTY.slug, "IMG_5724");
+  const asidePhoto = pickPhoto(FEATURED_PROPERTY.photoSet, "IMG_5724");
   const steps = [t.nextStep1, t.nextStep2, t.nextStep3];
 
   return (

@@ -7,7 +7,7 @@ import { ResultsMap } from "@/components/results-map";
 import { fillCity, getDictionary } from "@/i18n";
 import { isLocale, localePath, type Locale } from "@/i18n/config";
 import { AREAS, cityBySlug, DEFAULT_CITY } from "@/lib/areas";
-import { propertyArea, propertyCoverPhoto } from "@/lib/property";
+import { propertyArea, propertyCoverPhoto, unitKey } from "@/lib/property";
 import {
   activeFilters,
   distanceToCentre,
@@ -122,7 +122,7 @@ export default async function PropertiesPage({
     const photo = propertyCoverPhoto(property);
     const km = distanceToCentre(property);
     return {
-      slug: property.slug,
+      key: unitKey(property),
       title: property.title,
       // A public point, never the house. See `lat` on Property in src/lib/property.ts.
       lat: property.lat,
@@ -210,7 +210,7 @@ export default async function PropertiesPage({
           <div className="mt-6 grid gap-6 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
             {results.map((property, index) => (
               <PropertyTile
-                key={property.slug}
+                key={unitKey(property)}
                 property={property}
                 t={t}
                 locale={locale}

@@ -51,7 +51,7 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
   const { locale } = await params;
   if (!isLocale(locale)) return new Response("Not found", { status: 404 });
 
-  const photo = await heroDataUri(MAE_RIM_HOUSE.slug, CARD_PHOTO_PREFERENCE);
+  const photo = await heroDataUri(MAE_RIM_HOUSE.photoSet, CARD_PHOTO_PREFERENCE);
   const area = AREAS.find((item) => item.slug === MAE_RIM_HOUSE.areaSlug);
   const place = [area?.name, "Chiang Mai"].filter(Boolean).join(" · ");
 

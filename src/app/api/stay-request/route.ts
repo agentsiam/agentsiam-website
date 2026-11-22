@@ -6,7 +6,7 @@ import type { Inquiry } from "@/lib/admin/types";
 import { today } from "@/lib/admin/types";
 import { AREAS } from "@/lib/areas";
 import { MAIL_CONFIGURED, notificationBody, sendMail } from "@/lib/mailer";
-import { PROPERTIES } from "@/lib/property";
+import { PROPERTIES, propertyByKey, unitKey } from "@/lib/property";
 import { callerIp, rateLimit } from "@/lib/rate-limit";
 import { CONTACT_EMAIL, SITE_NAME } from "@/lib/site";
 import {
@@ -131,18 +131,22 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
  * `beds24` is the field that decides it, and it is the only field in the code that says who
  * holds the calendar: a property with a Beds24 room is one AgentSiam manages and can answer
  * out of the reservation system, and a property without one is listed on agentsiam.com and
- * on no channel, so its owner has to be asked. A slug nothing matches is treated as an open
+ * on no channel, so its owner has to be asked. A key nothing matches is treated as an open
  * requirement rather than refused, because the lead matters more than the hidden field: a
  * renamed route must not lose an inquiry.
+ *
+ * The form posts the house's `unitKey()` and that is what is stored (decision 110). A page
+ * rendered before that change posts the URL slug instead, so a slug is still recognised on
+ * the way in, and is never what is written down.
  */
-function routeInquiry(slug: string): { routing: RoutingCase; name: string; slug: string } {
-  if (!slug) return { routing: "open requirement", name: "", slug: "" };
-  const property = PROPERTIES.find((item) => item.slug === slug);
-  if (!property) return { routing: "open requirement", name: "", slug: "" };
+function routeInquiry(posted: string): { routing: RoutingCase; name: string; key: string } {
+  if (!posted) return { routing: "open requirement", name: "", key: "" };
+  const property = propertyByKey(posted) ?? PROPERTIES.find((item) => item.slug === posted);
+  if (!property) return { routing: "open requirement", name: "", key: "" };
   return {
     routing: property.beds24 ? "managed property" : "listed with AgentSiam",
     name: property.title,
-    slug: property.slug,
+    key: unitKey(property),
   };
 }
 
@@ -228,7 +232,7 @@ export async function POST(request: Request) {
     received_on: today(),
     received_at: new Date().toISOString(),
     routing: route.routing,
-    property_ref: route.slug,
+    property_ref: route.key,
     property_name: route.name,
     reply_language: replyLanguage,
     wrote_in: wroteIn,

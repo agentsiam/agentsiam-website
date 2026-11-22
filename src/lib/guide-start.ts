@@ -10,19 +10,22 @@ import { GUIDE_PLACES } from "./guide.generated";
  * back to the door, so nothing public is measured from it. The exact address and how to
  * find the door stay in the booking confirmation.
  *
- * The value is a `GuidePlace.name`. scripts/build-guide.mjs reads this object to route from
- * it, so keep one `slug: "Place name",` per line.
+ * Keyed by `unitKey()` in src/lib/property.ts: the Beds24 property ID once Beds24 has the
+ * house, its URL slug until then (decision 110). The value is a `GuidePlace.name`.
+ * scripts/build-guide.mjs reads this object to route from it, so keep one
+ * `"key": "Place name",` per line.
  */
 export const GUIDE_START: Record<string, string> = {
-  lotushouse: "7 Eleven",
+  "275645": "7 Eleven",
   cosmoshouse: "7 Eleven",
 };
 
 export type GuideStart = { name: string; lat: number; lng: number };
 
-/** The start point for a property, or null when it has none and so no public times. */
-export function guideStart(slug: string): GuideStart | null {
-  const name = GUIDE_START[slug];
+/** The start point for a property, by its `unitKey()`, or null when it has none and so no
+ * public times. */
+export function guideStart(key: string): GuideStart | null {
+  const name = GUIDE_START[key];
   const place = name ? GUIDE_PLACES.find((p) => p.name === name) : undefined;
   return place ? { name: place.name, lat: place.lat, lng: place.lng } : null;
 }

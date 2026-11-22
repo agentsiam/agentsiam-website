@@ -12,7 +12,7 @@ import {
   stayWindowError,
   today,
 } from "@/lib/beds24";
-import { LOTUS_HOUSE } from "@/lib/property";
+import { LOTUS_HOUSE, unitKey } from "@/lib/property";
 import { callerIp, rateLimit } from "@/lib/rate-limit";
 import { CANCELLATION_POLICY_VERSION } from "@/lib/cancellation-policy";
 import { CONTACT_EMAIL } from "@/lib/site";
@@ -242,7 +242,7 @@ export async function POST(request: Request) {
           departure,
           nights: String(nights),
           guests: String(adults + children),
-          property: LOTUS_HOUSE.slug,
+          property: unitKey(LOTUS_HOUSE),
           guestEmail: email,
           guestName: `${firstName} ${lastName}`,
           locale,
@@ -250,7 +250,7 @@ export async function POST(request: Request) {
         },
       },
       // Retrying this route must not create a second charge for the same hold.
-      { idempotencyKey: `lotushouse-hold-${bookingId}` },
+      { idempotencyKey: `${unitKey(LOTUS_HOUSE)}-hold-${bookingId}` },
     );
 
     await attachPaymentIntent(bookingId, intent.id);

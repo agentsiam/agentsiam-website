@@ -143,7 +143,8 @@ export type Inquiry = {
   received_at: string;
   /** One of ROUTING_CASES in src/lib/stay-request.ts. */
   routing: string;
-  /** The property page the form sat on, as its route slug, or "" for an open requirement. */
+  /** The house the form sat on, as its `unitKey()` in src/lib/property.ts: the Beds24
+   * property ID, or the URL slug of a house not yet in Beds24. "" for an open requirement. */
   property_ref: string;
   property_name: string;
   /** The language the renter asked to be answered in, and the language of the page they

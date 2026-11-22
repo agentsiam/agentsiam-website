@@ -22,7 +22,7 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
   const { locale } = await params;
   if (!isLocale(locale)) return new Response("Not found", { status: 404 });
 
-  const photo = await heroDataUri(COURTYARD_VILLA.slug, []);
+  const photo = await heroDataUri(COURTYARD_VILLA.photoSet, []);
   const area = AREAS.find((item) => item.slug === COURTYARD_VILLA.areaSlug);
 
   return photoCard({

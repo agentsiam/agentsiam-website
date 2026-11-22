@@ -19,6 +19,7 @@ import {
   FEATURED_PROPERTY,
   MAE_RIM_HOUSE,
   propertyCoverPhoto,
+  unitKey,
 } from "@/lib/property";
 import { pageMeta } from "@/lib/site";
 import { faqSchema } from "@/lib/structured-data";
@@ -327,7 +328,7 @@ export default async function HowItWorksPage({
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {proofHouses.map(({ property, photo }) => (
-              <div key={property.slug} className="relative aspect-4/3 overflow-hidden rounded-box">
+              <div key={unitKey(property)} className="relative aspect-4/3 overflow-hidden rounded-box">
                 <Image
                   src={photo.src}
                   alt={photo.alt || property.title}
