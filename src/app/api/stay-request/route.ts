@@ -47,7 +47,7 @@ export const runtime = "nodejs";
  * apart at a glance.
  *
  * THE ORDER IS THE DESIGN. The inquiry is recorded in the document store first, as a row in
- * guest-leads.csv and a structured record beside it, and only then is anything emailed. For
+ * renter-leads.csv and a structured record beside it, and only then is anything emailed. For
  * months this endpoint sent one email and persisted nothing, so there was no record an
  * inquiry had ever arrived except a message in a mailbox. A submission that cannot be
  * recorded is still emailed, because a renter who waited for a reply should get one, but it

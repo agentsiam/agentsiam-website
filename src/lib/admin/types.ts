@@ -86,7 +86,7 @@ export type Shortlist = {
 };
 
 /**
- * A renter lead, exactly the sixteen columns of guest-leads.csv.
+ * A renter lead, exactly the sixteen columns of renter-leads.csv.
  *
  * Editable in the admin since 12/11/2026. The file is still worked by hand and by Claude,
  * so a save writes only the cells the form changed and leaves the rest of the row as it
@@ -120,13 +120,13 @@ export type Lead = {
  * as-salesmarketing/01-crm/inquiries/G-####.json in agentsiam-consulting.
  *
  * Written by /api/stay-request when the form is submitted, not by the admin. It exists
- * because guest-leads.csv holds sixteen free-text columns and a renter's requirement is
+ * because renter-leads.csv holds sixteen free-text columns and a renter's requirement is
  * structured: a budget with a unit, a date flexibility, a guest split, fixed must-haves.
  * Those cannot be matched against property-pool.csv while they sit inside a paragraph, and
  * the CSV row is where a person reads the lead rather than where a filter does.
  *
  * It carries no email address, no phone number and no messaging handle, by the rule
- * guest-leads.csv and shortlists/README.md both state: those stay in the mailbox the
+ * renter-leads.csv and shortlists/README.md both state: those stay in the mailbox the
  * enquiry arrived in. `contact_channels` says which channels the renter offered, and the
  * notification email to hi@agentsiam.com carries the handles. It is also the right shape
  * for decision 92, where an owner is shown the requirement and the renter's details cross
@@ -400,7 +400,7 @@ export type Attribution = {
  * enquiry exactly as submitted, kept so a later reader can see what the form was told
  * rather than what somebody summarised. Unlike a renter inquiry it may hold the owner's
  * contact details, because the owner row in leads.csv does too: the no-handles rule in the
- * CRM README is guest-leads.csv's.
+ * CRM README is renter-leads.csv's.
  */
 export type OwnerInquiry = {
   lead_id: string;

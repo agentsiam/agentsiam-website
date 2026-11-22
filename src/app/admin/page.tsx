@@ -7,7 +7,7 @@ import { isReadyToSend, type Lead, type Shortlist } from "@/lib/admin/types";
 /**
  * Every renter lead, with how far its shortlist has got.
  *
- * The leads are read from guest-leads.csv in the document store and never written here:
+ * The leads are read from renter-leads.csv in the document store and never written here:
  * the CSV stays the source of truth for the lead, worked there and through Claude as it is
  * today. The shortlist beside each one is this admin's own file.
  *

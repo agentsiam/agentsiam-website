@@ -32,7 +32,7 @@ import { isReadyToSend, missingForReady, type Candidate } from "@/lib/admin/type
 /**
  * One renter lead and its shortlist.
  *
- * The lead's own facts are read from guest-leads.csv and shown as they are written there,
+ * The lead's own facts are read from renter-leads.csv and shown as they are written there,
  * including the requirements cell, because that cell is what the candidates have to answer
  * and reading it beside them is the point of the page.
  */

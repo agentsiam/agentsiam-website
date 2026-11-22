@@ -1,7 +1,7 @@
 /**
  * What the three CRM tables hold, described once.
  *
- * The admin edits rows in guest-leads.csv, leads.csv and property-pool.csv. The screens
+ * The admin edits rows in renter-leads.csv, leads.csv and property-pool.csv. The screens
  * need labels, hints and the choices to offer; the route needs to know which columns may be
  * written and which values are allowed. Those are the same facts, so they are written once
  * here and read by both. A field added to a form is a field the server accepts, and a field
@@ -76,7 +76,7 @@ const PEOPLE = ["Paul", "Nils"] as const;
 const CRM = "as-salesmarketing/01-crm";
 
 /**
- * Renter leads, guest-leads.csv.
+ * Renter leads, renter-leads.csv.
  *
  * `contact_channel` and `source` are free text here although the shortlist uses a fixed list
  * for the same words, because these cells carry things like "website stay-request form (hi@)"
@@ -89,7 +89,7 @@ export const RENTER: RecordSpec = {
   idColumn: "lead_id",
   idPrefix: "G",
   nameColumn: "name",
-  file: `${CRM}/guest-leads.csv`,
+  file: `${CRM}/renter-leads.csv`,
   listColumns: [
     { key: "name", label: "Name" },
     { key: "dates_requested", label: "Dates" },

@@ -1,6 +1,6 @@
 /**
  * One inquiry turned into the two things the document store keeps: a row in
- * guest-leads.csv, and the lines a person reads in the notification email.
+ * renter-leads.csv, and the lines a person reads in the notification email.
  *
  * Here rather than in the route because the route's job is to validate and to write in the
  * right order, and because the CSV row is a mapping worth reading on its own: sixteen

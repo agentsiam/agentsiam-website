@@ -2,7 +2,7 @@
  * The document store, read and written from the admin.
  *
  * Paul's decision of 11/11/2026: the shortlist lives in files in the document store, not in
- * a database. guest-leads.csv stays the source of truth for the lead itself; the candidates
+ * a database. renter-leads.csv stays the source of truth for the lead itself; the candidates
  * live one JSON file per lead beside it, the inquiry as it arrived lives in another, and the
  * blocked-operator list is a file in the same folder. Every save is a commit, so git
  * history is the audit trail and Claude can still read a candidate.
@@ -65,7 +65,16 @@ const LOCAL = process.env.CRM_LOCAL_PATH ?? "";
 /** The CRM folder inside the document store. One place, so a rename is one edit. */
 const CRM = "as-salesmarketing/01-crm";
 
-export const LEADS_FILE = `${CRM}/guest-leads.csv`;
+export const LEADS_FILE = `${CRM}/renter-leads.csv`;
+
+/**
+ * What the renter leads file was called until decision 111 renamed it. The site ships before
+ * the document store is renamed, so production never asks for a file that is not there: while
+ * renter-leads.csv is absent, the leads are read from this name and written back to it. Delete
+ * this, and `readRenamed`, once the rename is on the document store's main.
+ */
+const LEADS_FILE_BEFORE_RENAME = `${CRM}/guest-leads.csv`;
+
 export const OWNERS_FILE = `${CRM}/leads.csv`;
 export const POOL_FILE = `${CRM}/property-pool.csv`;
 export const BLOCKED_FILE = `${CRM}/blocked-operators.json`;
@@ -181,6 +190,17 @@ async function readStored(path: string): Promise<Stored | null> {
     text: Buffer.from(body.content, "base64").toString("utf8"),
     sha: body.sha ?? null,
   };
+}
+
+/**
+ * Read a file, or the leads file under its name before the rename when the new name is not
+ * there yet. The path returned is the one that answered, and it is the one a write goes to, so
+ * a row is never appended to a new file that holds nothing else.
+ */
+async function readRenamed(path: string): Promise<{ path: string; stored: Stored | null }> {
+  const stored = await readStored(path);
+  if (stored || path !== LEADS_FILE) return { path, stored };
+  return { path: LEADS_FILE_BEFORE_RENAME, stored: await readStored(LEADS_FILE_BEFORE_RENAME) };
 }
 
 /** Set once the repository has answered for this process. A token that can see it keeps
@@ -325,7 +345,7 @@ async function updateJson<T>(
 }
 
 export async function readLeads(): Promise<Lead[]> {
-  const stored = await readStored(LEADS_FILE);
+  const { stored } = await readRenamed(LEADS_FILE);
   if (!stored) {
     throw new StoreError(
       `${LEADS_FILE} is not in the document store, so there are no renter leads to show.`,
@@ -418,14 +438,14 @@ async function updateCsv(
 ): Promise<void> {
   let lastError: unknown = null;
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const stored = await readStored(path);
+    const { path: target, stored } = await readRenamed(path);
     if (!stored) {
       throw new StoreError(`${path} is not in the document store, so there is nothing to change.`);
     }
     const text = change(stored.text);
     if (text === stored.text) return;
     try {
-      await writeStored(path, text, message, stored.sha);
+      await writeStored(target, text, message, stored.sha);
       return;
     } catch (error) {
       if (!(error instanceof ConflictError)) throw error;
@@ -451,14 +471,14 @@ async function appendWithId(
 ): Promise<string> {
   let lastError: unknown = null;
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const stored = await readStored(path);
+    const { path: target, stored } = await readRenamed(path);
     if (!stored) {
       throw new StoreError(`${path} is not in the document store, so nothing can be added to it.`);
     }
     const id = nextId(csvColumn(stored.text, idColumn), prefix);
     const text = appendCsvRow(stored.text, { ...values, [idColumn]: id });
     try {
-      await writeStored(path, text, message(id), stored.sha);
+      await writeStored(target, text, message(id), stored.sha);
       return id;
     } catch (error) {
       if (!(error instanceof ConflictError)) throw error;
@@ -478,7 +498,7 @@ async function readRows(path: string, what: string): Promise<Record<string, stri
   return parseCsvObjects(stored.text);
 }
 
-/** Change cells in a renter lead's row in guest-leads.csv. */
+/** Change cells in a renter lead's row in renter-leads.csv. */
 export async function updateLead(
   leadId: string,
   changes: Partial<Lead>,

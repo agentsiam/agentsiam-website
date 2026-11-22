@@ -53,7 +53,7 @@ export type Party = (typeof PARTY)[number];
 /**
  * The must-haves, as fixed choices.
  *
- * Every one of these is already arriving inside a free-text paragraph in guest-leads.csv,
+ * Every one of these is already arriving inside a free-text paragraph in renter-leads.csv,
  * which is why they are offered rather than asked for in prose: the information is being
  * given, and the shape is what makes it unmatchable against the property pool.
  */

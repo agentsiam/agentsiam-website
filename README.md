@@ -348,7 +348,7 @@ which is worth knowing when reading `as-salesmarketing/01-crm/README.md`.
 
 | Screen | Is | Where it lives in `agentsiam-consulting` |
 |---|---|---|
-| Renter leads | The enquiry, its shortlist, each candidate's decision | `01-crm/guest-leads.csv`, `01-crm/shortlists/G-####.json`, `01-crm/inquiries/G-####.json` |
+| Renter leads | The enquiry, its shortlist, each candidate's decision | `01-crm/renter-leads.csv`, `01-crm/shortlists/G-####.json`, `01-crm/inquiries/G-####.json` |
 | Owner leads | The acquisition pipeline, with dated history | `01-crm/leads.csv` |
 | Property pool | Properties AgentSiam does not manage, found while sourcing | `01-crm/property-pool.csv` |
 | Clients | Signed owners, one markdown record each | `01-crm/clients/C-####-slug.md` |
@@ -513,7 +513,7 @@ carries the admin.
 The admin is no longer the only writer. `POST /api/stay-request`, behind the request form on
 `/house-for-rent-chiang-mai` and on all eight property pages that are listed for enquiry rather
 than bookable, records every submission before it emails anybody: a `G-####` row appended to
-`guest-leads.csv`, then `inquiries/G-####.json` beside the shortlist. Until 14/11/2026 it sent
+`renter-leads.csv`, then `inquiries/G-####.json` beside the shortlist. Until 14/11/2026 it sent
 one email and persisted nothing, so the only evidence an enquiry had ever arrived was a message
 in a mailbox and whatever somebody retyped into the CSV by hand.
 
@@ -1329,7 +1329,7 @@ flow, end to end, with nothing live anywhere near it.
 - **The lead list reads every shortlist file on every page load.** Five leads is five extra
   reads, which is nothing locally and five GitHub requests in production. It is fine at this
   size and is the first thing to change if the CRM grows to dozens of open renter leads.
-- **`guest-leads.csv` has no `notes` and no `history` column**, although the CRM README says
+- **`renter-leads.csv` has no `notes` and no `history` column**, although the CRM README says
   every lead row carries both and the owner file `leads.csv` does. That is why G-0003's
   shortlist was living in its `requirements` cell. The admin does not fix it: it reads the
   columns that exist. Neither does the request form, which is why the structured answers go into
