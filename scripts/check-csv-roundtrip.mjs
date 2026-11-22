@@ -28,8 +28,7 @@ const store =
   "/Users/paulb/code/agentsiam/agentsiam-consulting";
 
 const FILES = [
-  // Until decision 111's rename is in the document store, the leads are still at the old name.
-  { path: "as-salesmarketing/01-crm/renter-leads.csv", before: "as-salesmarketing/01-crm/guest-leads.csv", idColumn: "lead_id" },
+  { path: "as-salesmarketing/01-crm/renter-leads.csv", idColumn: "lead_id" },
   { path: "as-salesmarketing/01-crm/leads.csv", idColumn: "lead_id" },
   { path: "as-salesmarketing/01-crm/property-pool.csv", idColumn: "property_id" },
 ];
@@ -45,23 +44,11 @@ const check = (name, condition, detail = "") => {
 };
 
 for (const file of FILES) {
-  let full = join(store, file.path);
+  const full = join(store, file.path);
   let text;
   try {
     text = await readFile(full, "utf8");
   } catch {
-    text = undefined;
-  }
-  if (text === undefined && file.before) {
-    full = join(store, file.before);
-    try {
-      text = await readFile(full, "utf8");
-      file.path = file.before;
-    } catch {
-      text = undefined;
-    }
-  }
-  if (text === undefined) {
     console.log(`\n${file.path}\n  skipped, not at ${full}`);
     continue;
   }
