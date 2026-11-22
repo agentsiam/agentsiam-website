@@ -129,6 +129,11 @@ export default async function PrivacyPolicyPage({ params }: PageProps<"/[locale]
             home must have, who is travelling, whether you will have a vehicle, any pets,
             whether anyone smokes, how you found us, your message, and the page you sent it
             from. We use it for one purpose: to find you a home that fits and to answer you.
+            We also keep a coded fingerprint of your email address, phone or WhatsApp number
+            and LINE ID, made with a secret key so that it cannot be turned back into the
+            details themselves, and compare it with the requests we received in the previous
+            90 days, so that two requests from you are handled as one. The fingerprint is
+            never passed to a property owner.
             The children&rsquo;s ages are used only to judge whether a home is suitable and
             safe for them, and are never linked to a child&rsquo;s name. If you tick the
             box that allows it, we may show a property owner or their co-host what you are
