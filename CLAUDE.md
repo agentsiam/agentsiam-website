@@ -258,7 +258,7 @@ runs is a copy review across all three languages, per R9.
 
 # CLAUDE core rules
 
-Version 3.12. This line is bumped on every edit to this file, no exceptions, and it travels inside
+Version 3.14. This line is bumped on every edit to this file, no exceptions, and it travels inside
 every pasted block, so any repo's copy says which core it came from. Byte-identity against the
 canonical file is verified by diffing the pasted block against
 `/Users/paulb/Documents/LTD OS/_standards/CLAUDE-core.md` directly; no hash is needed.
@@ -456,12 +456,13 @@ twice.
 every callout reads as padding.
 
 **C25. Docs state what is true now, not how they got there.** No "was X, changed DD/MM/YYYY", no
-"moved from Monday", no "Paul confirmed DD/MM/YYYY" in the body of a doc. A date belongs in a body
-only when it is operational: when a run happens, when a decision was closed in a date-closed column,
-the provenance of a photo or a quote. Everything else goes in the commit message, or in the doc's own
-changelog section, which records decisions and their reasons rather than diffs. Record files a repo
-names as such, a facts file or a tracking table, are exempt: they exist to show supersession and
-waiting time on the page, and keeping the contradicted or dated entry is the point.
+"moved from Monday", no "Paul confirmed DD/MM/YYYY" in the body of a doc, and no changelog or
+revision section. A date belongs in a body only when it is operational: when a run happens, when an
+item closed in a date-closed column, the provenance of a photo or a quote. Why a thing changed goes
+in the commit message (C27). Record files a repo names as such, a facts file or a tracking table,
+are exempt for facts and actions as they arrive: they exist to show supersession and waiting time on
+the page, and keeping the contradicted or dated entry is the point. A decision is never one of their
+entries: it is the change to the file that owns its topic, plus that commit.
 
 **C26. Source material is extracted, not just filed, and the extraction is what counts.** Anything
 arriving from someone else stays raw until its content reaches the repo's live record and the
@@ -518,8 +519,8 @@ stops, rather than quietly passing with partial data.
 area (context, strategy) in its own file. A write there is proposed as a diff, saying what it
 supersedes, and then waits. Approval is for the write, not for the task: "Paul asked me to research
 X" is not approval to write X into the record. Approval is per change and expires with it. There is
-no size threshold: a typo fix and a re-sync of a derived file are changes. Where the repo keeps a
-decisions log, the change lands with a dated line naming who approved it.
+no size threshold: a typo fix and a re-sync of a derived file are changes. The approval is named in
+the commit that makes the change (C27).
 
 **C33. A session ends clean.** A piece of work ships as the deliverable plus a README saying what it
 consumed, so the derivation is visible later. Intermediates that nothing needs any more are deleted,
@@ -539,13 +540,13 @@ from a current one.
 
 ## House rules
 
-**C28. Dates in prose are DD/MM/YYYY**, in messages to Paul and in documents alike. Dates in code,
-filenames and data formats are ISO `YYYY-MM-DD`, so they sort and parse; a prose-format date never
-goes into a filename.
+**C28. Dates in prose are DD/MM/YYYY. Dates in code, filenames and data formats are ISO
+`YYYY-MM-DD`.** A prose-format date never goes into a filename. ISO sorts and parses; one prose
+format because a date with both numbers under thirteen cannot be read from the string, and a mixed
+corpus therefore hides errors nobody can find.
 
-**C29. No em dashes, en dashes or arrow characters in anything a person outside the repo reads, or in
-anything written to Paul.** Commas or shorter sentences. Each repo states in its own file whether its
-product and marketing copy is exempt.
+**C29. No em dashes, en dashes or arrow characters in prose.** Commas or shorter sentences. Each
+repo states in its own file whether its product and marketing copy is exempt.
 
 **C30. Minimal, precise output.** No unsolicited explanation, no padding caveats, no
 self-congratulation.
