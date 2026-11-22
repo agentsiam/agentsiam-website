@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDictionary } from "@/i18n";
 import { isLocale, LOCALES } from "@/i18n/config";
-import { addLeadFromRequestForm, writeInquiry } from "@/lib/admin/store";
+import { addLeadFromRequestForm, readRecentInquiries, writeInquiry } from "@/lib/admin/store";
 import type { Inquiry } from "@/lib/admin/types";
 import { today } from "@/lib/admin/types";
 import { AREAS } from "@/lib/areas";
@@ -25,6 +25,13 @@ import {
   nightsBetween,
   type RoutingCase,
 } from "@/lib/stay-request";
+import {
+  REPEAT_WINDOW_DAYS,
+  contactKeys,
+  findRepeats,
+  matchingConfigured,
+  repeatsAsWritten,
+} from "@/lib/lead-match";
 import { leadRowFrom, notificationRows, type Reachable } from "@/lib/stay-request-record";
 
 // Node runtime for two reasons now: the SMTP transport is Node-only, and the document
@@ -261,6 +268,29 @@ export async function POST(request: Request) {
     consent_text: getDictionary(wroteIn).srConsentOwner,
   };
 
+  /* The repeat check, before the row is written so the row can carry it. Matched on the
+   * handles through their keyed fingerprints (src/lib/lead-match.ts). It never blocks a
+   * request: a repeat is recorded and emailed like any other, flagged, and a check that
+   * cannot run says so in the email rather than passing as "no repeat". */
+  let repeatProblem: string | null = null;
+  if (!matchingConfigured()) {
+    repeatProblem = "not run: LEAD_MATCH_KEY is not set";
+    console.error("[stay-request] repeat check off, LEAD_MATCH_KEY is not set");
+  } else {
+    inquiry.contact_keys = contactKeys(reachable);
+    try {
+      const since = new Date(Date.now() - REPEAT_WINDOW_DAYS * 86_400_000)
+        .toISOString()
+        .slice(0, 10);
+      inquiry.repeat_of = repeatsAsWritten(
+        findRepeats(inquiry.contact_keys, await readRecentInquiries(since)),
+      );
+    } catch (error) {
+      repeatProblem = `not run: ${error instanceof Error ? error.message : "unknown error"}`;
+      console.error("[stay-request] repeat check failed", error);
+    }
+  }
+
   /* The record first, and the whole record: the row a person reads, then the structured
    * file a filter can read. A failure in either is carried into the email rather than
    * swallowed. */
@@ -291,13 +321,15 @@ export async function POST(request: Request) {
   const dates = `${checkIn} to ${checkOut}`;
   const subject = recordProblem
     ? `NOT RECORDED, stay request: ${name}, ${dates}`
-    : `Stay request ${inquiry.lead_id}: ${name}, ${dates}, ${route.routing}`;
+    : `Stay request ${inquiry.lead_id}${
+        inquiry.repeat_of ? ` (repeat of ${inquiry.repeat_of.replace(/ \(.*?\)/g, "")})` : ""
+      }: ${name}, ${dates}, ${route.routing}`;
 
   let sent = false;
   if (MAIL_CONFIGURED) {
     const { html, text } = notificationBody(
       `New stay request from ${SITE_NAME}.com`,
-      notificationRows(inquiry, reachable, recordProblem),
+      notificationRows(inquiry, reachable, recordProblem, repeatProblem),
       message,
     );
     sent = await sendMail({

@@ -1299,10 +1299,12 @@ flow, end to end, with nothing live anywhere near it.
   worse the day an inquiry is forwarded to an owner's phone on a metered channel. The normal
   answer is a one-time code to the renter's email or phone before anything is forwarded, and
   nothing like it exists here.
-- **Two renter leads carrying the same person and the same dates make two records.** Nothing
-  looks for a duplicate, so the same renter submitting from three pages produces three `G-####`
-  rows. Harmless while a person reads every one of them, and not harmless on the day an owner is
-  messaged per record.
+- ~~**Two renter leads carrying the same person and the same dates make two records.**~~
+  Resolved 22/11/2026: a request sharing an email address, phone or WhatsApp number, or LINE ID
+  with a request from the last 90 days is flagged "Repeat of G-####" in its `requirements` cell,
+  its inquiry record and the email, and is still recorded. Matching uses keyed fingerprints
+  (`src/lib/lead-match.ts`) and needs `LEAD_MATCH_KEY` set; without it the email says the check
+  did not run. Leads recorded before it shipped carry no fingerprint and never match.
 - **The Thai and Chinese of the request form have had no native read (14/11/2026).** Sixty keys,
   the `sr*` block in the three dictionaries: the four contact channels, the date flexibility, the
   guest split, the budget unit and currency, the eight must-haves, the four questions behind the

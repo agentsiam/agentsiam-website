@@ -71,7 +71,10 @@ function pets(inquiry: Inquiry): string {
  * asking the questions.
  */
 export function requirementsCell(inquiry: Inquiry): string {
-  const clauses: string[] = [guestCount(inquiry)];
+  const clauses: string[] = [];
+  // First, because it changes how the rest is read: this person may already be in the file.
+  if (inquiry.repeat_of) clauses.push(`Repeat of ${inquiry.repeat_of}`);
+  clauses.push(guestCount(inquiry));
 
   if (inquiry.bedrooms_minimum) clauses.push(`${inquiry.bedrooms_minimum} bedrooms or more`);
   if (inquiry.must_haves.length > 0) {
@@ -150,6 +153,7 @@ export function notificationRows(
   inquiry: Inquiry,
   reachable: Reachable,
   recordProblem: string | null,
+  repeatProblem: string | null = null,
 ): [string, string][] {
   const rows: [string, string][] = [];
 
@@ -158,6 +162,7 @@ export function notificationRows(
   } else {
     rows.push(["Lead", inquiry.lead_id]);
   }
+  rows.push(["Repeat of", repeatProblem ?? (inquiry.repeat_of || "none found")]);
 
   rows.push(["Routed as", inquiry.routing]);
   if (inquiry.property_name) rows.push(["Property asked about", inquiry.property_name]);

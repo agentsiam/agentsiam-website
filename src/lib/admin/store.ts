@@ -542,6 +542,29 @@ export async function writeInquiry(inquiry: Inquiry): Promise<void> {
   );
 }
 
+/**
+ * The inquiry records of renter leads received on or after `since` (ISO date), for the
+ * repeat check. The lead file picks which records to read, so a request costs one read
+ * per recent lead rather than a listing of the whole folder. A lead entered by hand has no
+ * record and is skipped; a record that cannot be parsed is skipped too, because a bad file
+ * must not stop a new request being recorded.
+ */
+export async function readRecentInquiries(since: string): Promise<Inquiry[]> {
+  const leads = await readLeads();
+  const recent = leads.filter((lead) => (lead.received_date ?? "") >= since);
+  const records: Inquiry[] = [];
+  for (const lead of recent) {
+    const stored = await readStored(inquiryFile(lead.lead_id));
+    if (!stored) continue;
+    try {
+      records.push(JSON.parse(stored.text) as Inquiry);
+    } catch {
+      console.error(`[store] ${inquiryFile(lead.lead_id)} is not valid JSON, skipped`);
+    }
+  }
+  return records;
+}
+
 /* ---------------------------------------------------------------------------------------
  * The owner pipeline.
  * ------------------------------------------------------------------------------------- */

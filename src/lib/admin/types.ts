@@ -179,6 +179,14 @@ export type Inquiry = {
    * to is not a consent record. */
   consent_to_pass_to_owner: string;
   consent_text: string;
+  /** Keyed fingerprints of the handles, `kind:hex`, never the handles themselves. See
+   * src/lib/lead-match.ts. Absent on records written before 22/11/2026 and on any written
+   * while LEAD_MATCH_KEY was unset, so those can never be matched. Never passed to a
+   * property owner: whatever delivers this record to an owner drops this field first. */
+  contact_keys?: string[];
+  /** Earlier leads sharing a handle with this one, as "G-0007 (same email)". Empty when
+   * none matched; absent when the check did not run. */
+  repeat_of?: string;
 };
 
 /**
