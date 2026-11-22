@@ -545,8 +545,8 @@ Chinese renters often use LINE and nothing else.
 **Three routing cases, recorded, all landing with AgentSiam.** The form carries a property's route
 slug when it sits on that property's page, and `beds24` on the `Property` decides the rest: a
 property with a Beds24 room is `managed property`, one without is `listed with AgentSiam`, and no
-slug at all is an `open requirement`, which is what most leads actually are. Nothing is delivered
-to an owner by any channel; see "Known gaps".
+slug at all is an `open requirement`, which is what most leads actually are. Nothing is sent to
+an owner by the site; a person sends from the admin's "Ask pool owners" panel. See "Known gaps".
 
 **Rotating and revoking.** Changing `ADMIN_COOKIE_SECRET` and redeploying signs both people out,
 which is how a session is revoked. Deleting the token on GitHub stops reads and saves together:
@@ -1280,17 +1280,15 @@ flow, end to end, with nothing live anywhere near it.
   somebody has to remember. If it is ever replaced rather than revoked, the command and the
   redeploy are under "Setting it up on Vercel", because a Vercel variable binds when a
   deployment is created.
-- **Nothing delivers a renter inquiry to a property owner (14/11/2026).** The form, the record
-  and the routing are built and the case is written on every inquiry, so all three cases land
-  with AgentSiam and are worked by hand. Three things are out: the LINE Official Account that
-  decision 67 in the consulting repo's decisions log calls for as the Thai owner contact
-  channel exists from 15/11/2026, `@555ampnu`, and nothing routes an inquiry into it; the
-  published privacy policy does not name property owners among the
-  recipients of a renter's data, and that line ships in the same change as the delivery rather
-  than before it; and the query that finds the matching properties for an open requirement is
-  not written, so decision 94's fan-out has nothing to fan out to. A LINE push also cannot be
-  addressed to a LINE ID typed into a form: it needs the owner to add the Official Account first,
-  and the `userId` from that follow event stored against their pool row. That is unscoped work.
+- **The site delivers nothing to a property owner by itself (22/11/2026).** Stage 1 of owner
+  delivery is a person sending by hand: the "Ask pool owners" panel on each renter lead in the
+  admin matches the pool, writes the owner message in Thai or English, and records `asked_on`
+  and `g2_terms_agreed`; the renter's details are offered only after the owner accepts the terms
+  and the renter consented. Design: `as-work/2026-11-22-owner-delivery/` in the consulting repo.
+  Open: the Thai owner messages have had no native read; there is no introduction terms document
+  for an owner to accept; and stage 2, sending through the LINE Official Account `@555ampnu`,
+  needs each owner to add the account first so the `userId` from that follow event can be stored
+  against their pool row, plus a one-time code to the renter before anything is forwarded.
 - **A spam submission now reaches the document store, not just a mailbox (14/11/2026).** The
   protection is still what it was for a mailbox: one honeypot field and six submissions per ten
   minutes per address, in module scope on a serverless platform, so one bucket per warm instance.

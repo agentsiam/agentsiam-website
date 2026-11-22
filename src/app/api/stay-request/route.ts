@@ -54,13 +54,10 @@ export const runtime = "nodejs";
  * is never emailed quietly: the subject says NOT RECORDED and the first row of the body says
  * what went wrong.
  *
- * What it does not do, and the reason each is out: nothing is delivered to a property
- * owner, because AgentSiam's LINE Official Account does not exist and the published privacy
- * policy does not yet name property owners among the recipients of a renter's data, and that
- * policy line ships in the same change as the delivery itself. The fan-out query that finds
- * the matching properties for an open requirement is not here either. All three routing
- * cases therefore land with AgentSiam, and the case is recorded so the leg that delivers
- * knows which one it is reading.
+ * What it does not do: nothing is sent to a property owner from here. All three routing
+ * cases land with AgentSiam, and the case is recorded on the inquiry. Putting a requirement
+ * to pool owners is done by a person from the admin's "Ask pool owners" panel, which matches
+ * the pool and writes the message (src/lib/admin/owner-delivery.ts).
  *
  * "How did you find us?" stays required. It is the one question that tells us which page,
  * search or AI answer produced the lead, and it costs the renter one line.

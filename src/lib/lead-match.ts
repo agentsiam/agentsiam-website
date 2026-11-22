@@ -11,6 +11,9 @@
  * that a plain SHA-256 of one is reversed by trying them all, so anyone holding the
  * document store would hold the numbers. Without the key that search is not possible.
  *
+ * LEAD_MATCH_KEY must never change once set. A new key makes every fingerprint already in
+ * the document store unmatchable, silently: nothing fails, repeats just stop being found.
+ *
  * A fingerprint is still personal data: it is derived from a handle and it links two
  * requests to one person. The privacy policy has to say so before this ships.
  *
