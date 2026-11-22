@@ -254,19 +254,22 @@ before handing back anything that touched the dictionaries or a type. The one mo
 runs is a copy review across all three languages, per R9.
 
 ---
-<!-- CLAUDE-CORE:BEGIN. Synced from /Users/paulb/Documents/LTD OS/_standards/CLAUDE-core.md; the Version line inside the block says which core this is. Do not edit here. -->
+<!-- CLAUDE-CORE:BEGIN. Synced from /Users/paulb/Documents/LTD OS/_standards/CLAUDE-core.md; the Version line inside the block says which core this is. Do not edit here: a repo rule goes in section 5 as an R rule. -->
 
 # CLAUDE core rules
 
-Version 3.10. This line is bumped on every edit to this file, no exceptions, and it travels inside
+Version 3.12. This line is bumped on every edit to this file, no exceptions, and it travels inside
 every pasted block, so any repo's copy says which core it came from. Byte-identity against the
 canonical file is verified by diffing the pasted block against
 `/Users/paulb/Documents/LTD OS/_standards/CLAUDE-core.md` directly; no hash is needed.
 
 Identical in every one of Paul's repositories. Do not edit this block inside a repo. Edit the
-canonical copy and re-sync, so the same rule cannot say two things in two places.
+canonical copy and re-sync, so the same rule cannot say two things in two places. A rule that names
+one repo's files, people or product is a repo rule: it goes in that repo's section 5 as an R rule,
+never in here. `_standards/sync-core.sh` does every sync, and each repo's pre-commit hook rejects a
+block that matches no committed core version.
 
-Rule IDs are stable, currently C1 to C49. A new rule takes the next free number and sits in the
+Rule IDs are stable, currently C1 to C50. A new rule takes the next free number and sits in the
 section it belongs to, so numbers are unique but not strictly ordered within a section. A retired
 rule keeps its number and is marked RETIRED. Numbers are never reused. Repo-specific rules are
 numbered R1 upward in the repo's own file and never collide with these.
@@ -496,6 +499,12 @@ the record once, with its cost, then update the record through the normal approv
 execute. Never audit his statement against the docs to argue it away, never present his stated
 direction as the option being recommended against, and never require him to state a decision twice.
 "The docs say otherwise" is a reason to update the docs.
+
+**C50. Done means checked.** Before calling any piece of work finished, run every check that
+applies to it: tests, typecheck, lint, build, the script's own run, a render of the document. Report
+each command and its result in one line. A check that could not run is said to be unrun, with the
+reason, and the work is not called done. C18 says what checking a document involves; this rule says
+the checking happens, for code and scripts as much as for documents.
 
 **C48. Flag contradictions and risks rather than smoothing them.** Two sources that disagree, a
 listing that markets what the rules forbid, a policy the practice breaches: surface it, do not
