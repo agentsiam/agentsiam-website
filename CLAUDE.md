@@ -8,8 +8,8 @@ availability, rates and bookings.
 `README.md` is orientation. This file is what to do.
 
 Rule IDs R1 upward are stable and are cited from elsewhere in this repo. A retired rule keeps its
-number and is marked RETIRED. Numbers are never reused. Core rules C1 to C49 live in the core block
-at the foot of this file and are identical in every repo.
+number and is marked RETIRED. Numbers are never reused. Core rules live in the core block at the
+foot of this file and are identical in every repo.
 
 No rule is marked LAW here. No rule carries the date it was added; provenance lives in the commit
 message and the incident behind a rule lives in section 7. Live state never lives in this file
@@ -129,7 +129,7 @@ three in one pass, then `npm run typecheck`.
 
 **R10.** Published product and marketing copy in English, Thai and Chinese is exempt from the core
 dash ban (C29). Everywhere else in this repo, and in anything written to Paul, the ban holds. This
-is the same exemption as R21 in `/Users/paulb/code/agentsiam/agentsiam-consulting`, stated here
+is the same exemption as R17 in `/Users/paulb/code/agentsiam/agentsiam-consulting`, stated here
 because C29 requires each repo to state its own.
 
 **R11.** The guide's library is `scripts/guide-places.csv`, with tags and websites beside it in
