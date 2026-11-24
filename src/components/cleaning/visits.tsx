@@ -96,6 +96,9 @@ export function VisitMeta({
         >
           {mark === null ? null : <HouseMark index={mark} size={12} />}
           {house.name}
+          {/* The area beside the name, Da's ask of 24/11/2026: the name says which house,
+              the area says where it is before she has opened the job. */}
+          {house.area ? <span className="font-normal">· {house.area}</span> : null}
         </span>
       ) : null}
       {occupied ? (

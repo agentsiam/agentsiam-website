@@ -95,6 +95,12 @@ export default async function NewWorkPage() {
         {written(t.acceptIntro) ? (
           <p className="mt-2 text-[17px] leading-7 text-body">{written(t.acceptIntro)}</p>
         ) : null}
+        {/* Why there is no way past this screen, said outright. Da, 24/11/2026. */}
+        {written(t.acceptRule) ? (
+          <p className="mt-2 text-[16px] font-semibold leading-7 text-text">
+            {written(t.acceptRule)}
+          </p>
+        ) : null}
         {/* The house, when the document names none, exactly as on her schedule: a
             single-property run publishes no houses, so without this she is accepting a clean
             without being told where it is. */}

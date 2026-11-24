@@ -189,6 +189,12 @@ export const TEAM_STRINGS_TH = {
    * saying that tapping it opens a map. */
   jobAddressHeading: "ที่อยู่",
 
+  /** Under the address when it opens a map. Paul, 24/11/2026: the cleaner needs telling that
+   * the address can be tapped to open Google Maps, because nothing about it looks like a
+   * button. Google Maps is spelt in Thai because no Thai string here carries a Latin letter.
+   * A draft of mine, not yet read by a Thai speaker. */
+  jobMapHint: "แตะที่อยู่เพื่อเปิดในกูเกิลแมพ",
+
   /** Above the people on a job. Their names and numbers are on the screen with a phone
    * beside them and nothing saying who they are to her. */
   jobPeopleHeading: "ผู้ร่วมงาน",
@@ -271,6 +277,12 @@ export const TEAM_STRINGS_TH = {
    */
   acceptHeading: "งานใหม่ที่ต้องยืนยัน",
   acceptIntro: "กรุณายืนยันรับงาน หรือกดไม่รับงาน ก่อนเข้าดูตารางงาน",
+  /**
+   * Da, 24/11/2026: the screen did not say that her list and calendar stay shut until every
+   * new clean is answered, so it read as a screen with no way out. Wording approved by Paul
+   * the same day; a draft of mine, not yet read by a Thai speaker.
+   */
+  acceptRule: "ต้องยืนยันหรือไม่รับงานใหม่ให้ครบทุกงานก่อน จึงจะเข้าดูรายการงานและปฏิทินได้",
   acceptButton: "ยืนยันรับงาน",
   acceptWaiting: "รอยืนยัน",
   acceptFailed: "ยืนยันไม่สำเร็จ ลองใหม่อีกครั้ง",
@@ -331,6 +343,7 @@ export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
   noSchedule: "There is no schedule to show yet. Ask Paul on LINE",
   offline: "You are offline. Showing the last saved copy",
   jobAddressHeading: "Address",
+  jobMapHint: "Tap the address to open Google Maps",
   jobPeopleHeading: "Working with",
   enrolHelp: "Open it on the phone you will use for your schedule",
   pastJobs: "Past jobs",
@@ -344,6 +357,7 @@ export const TEAM_STRINGS_EN: Record<TeamStringKey, string> = {
   commentFailed: "Not sent. Try again",
   acceptHeading: "New jobs to confirm",
   acceptIntro: "Accept or decline each one before your schedule opens",
+  acceptRule: "Answer every new job first. Your list and calendar open once all of them are answered.",
   acceptButton: "Accept this job",
   acceptWaiting: "Not confirmed",
   acceptFailed: "Not confirmed. Try again",

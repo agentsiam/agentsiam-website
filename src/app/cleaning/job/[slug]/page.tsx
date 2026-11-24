@@ -224,12 +224,12 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         </section>
       ) : null}
 
-      {house?.address && written(t.jobAddressHeading) ? (
+      {(house?.address || house?.addressTh) && written(t.jobAddressHeading) ? (
         <h2 className="mt-5 text-[15px] font-semibold text-muted">
           {written(t.jobAddressHeading)}
         </h2>
       ) : null}
-      {house?.address ? (
+      {house?.address || house?.addressTh ? (
         house.map ? (
           <a
             href={house.map}
@@ -243,7 +243,18 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
             >
               <Pin />
             </span>
-            <span className="min-w-0">{house.address}</span>
+            <span className="min-w-0">
+              {house.addressTh ? (
+                <>
+                  <span className="block">{house.addressTh}</span>
+                  <span lang="en" className="block text-[14px] text-muted">
+                    {house.address}
+                  </span>
+                </>
+              ) : (
+                house.address
+              )}
+            </span>
           </a>
         ) : (
           <p className="mt-4 flex items-start gap-3 rounded-panel border border-border bg-bg p-4 text-[16px] leading-7 text-body">
@@ -253,9 +264,25 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
             >
               <Pin />
             </span>
-            <span className="min-w-0">{house.address}</span>
+            <span className="min-w-0">
+              {house.addressTh ? (
+                <>
+                  <span className="block">{house.addressTh}</span>
+                  <span lang="en" className="block text-[14px] text-muted">
+                    {house.address}
+                  </span>
+                </>
+              ) : (
+                house.address
+              )}
+            </span>
           </p>
         )
+      ) : null}
+      {/* Nothing about the address card looks like a button, so say that it opens a map.
+          Paul, 24/11/2026. Only where it does. */}
+      {(house?.address || house?.addressTh) && house?.map && written(t.jobMapHint) ? (
+        <p className="mt-2 text-[15px] leading-6 text-muted">{written(t.jobMapHint)}</p>
       ) : null}
 
       {/* The codes themselves, on the day, fetched rather than rendered so that no saved

@@ -33,6 +33,18 @@ export type PropertyRef = {
   name: string;
   address: string | null;
   map: string | null;
+  /**
+   * The area the house is in, in the document's language, so two houses read apart by where
+   * they are as well as by name. Da, 24/11/2026. Optional because a house remembered from an
+   * older document, or one published before this field, carries none, and then the tag is the
+   * name alone, as it was.
+   */
+  area?: string | null;
+  /**
+   * The address in Thai, on a Thai document whose house has one. It is what she reads; the
+   * English `address` stays beneath it because that is the one Grab and Maps find.
+   */
+  addressTh?: string | null;
 };
 
 /**
@@ -235,7 +247,14 @@ function asProperty(value: unknown): PropertyRef | null {
   const id = asString(v.id);
   const name = asString(v.name);
   if (!id || !name) return null;
-  return { id, name, address: asString(v.address), map: asString(v.map) };
+  return {
+    id,
+    name,
+    address: asString(v.address),
+    map: asString(v.map),
+    area: asString(v.area),
+    addressTh: asString(v.address_th),
+  };
 }
 
 /**
