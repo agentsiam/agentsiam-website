@@ -1,8 +1,9 @@
 # Chang Khlan Pool Villa
 
-Photographs for this house, taken from the owner's own Airbnb listing (room
-1708030970491889335) on 26/11/2026. Those copies are 1200px wide, under the 1600px floor in
-`src/photos/README.md`; full-size originals from the owner would replace them.
+36 photographs for this house, chosen from the 162 full-size originals (2048px on the long
+edge) that Paul supplied on 26/11/2026. They replace the 1200px copies first taken from the
+owner's Airbnb listing. Each file carries its description in EXIF ImageDescription, which the
+build reads as alt text; the GPS block, XMP and IPTC were stripped from these copies.
 
 The public name is agreed. The owner's own name for the house is "Pillar Haus"; it is not
 used on the site.
