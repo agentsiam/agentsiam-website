@@ -139,6 +139,14 @@ export type Property = {
    * for that markup. Update `givenOn` whenever the value is re-read.
    */
   rating?: { value: number; source: string; givenOn: string };
+  /**
+   * Enquiry pages only: this house's own answer where the shared villa wording was written
+   * for K. Mike's villas and is not true of it. Each is a dictionary key; unset means the
+   * shared string, as before.
+   */
+  enquiryCopy?: Partial<
+    Record<"parkingA" | "petsA" | "minStayA" | "exactA" | "poolNote", keyof Dictionary>
+  >;
 };
 
 export const LOTUS_HOUSE = {
@@ -623,6 +631,61 @@ export const GARDEN_VILLA: Property = {
   descriptionKeys: ["gardenDesc1", "gardenDesc2"],
 };
 
+/**
+ * A house AgentSiam does not manage, listed for enquiry only under S7 renter introduction:
+ * the owner runs every let herself. Every value is a field in
+ * as-operations/properties/pending_ChangKhlanPoolVilla/ChangKhlanPoolVilla-property-profile.md,
+ * written from the owner's own Airbnb listing and her messages.
+ */
+export const CHANG_KHLAN_POOL_VILLA: Property = {
+  slug: "changkhlanpoolvilla",
+  photoSet: "changkhlanpoolvilla",
+  title: "Chang Khlan Pool Villa",
+  taglineKey: "ckpvTagline",
+  areaSlug: "chang-khlan",
+  // Public point, not the house: the approximate location the owner's own Airbnb listing
+  // publishes, rounded.
+  lat: 18.782,
+  lng: 99.003,
+  citySlug: "chiang-mai",
+  type: "villa",
+  // The owner's own weekday nightly rate, as she gave it. Pool row P-0012 holds her rates.
+  fromPrice: 14000,
+  beds24: null,
+  currency: "THB",
+  // Only the booking flow reads these and it reads Lotus House's. The owner has stated no
+  // minimum, so the page answers that question from `enquiryCopy` rather than this number.
+  minStay: 2,
+  maxStay: 90,
+  fill: "bg-primary",
+  onFill: "text-white",
+  address: null,
+  checkIn: "15:00",
+  checkOut: "11:00",
+  houseRuleKeys: ["ruleNoPets", "ruleNoSmokingIndoors", "ruleNoEvents"],
+  reviews: [],
+  bedrooms: 5,
+  bathrooms: 4.5,
+  maxGuests: 12,
+  features: ["pool", "rooftop", "kitchen", "smart-tv", "parking"],
+  facts: [
+    { labelKey: "guests", value: "12" },
+    { labelKey: "bedrooms", value: "5" },
+    { labelKey: "beds", valueKey: "fiveKingTwoSingleBeds" },
+    { labelKey: "bathrooms", value: "4.5" },
+    { labelKey: "factPool", value: "1" },
+  ],
+  rating: { value: 5.0, source: "Airbnb", givenOn: "2026-11-26" },
+  descriptionKeys: ["ckpvDesc1", "ckpvDesc2"],
+  enquiryCopy: {
+    parkingA: "ckpvFaqParkingA",
+    petsA: "ckpvFaqPetsA",
+    minStayA: "ckpvFaqMinStayA",
+    exactA: "ckpvFaqExactA",
+    poolNote: "ckpvPoolNote",
+  },
+};
+
 export const PROPERTIES: Property[] = [
   LOTUS_HOUSE,
   COSMOS_HOUSE,
@@ -633,6 +696,7 @@ export const PROPERTIES: Property[] = [
   MID_CENTURY_VILLA,
   ATRIUM_VILLA,
   GARDEN_VILLA,
+  CHANG_KHLAN_POOL_VILLA,
 ];
 
 /**

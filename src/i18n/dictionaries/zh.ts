@@ -1449,4 +1449,16 @@ export const zh: Dictionary = {
   cityNameChiangMai: "清迈",
   cityNameBangkok: "曼谷",
   cityNamePhuket: "普吉",
+  // -- Chang Khlan Pool Villa (26/11/2026, Chinese unreviewed) ------------------------------
+  ckpvTagline: "清迈 Chang Khlan，五间卧室与私人盐水泳池",
+  ckpvDesc1: "Chang Khlan Pool Villa 是一栋位于夜市所在街区 Chang Khlan 的五卧室别墅。两层楼，带私人盐水泳池与按摩喷流，屋顶另有花园和露台。",
+  ckpvDesc2: "屋内四间卫浴，泳池边另有一间，其中一间配独立式浴缸。起居空间有台球桌、乒乓球桌、黑胶唱机和智能电视，厨房设备齐全，可停四辆车以上。",
+  metaCkpvTitle: "Chang Khlan Pool Villa，清迈 Chang Khlan",
+  metaCkpvDesc: "位于清迈 Chang Khlan 的五卧室私人泳池别墅，最多可住 12 人，带屋顶花园。欢迎咨询日期与价格。",
+  fiveKingTwoSingleBeds: "5 张特大床，2 张单人床",
+  ckpvFaqParkingA: "院内可停四辆车以上，另有摩托车停放处。",
+  ckpvFaqPetsA: "此房屋不允许携带宠物。",
+  ckpvFaqMinStayA: "最少入住晚数由房东按日期决定。咨询时请告诉我们日期，我们会连同价格一并确认。",
+  ckpvFaqExactA: "入住人数、卧室、床和卫浴数量均为房东为这栋房屋公开的数字。您咨询时，我们会在达成任何约定之前以书面形式确认所有信息。",
+  ckpvPoolNote: "房屋带私人泳池。儿童在泳池附近需有成人陪同。",
 };

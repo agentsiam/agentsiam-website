@@ -1683,6 +1683,19 @@ export const en = {
   cityNameChiangMai: "Chiang Mai",
   cityNameBangkok: "Bangkok",
   cityNamePhuket: "Phuket",
+  // -- Chang Khlan Pool Villa (26/11/2026) ------------------------------
+  // Every fact is a field in pending_ChangKhlanPoolVilla's property profile, from the owner's own Airbnb listing and her messages. No distance is given: none is measured.
+  ckpvTagline: "Five bedrooms and a private saltwater pool in Chang Khlan, Chiang Mai",
+  ckpvDesc1: "Chang Khlan Pool Villa is a five-bedroom house in Chang Khlan, the neighbourhood of the Night Bazaar. It has two storeys, a private saltwater pool with a spa jet, and a rooftop garden and terrace.",
+  ckpvDesc2: "Four bathrooms inside and a fifth by the pool, one with a freestanding bathtub. A pool table, a table tennis table, a record player and a smart TV share the living space, the kitchen is fully equipped, and there is parking for four cars or more.",
+  metaCkpvTitle: "Chang Khlan Pool Villa, Chang Khlan, Chiang Mai",
+  metaCkpvDesc: "A five-bedroom private pool villa in Chang Khlan, Chiang Mai, for up to 12 guests, with a rooftop garden. Enquire for dates and a price.",
+  fiveKingTwoSingleBeds: "5 king, 2 single",
+  ckpvFaqParkingA: "Parking on the property for four cars or more, with space for motorbikes.",
+  ckpvFaqPetsA: "Pets are not allowed in this house.",
+  ckpvFaqMinStayA: "The owner sets the minimum for your dates. Send them with your enquiry and we'll confirm it along with the price.",
+  ckpvFaqExactA: "Guests, bedrooms, beds and bathrooms are the owner's own published figures for this house. We confirm everything in writing when you enquire, before anything is agreed.",
+  ckpvPoolNote: "The house has its own pool. Children need an adult with them around it.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

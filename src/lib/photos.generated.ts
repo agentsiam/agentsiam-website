@@ -42,6 +42,41 @@ import atriumvilla_20 from "@/photos/atriumvilla/21-4592a818.jpeg";
 import atriumvilla_21 from "@/photos/atriumvilla/22-4dbd8d20.jpeg";
 import atriumvilla_22 from "@/photos/atriumvilla/23-bae2b73a.jpeg";
 import atriumvilla_23 from "@/photos/atriumvilla/24-dc94e74b.jpeg";
+import changkhlanpoolvilla_0 from "@/photos/changkhlanpoolvilla/01-cover-house-and-pool-at-dusk.jpeg";
+import changkhlanpoolvilla_1 from "@/photos/changkhlanpoolvilla/02-b1f98118.jpeg";
+import changkhlanpoolvilla_2 from "@/photos/changkhlanpoolvilla/03-aacdb097.jpeg";
+import changkhlanpoolvilla_3 from "@/photos/changkhlanpoolvilla/04-f59630ac.jpeg";
+import changkhlanpoolvilla_4 from "@/photos/changkhlanpoolvilla/05-275f9b28.jpeg";
+import changkhlanpoolvilla_5 from "@/photos/changkhlanpoolvilla/06-563b7e38.jpeg";
+import changkhlanpoolvilla_6 from "@/photos/changkhlanpoolvilla/07-6428b791.jpeg";
+import changkhlanpoolvilla_7 from "@/photos/changkhlanpoolvilla/08-d2981bad.jpeg";
+import changkhlanpoolvilla_8 from "@/photos/changkhlanpoolvilla/09-412ceef6.jpeg";
+import changkhlanpoolvilla_9 from "@/photos/changkhlanpoolvilla/10-b6c03fa9.jpeg";
+import changkhlanpoolvilla_10 from "@/photos/changkhlanpoolvilla/11-4139d792.jpeg";
+import changkhlanpoolvilla_11 from "@/photos/changkhlanpoolvilla/12-7d66671e.jpeg";
+import changkhlanpoolvilla_12 from "@/photos/changkhlanpoolvilla/13-5e716cd5.jpeg";
+import changkhlanpoolvilla_13 from "@/photos/changkhlanpoolvilla/14-85b90189.jpeg";
+import changkhlanpoolvilla_14 from "@/photos/changkhlanpoolvilla/15-64bcb8bd.jpeg";
+import changkhlanpoolvilla_15 from "@/photos/changkhlanpoolvilla/16-c9d69c89.jpeg";
+import changkhlanpoolvilla_16 from "@/photos/changkhlanpoolvilla/17-cefd162c.jpeg";
+import changkhlanpoolvilla_17 from "@/photos/changkhlanpoolvilla/18-be1c2769.jpeg";
+import changkhlanpoolvilla_18 from "@/photos/changkhlanpoolvilla/19-77d7157e.jpeg";
+import changkhlanpoolvilla_19 from "@/photos/changkhlanpoolvilla/20-6fa8bc63.jpeg";
+import changkhlanpoolvilla_20 from "@/photos/changkhlanpoolvilla/21-921ea271.jpeg";
+import changkhlanpoolvilla_21 from "@/photos/changkhlanpoolvilla/22-4bb84c2a.jpeg";
+import changkhlanpoolvilla_22 from "@/photos/changkhlanpoolvilla/23-bf02375e.jpeg";
+import changkhlanpoolvilla_23 from "@/photos/changkhlanpoolvilla/24-0508eabb.jpeg";
+import changkhlanpoolvilla_24 from "@/photos/changkhlanpoolvilla/25-2b051089.jpeg";
+import changkhlanpoolvilla_25 from "@/photos/changkhlanpoolvilla/26-f1d51f7f.jpeg";
+import changkhlanpoolvilla_26 from "@/photos/changkhlanpoolvilla/27-13c8aee3.jpeg";
+import changkhlanpoolvilla_27 from "@/photos/changkhlanpoolvilla/28-3908ae8b.jpeg";
+import changkhlanpoolvilla_28 from "@/photos/changkhlanpoolvilla/29-a1cc4f3f.jpeg";
+import changkhlanpoolvilla_29 from "@/photos/changkhlanpoolvilla/30-f5c66fef.jpeg";
+import changkhlanpoolvilla_30 from "@/photos/changkhlanpoolvilla/31-6b8b5346.jpeg";
+import changkhlanpoolvilla_31 from "@/photos/changkhlanpoolvilla/32-a0591ec8.jpeg";
+import changkhlanpoolvilla_32 from "@/photos/changkhlanpoolvilla/33-d33e8ea2.jpeg";
+import changkhlanpoolvilla_33 from "@/photos/changkhlanpoolvilla/34-c6811726.jpeg";
+import changkhlanpoolvilla_34 from "@/photos/changkhlanpoolvilla/35-d2fa2336.jpeg";
 import cosmoshouse_0 from "@/photos/cosmoshouse/01-b14bc0ac-4aec-4214-98a0-ce08ad9c2105.jpeg";
 import cosmoshouse_1 from "@/photos/cosmoshouse/02-71e0c6ce-f7fa-49bf-afdb-cec4ff45708d.jpeg";
 import cosmoshouse_2 from "@/photos/cosmoshouse/03-71082491-40a0-4736-9372-9dbe57e0dc17.jpeg";
@@ -375,6 +410,43 @@ export const PHOTOS: Record<string, Photo[]> = {
     { src: atriumvilla_21, file: "22-4dbd8d20.jpeg", alt: "Built-in oven in the kitchen island" },
     { src: atriumvilla_22, file: "23-bae2b73a.jpeg", alt: "Kettle and coffee machine on the counter, below an oven glove on the marble splashback" },
     { src: atriumvilla_23, file: "24-dc94e74b.jpeg", alt: "The kitchen and dining table seen across the back of the sofa" },
+  ],
+  "changkhlanpoolvilla": [
+    { src: changkhlanpoolvilla_0, file: "01-cover-house-and-pool-at-dusk.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_1, file: "02-b1f98118.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_2, file: "03-aacdb097.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_3, file: "04-f59630ac.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_4, file: "05-275f9b28.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_5, file: "06-563b7e38.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_6, file: "07-6428b791.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_7, file: "08-d2981bad.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_8, file: "09-412ceef6.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_9, file: "10-b6c03fa9.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_10, file: "11-4139d792.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_11, file: "12-7d66671e.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_12, file: "13-5e716cd5.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_13, file: "14-85b90189.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_14, file: "15-64bcb8bd.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_15, file: "16-c9d69c89.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_16, file: "17-cefd162c.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_17, file: "18-be1c2769.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_18, file: "19-77d7157e.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_19, file: "20-6fa8bc63.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_20, file: "21-921ea271.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_21, file: "22-4bb84c2a.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_22, file: "23-bf02375e.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_23, file: "24-0508eabb.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_24, file: "25-2b051089.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_25, file: "26-f1d51f7f.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_26, file: "27-13c8aee3.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_27, file: "28-3908ae8b.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_28, file: "29-a1cc4f3f.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_29, file: "30-f5c66fef.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_30, file: "31-6b8b5346.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_31, file: "32-a0591ec8.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_32, file: "33-d33e8ea2.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_33, file: "34-c6811726.jpeg", alt: "" },
+    { src: changkhlanpoolvilla_34, file: "35-d2fa2336.jpeg", alt: "" },
   ],
   "cosmoshouse": [
     { src: cosmoshouse_0, file: "01-b14bc0ac-4aec-4214-98a0-ce08ad9c2105.jpeg", alt: "A living room with a dark leather corner sofa, a teal rug and the black steel staircase rising behind it" },

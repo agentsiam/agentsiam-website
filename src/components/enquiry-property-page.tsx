@@ -78,17 +78,21 @@ export function EnquiryPropertyPage({
    * confirmed answer. A page that guesses without saying so is the thing worth avoiding,
    * not the guess.
    */
+  const own = property.enquiryCopy ?? {};
   const guestFaq = [
     {
       q: t.gq1,
       a: t.ga1.replace("{in}", property.checkIn).replace("{out}", property.checkOut),
     },
-    { q: t.gq2, a: t.villaFaqParkingA },
-    { q: t.gq3, a: t.villaFaqPetsA },
+    { q: t.gq2, a: own.parkingA ? t[own.parkingA] : t.villaFaqParkingA },
+    { q: t.gq3, a: own.petsA ? t[own.petsA] : t.villaFaqPetsA },
     { q: t.gq4, a: t.ga4.replace("{n}", String(property.maxGuests)) },
-    { q: t.gq5, a: t.ga5.replace("{n}", String(property.minStay)) },
+    {
+      q: t.gq5,
+      a: own.minStayA ? t[own.minStayA] : t.ga5.replace("{n}", String(property.minStay)),
+    },
     { q: t.gq6, a: t.ga6 },
-    { q: t.villaFaqExactQ, a: t.villaFaqExactA },
+    { q: t.villaFaqExactQ, a: own.exactA ? t[own.exactA] : t.villaFaqExactA },
   ];
 
   return (
@@ -185,7 +189,7 @@ export function EnquiryPropertyPage({
                 <span aria-hidden="true" className="text-muted">
                   &middot;
                 </span>
-                <span>{t.villaPoolSupervision}</span>
+                <span>{own.poolNote ? t[own.poolNote] : t.villaPoolSupervision}</span>
               </li>
             </ul>
           </section>

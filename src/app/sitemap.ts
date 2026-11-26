@@ -26,6 +26,7 @@ const ROUTE_PHOTO_SET: Record<string, string> = {
   "/midcenturyvilla": "midcenturyvilla",
   "/atriumvilla": "atriumvilla",
   "/gardenvilla": "gardenvilla",
+  "/changkhlanpoolvilla": "changkhlanpoolvilla",
 };
 
 /**
