@@ -22,6 +22,16 @@ import type { Photo } from "@/lib/photos.generated";
  *   zoom done by hand is a gesture library's worth of edge cases, and it already handles
  *   focus trapping and returning focus to whatever opened it.
  *
+ * Grid and viewer are two views of one full-screen gallery, and one button in the same place
+ * in each switches between them: four squares in the viewer, one square in the grid. The
+ * switch keeps your place both ways. The grid opens scrolled to the photo you were on, with
+ * it outlined; the viewer reopens on that photo. The phone carousel has the four-squares
+ * button beside its counter, so the grid is one tap from the page.
+ *
+ * Closing, from either view, returns to the page. Each view is a browser history entry, so
+ * the back gesture goes from the viewer to the grid, if that is where you came from, and then
+ * out to the page, rather than leaving the listing.
+ *
  * Every surface uses the same order: the hero first, then the set's running order. Swiping
  * the carousel to the fifth photo and tapping it opens the viewer on that same fifth photo.
  *
@@ -48,6 +58,38 @@ type Labels = {
   photoNext: string;
   photoZoom: string;
   photoLoadError: string;
+  photoSingle: string;
+};
+
+/** Four squares: "show all photos". The same shape in the viewer, the carousel and the mosaic. */
+const GRID_PATH = "M9 9h6v6H9zM17 9h6v6h-6zM9 17h6v6H9zM17 17h6v6h-6z";
+
+function GridIcon({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 32 32" className={className} fill="currentColor">
+      <path d={GRID_PATH} />
+    </svg>
+  );
+}
+
+/** One square: "show one photo", in the grid where the four squares sit in the viewer. */
+function SingleIcon({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 32 32" className={className} fill="currentColor">
+      <path d="M8 8h16v16H8z" />
+    </svg>
+  );
+}
+
+type ViewerHooks = {
+  /** The viewer moved to another photo. */
+  onChange: (index: number) => void;
+  /** The four-squares button was pressed on this photo. */
+  onGrid: (index: number) => void;
+  /** The guest closed the viewer: X, Esc, or swipe down. */
+  onUserClose: () => void;
+  /** Set by the viewer while it is closing, so a history step does not close it twice. */
+  closing: RefObject<boolean>;
 };
 
 /**
@@ -113,6 +155,7 @@ async function openViewer(
   index: number,
   labels: Labels,
   viewerRef: RefObject<PhotoSwipe | null>,
+  hooks: ViewerHooks,
 ) {
   if (viewerRef.current) return;
   const { default: PhotoSwipeCore } = await import("photoswipe");
@@ -148,6 +191,10 @@ async function openViewer(
     arrowPrevTitle: labels.photoPrevious,
     arrowNextTitle: labels.photoNext,
     errorMsg: labels.photoLoadError,
+    // The gallery puts focus back itself: on the grid's outlined photo when switching, on
+    // whatever opened the gallery when closing. PhotoSwipe's own return would aim at a grid
+    // thumbnail that has gone.
+    returnFocus: false,
     // Room at the top for the counter and close button, and at the bottom for this photo's
     // own caption, measured. On a phone the photo runs edge to edge; on a desktop it clears
     // the arrow buttons.
@@ -160,6 +207,20 @@ async function openViewer(
   });
 
   viewer.on("uiRegister", () => {
+    // Between zoom (10) and close (20), so it sits beside the X on every screen size.
+    viewer.ui?.registerElement({
+      name: "grid-toggle",
+      title: labels.showAll,
+      ariaLabel: labels.showAll,
+      order: 15,
+      isButton: true,
+      html: {
+        isCustomSVG: true,
+        inner: `<path d="${GRID_PATH}" id="pswp__icn-grid"/>`,
+        outlineID: "pswp__icn-grid",
+      },
+      onClick: (_event, _element, pswp) => hooks.onGrid(pswp.currIndex),
+    });
     viewer.ui?.registerElement({
       name: "caption",
       order: 9,
@@ -198,13 +259,27 @@ async function openViewer(
       },
     });
   });
+  viewer.on("change", () => hooks.onChange(viewer.currIndex));
+  // "close" fires for every closing: the guest's, a history step's, and the destroy() that
+  // switching to the grid uses. The last two set hooks.closing first, so only the guest's
+  // own closing reaches onUserClose.
+  viewer.on("close", () => {
+    if (hooks.closing.current) return;
+    hooks.closing.current = true;
+    hooks.onUserClose();
+  });
   viewer.on("destroy", () => {
     viewerRef.current = null;
+    hooks.closing.current = false;
   });
 
   viewerRef.current = viewer;
   viewer.init();
 }
+
+/** The gallery's key on history.state: which view this entry shows, and how many deep it is. */
+type GalleryState = { photoGallery?: "grid" | "single"; photoDepth?: number };
+const galleryState = () => (window.history.state ?? {}) as GalleryState;
 
 /** A visually hidden "Open photo: <description>" pair, each fragment in its own language. */
 function OpenPhotoName({ id, photo, label }: { id: string; photo: Photo; label: string }) {
@@ -236,12 +311,155 @@ function openPhotoProps(id: string, photo: Photo, label: string) {
 }
 
 export function PhotoGallery({ photos, labels }: { photos: Photo[]; labels: Labels }) {
-  const [overviewOpen, setOverviewOpen] = useState(false);
+  // The grid is open, outlining this photo, or null when it is not.
+  const [gridIndex, setGridIndex] = useState<number | null>(null);
   const [current, setCurrent] = useState(0);
   const viewerRef = useRef<PhotoSwipe | null>(null);
+  const closingRef = useRef(false);
   const trackRef = useRef<HTMLDivElement>(null);
+  // The photo the guest is on, in either view, so each switch lands on it.
+  const placeRef = useRef(0);
+  // Whatever on the page opened the gallery, for focus to return to on close.
+  const openerRef = useRef<Element | null>(null);
+  const isOpenRef = useRef(false);
+  // Set while a close is stepping back through history, so a second close request in the
+  // same moment cannot step back past the page. Cleared when the gallery has closed.
+  const leavingRef = useRef(false);
   const baseId = useId();
 
+  // The hero slot is landscape, so it takes the first landscape in running order, and it
+  // leads every surface so they all share one order.
+  const hero = photos.find((photo) => !isPortrait(photo)) ?? photos[0];
+  const ordered = hero ? [hero, ...photos.filter((photo) => photo !== hero)] : [];
+
+  // The three ways the gallery can be shown. These only render; the history entry that goes
+  // with each is pushed by the guest's action, or is the one a back step landed on.
+  const showSingle = (index: number) => {
+    placeRef.current = index;
+    isOpenRef.current = true;
+    const viewer = viewerRef.current;
+    if (viewer) {
+      viewer.goTo(index);
+      setGridIndex(null);
+      return;
+    }
+    // The grid stays up until the viewer has faded in over it, so there is no flash of the
+    // page between the two.
+    void openViewer(ordered, index, labels, viewerRef, {
+      onChange: (i) => {
+        placeRef.current = i;
+      },
+      onGrid: (i) => toGrid(i),
+      onUserClose: () => close(),
+      closing: closingRef,
+    }).then(() => {
+      const opened = viewerRef.current;
+      if (opened) opened.on("openingAnimationEnd", () => setGridIndex(null));
+      else setGridIndex(null);
+    });
+  };
+
+  const showGrid = (index: number) => {
+    placeRef.current = index;
+    isOpenRef.current = true;
+    setGridIndex(index);
+    const viewer = viewerRef.current;
+    // After the grid has rendered underneath, so the switch is a cut, not a flash. destroy()
+    // runs PhotoSwipe's own close() first, so the switch is marked as a closing already in
+    // hand, or the close handler would take it for the guest closing the whole gallery.
+    if (viewer) {
+      requestAnimationFrame(() => {
+        closingRef.current = true;
+        viewer.destroy();
+      });
+    }
+  };
+
+  const showClosed = () => {
+    leavingRef.current = false;
+    if (!isOpenRef.current) return;
+    isOpenRef.current = false;
+    setGridIndex(null);
+    const viewer = viewerRef.current;
+    if (viewer && !closingRef.current) {
+      closingRef.current = true;
+      viewer.close();
+    }
+    // The carousel ends on the photo the guest was last looking at.
+    const track = trackRef.current;
+    if (track) track.scrollTo({ left: placeRef.current * track.clientWidth });
+    // A frame later, once the grid has unmounted: until then the page is still inert and
+    // will not take focus.
+    const opener = openerRef.current;
+    requestAnimationFrame(() => {
+      if (opener instanceof HTMLElement && opener.isConnected) opener.focus({ preventScroll: true });
+    });
+  };
+
+  // The guest's actions. Each moves history, and the view follows.
+  const push = (view: "grid" | "single", depth: number) =>
+    window.history.pushState(
+      { ...window.history.state, photoGallery: view, photoDepth: depth },
+      "",
+    );
+
+  const openFromPage = (view: "grid" | "single", index: number) => {
+    if (isOpenRef.current) return;
+    openerRef.current = document.activeElement;
+    push(view, 1);
+    if (view === "single") showSingle(index);
+    else showGrid(index);
+  };
+
+  const toSingle = (index: number) => {
+    push("single", (galleryState().photoDepth ?? 0) + 1);
+    showSingle(index);
+  };
+
+  function toGrid(index: number) {
+    placeRef.current = index;
+    const state = galleryState();
+    // Came from the grid: step back to its entry, so back from the grid leaves the gallery.
+    if (state.photoGallery === "single" && (state.photoDepth ?? 0) >= 2) {
+      window.history.back();
+      return;
+    }
+    window.history.replaceState({ ...window.history.state, photoGallery: "grid" }, "");
+    showGrid(index);
+  }
+
+  function close() {
+    if (leavingRef.current) return;
+    const depth = galleryState().photoDepth ?? 0;
+    if (depth > 0) {
+      leavingRef.current = true;
+      window.history.go(-depth);
+    } else showClosed();
+  }
+
+  // A back or forward step lands on an entry; show what it holds. Read through a ref, so the
+  // listener is attached once and still sees this render's functions.
+  const onHistory = useRef<() => void>(() => {});
+  useEffect(() => {
+    onHistory.current = () => {
+      const { photoGallery } = galleryState();
+      if (photoGallery === "grid") showGrid(placeRef.current);
+      else if (photoGallery === "single") showSingle(placeRef.current);
+      else showClosed();
+    };
+  });
+  useEffect(() => {
+    // A reload with the gallery open keeps that entry's marker while the gallery itself
+    // comes back closed. Left there, a later close would count it and step back past the
+    // page, so the page's own entry is cleared of it on load.
+    const { photoGallery, photoDepth, ...rest } = galleryState();
+    if (photoGallery !== undefined || photoDepth !== undefined) {
+      window.history.replaceState(rest, "");
+    }
+    const listener = () => onHistory.current();
+    window.addEventListener("popstate", listener);
+    return () => window.removeEventListener("popstate", listener);
+  }, []);
   // Close the viewer if the gallery itself goes away, e.g. on client navigation.
   useEffect(() => () => viewerRef.current?.destroy(), []);
 
@@ -251,18 +469,12 @@ export function PhotoGallery({ photos, labels }: { photos: Photo[]; labels: Labe
     setCurrent(Math.round(track.scrollLeft / track.clientWidth));
   }, []);
 
-  if (photos.length === 0) return null;
+  if (!hero) return null;
 
-  // The hero slot is landscape, so it takes the first landscape in running order, and it
-  // leads every surface so they all share one order.
-  const hero = photos.find((photo) => !isPortrait(photo)) ?? photos[0];
-  const ordered = [hero, ...photos.filter((photo) => photo !== hero)];
   const tiles = fillBlock(ordered.slice(1));
   const remaining = ordered.length - 1 - tiles.length;
 
-  const open = (photo: Photo) => {
-    void openViewer(ordered, ordered.indexOf(photo), labels, viewerRef);
-  };
+  const open = (photo: Photo) => openFromPage("single", ordered.indexOf(photo));
 
   return (
     <>
@@ -300,12 +512,26 @@ export function PhotoGallery({ photos, labels }: { photos: Photo[]; labels: Labe
           ))}
         </div>
         {ordered.length > 1 ? (
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-scrim/75 px-2.5 py-1 text-xs font-semibold tabular-nums text-white"
-          >
-            {current + 1} / {ordered.length}
-          </span>
+          <div className="absolute bottom-3 right-3 flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none rounded-full bg-scrim/75 px-2.5 py-1 text-xs font-semibold tabular-nums text-white"
+            >
+              {current + 1} / {ordered.length}
+            </span>
+            {/* The grid, opened on the photo the carousel is showing. A 36px circle on a
+                44px hit area, so it is a comfortable thumb target without crowding the photo. */}
+            <button
+              type="button"
+              onClick={() => openFromPage("grid", current)}
+              aria-label={`${labels.showAll} (${ordered.length})`}
+              className="-m-1 flex size-11 cursor-pointer items-center justify-center"
+            >
+              <span className="flex size-9 items-center justify-center rounded-full bg-scrim/75 text-white">
+                <GridIcon className="size-7" />
+              </span>
+            </button>
+          </div>
         ) : null}
       </div>
 
@@ -367,22 +593,24 @@ export function PhotoGallery({ photos, labels }: { photos: Photo[]; labels: Labe
         {remaining > 0 ? (
           <button
             type="button"
-            onClick={() => setOverviewOpen(true)}
-            className="absolute bottom-4 right-4 cursor-pointer rounded-full bg-bg/95 px-4 py-2.5 text-[13px] font-semibold text-text shadow-sm hover:bg-bg"
+            onClick={() => openFromPage("grid", 0)}
+            className="absolute bottom-4 right-4 flex cursor-pointer items-center gap-1.5 rounded-full bg-bg/95 py-2.5 pl-3 pr-4 text-[13px] font-semibold text-text shadow-sm hover:bg-bg"
           >
+            <GridIcon className="-my-1 size-5" />
             {labels.showAll} ({ordered.length})
           </button>
         ) : null}
       </div>
 
-      {overviewOpen ? (
+      {gridIndex !== null ? (
         <Overview
           photos={ordered}
           labels={labels}
           baseId={baseId}
           viewerRef={viewerRef}
-          onOpen={open}
-          onClose={() => setOverviewOpen(false)}
+          current={gridIndex}
+          onOpen={toSingle}
+          onClose={close}
         />
       ) : null}
     </>
@@ -392,13 +620,15 @@ export function PhotoGallery({ photos, labels }: { photos: Photo[]; labels: Labe
 /**
  * Every photo at its own shape, as thumbnails to pick from. Descriptions are not printed
  * here: they belong with the photo at full size, in the viewer, not as a column of small
- * text under forty thumbnails.
+ * text under forty thumbnails. The photo the guest was on is outlined and scrolled into
+ * view, and the one-square button reopens the viewer on it.
  */
 function Overview({
   photos,
   labels,
   baseId,
   viewerRef,
+  current,
   onOpen,
   onClose,
 }: {
@@ -406,14 +636,21 @@ function Overview({
   labels: Labels;
   baseId: string;
   viewerRef: RefObject<PhotoSwipe | null>;
-  onOpen: (photo: Photo) => void;
+  current: number;
+  onOpen: (index: number) => void;
   onClose: () => void;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
-  // Where focus was when the overlay opened, so it can go back there on close rather than
-  // to the top of the document.
-  const openerRef = useRef<Element | null>(null);
+  const currentRef = useRef<HTMLButtonElement>(null);
+
+  // Land on the photo the guest was on, in the middle of the screen, with focus on it.
+  useEffect(() => {
+    const photo = currentRef.current;
+    if (!photo) return;
+    photo.scrollIntoView({ block: "center" });
+    photo.focus({ preventScroll: true });
+  }, [current]);
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -474,14 +711,12 @@ function Overview({
       if (node === document.body) break;
     }
 
-    openerRef.current = document.activeElement;
-    closeRef.current?.focus();
+    // Focus goes to the outlined photo on mount, and back to the page's opener on close;
+    // the gallery handles both, since the grid is not the only view that can end it.
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = overflow;
       for (const el of hidden) el.removeAttribute("inert");
-      const opener = openerRef.current;
-      if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
     };
   }, [onKeyDown]);
 
@@ -491,39 +726,62 @@ function Overview({
       role="dialog"
       aria-modal="true"
       aria-label={labels.photosOf.replace("{property}", labels.propertyName)}
-      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-scrim/95 p-6 sm:p-10"
+      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-scrim/95 px-3 pb-6 pt-[72px] sm:px-10 sm:pb-10"
       onClick={onClose}
     >
-      <button
-        ref={closeRef}
-        type="button"
-        onClick={onClose}
-        aria-label={labels.close}
-        className="fixed right-5 top-4 z-10 cursor-pointer rounded-full px-3 py-1 text-3xl leading-none text-white/80 hover:text-white"
-      >
-        ×
-      </button>
+      {/* The viewer's top bar, in the grid: the one-square button where the viewer has its
+          four squares, then the X. Same places, so the switch is the same tap both ways. */}
+      <div className="fixed inset-x-0 top-0 z-10 flex h-[60px] items-center justify-end bg-scrim pr-1.5">
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpen(current);
+          }}
+          aria-label={labels.photoSingle}
+          title={labels.photoSingle}
+          className="flex h-[60px] w-[50px] cursor-pointer items-center justify-center text-white/85 hover:text-white"
+        >
+          <SingleIcon className="size-8" />
+        </button>
+        <button
+          ref={closeRef}
+          type="button"
+          onClick={(event) => {
+            // The backdrop closes too; one click, one close, or history steps back twice.
+            event.stopPropagation();
+            onClose();
+          }}
+          aria-label={labels.close}
+          title={labels.close}
+          className="flex h-[60px] w-[50px] cursor-pointer items-center justify-center text-3xl leading-none text-white/85 hover:text-white"
+        >
+          ×
+        </button>
+      </div>
 
       {/* Clicks inside the grid should not close it; only the backdrop and × do. Columns
           rather than a grid, so photos of any shape pack without ragged rows. */}
       <div
-        className="w-full max-w-[1100px] gap-2.5 sm:columns-2 lg:columns-3"
+        className="w-full max-w-[1100px] columns-2 gap-2 sm:gap-2.5 lg:columns-3"
         onClick={(event) => event.stopPropagation()}
       >
         {photos.map((photo, index) => (
           <button
             key={photo.src.src}
+            ref={index === current ? currentRef : undefined}
             type="button"
-            onClick={() => onOpen(photo)}
+            onClick={() => onOpen(index)}
+            aria-current={index === current ? "true" : undefined}
             {...openPhotoProps(`${baseId}-all-${index}`, photo, labels.openPhoto)}
-            className="mb-2.5 block w-full cursor-pointer break-inside-avoid overflow-hidden rounded-box"
+            className="mb-2 block w-full cursor-pointer break-inside-avoid overflow-hidden rounded-box outline-offset-2 aria-[current]:outline-3 aria-[current]:outline-white sm:mb-2.5"
           >
             <OpenPhotoName id={`${baseId}-all-${index}`} photo={photo} label={labels.openPhoto} />
             <Image
               src={photo.src}
               alt=""
               placeholder="blur"
-              sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+              sizes="(min-width: 1024px) 360px, 50vw"
               className="h-auto w-full transition-opacity hover:opacity-90"
             />
           </button>

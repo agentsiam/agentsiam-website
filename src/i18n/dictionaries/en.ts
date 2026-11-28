@@ -1703,6 +1703,10 @@ export const en = {
   photoNext: "Next photo",
   photoZoom: "Zoom in or out",
   photoLoadError: "This photo could not be loaded.",
+
+  // -- Photo viewer, grid toggle -------------------------------------------
+  // The grid's button that reopens the full-screen viewer on the outlined photo. Read by screen readers and shown as a tooltip.
+  photoSingle: "Show one photo",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };
