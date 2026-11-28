@@ -213,6 +213,7 @@ export default async function LotusHousePage({ params }: PageProps<"/[locale]">)
                 photoNext: t.photoNext,
                 photoZoom: t.photoZoom,
                 photoLoadError: t.photoLoadError,
+                photoSingle: t.photoSingle,
               }}
             />
           </div>

@@ -1467,4 +1467,7 @@ export const th: Dictionary = {
   photoNext: "รูปถัดไป",
   photoZoom: "ซูมเข้าหรือออก",
   photoLoadError: "โหลดรูปนี้ไม่ได้",
+
+  // -- Photo viewer, grid toggle -------------------------------------------
+  photoSingle: "ดูทีละรูป",
 };

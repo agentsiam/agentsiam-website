@@ -112,6 +112,7 @@ export default async function MaeRimHousePage({ params }: PageProps<"/[locale]">
                 photoNext: t.photoNext,
                 photoZoom: t.photoZoom,
                 photoLoadError: t.photoLoadError,
+                photoSingle: t.photoSingle,
               }}
             />
           </div>
