@@ -689,9 +689,22 @@ function Overview({
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyDown);
-    // Stop the page behind scrolling while the overlay is up.
-    const { overflow } = document.body.style;
-    document.body.style.overflow = "hidden";
+    // Stop the page behind scrolling while the overlay is up. overflow: hidden alone is not
+    // enough: iOS Safari ignores it for touch, so a swipe past the last photo carried on
+    // into the listing behind and the grid seemed to scroll for ever. Pinning the body in
+    // place at its current offset holds it on every browser; the offset goes back on close.
+    const body = document.body.style;
+    const saved = {
+      overflow: body.overflow,
+      position: body.position,
+      top: body.top,
+      width: body.width,
+    };
+    const scrollY = window.scrollY;
+    body.overflow = "hidden";
+    body.position = "fixed";
+    body.top = `-${scrollY}px`;
+    body.width = "100%";
 
     // Everything else on the page goes inert, so a screen reader in browse mode cannot
     // read through the overlay either. This dialog renders inline, inside <main>, so
@@ -715,7 +728,8 @@ function Overview({
     // the gallery handles both, since the grid is not the only view that can end it.
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = overflow;
+      Object.assign(body, saved);
+      window.scrollTo({ top: scrollY, behavior: "instant" });
       for (const el of hidden) el.removeAttribute("inert");
     };
   }, [onKeyDown]);
@@ -726,7 +740,7 @@ function Overview({
       role="dialog"
       aria-modal="true"
       aria-label={labels.photosOf.replace("{property}", labels.propertyName)}
-      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-scrim/95 px-3 pb-6 pt-[72px] sm:px-10 sm:pb-10"
+      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto overscroll-contain bg-scrim px-3 pb-6 pt-[72px] sm:px-10 sm:pb-10"
       onClick={onClose}
     >
       {/* The viewer's top bar, in the grid: the one-square button where the viewer has its
