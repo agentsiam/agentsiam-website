@@ -1807,8 +1807,9 @@ flow, end to end, with nothing live anywhere near it.
   nothing off screen. Every input in that test was a mouse click or a key, so pinch, double-tap
   and swipe-down-to-close have not been tried on an actual phone or tablet; they are
   PhotoSwipe's own, not ours. The five labels `photoPrevious`, `photoNext`, `photoZoom`,
-  `photoLoadError` and `photoSingle` in `th.ts` and `zh.ts` were written without a native
-  speaker's review. The grid and single-photo toggle, and the back step from the viewer to
+  `photoLoadError` and `photoSingle` in `th.ts` and `zh.ts` were reviewed by Codex (OpenAI's
+  model) at Paul's direction on 28/11/2026, which signed off seven and corrected three; no native
+  speaker has read them. The grid and single-photo toggle, and the back step from the viewer to
   the grid, were tested with clicks and `history.back()` in Chrome and in Playwright's WebKit
   with iPhone and iPad emulation; Android's back gesture and iOS Safari's edge swipe on a real
   device have not been tried. WebKit is worth the extra run for anything in that overlay: it
