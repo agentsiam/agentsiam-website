@@ -664,3 +664,36 @@ button {
   .marquee-track > ul[aria-hidden="true"] { display: none; }
   .marquee-track > ul { flex-wrap: wrap; justify-content: center; row-gap: 12px; }
 }
+
+/* -- Photo viewer ------------------------------------------------------------
+   PhotoSwipe's own stylesheet is imported by photo-gallery.tsx; this only puts it on the
+   design system's scrim and type. The viewer is appended to <body>, outside any layout, so
+   it takes the body font from here rather than inheriting a heading face. */
+.pswp--gallery {
+  --pswp-bg: var(--color-scrim);
+  font-family: var(--font-body);
+}
+.pswp--gallery .pswp__counter {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+.pswp__caption {
+  position: absolute;
+  inset-inline: 0;
+  /* `top` is set from script to the photo's bottom edge, so the caption sits directly
+     under the photo. A desktop line of 100 characters is hard to read, and
+     photo-gallery.tsx measures the caption with this same class, so the space it reserves
+     under the photo follows this width. */
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 12px 20px max(16px, env(safe-area-inset-bottom));
+  color: rgb(255 255 255 / 0.85);
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  pointer-events: none;
+}
+.pswp__caption[hidden] {
+  display: none;
+}

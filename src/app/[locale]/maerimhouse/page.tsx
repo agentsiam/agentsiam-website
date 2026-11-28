@@ -108,6 +108,10 @@ export default async function MaeRimHousePage({ params }: PageProps<"/[locale]">
                 photosOf: t.photosOf,
                 propertyName: property.title,
                 openPhoto: t.openPhoto,
+                photoPrevious: t.photoPrevious,
+                photoNext: t.photoNext,
+                photoZoom: t.photoZoom,
+                photoLoadError: t.photoLoadError,
               }}
             />
           </div>
