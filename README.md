@@ -1809,8 +1809,11 @@ flow, end to end, with nothing live anywhere near it.
   PhotoSwipe's own, not ours. The five labels `photoPrevious`, `photoNext`, `photoZoom`,
   `photoLoadError` and `photoSingle` in `th.ts` and `zh.ts` were written without a native
   speaker's review. The grid and single-photo toggle, and the back step from the viewer to
-  the grid, were tested with clicks and `history.back()`; Android's back gesture and iOS
-  Safari's edge swipe on a real device have not been tried.
+  the grid, were tested with clicks and `history.back()` in Chrome and in Playwright's WebKit
+  with iPhone and iPad emulation; Android's back gesture and iOS Safari's edge swipe on a real
+  device have not been tried. WebKit is worth the extra run for anything in that overlay: it
+  is where the CSS columns grid left 3,000px of empty space below the last photo, which
+  Chrome never showed.
 
 ## Getting started
 

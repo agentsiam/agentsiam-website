@@ -371,6 +371,11 @@ export function PhotoGallery({ photos, labels }: { photos: Photo[]; labels: Labe
       requestAnimationFrame(() => {
         closingRef.current = true;
         viewer.destroy();
+        // The viewer kept focus until it was gone, so the grid's own focus on mount did not
+        // stick; put it on the outlined photo now.
+        document
+          .querySelector<HTMLElement>('[data-photo-grid] [aria-current="true"]')
+          ?.focus({ preventScroll: true });
       });
     }
   };
@@ -618,6 +623,21 @@ export function PhotoGallery({ photos, labels }: { photos: Photo[]; labels: Labe
 }
 
 /**
+ * Deals photo indexes into stacks, each to the stack that is shortest so far, measuring a
+ * photo's height as height over width since every stack is the same width.
+ */
+function stackPhotos(photos: Photo[], columns: number) {
+  const stacks: number[][] = Array.from({ length: columns }, () => []);
+  const heights = new Array<number>(columns).fill(0);
+  photos.forEach((photo, index) => {
+    const shortest = heights.indexOf(Math.min(...heights));
+    stacks[shortest].push(index);
+    heights[shortest] += photo.src.height / photo.src.width;
+  });
+  return stacks;
+}
+
+/**
  * Every photo at its own shape, as thumbnails to pick from. Descriptions are not printed
  * here: they belong with the photo at full size, in the viewer, not as a column of small
  * text under forty thumbnails. The photo the guest was on is outlined and scrolled into
@@ -643,6 +663,19 @@ function Overview({
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef<HTMLButtonElement>(null);
+
+  // Three stacks from 1024px, two below, the breakpoint the grid has always used. The grid
+  // only renders after a tap, so reading the width here never meets a server render.
+  const [columns, setColumns] = useState(() =>
+    window.matchMedia("(min-width: 1024px)").matches ? 3 : 2,
+  );
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 1024px)");
+    const update = () => setColumns(query.matches ? 3 : 2);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  const stacks = stackPhotos(photos, columns);
 
   // Land on the photo the guest was on, in the middle of the screen, with focus on it.
   useEffect(() => {
@@ -776,31 +809,44 @@ function Overview({
         </button>
       </div>
 
-      {/* Clicks inside the grid should not close it; only the backdrop and × do. Columns
-          rather than a grid, so photos of any shape pack without ragged rows. */}
+      {/* Clicks inside the grid should not close it; only the backdrop and × do.
+
+          Two stacks of photos, three from 1024px, each photo going to whichever stack is
+          shortest so far, so photos of any shape pack without ragged rows and still read
+          roughly in order across. Built here rather than with CSS columns: Safari on an
+          iPhone sized the columns' scrollable area at about twice the photos' height, and a
+          guest could scroll some 3,000px of empty dark space past the last photo. */}
       <div
-        className="w-full max-w-[1100px] columns-2 gap-2 sm:gap-2.5 lg:columns-3"
+        data-photo-grid=""
+        className="flex w-full max-w-[1100px] items-start gap-2 sm:gap-2.5"
         onClick={(event) => event.stopPropagation()}
       >
-        {photos.map((photo, index) => (
-          <button
-            key={photo.src.src}
-            ref={index === current ? currentRef : undefined}
-            type="button"
-            onClick={() => onOpen(index)}
-            aria-current={index === current ? "true" : undefined}
-            {...openPhotoProps(`${baseId}-all-${index}`, photo, labels.openPhoto)}
-            className="mb-2 block w-full cursor-pointer break-inside-avoid overflow-hidden rounded-box outline-offset-2 aria-[current]:outline-3 aria-[current]:outline-white sm:mb-2.5"
-          >
-            <OpenPhotoName id={`${baseId}-all-${index}`} photo={photo} label={labels.openPhoto} />
-            <Image
-              src={photo.src}
-              alt=""
-              placeholder="blur"
-              sizes="(min-width: 1024px) 360px, 50vw"
-              className="h-auto w-full transition-opacity hover:opacity-90"
-            />
-          </button>
+        {stacks.map((stack, column) => (
+          <div key={column} className="flex min-w-0 flex-1 flex-col gap-2 sm:gap-2.5">
+            {stack.map((index) => {
+              const photo = photos[index];
+              return (
+                <button
+                  key={photo.src.src}
+                  ref={index === current ? currentRef : undefined}
+                  type="button"
+                  onClick={() => onOpen(index)}
+                  aria-current={index === current ? "true" : undefined}
+                  {...openPhotoProps(`${baseId}-all-${index}`, photo, labels.openPhoto)}
+                  className="block w-full cursor-pointer overflow-hidden rounded-box outline-offset-2 aria-[current]:outline-3 aria-[current]:outline-white"
+                >
+                  <OpenPhotoName id={`${baseId}-all-${index}`} photo={photo} label={labels.openPhoto} />
+                  <Image
+                    src={photo.src}
+                    alt=""
+                    placeholder="blur"
+                    sizes="(min-width: 1024px) 360px, 50vw"
+                    className="block h-auto w-full transition-opacity hover:opacity-90"
+                  />
+                </button>
+              );
+            })}
+          </div>
         ))}
       </div>
     </div>
