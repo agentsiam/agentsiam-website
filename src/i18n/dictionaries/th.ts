@@ -1465,8 +1465,8 @@ export const th: Dictionary = {
   // -- Photo viewer --------------------------------------------------------
   photoPrevious: "รูปก่อนหน้า",
   photoNext: "รูปถัดไป",
-  photoZoom: "ซูมเข้าหรือออก",
-  photoLoadError: "โหลดรูปนี้ไม่ได้",
+  photoZoom: "ซูมรูป",
+  photoLoadError: "ไม่สามารถโหลดรูปนี้ได้",
 
   // -- Photo viewer, grid toggle -------------------------------------------
   photoSingle: "ดูทีละรูป",

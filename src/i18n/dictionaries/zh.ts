@@ -1465,7 +1465,7 @@ export const zh: Dictionary = {
   // -- Photo viewer --------------------------------------------------------
   photoPrevious: "上一张",
   photoNext: "下一张",
-  photoZoom: "放大或缩小",
+  photoZoom: "缩放照片",
   photoLoadError: "这张照片无法加载。",
 
   // -- Photo viewer, grid toggle -------------------------------------------
