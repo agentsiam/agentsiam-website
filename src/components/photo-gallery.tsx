@@ -693,6 +693,8 @@ function Overview({
     // enough: iOS Safari ignores it for touch, so a swipe past the last photo carried on
     // into the listing behind and the grid seemed to scroll for ever. Pinning the body in
     // place at its current offset holds it on every browser; the offset goes back on close.
+    // The grid itself is overscroll-behavior: none rather than contain: contain stops the
+    // page scrolling but still lets iOS pull the grid past its last photo and bounce back.
     const body = document.body.style;
     const saved = {
       overflow: body.overflow,
@@ -740,7 +742,7 @@ function Overview({
       role="dialog"
       aria-modal="true"
       aria-label={labels.photosOf.replace("{property}", labels.propertyName)}
-      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto overscroll-contain bg-scrim px-3 pb-6 pt-[72px] sm:px-10 sm:pb-10"
+      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto overscroll-none bg-scrim px-3 pb-6 pt-[72px] sm:px-10 sm:pb-10"
       onClick={onClose}
     >
       {/* The viewer's top bar, in the grid: the one-square button where the viewer has its
