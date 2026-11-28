@@ -1696,6 +1696,13 @@ export const en = {
   ckpvFaqMinStayA: "The owner sets the minimum for your dates. Send them with your enquiry and we'll confirm it along with the price.",
   ckpvFaqExactA: "Guests, bedrooms, beds and bathrooms are the owner's own published figures for this house. We confirm everything in writing when you enquire, before anything is agreed.",
   ckpvPoolNote: "The house has its own pool. Children need an adult with them around it.",
+
+  // -- Photo viewer --------------------------------------------------------
+  // Full-screen photo viewer controls. Button titles, read by screen readers.
+  photoPrevious: "Previous photo",
+  photoNext: "Next photo",
+  photoZoom: "Zoom in or out",
+  photoLoadError: "This photo could not be loaded.",
 } as const;
 
 export type Dictionary = { [K in keyof typeof en]: string };

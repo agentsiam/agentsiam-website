@@ -1461,4 +1461,10 @@ export const zh: Dictionary = {
   ckpvFaqMinStayA: "最少入住晚数由房东按日期决定。咨询时请告诉我们日期，我们会连同价格一并确认。",
   ckpvFaqExactA: "入住人数、卧室、床和卫浴数量均为房东为这栋房屋公开的数字。您咨询时，我们会在达成任何约定之前以书面形式确认所有信息。",
   ckpvPoolNote: "房屋带私人泳池。儿童在泳池附近需有成人陪同。",
+
+  // -- Photo viewer --------------------------------------------------------
+  photoPrevious: "上一张",
+  photoNext: "下一张",
+  photoZoom: "放大或缩小",
+  photoLoadError: "这张照片无法加载。",
 };
