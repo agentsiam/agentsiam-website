@@ -1801,6 +1801,13 @@ flow, end to end, with nothing live anywhere near it.
   layout change to the hero and has not been made. The scrims were not retuned for the daylight
   frame and did not need to be: on a wide screen the headline holds 5.6 to 1 at worst and the
   standfirst 6.8, against AA's 3.0 and 4.5.
+- **The photo viewer's touch gestures and its Thai and Chinese labels are unchecked by a
+  person (28/11/2026).** The viewer in `src/components/photo-gallery.tsx` was measured at 13
+  widths from 320 to 1366px, every Lotus House photo at each: caption directly under the photo,
+  nothing off screen. Every input in that test was a mouse click or a key, so pinch, double-tap
+  and swipe-down-to-close have not been tried on an actual phone or tablet; they are
+  PhotoSwipe's own, not ours. The four labels `photoPrevious`, `photoNext`, `photoZoom` and
+  `photoLoadError` in `th.ts` and `zh.ts` were written without a native speaker's review.
 
 ## Getting started
 
